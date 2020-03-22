@@ -8,4 +8,4 @@
 
 
 <hr>
-<code>Forked from <a href="https://github.com/BayLibre/libretech-image-builder">Baylibre</a></code>.
+<code>Forked from <a href="https://github.com/BayLibre/libretech-image-builder">Baylibre</a>.</code>
