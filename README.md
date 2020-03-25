@@ -6,7 +6,7 @@ login   pi
 passwd  board
 ```
 
-<code>RPiZERO - <a href="http://www.mediafire.com/file/hsczu1rlls23535/rpi-zero-w-debian-buster-kernel-5.4.24.7z/file">rpi-zero-w-debian-buster-kernel-5.4.24</a></code>
+<code>RPiZERO - <a href="http://www.mediafire.com/file/w9um696jli9s9eo/rpi-zero-w-debian-buster-kernel.7z/file">rpi-zero-w-debian-buster</a></code> <code>Linux 5.4.27</code> <code>032520</code>
 
 <code>RPi3B+ - <a href="https://www.mediafire.com/file/uhfaeq18be1g2r3/rpi-3-b-plus-debian-buster-kernel-5.4.24-v8.7z/file">rpi-3-b-plus-debian-buster-kernel-5.4.24-v8</a></code>
 
