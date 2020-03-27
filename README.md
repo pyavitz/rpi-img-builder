@@ -14,7 +14,7 @@ passwd  board
 
 <code><a href="http://www.mediafire.com/file/ktb5idqovus5ovu/rpi-4-b-debian-buster-v7l.7z/file">rpi-4-b-debian-buster</a></code> <code>armv7l</code> <code>Linux 5.4.27</code> <code>032720</code>
 
-<code><a href="http://www.mediafire.com/file/ordfv84kkn2tegu/rpi-4-b-debian-buster.7z/file">rpi-4-b-debian-buster</a></code> <code>aarch64</code> <code>Linux 5.4.27</code> <code>032520</code>
+<code><a href="https://www.mediafire.com/file/vbj805nis4ek7k7/rpi-4-b-debian-buster.7z/file">rpi-4-b-debian-buster</a></code> <code>aarch64</code> <code>Linux 5.4.27</code> <code>032720</code>
 
 <hr>
 <code>Forked from <a href="https://github.com/BayLibre/libretech-image-builder">Baylibre</a>.</code>
