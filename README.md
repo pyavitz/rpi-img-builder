@@ -12,7 +12,7 @@ passwd  board
 
 <code><a href="http://www.mediafire.com/file/ujlehuuh7fky6z7/rpi-3-b-plus-debian-buster.7z/file">rpi-3-b-plus-debian-buster</a></code> <code>aarch64</code> <code>Linux 5.4.27</code> <code>032620</code>
 
-<code><a href="http://www.mediafire.com/file/ktb5idqovus5ovu/bcm2711-rpi-4-b-debian-buster-v7l.7z/file">rpi-4-b-debian-buster</a></code> <code>armv7l</code> <code>Linux 5.4.27</code> <code>032720</code>
+<code><a href="http://www.mediafire.com/file/ktb5idqovus5ovu/rpi-4-b-debian-buster-v7l.7z/file">rpi-4-b-debian-buster</a></code> <code>armv7l</code> <code>Linux 5.4.27</code> <code>032720</code>
 
 <code><a href="http://www.mediafire.com/file/ordfv84kkn2tegu/rpi-4-b-debian-buster.7z/file">rpi-4-b-debian-buster</a></code> <code>aarch64</code> <code>Linux 5.4.27</code> <code>032520</code>
 
