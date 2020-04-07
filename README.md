@@ -18,3 +18,5 @@ passwd  board
 
 <hr>
 <code>Forked from <a href="https://github.com/BayLibre/libretech-image-builder">Baylibre</a>.</code>
+<hr>
+<code>If you would like to support my <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=VG8GP2SY4CEEW&item_name=For+new+single+board+computers+and+accessories.&currency_code=USD&source=url">efforts</a>. All donations will go to purchasing more sbcs and accessories.</code>
