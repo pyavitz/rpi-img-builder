@@ -15,5 +15,7 @@ passwd  board
 <code><a href="http://www.mediafire.com/file/7gp0h7iy26et8ay/rpi-4-b-debian-buster-v7l.7z/file">rpi-4-b-debian-buster</a></code> <code>armv7l</code> <code>Linux 5.4.29</code> <code>040320</code>
 
 <code><a href="http://www.mediafire.com/file/t0sum2xe1iivkjv/rpi-4-b-debian-buster.7z/file">rpi-4-b-debian-buster</a></code> <code>aarch64</code> <code>Linux 5.4.29</code> <code>040120</code>
+
 <hr>
-<code>If you would like to support my <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=VG8GP2SY4CEEW&item_name=For+new+single+board+computers+and+accessories.&currency_code=USD&source=url">efforts</a>. All donations will go to purchasing more sbcs and accessories.</code>
+
+If you would like to <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=VG8GP2SY4CEEW&item_name=For+new+single+board+computers+and+accessories.&currency_code=USD&source=url">support</a> my efforts.
