@@ -23,7 +23,7 @@ mkdir -p "$IMAGE_FOLDER"
 if [ $RAM -ne 0 ]; then
 	mount -t tmpfs -o size=1G tmpfs $IMAGE_FOLDER
 fi
-truncate -s 1000MB "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
+truncate -s 1100MB "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
 fdisk "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" <<EOF
 o
 n

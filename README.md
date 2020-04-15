@@ -25,9 +25,10 @@ Usage:
   make cleanup           Clean up image errors
 
 For details consult the README.md file
-
+ 
 ```
 
 <hr>
 
 If you would like to <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=VG8GP2SY4CEEW&item_name=For+new+single+board+computers+and+accessories.&currency_code=USD&source=url">support</a> my efforts.
+
