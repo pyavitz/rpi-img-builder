@@ -1,7 +1,6 @@
 # RPi4B
 Debian Image Builder for the Raspberry Pi
 
-Download and prep dir.<br>
 <code>git clone https://github.com/pyavitz/rpi-img-builder.git -b rpi4b</code>
 <hr>
 <h2>Dependencies for Debian Buster x86_64/AMD64 system</h2>
