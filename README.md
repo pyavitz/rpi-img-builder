@@ -3,6 +3,10 @@ Debian Image Builder for the Raspberry Pi
 
 <code>git clone https://github.com/pyavitz/rpi-img-builder.git</code>
 <hr>
+<h3>Downloadable Image</h3>
+
+<code><a href="http://www.mediafire.com/file/t0sum2xe1iivkjv/rpi-4-b-debian-buster.7z/file">rpi-4-b-debian-buster</a></code> <code>aarch64</code> <code>Linux 5.4.29</code> <code>040120</code>
+<hr>
 <h2>Dependencies for Debian Buster x86_64/AMD64 system</h2>
 
 ```
