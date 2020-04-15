@@ -1,0 +1,7 @@
+#!/bin/bash
+echo
+figlet -f small "Raspberry Pi" -c
+echo
+echo -e "CPU Temp: " $(cat /sys/class/thermal/thermal_zone0/temp|cut -c1-2)°C
+echo -e "Uptime:   " $(uptime)
+echo

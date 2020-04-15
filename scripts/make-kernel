@@ -1,0 +1,59 @@
+#!/bin/bash
+source config.txt
+
+### Download kernel
+echo
+echo Downloading kernel.
+wget -cq https://github.com/raspberrypi/linux/archive/rpi-${version}.zip
+echo Done.
+
+### Extract
+echo
+echo Extracting archive.
+unzip -qq rpi-${version}.zip
+echo Done.
+#rm -f rpi-${version}.zip #remove zip
+
+### Setup
+echo
+sleep 1s
+cd ${kernel}-${version}
+export ARCH=arm64
+
+### Clean kernel
+#make clean
+#make mrproper
+
+### Packaging patch
+echo
+echo Applying packaging patch.
+patch -p1 < ../patches/rpi4b-packaging.patch
+
+### Set defconfig
+echo
+cp -f ../defconfig/rpi4b_defconfig arch/arm64/configs/
+make ARCH=arm64 rpi4b_defconfig
+
+### Foundation defconfig
+#make ARCH=arm64 bcm2711_defconfig
+
+### Open menuconfig
+#echo
+#echo Opening menuconfig.
+#sleep 1s
+#make menuconfig
+
+### Build deb
+echo
+echo Building deb packages.
+#make -j6 ARCH=arm64 bindeb-pkg # native
+make -j6 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
+cd ..
+
+### Move debs
+mkdir -p debs
+mv -f *.deb debs/
+mv -f *.buildinfo debs/
+mv -f *.changes debs/
+echo
+echo Done.

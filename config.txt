@@ -1,0 +1,14 @@
+# Make edits at your own risk
+
+# make-kernel
+kernel="linux-rpi"
+version="5.4.y"
+
+# stage1
+imgsize="2500MB"
+
+# stage2
+user="pi"
+passwd="board"
+mypkgs="cpu hwinfo neofetch"
+EEPROM_VERSION="5.4"

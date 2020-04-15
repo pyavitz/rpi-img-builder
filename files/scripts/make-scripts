@@ -1,0 +1,11 @@
+#!/bin/bash
+echo
+echo Patching and running make scripts on the kernel headers.
+cd /usr/local/src
+sudo cp -f headers-byteshift.patch /usr/src/linux-headers-`uname -r`/
+cd /usr/src/linux-headers-`uname -r`
+sudo patch -p1 < headers-byteshift.patch
+sudo rm -f headers-byteshift.patch
+sudo make -j4 scripts
+echo Done.
+cd ~

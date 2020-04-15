@@ -1,0 +1,4 @@
+#!/bin/bash
+echo -e "\033[1mCPU Temp: \033[0m" $(cat /sys/class/thermal/thermal_zone0/temp|cut -c1-2)°C
+echo -e "\033[1mUptime:   \033[0m" $(uptime)
+echo

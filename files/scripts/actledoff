@@ -1,0 +1,2 @@
+#!/bin/bash
+sh -c 'echo 0 > /sys/devices/platform/leds/leds/led0/brightness'

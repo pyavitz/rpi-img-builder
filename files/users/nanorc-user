@@ -1,0 +1,12 @@
+# USER
+# set element fgcolor,bgcolor
+set titlecolor brightgreen,black
+set statuscolor brightgreen,black
+set errorcolor brightblack,red
+set selectedcolor brightwhite,magenta
+#set stripecolor ,yellow
+set numbercolor yellow
+set keycolor yellow
+set functioncolor green
+
+include "/usr/share/nano/*.nanorc"
