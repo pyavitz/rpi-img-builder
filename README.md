@@ -27,7 +27,7 @@ Alternatively, you can run the command `make install-depends` in this directory.
 * Install all dependencies
 
 ```sh
-make install-depends`
+make install-depends
 ```
 
 * Compile the kernel
