@@ -51,7 +51,7 @@ make image
 * Clean up image errors
 
 ```sh
-make clean
+make cleanup
 ```
 ### Funding
 
