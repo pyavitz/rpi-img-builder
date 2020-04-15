@@ -4,15 +4,15 @@ source config.txt
 ### Download kernel
 echo
 echo Downloading kernel.
-wget -cq https://github.com/raspberrypi/linux/archive/rpi-${version}.zip
+wget -cq https://github.com/raspberrypi/linux/archive/rpi-${version}.tar.gz
 echo Done.
 
 ### Extract
 echo
 echo Extracting archive.
-unzip -qq rpi-${version}.zip
+tar -xf rpi-${version}.tar.gz
 echo Done.
-#rm -f rpi-${version}.zip #remove zip
+#rm -f rpi-${version}.tar.gz #remove
 
 ### Setup
 echo
