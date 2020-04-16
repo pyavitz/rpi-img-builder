@@ -11,4 +11,6 @@ imgsize="2500MB"
 user="pi"
 passwd="board"
 mypkgs="cpu hwinfo neofetch"
+# firmware-brcm80211 firmware-iwlwifi firmware-realtek firmware-ralink
+firmware="firmware-linux"
 EEPROM_VERSION="5.4"
