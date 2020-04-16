@@ -215,7 +215,7 @@ cp files/rules/* p2/root
 cp files/scripts/* p2/root
 cp files/users/* p2/root
 cp firmware/fw-0a5c_21e8.hcd p2/root
-wget -cq https://github.com/RPi-Distro/firmware-nonfree/archive/master.zip
+wget -cq --show-progress https://github.com/RPi-Distro/firmware-nonfree/archive/master.zip
 mv master.zip p2/root
 # Mount and chroot
 mount -o bind p1 p2/boot
