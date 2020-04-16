@@ -3,7 +3,7 @@
 # make-kernel
 kernel="linux-rpi"
 version="5.4.y"
-cores=`cat /proc/cpuinfo | grep processor | wc -l`
+cores=`nproc`
 # stage1
 imgsize="2500MB"
 
