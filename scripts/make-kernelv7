@@ -47,8 +47,8 @@ make ARCH=arm rpi4b-v7_defconfig
 ### Build deb
 echo
 echo Building deb packages.
-#make -j4 ARCH=arm bindeb-pkg # native
-make -j4 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- bindeb-pkg
+#make -j${cores} ARCH=arm bindeb-pkg # native
+make -j${cores} ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- bindeb-pkg
 cd ..
 
 ### Move debs
