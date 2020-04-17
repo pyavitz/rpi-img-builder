@@ -1,11 +1,12 @@
 #!/bin/bash
 #ARMHF ROOTFS
+source config.txt
+
 set -x
 RAM=0
 PROXY=""
 IMAGE_FOLDER="img/"
 IMAGE_VERSION="rootfs-armhf"
-DEBIAN_VERSION="buster"
 if [ ! -z "$1" ]; then
 	IMAGE_VERSION="$1"
 fi

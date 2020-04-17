@@ -1,5 +1,7 @@
 #!/bin/bash
 source config.txt
+mkdir -p ${tmp}
+cd ${tmp}
 
 ### Download kernel
 echo
@@ -28,11 +30,11 @@ KERNEL=kernel7l
 ### Packaging patch
 echo
 echo Applying packaging patch.
-patch -p1 < ../patches/rpi4b-v7-packaging.patch
+patch -p1 < ../${pat}/rpi4b-v7-packaging.patch
 
 ### Set defconfig
 echo
-cp -f ../defconfig/rpi4b-v7_defconfig arch/arm/configs/
+cp -f ../${def}/rpi4b-v7_defconfig arch/arm/configs/
 make ARCH=arm rpi4b-v7_defconfig
 
 ### Foundation defconfig
@@ -49,12 +51,5 @@ echo
 echo Building deb packages.
 #make -j${cores} ARCH=arm bindeb-pkg # native
 make -j${cores} ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- bindeb-pkg
-cd ..
-
-### Move debs
-mkdir -p debs
-mv -f *.deb debs/
-mv -f *.buildinfo debs/
-mv -f *.changes debs/
-echo
 echo Done.
+echo

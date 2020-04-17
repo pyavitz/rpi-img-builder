@@ -1,11 +1,17 @@
-# Make edits at your own risk
+# config.txt
+tmp="tmp"
+def="../defconfig"
+pat="../patches"
+# do not edit above this line
 
 # make-kernel
 kernel="linux-rpi"
 version="5.4.y"
 cores=`nproc`
+
 # stage1
 imgsize="2500MB"
+DEBIAN_VERSION="buster"
 
 # stage2
 user="pi"

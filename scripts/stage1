@@ -7,7 +7,6 @@ PROXY=""
 IMAGE_FOLDER="img/"
 IMAGE_DEVICE_TREE="broadcom/bcm2711-rpi-4-b"
 DEVICE_SOC="bcm2711-rpi-4-b"
-DEBIAN_VERSION="buster"
 
 set -eux -o pipefail
 IMAGE_LINUX_LOADADDR="0x1080000"
@@ -209,7 +208,7 @@ fi
 # Setup stage2
 cp scripts/stage2 p2/root
 cp config.txt p2/root
-cp debs/*.deb p2/root
+cp tmp/*.deb p2/root
 cp files/misc/* p2/root
 cp files/patches/* p2/root
 cp files/rules/* p2/root

@@ -508,6 +508,7 @@ systemctl enable haveged
 systemctl enable zramswap
 systemctl enable bluetooth
 systemctl enable firstboot
+systemctl enable serial-getty@ttyUSB0.service
 echo Done.
 ### Own it
 chown -R ${user}:${user} /home/${user}

@@ -33,6 +33,9 @@ help:
 	@echo "  make rootfs            Make ROOTFS tarball"
 	@echo "  make image             Make bootable Debian image"
 	@echo "  make cleanup           Clean up image errors"
+	@echo "  make purge             Remove tmp directory"
+	@echo
+	@echo "  make all               Feeling lucky?"
 	@echo
 	@echo "For details consult the README.md file"
 	@echo
@@ -53,22 +56,22 @@ install-dependsv7:
 	crossbuild-essential-armhf
 
 kernel:
-	# Make linux kernel
+	# LINUX
 	@chmod +x ${KERNEL}
 	@${KERNEL}
 
 kernelv7:
-	# Make linux kernel v7l
+	# LINUX v7l
 	@chmod +x ${KERNELV7}
 	@${KERNELV7}
 
 rootfs:
-	# Make Debian Rootfs 
+	# AARCH64 DEBIAN ROOTFS
 	@chmod +x ${RFS}
 	@${ROOTFS}
 
 rootfsv7:
-	# Make Debian armhf Rootfs
+	# ARMHF DEBIAN ROOTFS
 	@chmod +x ${RFSV7}
 	@${ROOTFSV7}
 
@@ -84,9 +87,42 @@ imagev7:
 	@chmod +x ${STG2V7}
 	@${IMAGEV7}
 
+all:
+	# AARCH64
+	# - - - - - - - -
+	#
+	# Building linux
+	@chmod +x ${KERNEL}
+	@${KERNEL}
+	# Creating ROOTFS tarball
+	@chmod +x ${RFS}
+	@${ROOTFS}
+	# Making bootable Debian img
+	@chmod +x ${IMG}
+	@chmod +x ${STG2}
+	@${IMAGE}
+
+allv7:
+	# ARMv7l
+	# - - - - - - - -
+	#
+	# Building linux
+	@chmod +x ${KERNELV7}
+	@${KERNELV7}
+	# Creating ROOTFS tarball
+	@chmod +x ${RFSV7}
+	@${ROOTFSV7}
+	# Making bootable Debian img
+	@chmod +x ${IMGV7}
+	@chmod +x ${STG2V7}
+	@${IMAGEV7}
+
 cleanup:
 	# Cleaning up
 	@chmod +x ${CLN}
 	@${CLEAN}
 
+purge:
+	# Removing tmp directory
+	sudo rm -fdr tmp
 ##
