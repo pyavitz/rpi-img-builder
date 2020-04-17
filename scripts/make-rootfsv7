@@ -7,6 +7,11 @@ RAM=0
 PROXY=""
 IMAGE_FOLDER="img/"
 IMAGE_VERSION="rootfs-armhf"
+FILE=debian-buster-${IMAGE_VERSION}.tar.xz
+
+if ls $FILE &>/dev/null; then exit; 
+        else echo "file not found";
+fi
 if [ ! -z "$1" ]; then
 	IMAGE_VERSION="$1"
 fi
