@@ -13,12 +13,10 @@ echo Done.
 echo
 echo Extracting archive.
 tar -xf rpi-${version}.tar.gz
-echo Done.
 #rm -f rpi-${version}.tar.gz #remove
+echo Done.
 
 ### Setup
-echo
-sleep 1s
 cd ${kernel}-${version}
 export ARCH=arm
 KERNEL=kernel7l
@@ -33,7 +31,6 @@ echo Applying packaging patch.
 patch -p1 < ../${pat}/rpi4b-v7-packaging.patch
 
 ### Set defconfig
-echo
 cp -f ../${def}/rpi4b-v7_defconfig arch/arm/configs/
 make ARCH=arm rpi4b-v7_defconfig
 
@@ -41,7 +38,6 @@ make ARCH=arm rpi4b-v7_defconfig
 #make ARCH=arm bcm2711_defconfig
 
 ### Open menuconfig
-#echo
 #echo Opening menuconfig.
 #sleep 1s
 #make menuconfig
