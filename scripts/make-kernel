@@ -17,8 +17,6 @@ tar -xf rpi-${version}.tar.gz
 echo Done.
 
 ### Setup
-echo
-sleep 1s
 cd ${kernel}-${version}
 export ARCH=arm64
 
@@ -40,7 +38,6 @@ make ARCH=arm64 rpi4b_defconfig
 #make ARCH=arm64 bcm2711_defconfig
 
 ### Open menuconfig
-#echo
 #echo Opening menuconfig.
 #sleep 1s
 #make menuconfig
