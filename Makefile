@@ -40,7 +40,7 @@ help:
 	@echo "For details consult the README.md file"
 	@echo
 
-
+# aarch64
 install-depends:
 	# Install all dependencies: aarch64
 	sudo apt install build-essential bison bc git dialog patch \
@@ -48,44 +48,21 @@ install-depends:
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
 	crossbuild-essential-arm64
 
-install-dependsv7:
-	# Install all dependencies: armv7l
-	sudo apt install build-essential bison bc git dialog patch \
-	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
-	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
-	crossbuild-essential-armhf
-
 kernel:
 	# LINUX
 	@chmod +x ${KERNEL}
 	@${KERNEL}
-
-kernelv7:
-	# LINUX v7l
-	@chmod +x ${KERNELV7}
-	@${KERNELV7}
 
 rootfs:
 	# AARCH64 DEBIAN ROOTFS
 	@chmod +x ${RFS}
 	@${ROOTFS}
 
-rootfsv7:
-	# ARMHF DEBIAN ROOTFS
-	@chmod +x ${RFSV7}
-	@${ROOTFSV7}
-
 image:
 	# Make bootable Debian image
 	@chmod +x ${IMG}
 	@chmod +x ${STG2}
 	@${IMAGE}
-
-imagev7:
-	# Make bootable Debian image
-	@chmod +x ${IMGV7}
-	@chmod +x ${STG2V7}
-	@${IMAGEV7}
 
 all:
 	# AARCH64
@@ -102,6 +79,35 @@ all:
 	@chmod +x ${STG2}
 	@${IMAGE}
 
+# armv7l
+install-dependsv7:
+	# Install all dependencies: armv7l
+	sudo apt install build-essential bison bc git dialog patch \
+	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
+	crossbuild-essential-armhf
+
+kernelv7:
+	# LINUX v7l
+	@chmod +x ${KERNELV7}
+	@${KERNELV7}
+
+
+
+rootfsv7:
+	# ARMHF DEBIAN ROOTFS
+	@chmod +x ${RFSV7}
+	@${ROOTFSV7}
+
+
+
+imagev7:
+	# Make bootable Debian image
+	@chmod +x ${IMGV7}
+	@chmod +x ${STG2V7}
+	@${IMAGEV7}
+
+
 allv7:
 	# ARMv7l
 	# - - - - - - - -
@@ -117,6 +123,7 @@ allv7:
 	@chmod +x ${STG2V7}
 	@${IMAGEV7}
 
+# clean and purge
 cleanup:
 	# Cleaning up
 	@chmod +x ${CLN}
