@@ -1,4 +1,4 @@
-# Supported boards: RPi4B, RPi3B/+ and Rpi0W
+# Supported boards: RPi4B, RPi3B/+ and RPi0W
 
 Debian Image Builder for the Raspberry Pi
 
