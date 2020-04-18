@@ -42,7 +42,7 @@ CLEAN=sudo ./scripts/clean
 help:
 	@echo
 	@echo "Check config.txt for options"
-	@echo "Run make board for examples"
+	@echo "Execute make board for examples"
 	@echo
 	@echo "Usage:"
 	@echo
@@ -76,9 +76,9 @@ board:
 	@echo
 	@echo "Root filesystem:"
 	@echo
-	@echo "  make rootfsv8		ARM64"
-	@echo "  make rootfsv7		ARMHF"
-	@echo "  make rootfsv6		ARMEL"
+	@echo "  make rootfsv8		 ARM64"
+	@echo "  make rootfsv7		 ARMHF"
+	@echo "  make rootfsv6		 ARMEL"
 	@echo
 
 # aarch64
