@@ -81,7 +81,7 @@ board:
 	@echo
 	@echo "RPi0W:"
 	@echo " armv6l"	
-	@echo "  make rpi0-kernel       Builds armv6l linux kernel"
+	@echo "  make rpi0-kernel       Builds linux kernel"
 	@echo "  make rpi0-image        Make bootable Debian image"
 	@echo "  make rpi0-all          Kernel > rootfs > image"
 	@echo
