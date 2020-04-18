@@ -383,6 +383,9 @@ apt -y clean
 apt -y autoclean
 echo Done.
 
+### Clean misc files
+rm -f *eeprom*
+
 ### Vchiq permissions
 echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' > /etc/udev/rules.d/10-vchiq-permissions.rules
 echo 'SUBSYSTEM=="vcio",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
