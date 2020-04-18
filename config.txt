@@ -14,9 +14,9 @@ version="5.4.y"
 cores=`nproc`
 
 # stage1
-imgsize-rpi4="2500MB"
-imgsize-rpi3="2300MB"
-imgsize-rpi0="2250MB"
+RPI4="2500MB"
+RPI3="2300MB"
+RPI0="2250MB"
 DEBIAN_VERSION="buster"
 
 # stage2

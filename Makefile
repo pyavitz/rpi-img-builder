@@ -104,11 +104,6 @@ rpi3-kernel:
 	@chmod +x ${KERNEL3}
 	@${KERNEL3}
 
-rootfsv8:
-	# AARCH64 DEBIAN ROOTFS
-	@chmod +x ${RFSV8}
-	@${ROOTFSV8}
-
 rpi3-image:
 	# Make bootable Debian image
 	@chmod +x ${IMG3}
@@ -175,11 +170,6 @@ rpi3-kernelv7:
 	# LINUX
 	@chmod +x ${KERNEL3V7}
 	@${KERNEL3V7}
-
-rootfsv7:
-	# AARCH64 DEBIAN ROOTFS
-	@chmod +x ${RFSV7}
-	@${ROOTFSV7}
 
 rpi3-imagev7:
 	# Make bootable Debian image
