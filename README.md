@@ -53,6 +53,54 @@ make image
 ```sh
 make cleanup
 ```
+
+## Command list (current)
+
+* Raspberry Pi 4B (default)
+
+```sh
+AARCH64
+make kernel
+make image
+make all
+
+ARMv7l
+make kernelv7
+make imagev7
+make allv7
+```
+
+* Raspberry Pi 3B/+
+
+```sh
+AARCH64
+make rpi3-kernel
+make rpi3-image
+make rpi3-all
+
+ARMv7l
+make rpi3-kernelv7
+make rpi3-imagev7
+make rpi3-allv7
+```
+
+* Raspberry Pi 0W
+
+```sh
+ARMv6l
+make rpi0-kernel
+make rpi0-image
+make rpi0-all
+```
+
+* Root Filesystems
+
+```sh
+make rootfs   (arm64)
+make rootfsv7 (armhf)
+make rootfsv6 (armel)
+```
+
 ### Funding
 
 Please [donate](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=VG8GP2SY4CEEW&item_name=For+new+single+board+computers+and+accessories) if you'd like to support development.
