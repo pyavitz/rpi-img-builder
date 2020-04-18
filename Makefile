@@ -42,20 +42,43 @@ CLEAN=sudo ./scripts/clean
 help:
 	@echo
 	@echo "Check config.txt for options"
-	@echo "Append v7 to build 32bit ver."
+	@echo "Run make board for examples"
 	@echo
 	@echo "Usage:"
 	@echo
 	@echo "  make install-depends   Install all dependencies"
-	@echo "  make kernel            Make linux kernel"
-	@echo "  make rootfs            Make ROOTFS tarball"
-	@echo "  make image             Make bootable Debian image"
+	@echo "  make board-kernel      Make linux kernel"
+	@echo "  make rootfsv#          Make ROOTFS tarball"
+	@echo "  make board-image       Make bootable Debian image"
 	@echo "  make cleanup           Clean up image errors"
 	@echo "  make purge             Remove tmp directory"
 	@echo
-	@echo "  make all               Feeling lucky?"
+	@echo "  make board-all               Feeling lucky?"
 	@echo
 	@echo "For details consult the README.md file"
+	@echo
+
+board:
+	@echo
+	@echo "Append v7 to build 32bit versions"
+	@echo
+	@echo "Boards:"
+	@echo
+	@echo "  rpi4			Raspberry Pi 4B"
+	@echo "  rpi3			Raspberry Pi 3B/+"
+	@echo "  rpi0			Raspberry Pi 0w"
+	@echo
+	@echo "Examples:"
+	@echo	
+	@echo "  make rpi4-kernel       Builds aarch64 linux kernel"
+	@echo "  make rpi4-image        Make bootable Debian image"
+	@echo "  make rpi4-all          Kernel > rootfs > image"
+	@echo
+	@echo "Root filesystem:"
+	@echo
+	@echo "  make rootfsv8		ARM64"
+	@echo "  make rootfsv7		ARMHF"
+	@echo "  make rootfsv6		ARMEL"
 	@echo
 
 # aarch64
