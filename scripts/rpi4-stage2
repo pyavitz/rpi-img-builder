@@ -77,7 +77,12 @@ echo
 echo Adding motd.
 sleep 1s
 mkdir -p /etc/update-motd.d
-mv -f 15-brand /etc/update-motd.d/15-brand
+tee /etc/update-motd.d/15-brand <<EOF
+#!/bin/bash
+echo
+toilet -f small --filter metal '${BRAND4}'
+echo 
+EOF
 mv -f 20-sysinfo /etc/update-motd.d/20-sysinfo
 chmod +x /etc/update-motd.d/*
 chown root:root /etc/update-motd.d/15-brand
