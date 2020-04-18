@@ -101,6 +101,21 @@ make rootfsv7 (armhf)
 make rootfsv6 (armel)
 ```
 
+## Howto
+
+* Kernel > Menuconfig (example)
+
+```sh
+nano scripts/make-kernel4
+
+### Open menuconfig (between line 38-43) (give or take)
+echo Opening menuconfig.
+sleep 1s
+make menuconfig
+
+make edits and save.
+```
+
 ### Funding
 
 Please [donate](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=VG8GP2SY4CEEW&item_name=For+new+single+board+computers+and+accessories) if you'd like to support development.
