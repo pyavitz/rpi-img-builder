@@ -47,13 +47,13 @@ help:
 	@echo "Usage:"
 	@echo
 	@echo "  make install-depends   Install all dependencies"
-	@echo "  make board-kernel      Make linux kernel"
-	@echo "  make rootfsv#          Make ROOTFS tarball"
-	@echo "  make board-image       Make bootable Debian image"
+	@echo "  make kernel            Make linux kernel"
+	@echo "  make rootfs            Make ROOTFS tarball"
+	@echo "  make image             Make bootable Debian image"
 	@echo "  make cleanup           Clean up image errors"
 	@echo "  make purge             Remove tmp directory"
 	@echo
-	@echo "  make board-all               Feeling lucky?"
+	@echo "  make all               Feeling lucky?"
 	@echo
 	@echo "For details consult the README.md file"
 	@echo
@@ -64,19 +64,20 @@ board:
 	@echo
 	@echo "Boards:"
 	@echo
-	@echo "  rpi4			Raspberry Pi 4B"
+	@echo "  rpi4 (default)		Raspberry Pi 4B"
 	@echo "  rpi3			Raspberry Pi 3B/+"
 	@echo "  rpi0			Raspberry Pi 0w"
 	@echo
 	@echo "Examples:"
 	@echo	
-	@echo "  make rpi4-kernel       Builds aarch64 linux kernel"
-	@echo "  make rpi4-image        Make bootable Debian image"
-	@echo "  make rpi4-all          Kernel > rootfs > image"
+	@echo "  make rpi3-kernel       Builds aarch64 linux kernel"
+	@echo "  make rpi3-kernelv7     Builds armv7l linux kernel"
+	@echo "  make rpi3-image        Make bootable Debian image"
+	@echo "  make rpi3-all          Kernel > rootfs > image"
 	@echo
 	@echo "Root filesystem:"
 	@echo
-	@echo "  make rootfsv8		 ARM64"
+	@echo "  make rootfs (default)	 ARM64"
 	@echo "  make rootfsv7		 ARMHF"
 	@echo "  make rootfsv6		 ARMEL"
 	@echo
@@ -90,19 +91,18 @@ install-depends:
 	crossbuild-essential-arm64
 
 # Raspberry Pi 4 | aarch64
-rpi4-kernel:
+kernel:
 	# LINUX
 	@chmod +x ${KERNEL4}
 	@${KERNEL4}
 
-rpi4-image:
+image:
 	# Make bootable Debian image
-	@chmod +x ${IMG4}
 	@chmod +x ${STG42}
 	@${IMAGE4}
 
-rpi4-all:
-	# AARCH64
+all:
+	# RPi4B > AARCH64
 	# - - - - - - - -
 	#
 	# Building linux
@@ -129,7 +129,7 @@ rpi3-image:
 	@${IMAGE3}
 
 rpi3-all:
-	# AARCH64
+	# RPi3B/+ > AARCH64
 	# - - - - - - - -
 	#
 	# Building linux
@@ -152,19 +152,19 @@ install-dependsv7:
 	crossbuild-essential-armhf
 
 # Raspberry Pi 4 | armv7l
-rpi4-kernelv7:
+kernelv7:
 	# LINUX v7l
 	@chmod +x ${KERNEL4V7}
 	@${KERNEL4V7}
 
-rpi4-imagev7:
+imagev7:
 	# Make bootable Debian image
 	@chmod +x ${IMG4V7}
 	@chmod +x ${STG42V7}
 	@${IMAGE4V7}
 
-rpi4-allv7:
-	# ARMv7l
+allv7:
+	# RPi4B > ARMv7l
 	# - - - - - - - -
 	#
 	# Building linux
@@ -191,7 +191,7 @@ rpi3-imagev7:
 	@${IMAGE3V7}
 
 rpi3-allv7:
-	# ARMv7l
+	# RP3B/+ > ARMv7l
 	# - - - - - - - -
 	#
 	# Building linux
@@ -218,7 +218,7 @@ rpi0-image:
 	@${IMAGE0}
 
 rpi0-all:
-	# ARMV6L
+	# RPi0W > ARMV6L
 	# - - - - - - - -
 	#
 	# Building linux
@@ -233,7 +233,7 @@ rpi0-all:
 	@${IMAGE0}
 
 # rootfs
-rootfsv8:
+rootfs:
 	# ARM64 DEBIAN ROOTFS
 	@chmod +x ${RFSV8}
 	@${ROOTFSV8}
