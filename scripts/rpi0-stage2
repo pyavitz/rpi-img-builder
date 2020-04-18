@@ -342,6 +342,11 @@ apt -y clean
 apt -y autoclean
 echo Done.
 
+### Clean misc files
+rm -f *.patch
+rm -f *led*
+rm -f *eeprom*
+
 ### Hack
 ln -s /lib/ld-linux.so.3 /lib/ld-linux-armhf.so.3
 
