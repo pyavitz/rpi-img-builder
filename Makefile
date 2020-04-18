@@ -44,7 +44,7 @@ help:
 	@echo "Check config.txt for options"
 	@echo "Execute make board for examples"
 	@echo
-	@echo "Usage:"
+	@echo "Usage: rpi4b"
 	@echo
 	@echo "  make install-depends   Install all dependencies"
 	@echo "  make kernel            Make linux kernel"
@@ -64,7 +64,7 @@ board:
 	@echo
 	@echo "Boards:"
 	@echo
-	@echo "  rpi4 (default)         Raspberry Pi 4B"
+	@echo "  rpi4                   Raspberry Pi 4B"
 	@echo "  rpi3                   Raspberry Pi 3B/+"
 	@echo "  rpi0                   Raspberry Pi 0w"
 	@echo
