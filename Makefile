@@ -72,11 +72,6 @@ rpi4-kernel:
 	@chmod +x ${KERNEL4}
 	@${KERNEL4}
 
-rootfsv8:
-	# AARCH64 DEBIAN ROOTFS
-	@chmod +x ${RFSV8}
-	@${ROOTFSV8}
-
 rpi4-image:
 	# Make bootable Debian image
 	@chmod +x ${IMG4}
@@ -139,11 +134,6 @@ rpi4-kernelv7:
 	@chmod +x ${KERNEL4V7}
 	@${KERNEL4V7}
 
-rootfsv7:
-	# ARMHF DEBIAN ROOTFS
-	@chmod +x ${RFSV7}
-	@${ROOTFSV7}
-
 rpi4-imagev7:
 	# Make bootable Debian image
 	@chmod +x ${IMG4V7}
@@ -198,11 +188,6 @@ rpi0-kernel:
 	@chmod +x ${KERNEL0}
 	@${KERNEL0}
 
-rootfsv6:
-	# AARCH64 DEBIAN ROOTFS
-	@chmod +x ${RFSV6}
-	@${ROOTFSV6}
-
 rpi0-image:
 	# Make bootable Debian image
 	@chmod +x ${IMG0}
@@ -223,6 +208,22 @@ rpi0-all:
 	@chmod +x ${IMG0}
 	@chmod +x ${STG02}
 	@${IMAGE0}
+
+# rootfs
+rootfsv8:
+	# ARM64 DEBIAN ROOTFS
+	@chmod +x ${RFSV8}
+	@${ROOTFSV8}
+	
+rootfsv7:
+	# ARMHF DEBIAN ROOTFS
+	@chmod +x ${RFSV7}
+	@${ROOTFSV7}
+
+rootfsv6:
+	# ARMEL DEBIAN ROOTFS
+	@chmod +x ${RFSV6}
+	@${ROOTFSV6}
 
 # clean and purge
 cleanup:
