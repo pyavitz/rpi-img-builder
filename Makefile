@@ -1,20 +1,42 @@
 #include config.txt
 
 # aarch64
-KERNEL=./scripts/make-kernel
-RFS=./scripts/make-rootfs
-ROOTFS=sudo ./scripts/make-rootfs
-IMG=./scripts/stage1
-IMAGE=sudo ./scripts/stage1
-STG2=./scripts/stage2
+KERNEL4=./scripts/make-kernel4
+RFS=./scripts/make-rootfsv8
+ROOTFS=sudo ./scripts/make-rootfsv8
+IMG4=./scripts/rpi4-stage1
+IMAGE4=sudo ./scripts/rpi4-stage1
+STG42=./scripts/rpi4-stage2
+
+KERNEL3=./scripts/make-kernel3
+RFS=./scripts/make-rootfsv8
+ROOTFS=sudo ./scripts/make-rootfsv8
+IMG3=./scripts/rpi3-stage1
+IMAGE3=sudo ./scripts/rpi3-stage1
+STG32=./scripts/rpi3-stage2
 
 # armv7l
-KERNELV7=./scripts/make-kernelv7
+KERNEL4V7=./scripts/make-kernel4v7
 RFSV7=./scripts/make-rootfsv7
 ROOTFSV7=sudo ./scripts/make-rootfsv7
-IMGV7=./scripts/stage1v7
-IMAGEV7=sudo ./scripts/stage1v7
-STG2V7=./scripts/stage2v7
+IMG4V7=./scripts/rpi4v7-stage1
+IMAGE4V7=sudo ./scripts/rpi4v7-stage1
+STG42V7=./scripts/rpi4v7-stage2
+
+KERNEL3V7=./scripts/make-kernel3v7
+RFSV7=./scripts/make-rootfsv7
+ROOTFSV7=sudo ./scripts/make-rootfsv7
+IMG3V7=./scripts/rpi3v7-stage1
+IMAGE3V7=sudo ./scripts/rpi3v7-stage1
+STG32V7=./scripts/rpi3v7-stage2
+
+#armv6l
+KERNEL0=./scripts/make-kernel0
+RFS0=./scripts/make-rootfsv6
+ROOTFS0=sudo ./scripts/make-rootfsv6
+IMG0=./scripts/rpi0-stage1
+IMAGE0=sudo ./scripts/rpi0-stage1
+STG02=./scripts/rpi0-stage2
 
 # clean
 CLN=./scripts/clean
@@ -48,10 +70,11 @@ install-depends:
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
 	crossbuild-essential-arm64
 
+# Raspberry Pi 4
 kernel:
 	# LINUX
-	@chmod +x ${KERNEL}
-	@${KERNEL}
+	@chmod +x ${KERNEL4}
+	@${KERNEL4}
 
 rootfs:
 	# AARCH64 DEBIAN ROOTFS
@@ -60,24 +83,24 @@ rootfs:
 
 image:
 	# Make bootable Debian image
-	@chmod +x ${IMG}
-	@chmod +x ${STG2}
-	@${IMAGE}
+	@chmod +x ${IMG4}
+	@chmod +x ${STG42}
+	@${IMAGE4}
 
 all:
 	# AARCH64
 	# - - - - - - - -
 	#
 	# Building linux
-	@chmod +x ${KERNEL}
-	@${KERNEL}
+	@chmod +x ${KERNEL4}
+	@${KERNEL4}
 	# Creating ROOTFS tarball
 	@chmod +x ${RFS}
 	@${ROOTFS}
 	# Making bootable Debian img
-	@chmod +x ${IMG}
-	@chmod +x ${STG2}
-	@${IMAGE}
+	@chmod +x ${IMG4}
+	@chmod +x ${STG42}
+	@${IMAGE4}
 
 # armv7l
 install-dependsv7:
