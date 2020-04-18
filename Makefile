@@ -68,12 +68,22 @@ board:
 	@echo "  rpi3                   Raspberry Pi 3B/+"
 	@echo "  rpi0                   Raspberry Pi 0w"
 	@echo
-	@echo "Examples:"
-	@echo	
-	@echo "  make rpi3-kernel       Builds aarch64 linux kernel"
-	@echo "  make rpi3-kernelv7     Builds armv7l linux kernel"
+	@echo "RPi3B/+:"
+	@echo " aacrh64"
+	@echo "  make rpi3-kernel       Builds linux kernel"
 	@echo "  make rpi3-image        Make bootable Debian image"
 	@echo "  make rpi3-all          Kernel > rootfs > image"
+	@echo
+	@echo " armv7l"
+	@echo "  make rpi3-kernelv7     Builds linux kernel"
+	@echo "  make rpi3-imagev7      Make bootable Debian image"
+	@echo "  make rpi3-allv7        Kernel > rootfs > image"
+	@echo
+	@echo "RPi0W:"
+	@echo " armv6l"	
+	@echo "  make rpi0-kernel       Builds armv6l linux kernel"
+	@echo "  make rpi0-image        Make bootable Debian image"
+	@echo "  make rpi0-all          Kernel > rootfs > image"
 	@echo
 	@echo "Root filesystem:"
 	@echo
