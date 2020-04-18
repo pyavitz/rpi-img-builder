@@ -233,5 +233,5 @@ cleanup:
 
 purge:
 	# Removing tmp directory
-	sudo rm -fdr tmp*
+	sudo rm -fdr rpi*
 ##
