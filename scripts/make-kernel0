@@ -1,0 +1,54 @@
+#!/bin/bash
+source config.txt
+mkdir -p ${tmp0}
+cd ${tmp0}
+
+### Download kernel
+echo
+echo Downloading kernel.
+wget -cq --show-progress https://github.com/raspberrypi/linux/archive/rpi-${version}.tar.gz
+echo Done.
+
+### Extract
+echo
+echo Extracting archive.
+tar -xf rpi-${version}.tar.gz
+#rm -f rpi-${version}.tar.gz #remove
+echo Done.
+
+### Setup
+cd ${kernel}-${version}
+export ARCH=arm
+KERNEL=kernel
+
+### Clean kernel
+#make clean
+#make mrproper
+
+### Packaging patch
+echo
+echo Applying packaging patch.
+patch -p1 < ../${pat}/rpi0w-packaging.patch
+
+### Set defconfig
+cp ../${def}/rpi0w_defconfig arch/arm/configs/
+make KBUILD_DEBARCH=armel ARCH=arm rpi0w_defconfig
+
+### Foundation defconfig
+#make KBUILD_DEBARCH=armel ARCH=arm bcmrpi_defconfig
+
+### Open menuconfig
+#echo
+#echo Opening menuconfig.
+#sleep 1s
+#make KBUILD_DEBARCH=armel ARCH=arm menuconfig
+
+### Build deb
+echo
+echo Building deb packages.
+make -j${cores} KBUILD_DEBARCH=armel ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- bindeb-pkg
+cd ..
+
+### Move debs
+echo Done.
+echo

@@ -1,0 +1,428 @@
+#!/usr/bin/env bash
+source /root/config.txt
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+echo 'nameserver 8.8.8.8' > /etc/resolv.conf
+echo 'nameserver 8.8.4.4' >> /etc/resolv.conf
+
+mount -t proc proc proc/
+mount -t sysfs sys sys/
+
+export DEBIAN_FRONTEND="noninteractive"
+
+apt-get update
+apt-get install -y apt-utils
+### Locales
+apt install -y locales locales-all
+localedef -c -f UTF-8 -i en_US en_US.UTF-8
+dpkg-reconfigure locales
+### Timezone
+ln -snf /usr/share/zoneinfo/America/New_York /etc/localtime
+echo -n 'America/New_York' > /etc/timezone
+apt upgrade -y
+apt dist-upgrade -y
+apt install -y tzdata keyboard-configuration sudo man-db dbus initramfs-tools e2fsprogs u-boot-tools fonty-rg patch curl wget apt-transport-https dirmngr cmake rsync
+echo
+echo -n 'bcm2708' > /etc/hostname
+sed -i '1 a 127.0.1.1	bcm2708' /etc/hosts
+adduser ${user} --gecos "bcm2708" --disabled-password
+### Password
+echo "${user}:${passwd}" | chpasswd
+adduser ${user} sudo
+adduser ${user} audio
+adduser ${user} dialout
+adduser ${user} video
+adduser ${user} disk
+groupadd spi
+groupadd i2c
+groupadd gpio
+adduser ${user} spi
+adduser ${user} i2c
+adduser ${user} gpio
+
+#### Scripts
+echo
+echo Moving scripts.
+sleep 1s
+cd ~
+mkdir -p /usr/local/bin
+mkdir -p /usr/local/src
+mv -f run-setup /usr/local/bin/
+mv -f set-governor /usr/local/bin/
+mv -f sysinfo /usr/local/bin/
+mv -f temp-monitor /usr/local/bin/tmon
+mv -f wifiscan /usr/local/bin/
+# Headers script
+mv -f make-scripts /usr/local/bin/
+mv -f headers-byteshift.patch /usr/local/src/
+# Service
+mv -f firstboot /usr/local/sbin/
+chmod +x /usr/local/bin/*
+chmod +x /usr/local/sbin/*
+chown -R root:root /usr/local/bin/
+chown -R root:root /usr/local/src/
+echo Done.
+
+#### MOTD
+echo
+echo Adding motd.
+sleep 1s
+mkdir -p /etc/update-motd.d
+mv -f 15-brand /etc/update-motd.d/15-brand
+mv -f 20-sysinfo /etc/update-motd.d/20-sysinfo
+chmod +x /etc/update-motd.d/*
+chown root:root /etc/update-motd.d/15-brand
+chown root:root /etc/update-motd.d/20-sysinfo
+echo Done.
+
+### Move mc skins
+echo
+echo Adding mc skins.
+sleep 1s
+mkdir -p /usr/share/mc/skins
+mv -f darkgreen.ini /usr/share/mc/skins/darkgreen.ini
+mv -f darkred.ini /usr/share/mc/skins/darkred.ini
+echo Done.
+echo
+echo Adding mc ini and nanorc.
+sleep 1s
+mkdir -p /root/.config/mc
+mv -f root-ini /root/.config/mc/ini
+mv -f nanorc-root /root/.nanorc
+mkdir -p /home/${user}/.config/mc
+mv -f user-ini /home/${user}/.config/mc/ini
+mv -f nanorc-user /home/${user}/.nanorc
+chown -R root:root /root
+chown -R ${user}:${user} /home/${user}
+echo Done.
+
+#### Adding firmware
+echo
+echo Adding pi firmware.
+sleep 1s
+apt install -y zip unzip p7zip-full
+unzip -qq master.zip
+rm -f master.zip
+mkdir -p /lib/firmware
+mv -f firmware-nonfree-master/* /lib/firmware
+rm -fdR firmware-nonfree-master
+echo Done.
+
+#### Extra bluetooth firmware
+echo
+echo Adding extra bluetooth firmware.
+sleep 1s
+mv fw-0a5c_21e8.hcd /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd
+cp /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd /lib/firmware/brcm/BCM20702A1-0a5c-21e8.hcd
+chown root:root /lib/firmware/brcm/BCM20702A1-0a5c-21e8.hcd
+chown root:root /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd
+echo Done.
+
+####
+echo
+echo Bluetooth udev rule.
+sleep 1s
+mkdir -p /lib/udev/rules.d/
+mv -f 99-com.rules /lib/udev/rules.d/99-com.rules
+echo Done.
+
+#### Software
+echo
+echo Installing firmware and needed packages.
+sleep 1s
+apt update
+apt install -y ${mypkgs} ${firmware} apparmor haveged resolvconf git build-essential net-tools ifplugd fuse wpasupplicant wireless-tools usbutils alsa-utils gettext wget mc nano btrfs-tools figlet toilet curl dialog python3 python3-setuptools openssh-client openssh-server cloud-initramfs-growroot ntfs-3g htop bc bison flex libssl-dev zram-tools autoconf automake pkg-config libtool autopoint libncursesw5-dev
+
+### Network Setup
+echo
+echo Adding network configs and rules.
+sleep 1s
+rm -f /etc/network/interfaces
+mv -f interfaces /etc/network/interfaces
+chown root:root /etc/network/interfaces
+mv -f wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf
+chown root:root /etc/wpa_supplicant/wpa_supplicant.conf
+mkdir -p /etc/udev/rules.d
+mv -f 80-net-setup-link.rules /etc/udev/rules.d/80-net-setup-link.rules
+chown root:root /etc/udev/rules.d/80-net-setup-link.rules
+echo Done.
+
+### ZSWAP
+echo
+echo Adding zramswap config.
+sleep 1s
+rm -f /etc/default/zramswap
+mv -f zramswap /etc/default/zramswap
+chown root:root /etc/default/zramswap
+echo Done.
+
+### MOTD instructions
+echo
+echo Adding motd first boot.
+sleep 1s
+rm -f /etc/motd
+mv -f motd /etc/motd
+mv -f new.motd /etc/new.motd
+chown root:root /etc/motd
+chown root:root /etc/new.motd
+echo Done.
+
+#### Clean up packages
+echo
+echo Cleaning up.
+sleep 1s
+apt -y autoremove
+apt -y clean
+apt -y autoclean
+echo Done.
+
+### Regulatory db
+echo
+echo Adding regdb.
+sleep 1s
+apt install -y crda
+git clone https://kernel.googlesource.com/pub/scm/linux/kernel/git/sforshee/wireless-regdb
+echo
+echo Moving db files.
+sleep 1s
+cd wireless-regdb
+cp -f regulatory.db /lib/firmware/regulatory.db
+cp -f regulatory.db.p7s /lib/firmware/regulatory.db.p7s
+cd ~
+rm -fdr wireless-regdb
+echo Done.
+
+### Adding sys-mods
+echo
+echo Building raspi-sys-mods package.
+sleep 1s
+apt update
+apt install -y debhelper d-shlibs rfkill dosfstools psmisc
+git clone https://github.com/RPi-Distro/raspberrypi-sys-mods.git
+cd raspberrypi-sys-mods
+dpkg-buildpackage -us -uc
+cd ~
+dpkg -i raspberrypi-sys-mods*.deb
+rm -fdR raspberrypi-sys-mods*
+echo Done.
+
+#### Sudoers file 
+echo
+echo Create sudoers file.
+sleep 1s
+rm -f /etc/sudoers.d/010_pi-nopasswd
+tee /etc/sudoers.d/010_${user}-nopasswd <<EOF
+${user} ALL=(ALL) NOPASSWD: ALL
+EOF
+echo Done.
+
+### Bluez firmware.
+echo
+echo Installing bluetooth.
+sleep 1s
+apt install -y bluetooth bluez bluez-tools
+echo Done.
+echo
+echo Building bluez firmware package.
+sleep 1s
+git clone https://github.com/RPi-Distro/bluez-firmware.git
+wget -cq http://deb.debian.org/debian/pool/non-free/b/bluez-firmware/bluez-firmware_1.2.orig.tar.gz
+cd bluez-firmware
+dpkg-buildpackage -us -uc
+cd ~
+dpkg -i bluez-firmware_*.deb
+rm -fdR bluez-firmware*
+echo Done.
+
+### Cypress wifi firmware
+echo
+echo Adding brcm firmware from cypress.
+sleep 1s
+mkdir cypress
+cd cypress
+wget -cq https://community.cypress.com/servlet/JiveServlet/download/19000-1-51721/cypress-fmac-v4.14.77-2020_0115.zip
+unzip -qq cypress-fmac-v4.14.77-2020_0115.zip
+tar -xf cypress-firmware-v4.14.77-2020_0115.tar.gz
+rm -f firmware/*pcie*
+cp -f firmware/* /lib/firmware/brcm/
+cd ~
+rm -fdr cypress
+echo Done.
+
+### Pi Bluetooth
+echo
+echo Building pi bluetooth package.
+sleep 1s
+git clone https://github.com/RPi-Distro/pi-bluetooth.git
+cd pi-bluetooth
+dpkg-buildpackage -us -uc
+cd ~
+dpkg -i pi-bluetooth_*.deb
+rm -fdR pi-bluetooth*
+echo Done.
+
+###  Adding raspi userland
+echo
+echo Adding raspi userland.
+rm -f /etc/profile
+mv -f profile /etc/profile
+mv rpi-vc.conf /etc/ld.so.conf.d/rpi-vc.conf
+chown root:root /etc/profile
+chown root:root /etc/ld.so.conf.d/rpi-vc.conf
+sleep 1s
+mkdir -p /opt
+git clone https://github.com/raspberrypi/userland.git
+mv -f userland-remove-hi-pi.patch /root/userland/
+cd userland
+patch -p1 < userland-remove-hi-pi.patch
+rm -f userland-remove-hi-pi.patch
+./buildme --aarch64
+cd ~
+rm -f -d -R userland
+ldconfig
+echo Done.
+
+### Building raspi-config
+#echo
+#echo Building rasp-config package.
+#apt install -y libparted2 lua5.1 parted psmisc triggerhappy
+#sleep 1s
+#git clone https://github.com/RPi-Distro/raspi-config.git
+#cd raspi-config
+#dpkg-buildpackage -us -uc
+#cd /root
+#dpkg -i raspi-config_*.deb
+#rm -fdR raspi-config*
+#echo Done.
+
+#### Kernel
+echo
+echo Installing kernel.
+sleep 1s
+dpkg -i *.deb
+rm -f *.deb
+echo Done.
+sleep 1s
+
+### Add bcm2835 v4l2
+echo
+echo Adding bcm2835 v4l2 to modules.
+rm -f /etc/modules
+tee /etc/modules <<EOF
+# /etc/modules: kernel modules to load at boot time.
+#
+# This file contains the names of kernel modules that should be loaded
+# at boot time, one per line. Lines beginning with "#" are ignored.
+#bcm2835-v4l2
+
+EOF
+chown root:root /etc/modules
+echo Done.
+
+### Adding groups
+echo
+echo Adding to more groups.
+sleep 1s
+adduser ${user} plugdev
+adduser ${user} netdev
+adduser ${user} bluetooth
+adduser ${user} input
+adduser ${user} tty
+echo Done.
+
+#### Checking for changes
+echo
+echo Checking for changes.
+apt update
+apt upgrade -y
+apt -y clean
+apt -y autoclean
+echo Done.
+
+### Hack
+ln -s /lib/ld-linux.so.3 /lib/ld-linux-armhf.so.3
+
+### Vchiq permissions
+echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' > /etc/udev/rules.d/10-vchiq-permissions.rules
+echo 'SUBSYSTEM=="vcio",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
+echo 'SUBSYSTEM=="vc-mem",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
+
+#### Create first boot
+echo
+echo Creating first boot.
+sleep 1s
+tee /etc/systemd/system/firstboot.service <<EOF
+[Unit]
+Description=First boot
+ConditionPathExists=/usr/local/sbin/firstboot
+
+[Service]
+Type=forking
+ExecStart=/usr/local/sbin/firstboot &>/dev/null
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+#### Create RC.LOCAL
+echo
+echo Creating rc.local file.
+sleep 1s
+tee /etc/systemd/system/rc-local.service <<EOF
+[Unit]
+Description=/etc/rc.local
+ConditionPathExists=/etc/rc.local
+
+[Service]
+Type=forking
+ExecStart=/etc/rc.local start
+TimeoutSec=0
+StandardOutput=tty
+RemainAfterExit=yes
+SysVStartPriority=99
+
+[Install]
+WantedBy=multi-user.target
+EOF
+tee /etc/rc.local <<EOF
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+/usr/local/bin/set-governor &
+exit 0
+EOF
+chmod +x /etc/rc.local
+echo Done.
+### Enable services
+echo
+echo Enabling Services
+sleep 1s
+systemctl enable rc-local
+systemctl enable ifplugd
+systemctl enable resolvconf
+systemctl enable haveged
+systemctl enable zramswap
+systemctl enable bluetooth
+systemctl enable firstboot
+systemctl enable serial-getty@ttyUSB0.service
+echo Done.
+### Own it
+chown -R ${user}:${user} /home/${user}
+###### Finish
+echo
+echo Moving out of stage2 and into IMG creation
+sleep 2s
+
+umount /proc /sys

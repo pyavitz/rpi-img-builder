@@ -1,0 +1,52 @@
+#!/bin/bash
+source config.txt
+mkdir -p ${tmp3v7}
+cd ${tmp3v7}
+
+### Download kernel
+echo
+echo Downloading kernel.
+wget -cq --show-progress https://github.com/raspberrypi/linux/archive/rpi-${version}.tar.gz
+echo Done.
+
+### Extract
+echo
+echo Extracting archive.
+tar -xf rpi-${version}.tar.gz
+#rm -f rpi-${version}.tar.gz #remove
+echo Done.
+
+### Setup
+cd ${kernel}-${version}
+export ARCH=arm
+KERNEL=kernel7
+
+### Clean kernel
+#make clean
+#make mrproper
+
+### Packaging patch
+echo
+echo Applying packaging patch.
+patch -p1 < ../${pat}/rpi3b-v7-packaging.patch
+
+### Set defconfig
+cp -f ../${def}/rpi3b-v7_defconfig arch/arm/configs/
+make ARCH=arm rpi3b-v7_defconfig
+
+### Foundation defconfig
+#make ARCH=arm bcm2709_defconfig
+
+### Open menuconfig
+#echo
+#echo Opening menuconfig.
+#sleep 1s
+#make menuconfig
+
+### Build deb
+echo
+echo Building deb packages.
+#make -j${cores} ARCH=arm bindeb-pkg # native
+make -j${cores} ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- bindeb-pkg
+echo Done.
+echo

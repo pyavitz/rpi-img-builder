@@ -1,0 +1,23 @@
+--- a/scripts/package/builddeb	2020-03-03 06:36:23.000000000 -0500
++++ b/scripts/package/builddeb	2020-03-05 09:35:55.970447249 -0500
+@@ -92,6 +92,7 @@
+ else
+ 	cp System.map "$tmpdir/boot/System.map-$version"
+ 	cp $KCONFIG_CONFIG "$tmpdir/boot/config-$version"
++	cp arch/arm/boot/zImage "$tmpdir/boot/kernel.img"
+ fi
+ cp "$($MAKE -s -f $srctree/Makefile image_name)" "$tmpdir/$installed_image_path"
+ 
+@@ -139,6 +140,12 @@
+ 	mv $libc_headers_dir/usr/include/asm $libc_headers_dir/usr/include/$host_arch/
+ fi
+ 
++# Install dtb and overlays
++mkdir -p "$tmpdir/boot/broadcom/overlays"
++cp -r "$tmpdir/usr/lib/linux-image-$version/bcm2708-rpi-zero-w.dtb" "$tmpdir/boot/broadcom/bcm2708-rpi-zero-w.dtb"
++cp -r "$tmpdir/usr/lib/linux-image-$version/bcm2708-rpi-zero.dtb" "$tmpdir/boot/broadcom/bcm2708-rpi-zero.dtb"
++cp -r "$tmpdir/usr/lib/linux-image-$version/overlays/" "$tmpdir/boot/broadcom/"
++
+ # Install the maintainer scripts
+ # Note: hook scripts under /etc/kernel are also executed by official Debian
+ # kernel packages, as well as kernel packages built using make-kpkg.

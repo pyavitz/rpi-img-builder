@@ -1,0 +1,50 @@
+#!/bin/bash
+source config.txt
+mkdir -p ${tmp3}
+cd ${tmp3}
+
+### Download kernel
+echo
+echo Downloading kernel.
+wget -cq --show-progress https://github.com/raspberrypi/linux/archive/rpi-${version}.tar.gz
+echo Done.
+
+### Extract
+echo
+echo Extracting archive.
+tar -xf rpi-${version}.tar.gz
+#rm -f rpi-${version}.tar.gz #remove
+echo Done.
+
+### Setup
+cd ${kernel}-${version}
+export ARCH=arm64
+
+### Clean kernel
+#make clean
+#make mrproper
+
+### Packaging patch
+echo
+echo Applying packaging patch.
+patch -p1 < ../${pat}/rpi3b-packaging.patch
+
+### Set defconfig
+cp -f ../${def}/rpi3b_defconfig arch/arm64/configs/
+make ARCH=arm64 rpi3b_defconfig
+
+### Foundation defconfig
+#make ARCH=arm64 bcmrpi3_defconfig
+
+### Open menuconfig
+#echo Opening menuconfig.
+#sleep 1s
+#make menuconfig
+
+### Build deb
+echo
+echo Building deb packages.
+#make -j${cores} ARCH=arm64 bindeb-pkg # native
+make -j${cores} ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
+echo Done.
+echo

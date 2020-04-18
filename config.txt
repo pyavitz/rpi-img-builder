@@ -1,5 +1,9 @@
 # config.txt
-tmp="tmp"
+tmp4="rpi4"
+tmp4v7="rpi4v7"
+tmp3="rpi3"
+tmp3v7="rpi3v7"
+tmp0="rpi0"
 def="../defconfig"
 pat="../patches"
 # do not edit above this line
@@ -10,7 +14,9 @@ version="5.4.y"
 cores=`nproc`
 
 # stage1
-imgsize="2500MB"
+imgsize-rpi4="2500MB"
+imgsize-rpi3="2300MB"
+imgsize-rpi0="2250MB"
 DEBIAN_VERSION="buster"
 
 # stage2
@@ -20,3 +26,4 @@ mypkgs="cpu hwinfo neofetch"
 # firmware-brcm80211 firmware-iwlwifi firmware-realtek firmware-ralink
 firmware="firmware-linux"
 EEPROM_VERSION="5.4"
+
