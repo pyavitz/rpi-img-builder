@@ -1,37 +1,35 @@
-# aarch64
-KERNEL4=./scripts/make-kernel4
+# rootfs
 RFSV8=./scripts/make-rootfsv8
 ROOTFSV8=sudo ./scripts/make-rootfsv8
+RFSV7=./scripts/make-rootfsv7
+ROOTFSV7=sudo ./scripts/make-rootfsv7
+RFSV6=./scripts/make-rootfsv6
+ROOTFSV6=sudo ./scripts/make-rootfsv6
+
+# aarch64
+KERNEL4=./scripts/make-kernel4
 IMG4=./scripts/rpi4-stage1
 IMAGE4=sudo ./scripts/rpi4-stage1
 STG42=./scripts/rpi4-stage2
 
 KERNEL3=./scripts/make-kernel3
-RFS=./scripts/make-rootfsv8
-ROOTFS=sudo ./scripts/make-rootfsv8
 IMG3=./scripts/rpi3-stage1
 IMAGE3=sudo ./scripts/rpi3-stage1
 STG32=./scripts/rpi3-stage2
 
 # armv7l
 KERNEL4V7=./scripts/make-kernel4v7
-RFSV7=./scripts/make-rootfsv7
-ROOTFSV7=sudo ./scripts/make-rootfsv7
 IMG4V7=./scripts/rpi4v7-stage1
 IMAGE4V7=sudo ./scripts/rpi4v7-stage1
 STG42V7=./scripts/rpi4v7-stage2
 
 KERNEL3V7=./scripts/make-kernel3v7
-RFSV7=./scripts/make-rootfsv7
-ROOTFSV7=sudo ./scripts/make-rootfsv7
 IMG3V7=./scripts/rpi3v7-stage1
 IMAGE3V7=sudo ./scripts/rpi3v7-stage1
 STG32V7=./scripts/rpi3v7-stage2
 
 #armv6l
 KERNEL0=./scripts/make-kernel0
-RFSV6=./scripts/make-rootfsv6
-ROOTFSV6=sudo ./scripts/make-rootfsv6
 IMG0=./scripts/rpi0-stage1
 IMAGE0=sudo ./scripts/rpi0-stage1
 STG02=./scripts/rpi0-stage2
