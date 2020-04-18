@@ -64,7 +64,7 @@ board:
 	@echo
 	@echo "Boards:"
 	@echo
-	@echo "  rpi4                   Raspberry Pi 4B"
+	@echo "  rpi4 (default)         Raspberry Pi 4B"
 	@echo "  rpi3                   Raspberry Pi 3B/+"
 	@echo "  rpi0                   Raspberry Pi 0w"
 	@echo
