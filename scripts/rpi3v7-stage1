@@ -222,6 +222,7 @@ umount p2/boot
 
 rm p2/usr/bin/qemu-arm-static
 rm p2/root/rpi3v7-stage2
+rm p2/root/config.txt
 
 if [ -n "$PROXY" ] ; then
 	rm p2/etc/apt/apt.conf.d/30proxy
