@@ -13,10 +13,10 @@
  fi
  
 +# Install dtb and overlays
-+mkdir -p "$tmpdir/boot/broadcom/overlays"
-+cp -r "$tmpdir/usr/lib/linux-image-$version/bcm2710-rpi-3-b-plus.dtb" "$tmpdir/boot/broadcom/bcm2710-rpi-3-b-plus.dtb"
-+cp -r "$tmpdir/usr/lib/linux-image-$version/bcm2710-rpi-3-b.dtb" "$tmpdir/boot/broadcom/bcm2710-rpi-3-b.dtb"
-+cp -r "$tmpdir/usr/lib/linux-image-$version/overlays/" "$tmpdir/boot/broadcom/"
++mkdir -p "$tmpdir/boot/overlays"
++cp -r "$tmpdir/usr/lib/linux-image-$version/bcm2710-rpi-3-b-plus.dtb" "$tmpdir/boot/bcm2710-rpi-3-b-plus.dtb"
++cp -r "$tmpdir/usr/lib/linux-image-$version/bcm2710-rpi-3-b.dtb" "$tmpdir/boot/bcm2710-rpi-3-b.dtb"
++cp -r "$tmpdir/usr/lib/linux-image-$version/overlays/" "$tmpdir/boot/"
 +
  # Install the maintainer scripts
  # Note: hook scripts under /etc/kernel are also executed by official Debian
