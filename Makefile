@@ -1,5 +1,3 @@
-#include config.txt
-
 # aarch64
 KERNEL4=./scripts/make-kernel4
 RFSV8=./scripts/make-rootfsv8
