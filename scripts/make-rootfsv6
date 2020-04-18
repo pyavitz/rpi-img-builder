@@ -1,11 +1,14 @@
 #!/bin/bash
 #ARMEL ROOTFS
+source config.txt
+
 set -x
 RAM=0
 PROXY=""
 IMAGE_FOLDER="img/"
 IMAGE_VERSION="rootfs-armel"
 DEBIAN_VERSION="buster"
+FILE=debian-buster-${IMAGE_VERSION}.tar.xz
 if ls $FILE &>/dev/null; then exit; 
         else echo "file not found";
 fi
