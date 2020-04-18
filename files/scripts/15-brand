@@ -1,4 +1,0 @@
-#!/bin/bash
-echo
-toilet -f small --filter metal 'RPi4B'
-echo
