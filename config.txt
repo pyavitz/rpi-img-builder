@@ -27,3 +27,7 @@ mypkgs="cpu hwinfo neofetch"
 firmware="firmware-linux"
 EEPROM_VERSION="5.4"
 
+# motd
+BRAND4="RPi4B"
+BRAND3="RPi3B"
+BRAND0="RPiZERO"
