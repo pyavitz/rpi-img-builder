@@ -2,8 +2,8 @@
 
 # aarch64
 KERNEL4=./scripts/make-kernel4
-RFS=./scripts/make-rootfsv8
-ROOTFS=sudo ./scripts/make-rootfsv8
+RFSV8=./scripts/make-rootfsv8
+ROOTFSV8=sudo ./scripts/make-rootfsv8
 IMG4=./scripts/rpi4-stage1
 IMAGE4=sudo ./scripts/rpi4-stage1
 STG42=./scripts/rpi4-stage2
@@ -70,16 +70,16 @@ install-depends:
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
 	crossbuild-essential-arm64
 
-# Raspberry Pi 4
+# Raspberry Pi 4 | aarch64
 rpi4-kernel:
 	# LINUX
 	@chmod +x ${KERNEL4}
 	@${KERNEL4}
 
-arm64-rootfs:
+rootfsv8:
 	# AARCH64 DEBIAN ROOTFS
-	@chmod +x ${RFS}
-	@${ROOTFS}
+	@chmod +x ${RFSV8}
+	@${ROOTFSV8}
 
 rpi4-image:
 	# Make bootable Debian image
@@ -95,24 +95,23 @@ rpi4-all:
 	@chmod +x ${KERNEL4}
 	@${KERNEL4}
 	# Creating ROOTFS tarball
-	@chmod +x ${RFS}
-	@${ROOTFS}
+	@chmod +x ${RFSV8}
+	@${ROOTFSV8}
 	# Making bootable Debian img
 	@chmod +x ${IMG4}
 	@chmod +x ${STG42}
 	@${IMAGE4}
 
-
-# Raspberry Pi 3
+# Raspberry Pi 3 | aarch64
 rpi3-kernel:
 	# LINUX
 	@chmod +x ${KERNEL3}
 	@${KERNEL3}
 
-arm64-rootfs:
+rootfsv8:
 	# AARCH64 DEBIAN ROOTFS
-	@chmod +x ${RFS}
-	@${ROOTFS}
+	@chmod +x ${RFSV8}
+	@${ROOTFSV8}
 
 rpi3-image:
 	# Make bootable Debian image
@@ -128,8 +127,8 @@ rpi3-all:
 	@chmod +x ${KERNEL3}
 	@${KERNEL3}
 	# Creating ROOTFS tarball
-	@chmod +x ${RFS}
-	@${ROOTFS}
+	@chmod +x ${RFSV8}
+	@${ROOTFSV8}
 	# Making bootable Debian img
 	@chmod +x ${IMG3}
 	@chmod +x ${STG32}
@@ -143,41 +142,101 @@ install-dependsv7:
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
 	crossbuild-essential-armhf
 
-kernelv7:
+# Raspberry Pi 4 | armv7l
+rpi4-kernelv7:
 	# LINUX v7l
-	@chmod +x ${KERNELV7}
-	@${KERNELV7}
-
-
+	@chmod +x ${KERNEL4V7}
+	@${KERNEL4V7}
 
 rootfsv7:
 	# ARMHF DEBIAN ROOTFS
 	@chmod +x ${RFSV7}
 	@${ROOTFSV7}
 
-
-
-imagev7:
+rpi4-imagev7:
 	# Make bootable Debian image
-	@chmod +x ${IMGV7}
-	@chmod +x ${STG2V7}
-	@${IMAGEV7}
+	@chmod +x ${IMG4V7}
+	@chmod +x ${STG42V7}
+	@${IMAGE4V7}
 
-
-allv7:
+rpi4-allv7:
 	# ARMv7l
 	# - - - - - - - -
 	#
 	# Building linux
-	@chmod +x ${KERNELV7}
-	@${KERNELV7}
+	@chmod +x ${KERNEL4V7}
+	@${KERNEL4V7}
 	# Creating ROOTFS tarball
 	@chmod +x ${RFSV7}
 	@${ROOTFSV7}
 	# Making bootable Debian img
-	@chmod +x ${IMGV7}
-	@chmod +x ${STG2V7}
-	@${IMAGEV7}
+	@chmod +x ${IMG4V7}
+	@chmod +x ${STG42V7}
+	@${IMAGE4V7}
+
+# Raspberry Pi 3 | armv7l
+rpi3-kernelv7:
+	# LINUX
+	@chmod +x ${KERNEL3V7}
+	@${KERNEL3V7}
+
+rootfsv7:
+	# AARCH64 DEBIAN ROOTFS
+	@chmod +x ${RFSV7}
+	@${ROOTFSV7}
+
+rpi3-imagev7:
+	# Make bootable Debian image
+	@chmod +x ${IMG3V7}
+	@chmod +x ${STG32V7}
+	@${IMAGE3V7}
+
+rpi3-allv7:
+	# ARMv7l
+	# - - - - - - - -
+	#
+	# Building linux
+	@chmod +x ${KERNEL3V7}
+	@${KERNEL3V7}
+	# Creating ROOTFS tarball
+	@chmod +x ${RFSV7}
+	@${ROOTFSV7}
+	# Making bootable Debian img
+	@chmod +x ${IMG3V7}
+	@chmod +x ${STG32V7}
+	@${IMAGE3V7}
+
+# Raspberry Pi 0w | armv6l
+rpi0-kernel:
+	# LINUX
+	@chmod +x ${KERNEL0}
+	@${KERNEL0}
+
+rootfsv6:
+	# AARCH64 DEBIAN ROOTFS
+	@chmod +x ${RFSV6}
+	@${ROOTFSV6}
+
+rpi0-image:
+	# Make bootable Debian image
+	@chmod +x ${IMG0}
+	@chmod +x ${STG02}
+	@${IMAGE0}
+
+rpi0-all:
+	# ARMV6L
+	# - - - - - - - -
+	#
+	# Building linux
+	@chmod +x ${KERNEL0}
+	@${KERNEL0}
+	# Creating ROOTFS tarball
+	@chmod +x ${RFSV6}
+	@${ROOTFSV6}
+	# Making bootable Debian img
+	@chmod +x ${IMG0}
+	@chmod +x ${STG02}
+	@${IMAGE0}
 
 # clean and purge
 cleanup:
@@ -187,5 +246,5 @@ cleanup:
 
 purge:
 	# Removing tmp directory
-	sudo rm -fdr tmp
+	sudo rm -fdr tmp*
 ##
