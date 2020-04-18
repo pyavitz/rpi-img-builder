@@ -15,7 +15,7 @@ cores=`nproc`
 
 # stage1
 RPI4="2500MB"
-RPI3="2300MB"
+RPI3="2500MB"
 RPI0="2250MB"
 DEBIAN_VERSION="buster"
 
