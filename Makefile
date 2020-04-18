@@ -42,7 +42,6 @@ CLEAN=sudo ./scripts/clean
 help:
 	@echo
 	@echo "Check config.txt for options"
-	@echo "Execute make board for examples"
 	@echo
 	@echo "Usage: rpi4b"
 	@echo
@@ -56,6 +55,7 @@ help:
 	@echo "  make all               Feeling lucky?"
 	@echo
 	@echo "For details consult the README.md file"
+	@echo "or run make commands"
 	@echo
 
 board:
