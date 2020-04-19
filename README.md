@@ -100,7 +100,7 @@ Switches:
 true = active
 false = inactive
 ---
-default_defconfig=true            # default
+default_defconfig=true        # default
 foundation_defconfig=false    # raspberry pi foundation
 custom_defconfig=false        # your custom defconfig
 menuconfig=false              # open menuconfig
