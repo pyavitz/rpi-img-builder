@@ -1,0 +1,4 @@
+rib_defconfig=true
+foundation_defconfig=false
+custom_defconfig=false
+menuconfig=true
