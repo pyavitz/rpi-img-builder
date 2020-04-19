@@ -1,4 +1,6 @@
-`feature branch`
+
+&#x1F538; feature branch
+
 # Supported boards: RPi4B, RPi3B/+ and RPi0W
 
 Debian Image Builder for the Raspberry Pi 
