@@ -4,14 +4,7 @@ tmp4v7="rpi4v7"
 tmp3="rpi3"
 tmp3v7="rpi3v7"
 tmp0="rpi0"
-def="../defconfig"
-pat="../patches"
 # do not edit above this line
-
-# make-kernel
-kernel="linux-rpi"
-version="5.4.y"
-cores=`nproc`
 
 # stage1
 RPI4="2500MB"
