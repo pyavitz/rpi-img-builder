@@ -85,7 +85,7 @@ make rootfsv6 (armel)
 
 ## Howto
 
-* Kernel
+* Kernel (RPi4 Only)
 
 ```sh
 Kernel branch:               # https://github.com/raspberrypi/linux
