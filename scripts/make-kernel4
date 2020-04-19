@@ -29,17 +29,62 @@ echo
 echo Applying packaging patch.
 patch -p1 < ../${pat}/rpi4b-packaging.patch
 
-### Set defconfig
-cp -f ../${def}/rpi4b_defconfig arch/arm64/configs/
-make ARCH=arm64 rpi4b_defconfig
+### Default defconfig
+case `grep -Fx "rib_defconfig=true" "../../kernel.txt" >/dev/null; echo $?` in
+  0)
+   cp -f ../${def}/rpi4b_defconfig arch/arm64/configs/
+   make ARCH=arm64 rpi4b_defconfig
+    ;;
+  1)
+    echo *rib_defconfig set to false
+    ;;
+  *)
+    echo no config found!
+    ;;
+esac
 
 ### Foundation defconfig
-#make ARCH=arm64 bcm2711_defconfig
+case `grep -Fx "foundation_defconfig=true" "../../kernel.txt" >/dev/null; echo $?` in
+  0)
+   make ARCH=arm64 bcm2711_defconfig
+    ;;
+  1)
+    echo *foundation_defconfig set to false
+    ;;
+  *)
+    echo no config found!
+    ;;
+esac
 
-### Open menuconfig
-#echo Opening menuconfig.
-#sleep 1s
-#make menuconfig
+### Custom defconfig
+case `grep -Fx "custom_defconfig=true" "../../kernel.txt" >/dev/null; echo $?` in
+  0)
+   cp -f ../${def}/custom_defconfig arch/arm64/configs/
+   make ARCH=arm64 custom_defconfig
+    ;;
+  1)
+    echo *custom_defconfig set to false
+    ;;
+  *)
+    echo no config found!
+    ;;
+esac
+
+### Menuconfig
+case `grep -Fx "menuconfig=true" "../../kernel.txt" >/dev/null; echo $?` in
+  0)
+   echo
+   echo Opening menuconfig.
+   sleep 1s
+   make menuconfig
+    ;;
+  1)
+    echo menuconfig set to false
+    ;;
+  *)
+    echo grumble! grumble!
+    ;;
+esac
 
 ### Build deb
 echo
