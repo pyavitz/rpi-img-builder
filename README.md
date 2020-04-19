@@ -1,28 +1,10 @@
 # Supported boards: RPi4B, RPi3B/+ and RPi0W
 
-Debian Image Builder for the Raspberry Pi
-
-### Downloadable Image
-
-A bootable Debian image which has been compiled against Raspberry Pi's modified `Linux 5.4.29` (`aarch64`) kernel can be found here;
-
-* [`rpi-4-b-debian-buster`](https://www.mediafire.com/file/t0sum2xe1iivkjv/rpi-4-b-debian-buster.7z/file)
-
-## Dependencies
-
-In order to install the required dependencies, run the following command:
-
-```
-sudo apt install build-essential bison bc git dialog patch dosfstools zip unzip qemu debootstrap qemu-user-static rsync kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig crossbuild-essential-arm64
-```
-
-This has been tested on an AMD64/x86_64 system running on [Debian Buster](https://www.debian.org/releases/buster/debian-installer/).
-
-Alternatively, you can run the command `make install-depends` in this directory.
+Debian Image Builder for the Raspberry Pi `feature branch`
 
 ## Instructions
 
-* Make sure to adjust `config.txt` with your own configurations before proceeding.
+* Make sure to adjust `config.txt` & `kernel.txt` with your own configurations before proceeding.
 
 * Install all dependencies
 
@@ -103,17 +85,20 @@ make rootfsv6 (armel)
 
 ## Howto
 
-* Kernel > Menuconfig (example)
+* Kernel
 
 ```sh
-nano scripts/make-kernel4
 
-### Open menuconfig (between line 38-43) (give or take)
-echo Opening menuconfig.
-sleep 1s
-make menuconfig
+Switches:
+true = active
+false = inactive
+---
+rib_defconfig=true            # default
+foundation_defconfig=false    # raspberry pi foundation
+custom_defconfig=false        # your custom defconfig
+menuconfig=false              # open menuconfig
 
-make edits and save.
+Your custom_defconfig must be placed in the defconfig directory.
 ```
 
 ### Funding
