@@ -88,6 +88,9 @@ make rootfsv6 (armel)
 * Kernel
 
 ```sh
+Kernel branch:               # https://github.com/raspberrypi/linux
+kernel="linux-rpi"
+version="5.4.y"              # default
 
 Switches:
 true = active
