@@ -15,7 +15,7 @@ cores=`nproc`
 
 # true=active
 # false=inactive
-rib_defconfig=true
+default_defconfig=true
 foundation_defconfig=false
 custom_defconfig=false
 menuconfig=false
