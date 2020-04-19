@@ -1,5 +1,4 @@
 #!/bin/bash
-source config.txt
 source kernel.txt
 mkdir -p ${tmp4v7}
 cd ${tmp4v7}
