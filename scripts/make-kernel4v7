@@ -31,13 +31,13 @@ echo Applying packaging patch.
 patch -p1 < ../${pat}/rpi4b-v7-packaging.patch
 
 ### Default defconfig
-case `grep -Fx "rib_defconfig=true" "../../kernel.txt" >/dev/null; echo $?` in
+case `grep -Fx "default_defconfig=true" "../../kernel.txt" >/dev/null; echo $?` in
   0)
    cp -f ../${def}/rpi4b-v7_defconfig arch/arm64/configs/
    make ARCH=arm64 rpi4b-v7_defconfig
     ;;
   1)
-    echo *rib_defconfig set to false
+    echo *default_defconfig set to false
     ;;
   *)
     echo no config found!
