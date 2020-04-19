@@ -42,6 +42,7 @@ CLEAN=sudo ./scripts/clean
 help:
 	@echo
 	@echo "Check config.txt for options"
+	@echo "Append v7 to build 32bit version"
 	@echo
 	@echo "Usage: rpi4b"
 	@echo
@@ -58,38 +59,41 @@ help:
 	@echo "or run make commands"
 	@echo
 
-board:
+commands:
 	@echo
-	@echo "Append v7 to build 32bit versions"
+	@echo "Install dependencies"
+	@echo
+	@echo "  make install-dependsv7   Install all armhf dependencies"
+	@echo "  make install-dependsv6   Install all armel dependencies"
 	@echo
 	@echo "Boards:"
 	@echo
-	@echo "  rpi4 (default)         Raspberry Pi 4B"
-	@echo "  rpi3                   Raspberry Pi 3B/+"
-	@echo "  rpi0                   Raspberry Pi 0w"
+	@echo "  rpi4 (default)           Raspberry Pi 4B"
+	@echo "  rpi3                     Raspberry Pi 3B/+"
+	@echo "  rpi0                     Raspberry Pi 0w"
 	@echo
 	@echo "RPi3B/+:"
 	@echo " aacrh64"
-	@echo "  make rpi3-kernel       Builds linux kernel"
-	@echo "  make rpi3-image        Make bootable Debian image"
-	@echo "  make rpi3-all          Kernel > rootfs > image"
+	@echo "  make rpi3-kernel         Builds linux kernel"
+	@echo "  make rpi3-image          Make bootable Debian image"
+	@echo "  make rpi3-all            Kernel > rootfs > image"
 	@echo
 	@echo " armv7l"
-	@echo "  make rpi3-kernelv7     Builds linux kernel"
-	@echo "  make rpi3-imagev7      Make bootable Debian image"
-	@echo "  make rpi3-allv7        Kernel > rootfs > image"
+	@echo "  make rpi3-kernelv7       Builds linux kernel"
+	@echo "  make rpi3-imagev7        Make bootable Debian image"
+	@echo "  make rpi3-allv7          Kernel > rootfs > image"
 	@echo
 	@echo "RPi0W:"
 	@echo " armv6l"	
-	@echo "  make rpi0-kernel       Builds linux kernel"
-	@echo "  make rpi0-image        Make bootable Debian image"
-	@echo "  make rpi0-all          Kernel > rootfs > image"
+	@echo "  make rpi0-kernel         Builds linux kernel"
+	@echo "  make rpi0-image          Make bootable Debian image"
+	@echo "  make rpi0-all            Kernel > rootfs > image"
 	@echo
 	@echo "Root filesystem:"
 	@echo
-	@echo "  make rootfs (default)	 ARM64"
-	@echo "  make rootfsv7		 ARMHF"
-	@echo "  make rootfsv6		 ARMEL"
+	@echo "  make rootfs (default)	  ARM64"
+	@echo "  make rootfsv7		  ARMHF"
+	@echo "  make rootfsv6		  ARMEL"
 	@echo
 
 # aarch64
@@ -215,6 +219,13 @@ rpi3-allv7:
 	@chmod +x ${IMG3V7}
 	@chmod +x ${STG32V7}
 	@${IMAGE3V7}
+
+install-dependsv6:
+	# Install all dependencies: armv6l
+	sudo apt install build-essential bison bc git dialog patch \
+	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
+	crossbuild-essential-armel
 
 # Raspberry Pi 0w | armv6l
 rpi0-kernel:
