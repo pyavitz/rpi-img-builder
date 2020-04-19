@@ -89,7 +89,7 @@ make rootfsv6 (armel)
 ## Howto
 
 * Kernel
-* `supported: rpi4:arm64`
+* `supported: rpi4:arm64;armv7l`
 
 ```sh
 Kernel branch:               # https://github.com/raspberrypi/linux
