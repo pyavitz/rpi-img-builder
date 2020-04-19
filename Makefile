@@ -42,7 +42,6 @@ CLEAN=sudo ./scripts/clean
 help:
 	@echo
 	@echo "Check config.txt for options"
-	@echo "Append v7 to build 32bit version"
 	@echo
 	@echo "Usage: rpi4b"
 	@echo
@@ -52,11 +51,11 @@ help:
 	@echo "  make image             Make bootable Debian image"
 	@echo "  make cleanup           Clean up image errors"
 	@echo "  make purge             Remove tmp directory"
+	@echo "  make commands          Build RPi3B / RPi0W images"
 	@echo
 	@echo "  make all               Feeling lucky?"
 	@echo
-	@echo "For details consult the README.md file"
-	@echo "or run make commands"
+	@echo "For details consult the README.md"
 	@echo
 
 commands:
