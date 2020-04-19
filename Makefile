@@ -108,6 +108,7 @@ kernel:
 
 image:
 	# Make bootable Debian image
+	@chmod +x ${IMG4}
 	@chmod +x ${STG42}
 	@${IMAGE4}
 
