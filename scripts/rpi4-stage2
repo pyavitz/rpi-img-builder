@@ -120,6 +120,9 @@ rm -f master.zip
 mkdir -p /lib/firmware
 mv -f firmware-nonfree-master/* /lib/firmware
 rm -fdR firmware-nonfree-master
+cd /lib/firmware/brcm
+wget -cq https://raw.githubusercontent.com/openwrt/cypress-nvram/master/brcmfmac43455-sdio.raspberrypi%2C4-model-b.txt
+cd ~
 echo Done.
 
 #### Extra bluetooth firmware
