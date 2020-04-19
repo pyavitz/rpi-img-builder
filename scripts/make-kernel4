@@ -1,5 +1,4 @@
 #!/bin/bash
-source config.txt
 source kernel.txt
 mkdir -p ${tmp4}
 cd ${tmp4}
