@@ -1,5 +1,5 @@
 #!/bin/bash
-source config.txt
+source kernel.txt
 mkdir -p ${tmp0}
 cd ${tmp0}
 
@@ -30,25 +30,69 @@ echo
 echo Applying packaging patch.
 patch -p1 < ../${pat}/rpi0w-packaging.patch
 
-### Set defconfig
-cp ../${def}/rpi0w_defconfig arch/arm/configs/
-make KBUILD_DEBARCH=armel ARCH=arm rpi0w_defconfig
-
 ### Foundation defconfig
-#make KBUILD_DEBARCH=armel ARCH=arm bcmrpi_defconfig
+case `grep -Fx "foundation_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
+  0)
+    make KBUILD_DEBARCH=armel ARCH=arm bcmrpi_defconfig
+    ;;
+  1)
+    echo *
+    echo ** foundation defconfig set to false
+    ;;
+  *)
+    echo no config found!
+    ;;
+esac
 
-### Open menuconfig
-#echo
-#echo Opening menuconfig.
-#sleep 1s
-#make KBUILD_DEBARCH=armel ARCH=arm menuconfig
+### Builder defconfig
+case `grep -Fx "lessfoundation_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
+  0)
+    cp ../${def}/rpi0-noinitrd_defconfig arch/arm/configs/
+    make KBUILD_DEBARCH=armel ARCH=arm rpi0-noinitrd_defconfig
+    ;;
+  1)
+    echo *
+    echo ** lessfoundation defconfig set to false
+    ;;
+  *)
+    echo no config found!
+    ;;
+esac
+
+### Custom defconfig
+case `grep -Fx "custom_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
+  0)
+   cp ../${def}/custom_defconfig arch/arm/configs/
+    make KBUILD_DEBARCH=armel ARCH=arm custom_defconfig
+    ;;
+  1)
+    echo *
+    echo ** custom defconfig set to false
+    ;;
+  *)
+    echo no config found!
+    ;;
+esac
+
+### Menuconfig
+case `grep -Fx "menuconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
+  0)
+    echo
+    echo Opening menuconfig.
+    sleep 1s
+    make KBUILD_DEBARCH=armel ARCH=arm menuconfig
+    ;;
+  1)
+    echo ** menuconfig set to false
+    ;;
+  *)
+    echo grumble! grumble!
+    ;;
+esac
 
 ### Build deb
 echo
 echo Building deb packages.
 make -j${cores} KBUILD_DEBARCH=armel ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- bindeb-pkg
-cd ..
-
-### Move debs
 echo Done.
 echo
