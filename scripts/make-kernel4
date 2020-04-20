@@ -35,7 +35,8 @@ case `grep -Fx "foundation_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` 
    make ARCH=arm64 bcm2711_defconfig
     ;;
   1)
-    echo *You dont like the Foundation?
+    echo *
+    echo ** foundation defconfig set to false
     ;;
   *)
     echo no config found!
@@ -43,13 +44,14 @@ case `grep -Fx "foundation_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` 
 esac
 
 ### Builder defconfig
-case `grep -Fx "rpiimgbuilder_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
+case `grep -Fx "lessfoundation_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
   0)
-   cp -f ../${def}/rpi4b_defconfig arch/arm64/configs/
-   make ARCH=arm64 rpi4b_defconfig
+   cp -f ../${def}/rpi4-noinitrd_defconfig arch/arm64/configs/
+   make ARCH=arm64 rpi4-noinitrd_defconfig
     ;;
   1)
-    echo *Rpiimgbuilder: I guess you prefer initrd?
+    echo *
+    echo ** lessfoundation defconfig set to false
     ;;
   *)
     echo no config found!
@@ -63,7 +65,8 @@ case `grep -Fx "custom_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
    make ARCH=arm64 custom_defconfig
     ;;
   1)
-    echo *Custom: It can be risky business!
+    echo *
+    echo ** custom defconfig set to false
     ;;
   *)
     echo no config found!
@@ -79,7 +82,7 @@ case `grep -Fx "menuconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
    make menuconfig
     ;;
   1)
-    echo menuconfig set to false
+    echo ** menuconfig set to false
     ;;
   *)
     echo grumble! grumble!
