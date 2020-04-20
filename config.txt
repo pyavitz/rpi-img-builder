@@ -18,7 +18,7 @@ passwd="board"
 
 PKGS1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	cloud-initramfs-growroot e2fsprogs u-boot-tools fonty-rg patch \
-	curl wget apt-transport-https dirmngr cmake rsync"
+	curl wget apt-transport-https dirmngr cmake rsync psmisc"
 
 PKGS2="cpu hwinfo neofetch haveged resolvconf git build-essential net-tools \
         ifplugd fuse wpasupplicant wireless-tools usbutils alsa-utils gettext \
