@@ -91,9 +91,34 @@ case `grep -Fx "menuconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
 esac
 
 ### Build deb
-echo
-echo Building deb packages.
-#make -j${cores} ARCH=arm bindeb-pkg # native
-make -j${cores} ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- bindeb-pkg
+case `grep -Fx "native=0" "../../kernel.txt" >/dev/null; echo $?` in
+  0)
+    echo -- COMPILING-NATIVE KERNEL
+    echo --- Building deb packages.
+    make -j${cores} ARCH=arm bindeb-pkg
+    ;;
+  1)
+    echo
+    echo you are cross-compiling
+    ;;
+  *)
+    echo grumble! grumble!
+    ;;
+esac
+
+case `grep -Fx "crosscompile=0" "../../kernel.txt" >/dev/null; echo $?` in
+  0)
+    echo -- CROSS-COMPILING KERNEL
+    echo --- Building deb packages.
+    make -j${cores} ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- bindeb-pkg
+    ;;
+  1)
+    echo 
+    echo you are not cross-compiling
+    ;;
+  *)
+    echo grumble! grumble!
+    ;;
+esac
 echo Done.
 echo
