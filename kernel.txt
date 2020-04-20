@@ -16,6 +16,6 @@ cores=`nproc`
 # 0 = active
 # 1 = inactive
 foundation_defconfig=0
-rpiimgbuilder_defconfig=1
+lessfoundation_defconfig=1
 custom_defconfig=1
 menuconfig=1
