@@ -36,8 +36,8 @@ case `grep -Fx "foundation_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` 
    make ARCH=arm bcm2711_defconfig
     ;;
   1)
-    echo *
-    echo ** foundation defconfig set to false
+    echo
+    echo foundation defconfig set to false
     ;;
   *)
     echo no config found!
@@ -51,8 +51,8 @@ case `grep -Fx "lessfoundation_defconfig=0" "../../kernel.txt" >/dev/null; echo 
     make ARCH=arm rpi4v7-noinitrd_defconfig
     ;;
   1)
-    echo *
-    echo ** lessfoundation defconfig set to false
+    echo
+    echo lessfoundation defconfig set to false
     ;;
   *)
     echo no config found!
@@ -66,8 +66,8 @@ case `grep -Fx "custom_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
    make ARCH=arm custom_defconfig
     ;;
   1)
-    echo *
-    echo ** custom defconfig set to false
+    echo
+    echo custom defconfig set to false
     ;;
   *)
     echo no config found!
@@ -83,7 +83,7 @@ case `grep -Fx "menuconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
     make menuconfig
     ;;
   1)
-    echo ** menuconfig set to false
+    echo menuconfig set to false
     ;;
   *)
     echo grumble! grumble!
