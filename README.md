@@ -97,13 +97,13 @@ kernel="linux-rpi"
 version="5.4.y"              # default
 
 Switches:
-true = active
-false = inactive
+0 = active
+1 = inactive
 ---
-default_defconfig=true        # default
-foundation_defconfig=false    # raspberry pi foundation
-custom_defconfig=false        # your custom defconfig
-menuconfig=false              # open menuconfig
+foundation_defconfig=0        # raspberry pi foundation
+rpiimgbuilder_defconfig=1     # rpi img builder
+custom_defconfig=1            # your custom defconfig
+menuconfig=1                  # open menuconfig
 
 Your custom_defconfig must be placed in the defconfig directory.
 ```
