@@ -19,3 +19,5 @@ foundation_defconfig=0
 lessfoundation_defconfig=1
 custom_defconfig=1
 menuconfig=1
+native=1
+crosscompile=0
