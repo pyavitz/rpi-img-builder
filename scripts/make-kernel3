@@ -79,6 +79,7 @@ case `grep -Fx "menuconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
     make menuconfig
     ;;
   1)
+    echo
     ;;
   *)
     echo grumble! grumble!
