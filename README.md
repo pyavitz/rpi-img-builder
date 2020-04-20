@@ -89,7 +89,7 @@ make rootfsv6 (armel)
 ## Howto
 
 * Kernel
-* `supported: rpi4:arm64;armv7l`
+* `supported: All (testing needed)`
 
 ```sh
 Kernel branch:               # https://github.com/raspberrypi/linux
@@ -99,7 +99,8 @@ version="5.4.y"              # default
 Switches:
 0 = active
 1 = inactive
----
+
+--- default
 foundation_defconfig=0        # raspberry pi foundation
 lessfoundation_defconfig=1    # no initrd | less usb wireless support
 custom_defconfig=1            # your custom defconfig
