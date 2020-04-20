@@ -101,7 +101,7 @@ Switches:
 1 = inactive
 ---
 foundation_defconfig=0        # raspberry pi foundation
-rpiimgbuilder_defconfig=1     # rpi img builder
+lessfoundation_defconfig=1    # no initrd | less usb wireless support
 custom_defconfig=1            # your custom defconfig
 menuconfig=1                  # open menuconfig
 
