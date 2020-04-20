@@ -29,27 +29,27 @@ echo
 echo Applying packaging patch.
 patch -p1 < ../${pat}/rpi4b-packaging.patch
 
-### Default defconfig
-case `grep -Fx "default_defconfig=true" "../../kernel.txt" >/dev/null; echo $?` in
+### Foundation defconfig
+case `grep -Fx "foundation_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
   0)
-   cp -f ../${def}/rpi4b_defconfig arch/arm64/configs/
-   make ARCH=arm64 rpi4b_defconfig
+   make ARCH=arm64 bcm2711_defconfig
     ;;
   1)
-    echo *default_defconfig set to false
+    echo *You don't like the Foundation?
     ;;
   *)
     echo no config found!
     ;;
 esac
 
-### Foundation defconfig
-case `grep -Fx "foundation_defconfig=true" "../../kernel.txt" >/dev/null; echo $?` in
+### Builder defconfig
+case `grep -Fx "rpiimgbuilder_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
   0)
-   make ARCH=arm64 bcm2711_defconfig
+   cp -f ../${def}/rpi4b_defconfig arch/arm64/configs/
+   make ARCH=arm64 rpi4b_defconfig
     ;;
   1)
-    echo *foundation_defconfig set to false
+    echo *Rpiimgbuilder: I guess you prefer initrd?
     ;;
   *)
     echo no config found!
@@ -57,13 +57,13 @@ case `grep -Fx "foundation_defconfig=true" "../../kernel.txt" >/dev/null; echo $
 esac
 
 ### Custom defconfig
-case `grep -Fx "custom_defconfig=true" "../../kernel.txt" >/dev/null; echo $?` in
+case `grep -Fx "custom_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
   0)
    cp -f ../${def}/custom_defconfig arch/arm64/configs/
    make ARCH=arm64 custom_defconfig
     ;;
   1)
-    echo *custom_defconfig set to false
+    echo *Custom: It can be risky business!
     ;;
   *)
     echo no config found!
@@ -71,7 +71,7 @@ case `grep -Fx "custom_defconfig=true" "../../kernel.txt" >/dev/null; echo $?` i
 esac
 
 ### Menuconfig
-case `grep -Fx "menuconfig=true" "../../kernel.txt" >/dev/null; echo $?` in
+case `grep -Fx "menuconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
   0)
    echo
    echo Opening menuconfig.
