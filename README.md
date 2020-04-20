@@ -105,6 +105,8 @@ foundation_defconfig=0        # raspberry pi foundation
 lessfoundation_defconfig=1    # no initrd | less usb wireless support
 custom_defconfig=1            # your custom defconfig
 menuconfig=1                  # open menuconfig
+native=1                      # native compiling
+crosscompile=0                # cross compiling
 
 Your custom_defconfig must be placed in the defconfig directory.
 ```
