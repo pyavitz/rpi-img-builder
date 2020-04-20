@@ -13,9 +13,9 @@ kernel="linux-rpi"
 version="5.4.y"
 cores=`nproc`
 
-# true=active
-# false=inactive
-default_defconfig=true
-foundation_defconfig=false
-custom_defconfig=false
-menuconfig=false
+# 0 = active
+# 1 = inactive
+foundation_defconfig=0
+rpiimgbuilder_defconfig=1
+custom_defconfig=1
+menuconfig=1
