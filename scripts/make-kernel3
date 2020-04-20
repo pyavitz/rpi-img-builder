@@ -36,7 +36,6 @@ case `grep -Fx "foundation_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` 
     ;;
   1)
     echo
-    echo foundation defconfig set to false
     ;;
   *)
     echo no config found!
@@ -51,7 +50,6 @@ case `grep -Fx "lessfoundation_defconfig=0" "../../kernel.txt" >/dev/null; echo 
     ;;
   1)
     echo
-    echo lessfoundation defconfig set to false
     ;;
   *)
     echo no config found!
@@ -66,7 +64,6 @@ case `grep -Fx "custom_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
     ;;
   1)
     echo
-    echo custom defconfig set to false
     ;;
   *)
     echo no config found!
@@ -82,7 +79,6 @@ case `grep -Fx "menuconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
     make menuconfig
     ;;
   1)
-    echo menuconfig set to false
     ;;
   *)
     echo grumble! grumble!
