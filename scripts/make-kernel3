@@ -1,5 +1,5 @@
 #!/bin/bash
-source config.txt
+source kernel.txt
 mkdir -p ${tmp3}
 cd ${tmp3}
 
@@ -29,17 +29,65 @@ echo
 echo Applying packaging patch.
 patch -p1 < ../${pat}/rpi3b-packaging.patch
 
-### Set defconfig
-cp -f ../${def}/rpi3b_defconfig arch/arm64/configs/
-make ARCH=arm64 rpi3b_defconfig
-
 ### Foundation defconfig
-#make ARCH=arm64 bcmrpi3_defconfig
+case `grep -Fx "foundation_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
+  0)
+   make ARCH=arm64 bcmrpi3_defconfig
+    ;;
+  1)
+    echo *
+    echo ** foundation defconfig set to false
+    ;;
+  *)
+    echo no config found!
+    ;;
+esac
 
-### Open menuconfig
-#echo Opening menuconfig.
-#sleep 1s
-#make menuconfig
+### Builder defconfig
+case `grep -Fx "lessfoundation_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
+  0)
+   cp -f ../${def}/rpi3-noinitrd_defconfig arch/arm64/configs/
+   make ARCH=arm64 rpi3-noinitrd_defconfig
+    ;;
+  1)
+    echo *
+    echo ** lessfoundation defconfig set to false
+    ;;
+  *)
+    echo no config found!
+    ;;
+esac
+
+### Custom defconfig
+case `grep -Fx "custom_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
+  0)
+   cp -f ../${def}/custom_defconfig arch/arm64/configs/
+   make ARCH=arm64 custom_defconfig
+    ;;
+  1)
+    echo *
+    echo ** custom defconfig set to false
+    ;;
+  *)
+    echo no config found!
+    ;;
+esac
+
+### Menuconfig
+case `grep -Fx "menuconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
+  0)
+    echo
+    echo Opening menuconfig.
+    sleep 1s
+    make menuconfig
+    ;;
+  1)
+    echo ** menuconfig set to false
+    ;;
+  *)
+    echo grumble! grumble!
+    ;;
+esac
 
 ### Build deb
 echo
