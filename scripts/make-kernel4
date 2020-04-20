@@ -76,10 +76,10 @@ esac
 ### Menuconfig
 case `grep -Fx "menuconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
   0)
-   echo
-   echo Opening menuconfig.
-   sleep 1s
-   make menuconfig
+    echo
+    echo Opening menuconfig.
+    sleep 1s
+    make menuconfig
     ;;
   1)
     echo ** menuconfig set to false
