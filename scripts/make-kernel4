@@ -35,7 +35,7 @@ case `grep -Fx "foundation_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` 
    make ARCH=arm64 bcm2711_defconfig
     ;;
   1)
-    echo *You don't like the Foundation?
+    echo *You dont like the Foundation?
     ;;
   *)
     echo no config found!
