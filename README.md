@@ -39,6 +39,12 @@ make image
 make cleanup
 ```
 
+* Remove all tmp directories
+
+```sh
+make purge
+```
+
 ## Command list (current)
 
 * Raspberry Pi 4B (default)
@@ -84,6 +90,14 @@ make rpi0-all
 make rootfs   (arm64)
 make rootfsv7 (armhf)
 make rootfsv6 (armel)
+```
+
+* Miscellaneous
+
+```sh
+make cleanup
+make purge
+make commands
 ```
 
 ## Howto
