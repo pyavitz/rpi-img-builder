@@ -103,6 +103,12 @@ install-depends:
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
 	crossbuild-essential-arm64
 
+install-native-depends:
+	# Install all dependencies: aarch64
+	sudo apt install build-essential bison bc git dialog patch \
+	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig
+
 # Raspberry Pi 4 | aarch64
 kernel:
 	# LINUX
@@ -164,6 +170,12 @@ install-dependsv7:
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
 	crossbuild-essential-armhf
+
+install-native-dependsv7:
+	# Install all dependencies: armv7l
+	sudo apt install build-essential bison bc git dialog patch \
+	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig
 
 # Raspberry Pi 4 | armv7l
 kernelv7:
