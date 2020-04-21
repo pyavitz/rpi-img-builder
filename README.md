@@ -5,6 +5,28 @@
 
 Debian Image Builder for the Raspberry Pi 
 
+### Downloadable Image
+
+A bootable Debian image which has been compiled against Raspberry Pi's modified `Linux 5.4.32` (`aarch64 armv7l armv6l`) kernel can be found here;
+
+* [`rpi-4-b-debian-buster v8`](http://www.mediafire.com/file/ll98hfp3k84zvm7/rpi-4-b-debian-buster-v8.7z/file)
+* [`rpi-4-b-debian-buster v7`](http://www.mediafire.com/file/6jm4353zc1gvbqb/rpi-4-b-debian-buster-v7.7z/file)
+* [`rpi-3-b-plus-debian-buster v8`](http://www.mediafire.com/file/cul1ok8jgyk8j5x/rpi-3-b-plus-debian-buster-v8.7z/file)
+* [`rpi-3-b-plus-debian-buster v7`](http://www.mediafire.com/file/wa0wc7xn2u7eivt/rpi-3-b-plus-debian-buster-v7.7z/file)
+* [`rpi-zero-w-debian-buster`](http://www.mediafire.com/file/p27bp5irwwikxon/rpi-zero-w-debian-buster.7z/file)
+
+## Dependencies
+
+In order to install the required dependencies, run the following command:
+
+```
+sudo apt install build-essential bison bc git dialog patch dosfstools zip unzip qemu debootstrap qemu-user-static rsync kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig crossbuild-essential-arm64
+```
+
+This has been tested on an AMD64/x86_64 system running on [Debian Buster](https://www.debian.org/releases/buster/debian-installer/).
+
+Alternatively, you can run the command `make install-depends` in this directory.
+
 ## Instructions
 
 * Make sure to adjust `config.txt` & `kernel.txt` with your own configurations before proceeding.
@@ -12,7 +34,8 @@ Debian Image Builder for the Raspberry Pi
 * Install all dependencies
 
 ```sh
-make install-depends
+make install-depends        (cross compile)
+make install-native-depends (native compile)
 ```
 
 * Compile the kernel
