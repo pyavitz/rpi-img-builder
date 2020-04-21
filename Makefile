@@ -65,6 +65,11 @@ commands:
 	@echo "  make install-dependsv7   Install all armhf dependencies"
 	@echo "  make install-dependsv6   Install all armel dependencies"
 	@echo
+	@echo "Install native compiling dependencies"
+	@echo
+	@echo "  make install-native-depends"
+	@echo "  make install-native-dependsv7"
+	@echo
 	@echo "Boards:"
 	@echo
 	@echo "  rpi4 (default)           Raspberry Pi 4B"
