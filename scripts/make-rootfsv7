@@ -102,4 +102,4 @@ if [ $RAM -ne 0 ]; then
 fi
 rmdir "${IMAGE_FOLDER}"
 rmdir p1 p2
-rm -f *.img
+rm -f debian-${DEBIAN_VERSION}-${IMAGE_VERSION}.img
