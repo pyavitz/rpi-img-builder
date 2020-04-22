@@ -28,7 +28,7 @@ IMG3V7=./scripts/rpi3v7-stage1
 IMAGE3V7=sudo ./scripts/rpi3v7-stage1
 STG32V7=./scripts/rpi3v7-stage2
 
-#armv6l
+# armv6l
 KERNEL0=./scripts/make-kernel0
 IMG0=./scripts/rpi0-stage1
 IMAGE0=sudo ./scripts/rpi0-stage1
@@ -60,16 +60,9 @@ help:
 
 commands:
 	@echo
-	@echo "Install cross compiling dependencies"
+	@echo "Install only native compiling dependencies"
 	@echo
-	@echo "  make install-depends     Install arm64 dependencies"
-	@echo "  make install-dependsv7   Install armhf dependencies"
-	@echo "  make install-dependsv6   Install armel dependencies"
-	@echo
-	@echo "Install native compiling dependencies"
-	@echo
-	@echo "  make install-native-depends   Install arm64 dependencies"
-	@echo "  make install-native-dependsv7 Install armhf dependencies"
+	@echo "  make install-native-depends"
 	@echo
 	@echo "Boards:"
 	@echo
@@ -103,32 +96,32 @@ commands:
 
 # aarch64
 install-depends:
-	# Install all dependencies: aarch64
+	# Install all dependencies:
 	sudo apt install build-essential bison bc git dialog patch \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
-	crossbuild-essential-arm64
+	crossbuild-essential-arm64 crossbuild-essential-armhf crossbuild-essential-armel
 
 install-native-depends:
-	# Install all dependencies: aarch64
+	# Install all dependencies:
 	sudo apt install build-essential bison bc git dialog patch \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig
 
 # Raspberry Pi 4 | aarch64
 kernel:
-	# LINUX
+	# Linux | aarch64
 	@chmod +x ${KERNEL4}
 	@${KERNEL4}
 
 image:
-	# Make bootable Debian image
+	# Making bootable Debian image
 	@chmod +x ${IMG4}
 	@chmod +x ${STG42}
 	@${IMAGE4}
 
 all:
-	# RPi4B > AARCH64
+	# RPi4B | AARCH64
 	# - - - - - - - -
 	#
 	# Building linux
@@ -137,25 +130,25 @@ all:
 	# Creating ROOTFS tarball
 	@chmod +x ${RFSV8}
 	@${ROOTFSV8}
-	# Making bootable Debian img
+	# Making bootable Debian image
 	@chmod +x ${IMG4}
 	@chmod +x ${STG42}
 	@${IMAGE4}
 
 # Raspberry Pi 3 | aarch64
 rpi3-kernel:
-	# LINUX
+	# Linux | aarch64
 	@chmod +x ${KERNEL3}
 	@${KERNEL3}
 
 rpi3-image:
-	# Make bootable Debian image
+	# Making bootable Debian image
 	@chmod +x ${IMG3}
 	@chmod +x ${STG32}
 	@${IMAGE3}
 
 rpi3-all:
-	# RPi3B/+ > AARCH64
+	# RPi3B/+ | AARCH64
 	# - - - - - - - -
 	#
 	# Building linux
@@ -164,39 +157,25 @@ rpi3-all:
 	# Creating ROOTFS tarball
 	@chmod +x ${RFSV8}
 	@${ROOTFSV8}
-	# Making bootable Debian img
+	# Making bootable Debian image
 	@chmod +x ${IMG3}
 	@chmod +x ${STG32}
 	@${IMAGE3}
 
-# armv7l
-install-dependsv7:
-	# Install all dependencies: armv7l
-	sudo apt install build-essential bison bc git dialog patch \
-	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
-	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
-	crossbuild-essential-armhf
-
-install-native-dependsv7:
-	# Install all dependencies: armv7l
-	sudo apt install build-essential bison bc git dialog patch \
-	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
-	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig
-
 # Raspberry Pi 4 | armv7l
 kernelv7:
-	# LINUX v7l
+	# Linux | armv7l
 	@chmod +x ${KERNEL4V7}
 	@${KERNEL4V7}
 
 imagev7:
-	# Make bootable Debian image
+	# Making bootable Debian image
 	@chmod +x ${IMG4V7}
 	@chmod +x ${STG42V7}
 	@${IMAGE4V7}
 
 allv7:
-	# RPi4B > ARMv7l
+	# RPi4B | ARMv7l
 	# - - - - - - - -
 	#
 	# Building linux
@@ -205,25 +184,25 @@ allv7:
 	# Creating ROOTFS tarball
 	@chmod +x ${RFSV7}
 	@${ROOTFSV7}
-	# Making bootable Debian img
+	# Making bootable Debian image
 	@chmod +x ${IMG4V7}
 	@chmod +x ${STG42V7}
 	@${IMAGE4V7}
 
 # Raspberry Pi 3 | armv7l
 rpi3-kernelv7:
-	# LINUX
+	# Linux | armv7l
 	@chmod +x ${KERNEL3V7}
 	@${KERNEL3V7}
 
 rpi3-imagev7:
-	# Make bootable Debian image
+	# Making bootable Debian image
 	@chmod +x ${IMG3V7}
 	@chmod +x ${STG32V7}
 	@${IMAGE3V7}
 
 rpi3-allv7:
-	# RP3B/+ > ARMv7l
+	# RP3B/+ | ARMv7l
 	# - - - - - - - -
 	#
 	# Building linux
@@ -232,21 +211,14 @@ rpi3-allv7:
 	# Creating ROOTFS tarball
 	@chmod +x ${RFSV7}
 	@${ROOTFSV7}
-	# Making bootable Debian img
+	# Making bootable Debian image
 	@chmod +x ${IMG3V7}
 	@chmod +x ${STG32V7}
 	@${IMAGE3V7}
 
-install-dependsv6:
-	# Install all dependencies: armv6l
-	sudo apt install build-essential bison bc git dialog patch \
-	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
-	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
-	crossbuild-essential-armel
-
 # Raspberry Pi 0w | armv6l
 rpi0-kernel:
-	# LINUX
+	# Linux | armv6l
 	@chmod +x ${KERNEL0}
 	@${KERNEL0}
 
@@ -257,7 +229,7 @@ rpi0-image:
 	@${IMAGE0}
 
 rpi0-all:
-	# RPi0W > ARMV6L
+	# RPi0W | ARMV6L
 	# - - - - - - - -
 	#
 	# Building linux
