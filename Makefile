@@ -67,8 +67,8 @@ commands:
 	@echo
 	@echo "Install native compiling dependencies"
 	@echo
-	@echo "  make install-native-depends"
-	@echo "  make install-native-dependsv7"
+	@echo "  make install-native-depends	arm64"
+	@echo "  make install-native-dependsv7	armhf"
 	@echo
 	@echo "Boards:"
 	@echo
@@ -95,9 +95,9 @@ commands:
 	@echo
 	@echo "Root filesystem:"
 	@echo
-	@echo "  make rootfs (default)	  ARM64"
-	@echo "  make rootfsv7		  ARMHF"
-	@echo "  make rootfsv6		  ARMEL"
+	@echo "  make rootfs (default)	  arm64"
+	@echo "  make rootfsv7		  armhf"
+	@echo "  make rootfsv6		  armel"
 	@echo
 
 # aarch64
