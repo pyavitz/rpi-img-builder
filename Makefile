@@ -67,8 +67,8 @@ commands:
 	@echo
 	@echo "Install native compiling dependencies"
 	@echo
-	@echo "  make install-native-depends	arm64"
-	@echo "  make install-native-dependsv7	armhf"
+	@echo "  make install-native-depends	      arm64"
+	@echo "  make install-native-dependsv7	      armhf"
 	@echo
 	@echo "Boards:"
 	@echo
