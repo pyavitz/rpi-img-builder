@@ -60,7 +60,7 @@ help:
 
 commands:
 	@echo
-	@echo "Install only native compiling dependencies"
+	@echo "Install only native dependencies"
 	@echo
 	@echo "  make install-native-depends"
 	@echo
