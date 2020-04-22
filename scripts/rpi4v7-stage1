@@ -55,7 +55,7 @@ mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2
 
 ### Cmdline
 tee p1/cmdline.txt <<EOF
-console=serial0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait
+console=serial0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline fsck.repair=yes logo.nologo rootwait
 EOF
 
 ### Rpi config
@@ -142,9 +142,12 @@ dtparam=audio=on
 # enable uart
 enable_uart=0
 
-### Disable wifi and bluetooth
+# Disable wifi and bluetooth
 #dtoverlay=disable-wifi
 #dtoverlay=disable-bt
+
+# Remove test rainbow
+disable_splash=1
 
 [pi4]
 # enable DRM VC4 V3D driver on top of the dispmanx display stack
