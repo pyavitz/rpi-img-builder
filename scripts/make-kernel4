@@ -89,13 +89,13 @@ esac
 ### Build deb
 case `grep -Fx "native=0" "../../kernel.txt" >/dev/null; echo $?` in
   0)
-    echo -- COMPILING-NATIVE KERNEL
+    echo
     echo --- Building deb packages.
     make -j${cores} ARCH=arm64 bindeb-pkg
     ;;
   1)
     echo
-    echo you are cross-compiling
+    echo you are cross compiling
     ;;
   *)
     echo grumble! grumble!
@@ -104,13 +104,13 @@ esac
 
 case `grep -Fx "crosscompile=0" "../../kernel.txt" >/dev/null; echo $?` in
   0)
-    echo -- CROSS-COMPILING KERNEL
+    echo
     echo --- Building deb packages.
     make -j${cores} ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
     ;;
   1)
     echo 
-    echo you are not cross-compiling
+    echo you are not cross compiling
     ;;
   *)
     echo grumble! grumble!
