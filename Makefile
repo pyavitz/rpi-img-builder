@@ -60,15 +60,16 @@ help:
 
 commands:
 	@echo
-	@echo "Install dependencies"
+	@echo "Install cross compiling dependencies"
 	@echo
-	@echo "  make install-dependsv7   Install all armhf dependencies"
-	@echo "  make install-dependsv6   Install all armel dependencies"
+	@echo "  make install-depends     Install arm64 dependencies"
+	@echo "  make install-dependsv7   Install armhf dependencies"
+	@echo "  make install-dependsv6   Install armel dependencies"
 	@echo
 	@echo "Install native compiling dependencies"
 	@echo
-	@echo "  make install-native-depends		arm64"
-	@echo "  make install-native-dependsv7		armhf"
+	@echo "  make install-native-depends   Install arm64 dependencies"
+	@echo "  make install-native-dependsv7 Install armhf dependencies"
 	@echo
 	@echo "Boards:"
 	@echo
