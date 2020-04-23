@@ -147,7 +147,8 @@ menuconfig=1                  # open menuconfig
 native=1                      # native compiling
 crosscompile=0                # cross compiling
 
-Your custom_defconfig must be placed in the defconfig directory.
+# user defconfig must be in defconfig directory
+MYCONFIG="nameofyour_defconfig"
 ```
 
 ### Funding
