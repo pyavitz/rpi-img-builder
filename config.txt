@@ -8,7 +8,7 @@ tmp0="rpi0"
 
 # stage1
 RPI4="2575MB"
-RPI3="2500MB"
+RPI3="2575MB"
 RPI0="2250MB"
 DEBIAN_VERSION="buster"
 
