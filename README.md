@@ -128,7 +128,6 @@ make commands
 ## Howto
 
 * Kernel
-* `supported: All (testing needed)`
 
 ```sh
 Kernel branch:               # https://github.com/raspberrypi/linux
