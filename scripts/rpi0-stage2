@@ -302,6 +302,7 @@ make
 make install
 cd ~
 rm -fdr htop
+echo Done.
 
 ###  Adding raspi userland
 echo
