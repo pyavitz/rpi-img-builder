@@ -7,7 +7,7 @@ tmp0="rpi0"
 # do not edit above this line
 
 # stage1
-RPI4="2500MB"
+RPI4="2575MB"
 RPI3="2500MB"
 RPI0="2250MB"
 DEBIAN_VERSION="buster"
