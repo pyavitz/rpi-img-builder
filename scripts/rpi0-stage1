@@ -61,9 +61,6 @@ EOF
 
 ### Rpi config
 tee p1/config.txt <<EOF
-device_tree=$IMAGE_DEVICE_TREE.dtb
-#device_tree=$RPI0_DTB.dtb
-overlay_prefix=broadcom/overlays/
 kernel=kernel.img
 
 # For more options and information see
