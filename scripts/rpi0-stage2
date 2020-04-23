@@ -274,6 +274,35 @@ dpkg -i pi-bluetooth_*.deb
 rm -fdR pi-bluetooth*
 echo Done.
 
+### Certificates
+echo
+echo Fixing ca certificates.
+sleep 1s
+mkdir -p certificates
+cd certificates
+wget -cq --show-progress http://deb.debian.org/debian/pool/main/c/ca-certificates/ca-certificates_20190110.tar.xz
+tar -xf ca-certificates_20190110.tar.xz
+cd ca-certificates_20190110
+dpkg-buildpackage -us -uc
+cd ..
+dpkg -i *.deb *.udeb
+cd ~
+rm -fdr certificates
+echo Done.
+
+### Htop
+echo
+echo Installing htop - cpufreq and thermal support.
+sleep 1s
+git clone https://github.com/leeadama/htop.git
+cd htop
+./autogen.sh
+./configure --prefix=/usr
+make
+make install
+cd ~
+rm -fdr htop
+
 ###  Adding raspi userland
 echo
 echo Adding raspi userland.
