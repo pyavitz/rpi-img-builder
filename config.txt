@@ -29,7 +29,7 @@ PKGS2="cpu hwinfo neofetch haveged resolvconf git build-essential net-tools \
 
 # firmware-brcm80211 firmware-iwlwifi firmware-realtek firmware-ralink
 FIRMWARE="firmware-linux"
-EEPROM_VERSION="5.4"
+EEPROM_VERSION="5.7"
 
 # motd
 BRAND4="RPi4B"
