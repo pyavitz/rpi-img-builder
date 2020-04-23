@@ -28,15 +28,20 @@ KERNEL=kernel
 ### Packaging patch
 echo
 echo Applying packaging patch.
-patch -p1 < ../${pat}/rpi0w-packaging.patch
+sleep 1s
+patch -p1 < ../${pat}/rpi0w-packaging.patch &> /dev/null
+echo Done.
+echo
 
 ### Foundation defconfig
 case `grep -Fx "foundation_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
   0)
-    make KBUILD_DEBARCH=armel ARCH=arm bcmrpi_defconfig
+    echo Making foundation defconfig.
+    make KBUILD_DEBARCH=armel ARCH=arm bcmrpi_defconfig &> /dev/null
+    echo Done.
     ;;
   1)
-    echo
+    #echo
     ;;
   *)
     echo no config found!
@@ -46,11 +51,13 @@ esac
 ### Builder defconfig
 case `grep -Fx "lessfoundation_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
   0)
+    echo Making builder defconfig.
     cp ../${def}/rpi0-noinitrd_defconfig arch/arm/configs/
-    make KBUILD_DEBARCH=armel ARCH=arm rpi0-noinitrd_defconfig
+    make KBUILD_DEBARCH=armel ARCH=arm rpi0-noinitrd_defconfig &> /dev/null
+    echo Done.
     ;;
   1)
-    echo
+    #echo
     ;;
   *)
     echo no config found!
@@ -60,11 +67,13 @@ esac
 ### Custom defconfig
 case `grep -Fx "custom_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
   0)
-   cp ../${def}/${MYCONFIG} arch/arm/configs/
-    make KBUILD_DEBARCH=armel ARCH=arm ${MYCONFIG}
+    echo Making ${MYCONFIG}.
+    cp ../${def}/${MYCONFIG} arch/arm/configs/
+    make KBUILD_DEBARCH=armel ARCH=arm ${MYCONFIG} &> /dev/null
+    echo Done.
     ;;
   1)
-    echo
+    #echo
     ;;
   *)
     echo no config found!
@@ -77,10 +86,10 @@ case `grep -Fx "menuconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
     echo
     echo Opening menuconfig.
     sleep 1s
-    make KBUILD_DEBARCH=armel ARCH=arm menuconfig
+    make KBUILD_DEBARCH=armel ARCH=arm menuconfig &> /dev/null
     ;;
   1)
-    echo
+    #echo
     ;;
   *)
     echo grumble! grumble!
