@@ -28,15 +28,19 @@ KERNEL=kernel7l
 ### Packaging patch
 echo
 echo Applying packaging patch.
-patch -p1 < ../${pat}/rpi4b-v7-packaging.patch
+patch -p1 < ../${pat}/rpi4b-v7-packaging.patch &> /dev/null
+echo Done.
+echo
 
 ### Foundation defconfig
 case `grep -Fx "foundation_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
   0)
-   make ARCH=arm bcm2711_defconfig
+    echo Making foundation defconfig.
+    make ARCH=arm bcm2711_defconfig &> /dev/null
+    echo Done.
     ;;
   1)
-    echo
+    #echo
     ;;
   *)
     echo no config found!
@@ -46,11 +50,13 @@ esac
 ### Builder defconfig
 case `grep -Fx "lessfoundation_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
   0)
+    echo Making builder defconfig.
     cp -f ../${def}/rpi4v7-noinitrd_defconfig arch/arm/configs/
-    make ARCH=arm rpi4v7-noinitrd_defconfig
+    make ARCH=arm rpi4v7-noinitrd_defconfig &> /dev/null
+    echo Done.
     ;;
   1)
-    echo
+    #echo
     ;;
   *)
     echo no config found!
@@ -60,11 +66,13 @@ esac
 ### Custom defconfig
 case `grep -Fx "custom_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
   0)
-   cp -f ../${def}/custom_defconfig arch/arm/configs/
-   make ARCH=arm custom_defconfig
+    echo Making ${MYCONFIG}.
+    cp -f ../${def}/${MYCONFIG} arch/arm/configs/
+    make ARCH=arm ${MYCONFIG} &> /dev/null
+    echo Done.
     ;;
   1)
-    echo
+    #echo
     ;;
   *)
     echo no config found!
@@ -77,10 +85,10 @@ case `grep -Fx "menuconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
     echo
     echo Opening menuconfig.
     sleep 1s
-    make menuconfig
+    make menuconfig &> /dev/null
     ;;
   1)
-    echo
+    #echo
     ;;
   *)
     echo grumble! grumble!

@@ -27,15 +27,19 @@ export ARCH=arm64
 ### Packaging patch
 echo
 echo Applying packaging patch.
-patch -p1 < ../${pat}/rpi3b-packaging.patch
+patch -p1 < ../${pat}/rpi3b-packaging.patch &> /dev/null
+echo Done.
+echo
 
 ### Foundation defconfig
 case `grep -Fx "foundation_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
   0)
-   make ARCH=arm64 bcmrpi3_defconfig
+    echo Making foundation defconfig.
+    make ARCH=arm64 bcmrpi3_defconfig &> /dev/null
+    echo Done.
     ;;
   1)
-    echo
+    #echo
     ;;
   *)
     echo no config found!
@@ -45,11 +49,13 @@ esac
 ### Builder defconfig
 case `grep -Fx "lessfoundation_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
   0)
-   cp -f ../${def}/rpi3-noinitrd_defconfig arch/arm64/configs/
-   make ARCH=arm64 rpi3-noinitrd_defconfig
+    echo Making builder defconfig.
+    cp -f ../${def}/rpi3-noinitrd_defconfig arch/arm64/configs/
+    make ARCH=arm64 rpi3-noinitrd_defconfig &> /dev/null
+    echo Done.
     ;;
   1)
-    echo
+    #echo
     ;;
   *)
     echo no config found!
@@ -59,11 +65,13 @@ esac
 ### Custom defconfig
 case `grep -Fx "custom_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
   0)
-   cp -f ../${def}/custom_defconfig arch/arm64/configs/
-   make ARCH=arm64 custom_defconfig
+    echo Making ${MYCONFIG}.
+    cp -f ../${def}/${MYCONFIG} arch/arm64/configs/
+    make ARCH=arm64 ${MYCONFIG} &> /dev/null
+    echo Done.
     ;;
   1)
-    echo
+    #echo
     ;;
   *)
     echo no config found!
@@ -76,10 +84,10 @@ case `grep -Fx "menuconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
     echo
     echo Opening menuconfig.
     sleep 1s
-    make menuconfig
+    make menuconfig &> /dev/null
     ;;
   1)
-    echo
+    #echo
     ;;
   *)
     echo grumble! grumble!

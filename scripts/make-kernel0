@@ -52,7 +52,7 @@ esac
 case `grep -Fx "lessfoundation_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
   0)
     echo Making builder defconfig.
-    cp ../${def}/rpi0-noinitrd_defconfig arch/arm/configs/
+    cp -f ../${def}/rpi0-noinitrd_defconfig arch/arm/configs/
     make KBUILD_DEBARCH=armel ARCH=arm rpi0-noinitrd_defconfig &> /dev/null
     echo Done.
     ;;
@@ -68,7 +68,7 @@ esac
 case `grep -Fx "custom_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
   0)
     echo Making ${MYCONFIG}.
-    cp ../${def}/${MYCONFIG} arch/arm/configs/
+    cp -f ../${def}/${MYCONFIG} arch/arm/configs/
     make KBUILD_DEBARCH=armel ARCH=arm ${MYCONFIG} &> /dev/null
     echo Done.
     ;;
