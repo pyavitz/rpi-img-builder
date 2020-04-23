@@ -135,16 +135,16 @@ kernel="linux-rpi"
 version="5.4.y"              # default
 
 Switches:
-0 = active
-1 = inactive
+1 = active
+0 = inactive
 
 --- default
-foundation_defconfig=0        # raspberry pi foundation
-lessfoundation_defconfig=1    # no initrd | less usb wireless support
-custom_defconfig=1            # your custom defconfig
-menuconfig=1                  # open menuconfig
-native=1                      # native compiling
-crosscompile=0                # cross compiling
+foundation_defconfig=1        # raspberry pi foundation
+lessfoundation_defconfig=0    # no initrd | less usb wireless support
+custom_defconfig=0            # your custom defconfig
+menuconfig=0                  # open menuconfig
+native=0                      # native compiling
+crosscompile=1                # cross compiling
 
 # user defconfig must be in defconfig directory
 MYCONFIG="nameofyour_defconfig"
