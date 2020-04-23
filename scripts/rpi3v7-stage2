@@ -69,6 +69,7 @@ chmod +x /usr/local/sbin/*
 chown -R root:root /usr/local/bin/
 chown -R root:root /usr/local/sbin/
 chown -R root:root /usr/local/src/
+echo Done.
 
 #### MOTD
 echo
