@@ -149,6 +149,9 @@ crosscompile=1                # cross compiling
 # user defconfig must be in defconfig directory
 MYCONFIG="nameofyour_defconfig"
 ```
+### Support
+
+Create an issue or visit us on freenode `#debianarm-port`
 
 ### Funding
 
