@@ -278,7 +278,6 @@ echo Done.
 echo
 echo Fixing ca certificates.
 sleep 1s
-apt install -y python python-setuptools
 mkdir -p certificates
 cd certificates
 wget -cq http://deb.debian.org/debian/pool/main/c/ca-certificates/ca-certificates_20190110.tar.xz
@@ -293,7 +292,7 @@ echo Done.
 
 ### Htop
 echo
-echo Installing htop cpufreq and thermal support.
+echo Installing htop with cpufreq and thermal support.
 sleep 1s
 git clone https://github.com/leeadama/htop.git
 cd htop
