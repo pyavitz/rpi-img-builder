@@ -33,7 +33,7 @@ echo Done.
 echo
 
 ### Foundation defconfig
-case `grep -Fx "foundation_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
+case `grep -Fx "foundation_defconfig=1" "../../kernel.txt" >/dev/null; echo $?` in
   0)
     echo Making foundation defconfig.
     make ARCH=arm bcm2711_defconfig &> /dev/null
@@ -48,7 +48,7 @@ case `grep -Fx "foundation_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` 
 esac
 
 ### Builder defconfig
-case `grep -Fx "lessfoundation_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
+case `grep -Fx "lessfoundation_defconfig=1" "../../kernel.txt" >/dev/null; echo $?` in
   0)
     echo Making builder defconfig.
     cp -f ../${def}/rpi4v7-noinitrd_defconfig arch/arm/configs/
@@ -64,7 +64,7 @@ case `grep -Fx "lessfoundation_defconfig=0" "../../kernel.txt" >/dev/null; echo 
 esac
 
 ### Custom defconfig
-case `grep -Fx "custom_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
+case `grep -Fx "custom_defconfig=1" "../../kernel.txt" >/dev/null; echo $?` in
   0)
     echo Making ${MYCONFIG}.
     cp -f ../${def}/${MYCONFIG} arch/arm/configs/
@@ -80,7 +80,7 @@ case `grep -Fx "custom_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
 esac
 
 ### Menuconfig
-case `grep -Fx "menuconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
+case `grep -Fx "menuconfig=1" "../../kernel.txt" >/dev/null; echo $?` in
   0)
     echo
     echo Opening menuconfig.
@@ -96,7 +96,7 @@ case `grep -Fx "menuconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
 esac
 
 ### Build deb
-case `grep -Fx "native=0" "../../kernel.txt" >/dev/null; echo $?` in
+case `grep -Fx "native=1" "../../kernel.txt" >/dev/null; echo $?` in
   0)
     echo
     echo --- Building deb packages.
@@ -111,7 +111,7 @@ case `grep -Fx "native=0" "../../kernel.txt" >/dev/null; echo $?` in
     ;;
 esac
 
-case `grep -Fx "crosscompile=0" "../../kernel.txt" >/dev/null; echo $?` in
+case `grep -Fx "crosscompile=1" "../../kernel.txt" >/dev/null; echo $?` in
   0)
     echo
     echo --- Building deb packages.
