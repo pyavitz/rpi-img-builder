@@ -60,8 +60,8 @@ esac
 ### Custom defconfig
 case `grep -Fx "custom_defconfig=0" "../../kernel.txt" >/dev/null; echo $?` in
   0)
-   cp ../${def}/custom_defconfig arch/arm/configs/
-    make KBUILD_DEBARCH=armel ARCH=arm custom_defconfig
+   cp ../${def}/${MYCONFIG} arch/arm/configs/
+    make KBUILD_DEBARCH=armel ARCH=arm ${MYCONFIG}
     ;;
   1)
     echo
