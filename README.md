@@ -1,7 +1,7 @@
 
 &#x1F538; `master branch`
 
-# Supported boards: RPi4B, RPi3B/+ and RPi0W
+# Supported boards: RPi4B, RPi3B/+ and RPi0/W/1/+
 
 Debian Image Builder for the Raspberry Pi 
 
