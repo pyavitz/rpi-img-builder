@@ -19,6 +19,7 @@ cd /usr/local/src
 cp -f rpi-eeprom-update.patch /home/$USER/.build/eeprom/rpi-eeprom-update.patch
 cp -f rpi-eeprom-control.patch /home/$USER/.build/eeprom/rpi-eeprom-control.patch
 cd /home/$USER/.build/eeprom
+echo Done.
 echo
 
 echo Downloading rpi-eeprom.
