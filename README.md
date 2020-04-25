@@ -1,9 +1,12 @@
 
-&#x1F538; `master branch`
-
-# Supported boards: RPi4B, RPi3B/+ and RPi0/W/1/+
+# rpi-img-builder
 
 Debian Image Builder for the Raspberry Pi 
+
+The boards that are currently supported are;
+* RPi4B
+* RPi3B/+
+* and RPi0/W/1/+
 
 ### Downloadable Image
 
@@ -36,8 +39,8 @@ Alternatively, you can run the command `make install-depends` in this directory.
 * Install all dependencies
 
 ```sh
-make install-depends        (cross compile)
-make install-native-depends (native compile)
+make install-depends        # (cross compile)
+make install-native-depends # (native compile)
 ```
 
 * Compile the kernel
@@ -89,12 +92,12 @@ make allv7
 * Raspberry Pi 3B/+
 
 ```sh
-AARCH64
+# AARCH64
 make rpi3-kernel
 make rpi3-image
 make rpi3-all
 
-ARMv7l
+# ARMv7l
 make rpi3-kernelv7
 make rpi3-imagev7
 make rpi3-allv7
@@ -103,7 +106,7 @@ make rpi3-allv7
 * Raspberry Pi 0W
 
 ```sh
-ARMv6l
+# ARMv6l
 make rpi0-kernel
 make rpi0-image
 make rpi0-all
@@ -112,9 +115,9 @@ make rpi0-all
 * Root Filesystems
 
 ```sh
-make rootfs   (arm64)
-make rootfsv7 (armhf)
-make rootfsv6 (armel)
+make rootfs   # (arm64)
+make rootfsv7 # (armhf)
+make rootfsv6 # (armel)
 ```
 
 * Miscellaneous
@@ -127,18 +130,22 @@ make commands
 
 ## Howto
 
-* Kernel
+### Kernel
+
+#### Kernel branch:
 
 ```sh
-Kernel branch:               # https://github.com/raspberrypi/linux
-kernel="linux-rpi"
-version="5.4.y"              # default
+kernel="linux-rpi" # See: https://github.com/raspberrypi/linux
+version="5.4.y"    # default
+```
 
-Switches:
-1 = active
-0 = inactive
+#### Switches:
 
---- default
+```sh
+# 1 = active
+# 0 = inactive
+
+# --- default
 foundation_defconfig=1        # raspberry pi foundation
 lessfoundation_defconfig=0    # no initrd | less usb wireless support
 custom_defconfig=0            # your custom defconfig
@@ -151,7 +158,7 @@ MYCONFIG="nameofyour_defconfig"
 ```
 ### Support
 
-Create an issue or visit us on freenode `#debianarm-port`
+Create an issue or join our channel on Freenode; [`#debianarm-port`](irc://irc.freenode.net/#debianarmport)
 
 ### Funding
 
