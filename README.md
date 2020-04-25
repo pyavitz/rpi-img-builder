@@ -158,7 +158,7 @@ MYCONFIG="nameofyour_defconfig"
 ```
 ### Support
 
-Create an issue or join our channel on Freenode; [`#debianarm-port`](irc://irc.freenode.net/#debianarmport)
+Create an issue or join our channel on Freenode; [`#debianarm-port`](irc://irc.freenode.net/#debianarm-port)
 
 ### Funding
 
