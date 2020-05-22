@@ -56,7 +56,7 @@ while true; do
       make image
       dialog --prgbox "Results:" "ls *.img" 30 60\
       ;;
-    3 )
+    4 )
       make all
       dialog --prgbox "Results:" "ls *.img *aarch64* rpi4/*.deb" 30 60\
       exit 0
