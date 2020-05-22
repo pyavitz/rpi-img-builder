@@ -56,7 +56,7 @@ while true; do
       make rpi-image
       dialog --prgbox "Results:" "ls *.img" 30 60\
       ;;
-    3 )
+    4 )
       make rpi-all
       dialog --prgbox "Results:" "ls *.img *armel* rpi0/*.deb" 30 60\
       exit 0
