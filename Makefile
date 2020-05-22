@@ -80,7 +80,7 @@ commands:
 	@echo
 	@echo "Root filesystem:"
 	@echo
-	@echo "  make rootfs (default)	  arm64"
+	@echo "  make rootfs		  arm64"
 	@echo "  make rootfsv6		  armel"
 	@echo
 
