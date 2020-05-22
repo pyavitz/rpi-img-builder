@@ -1,0 +1,8 @@
+#!/bin/bash
+temp=$(/opt/vc/bin/vcgencmd measure_temp | egrep -o '[0-9]*\.[0-9]*')
+echo
+figlet -f small "Raspberry Pi" -c
+echo
+echo -e "CPU Temp: " $temp°C
+echo -e "Uptime:   " $(uptime)
+echo

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+## Simple Wifi Scanner
+
+spinner() {
+    local i sp n
+    sp='|\-/'
+    n=${#sp}
+    printf ' '
+    while sleep 0.1; do
+        printf "%s\b" "${sp:i++%n:1}"
+    done
+}
+echo
+printf 'Scanning: '
+spinner &
+
+printf '\n'
+sudo iwlist wlan0 scan | grep 'ESSID:\|Frequency:\|Quality='
+
+kill "$!" # kill the spinner
+printf '\n'

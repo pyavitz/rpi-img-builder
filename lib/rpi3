@@ -1,0 +1,65 @@
+#!/bin/bash
+### DO NOT EDIT
+
+DIALOG_CANCEL=1
+DIALOG_ESC=255
+HEIGHT=0
+WIDTH=0
+
+display_result() {
+  dialog --title "$1" \
+    --no-collapse \
+    --msgbox "$result" 0 0
+}
+
+while true; do
+  exec 3>&1
+  selection=$(dialog \
+    --backtitle "Raspberry Pi Image Builder" \
+    --title "Raspberry Pi 3B/+" \
+    --clear \
+    --cancel-label "Exit" \
+    --menu "Select:" $HEIGHT $WIDTH 4 \
+    "1" "Make Kernel" \
+    "2" "Make ROOTFS" \
+    "3" "Make Image" \
+    "4" "Make All" \
+    2>&1 1>&3)
+  exit_status=$?
+  exec 3>&-;
+  case $exit_status in
+    $DIALOG_CANCEL)
+      clear
+      echo "Program terminated."
+      exit
+      ;;
+    $DIALOG_ESC)
+      clear
+      echo "Program aborted." >&2
+      exit 1
+      ;;
+  esac
+  case $selection in
+    0 )
+      clear
+      echo "Program terminated."
+      ;;
+    1 )
+      make rpi3-kernel
+      dialog --prgbox "Results:" "ls rpi3/*.deb" 30 60
+      ;;
+    2 )
+      make rootfs
+      dialog --prgbox "Results:" "ls *aarch64*" 30 60
+      ;;
+    3 )
+      make rpi3-image
+      dialog --prgbox "Results:" "ls *.img" 30 60\
+      ;;
+    3 )
+      make rpi3-all
+      dialog --prgbox "Results:" "ls *.img *aarch64* rpi4/*.deb" 30 60\
+      exit 0
+      ;;
+  esac
+done

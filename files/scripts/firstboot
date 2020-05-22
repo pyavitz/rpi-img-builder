@@ -1,0 +1,21 @@
+#!/bin/bash
+### Grow Partition
+bash growpart /dev/mmcblk0 2
+sleep 1s
+resize2fs /dev/mmcblk0p2
+### Renew SSH keys
+sleep 1s
+/bin/rm -v /etc/ssh/ssh_host_*
+dpkg-reconfigure openssh-server
+systemctl restart ssh
+### Fix boot partition
+umount /boot
+sleep 1s
+fsck.fat -trawl /dev/mmcblk0p1
+sleep 1s
+mount /boot
+### Clean up
+systemctl disable firstboot
+rm -f /var/cache/debconf/*
+rm -f /usr/local/sbin/firstboot
+echo

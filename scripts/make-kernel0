@@ -1,0 +1,103 @@
+#!/bin/bash
+source lib/kernel.txt
+source userdata.txt
+mkdir -p ${TMP0}
+cd ${TMP0}
+
+### Download kernel
+echo
+echo Downloading kernel.
+wget -cq --show-progress https://github.com/raspberrypi/linux/archive/rpi-${VERSION}.tar.gz
+echo Done.
+
+### Extract
+echo
+echo Extracting archive.
+tar -xf rpi-${VERSION}.tar.gz
+#rm -f rpi-${VERSION}.tar.gz #remove
+echo Done.
+
+### Setup
+cd ${KERNEL}-${VERSION}
+export ARCH=arm
+KERNEL=kernel
+
+### Clean kernel
+#make clean
+#make mrproper
+
+### Patching
+case `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null; echo $?` in
+  0)
+    echo
+    echo Applying cc packaging patch.
+    patch -p1 < ../${CC}/rpi-packaging.patch
+    cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch
+    sed -i 's/export INITRD=$want_initrd/export INITRD=No/g' scripts/package/builddeb
+    sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
+    echo Done.
+    echo
+    ;;
+  1)
+    echo
+    echo Applying nc packaging patch.
+    patch -p1 < ../${NC}/rpi-packaging.patch
+    sed -i 's/export INITRD=$want_initrd/export INITRD=No/g' scripts/package/builddeb
+    sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
+    echo Done.
+    echo
+    ;;
+  *)
+    #
+    ;;
+esac
+
+### Defconfig
+case `grep -Fx "custom_defconfig=1" "../../userdata.txt" >/dev/null; echo $?` in
+  0)
+    echo Making ${MYCONFIG}.
+    cp -f ../${DEF}/${MYCONFIG} arch/arm/configs/
+    make KBUILD_DEBARCH=armel ARCH=arm ${MYCONFIG}
+    echo Done.
+    ;;
+  1)
+    echo Making foundation defconfig.
+    make KBUILD_DEBARCH=armel ARCH=arm bcmrpi_defconfig &> /dev/null
+    echo Done.
+    ;;
+  *)
+    #
+    ;;
+esac
+
+### Menuconfig
+case `grep -Fx "menuconfig=1" "../../userdata.txt" >/dev/null; echo $?` in
+  0)
+    echo
+    echo Opening menuconfig.
+    sleep 1s
+    make KBUILD_DEBARCH=armel ARCH=arm menuconfig
+    ;;
+  *)
+    #
+    ;;
+esac
+
+### Build deb
+case `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null; echo $?` in
+  0)
+    echo -- CC
+    echo --- Building deb packages.
+    make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- bindeb-pkg
+    ;;
+  1)
+    echo -- NC
+    echo --- Building deb packages.
+    make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm bindeb-pkg
+    ;;
+  *)
+    #
+    ;;
+esac
+echo Done.
+echo

@@ -1,0 +1,250 @@
+#!/bin/bash
+source lib/config.txt
+source userdata.txt
+
+set -x
+RAM=0
+PROXY=""
+IMAGE_FOLDER="img/"
+IMAGE_DEVICE_TREE="broadcom/bcm2710-rpi-3-b-plus"
+DEVICE_SOC="bcm2710-rpi-3-b"
+
+set -eux -o pipefail
+IMAGE_LINUX_LOADADDR="0x1080000"
+IMAGE_DATE="$(date +%F)"
+IMAGE_FILE_NAME="${DEVICE_SOC}-debian-${DEBIAN_VERSION}-${IMAGE_DATE}-v8.img"
+if [ $RAM -ne 0 ]; then
+	IMAGE_FOLDER="ram/"
+fi
+mkdir -p "$IMAGE_FOLDER"
+if [ $RAM -ne 0 ]; then
+	mount -t tmpfs -o size=3G tmpfs $IMAGE_FOLDER
+fi
+truncate -s ${RPI3} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
+fdisk "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" <<EOF
+o
+n
+p
+1
+2048
+524287
+a
+c
+t
+b
+n
+p
+2
+524288
+
+p
+w
+
+EOF
+IMAGE_LOOP_DEV="$(losetup --show -f ${IMAGE_FOLDER}${IMAGE_FILE_NAME})"
+IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
+IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
+partprobe "${IMAGE_LOOP_DEV}"
+mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
+mkfs.ext4 -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}"
+mkdir -p p1 p2
+mount "${IMAGE_LOOP_DEV_BOOT}" p1
+mount "${IMAGE_LOOP_DEV_ROOTFS}" p2
+sync
+umount p2
+mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2
+
+### Cmdline
+tee p1/cmdline.txt <<EOF
+console=serial0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline fsck.repair=yes logo.nologo rootwait
+EOF
+
+### Rpi config
+tee p1/config.txt <<EOF
+arm_64bit=1
+kernel=kernel8.img
+
+# For more options and information see
+# http://rpf.io/configtxt
+# Some settings may impact device functionality. See link above for details
+
+# uncomment if you get no picture on HDMI for a default "safe" mode
+#hdmi_safe=1
+
+# uncomment this if your display has a black border of unused pixels visible
+# and your display can output without overscan
+disable_overscan=1
+
+# uncomment the following to adjust overscan. Use positive numbers if console
+# goes off screen, and negative if there is too much border
+#overscan_left=16
+#overscan_right=16
+#overscan_top=16
+#overscan_bottom=16
+
+# uncomment to force a console size. By default it will be display's size minus
+# overscan.
+#framebuffer_width=1280
+#framebuffer_height=720
+
+### uncomment to set display to 1024x768
+#overscan_left=0
+#overscan_right=0
+#overscan_top=0
+#overscan_bottom=0
+
+#framebuffer_width=1024
+#framebuffer_height=768
+#framebuffer_depth=16
+
+#hdmi_group=2
+#hdmi_mode=16
+
+# uncomment if hdmi display is not detected and composite is being output
+#hdmi_force_hotplug=1
+
+# uncomment to force a specific HDMI mode (this will force VGA)
+#hdmi_group=1
+#hdmi_mode=1
+
+# uncomment to force a HDMI mode rather than DVI. This can make audio work in
+# DMT (computer monitor) modes
+#hdmi_drive=2
+
+# uncomment to increase signal to HDMI, if you have interference, blanking, or
+# no display
+#config_hdmi_boost=4
+
+# uncomment for composite PAL
+#sdtv_mode=2
+
+# camera
+#start_x=1
+gpu_mem=128
+
+# uncomment to overclock the arm. 700 MHz is the default.
+#arm_freq=800
+
+# uncomment some or all of these to enable the optional hardware interfaces
+#dtparam=i2c_arm=on
+#dtparam=i2s=on
+#dtparam=spi=on
+
+# uncomment this to enable infrared communication.
+#dtoverlay=gpio-ir,gpio_pin=17
+#dtoverlay=gpio-ir-tx,gpio_pin=18
+
+# additional overlays and parameters are documented /boot/overlays/README
+
+# enable audio (loads snd_bcm2835)
+dtparam=audio=on
+
+# enable uart
+enable_uart=0
+
+# Disable wifi and bluetooth
+#dtoverlay=pi3-disable-wifi
+#dtoverlay=pi3-disable-bt
+
+# Remove test rainbow
+disable_splash=1
+EOF
+
+### Fetching boot bits
+mkdir -p firmware/boot
+wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/bootcode.bin
+wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup.dat
+wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup_cd.dat
+wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup_db.dat
+wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup_x.dat
+wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start.elf
+wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start_cd.elf
+wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start_db.elf
+wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start_x.elf
+wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/LICENCE.broadcom
+wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/COPYING.linux
+
+### Installing boot bits
+install -v -m 0644 firmware/boot/bootcode.bin p1/
+install -v -m 0644 firmware/boot/fixup*.dat p1/
+install -v -m 0644 firmware/boot/start*.elf p1/
+install -v -m 0644 firmware/boot/LICENCE.broadcom p1/
+install -v -m 0644 firmware/boot/COPYING.linux p1/
+
+### Cleaning
+rm -f firmware/boot/*
+
+### Debian Rootfs
+tar -xf debian-${DEBIAN_VERSION}-rootfs-aarch64.tar.xz -C p2/
+
+mkdir -p p2/etc/apt/apt.conf.d p2/etc/dpkg/dpkg.cfg.d
+echo "force-unsafe-io" > "p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
+
+mkdir -p p2/usr/bin
+cp $(which "qemu-aarch64-static") p2/usr/bin
+
+tee p2/etc/apt/sources.list <<EOF
+deb http://deb.debian.org/debian ${DEBIAN_VERSION} main contrib non-free
+deb http://deb.debian.org/debian ${DEBIAN_VERSION}-updates main contrib non-free
+deb http://security.debian.org/debian-security ${DEBIAN_VERSION}/updates main contrib non-free
+deb http://deb.debian.org/debian/ ${DEBIAN_VERSION}-backports main contrib non-free
+EOF
+
+tee p2/etc/fstab <<EOF
+/dev/mmcblk0p1	/boot		vfat    defaults 0 2
+/dev/mmcblk0p2	/		ext4	defaults,noatime,nodiratime,commit=600,errors=remount-ro 0 1
+tmpfs		/tmp		tmpfs	defaults,nosuid 0 0
+EOF
+
+if [ -n "$PROXY" ] ; then
+	tee "p2/etc/apt/apt.conf.d/30proxy" <<EOF
+Acquire::http::proxy "http://127.0.0.1:3142";
+EOF
+fi
+
+# Setup stage2
+cp scripts/rpi3-stage2 p2/root
+cp lib/config.txt p2/root
+cp userdata.txt p2/root
+cp ${TMP3}/*.deb p2/root
+cp files/misc/* p2/root
+cp files/patches/* p2/root
+cp files/rules/* p2/root
+cp files/scripts/* p2/root
+cp files/users/* p2/root
+cp firmware/fw-0a5c_21e8.hcd p2/root
+wget -cq --show-progress https://github.com/RPi-Distro/firmware-nonfree/archive/master.zip
+mv master.zip p2/root
+# Mount and chroot
+mount -o bind p1 p2/boot
+mount -o bind /dev p2/dev
+mount -o bind /dev/pts p2/dev/pts
+chroot p2 /root/rpi3-stage2
+# unmount
+umount p2/dev/pts
+umount p2/dev
+umount p2/boot
+
+rm p2/usr/bin/qemu-aarch64-static
+rm p2/root/rpi3-stage2
+rm p2/root/config.txt
+rm p2/root/userdata.txt
+
+if [ -n "$PROXY" ] ; then
+	rm p2/etc/apt/apt.conf.d/30proxy
+fi
+rm p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
+
+### Finish
+e4defrag -c p2
+
+umount p2
+umount p1
+
+losetup -d "${IMAGE_LOOP_DEV}"
+mv "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" "${IMAGE_FILE_NAME}"
+if [ $RAM -ne 0 ]; then
+	umount "${IMAGE_FOLDER}"
+fi
+rmdir "${IMAGE_FOLDER}"
+rmdir p1 p2

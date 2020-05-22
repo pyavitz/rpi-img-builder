@@ -1,0 +1,57 @@
+#!/bin/bash
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+source /home/$USER/.eeprom
+
+echo Checking for updates.
+sudo apt update
+sudo apt upgrade -y
+sudo apt install help2man rsync python pciutils -y
+
+### RPI-EEPROM INSTALL/UPDATE
+echo
+echo Setting up build dir.
+sleep 2s
+mkdir -p /home/$USER/.build/eeprom
+cd /usr/local/src
+cp -f rpi-eeprom-update.patch /home/$USER/.build/eeprom/rpi-eeprom-update.patch
+cp -f rpi-eeprom-control.patch /home/$USER/.build/eeprom/rpi-eeprom-control.patch
+cd /home/$USER/.build/eeprom
+echo Done.
+echo
+
+echo Downloading rpi-eeprom.
+sleep 1s
+wget -cq https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
+wget -cq https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz
+echo Done.
+
+echo
+echo Building and installing rpi-eeprom debs.
+tar xf rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz
+tar xf rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
+rm -f rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
+mkdir -p debian/patches
+mv rpi-eeprom-update.patch debian/patches/rpi-eeprom-update.patch 
+echo rpi-eeprom-update.patch >> debian/patches/series
+mv -f debian rpi-eeprom-${EEPROM_VERSION}/
+mv rpi-eeprom-control.patch rpi-eeprom-${EEPROM_VERSION}/
+cd rpi-eeprom-${EEPROM_VERSION}
+patch -p2 < rpi-eeprom-control.patch
+rm -f rpi-eeprom-control.patch
+dpkg-buildpackage -us -uc
+cd ..
+sudo dpkg -i *.deb
+cd ..
+echo Done.
+echo
+sleep 1s
+echo Cleaning up.
+cd /home/$USER
+rm -fdr /home/$USER/.build/eeprom
+sleep 1s
+echo Done.
+echo
+echo Check for update - sudo rpi-eeprom-update
+echo Update bootloader - sudo rpi-eeprom-update -a
+echo

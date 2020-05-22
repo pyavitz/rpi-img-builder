@@ -1,0 +1,11 @@
+# ROOT
+# set element fgcolor,bgcolor
+set titlecolor brightred,black
+set statuscolor brightred,black
+set errorcolor brightwhite,red
+set selectedcolor brightwhite,magenta
+set numbercolor yellow
+set keycolor yellow
+set functioncolor red
+
+include "/usr/share/nano/*.nanorc"
