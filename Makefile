@@ -34,7 +34,7 @@ CLEAN=sudo ./scripts/clean
 
 help:
 	@echo
-	@echo "Check config.txt for options"
+	@echo "Raspberry Pi Image Builder"
 	@echo
 	@echo "Usage: "
 	@echo
