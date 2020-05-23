@@ -43,7 +43,7 @@ help:
 	@echo "  make menu              User menu interface"
 	@echo "  make cleanup           Clean up image errors"
 	@echo "  make purge             Remove tmp directory"
-	@echo "  make commands          List of all commands"
+	@echo "  make commands          List legacy commands"
 	@echo
 	@echo "For details consult the README.md"
 	@echo
