@@ -58,7 +58,7 @@ while true; do
       ;;
     4 )
       make rpi3-all
-      dialog --prgbox "Results:" "ls *.img *aarch64* rpi4/*.deb" 30 60
+      dialog --prgbox "Results:" "ls *.img *aarch64* rpi3/*.deb" 30 60
       exit 0
       ;;
   esac
