@@ -1,8 +1,6 @@
 `feature branch`
 
-### README is depreciated and needs to be updated.
-
-Debian Image Builder for the Raspberry Pi 
+## Debian Image Builder for the Raspberry Pi 
 
 The boards that are currently supported are;
 * Raspberry Pi 4B (bcm2711)
