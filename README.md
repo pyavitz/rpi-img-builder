@@ -25,7 +25,7 @@ Alternatively, you can run the command `make install-depends` in this directory.
 
 ## Instructions
 
-* Make sure to adjust `config.txt` & `kernel.txt` with your own configurations before proceeding.
+* Make sure to run `make config` before proceeding.
 
 * Install all dependencies
 
@@ -34,39 +34,16 @@ make install-depends        # (cross compile)
 make install-native-depends # (native compile)
 ```
 
-* Compile the kernel
+#### Menu interface
 
-```sh
-make kernel
+```ssh
+make config
+make menu
 ```
 
-* Prepare the rootfs
+## Command list (legacy)
 
-```sh
-make rootfs
-```
-
-* Create a bootable Debian image
-
-```sh
-make image
-```
-
-* Clean up image errors
-
-```sh
-make cleanup
-```
-
-* Remove all tmp directories
-
-```sh
-make purge
-```
-
-## Command list (current)
-
-#### Raspberry Pi 4B (default)
+#### Raspberry Pi 4B
 
 ```sh
 # AARCH64
