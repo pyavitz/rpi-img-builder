@@ -27,7 +27,7 @@ Alternatively, you can run the command `make install-depends` in this directory.
 
 * Make sure to run `make config` before proceeding.
 
-* Install all dependencies
+#### Install dependencies
 
 ```sh
 make install-depends        # (cross compile)
@@ -39,6 +39,13 @@ make install-native-depends # (native compile)
 ```ssh
 make config
 make menu
+```
+#### Miscellaneous
+
+```sh
+make cleanup
+make purge
+make commands
 ```
 
 ## Command list (legacy)
@@ -75,14 +82,6 @@ make rpi-all
 ```sh
 make rootfs   # (arm64)
 make rootfsv6 # (armel)
-```
-
-#### Miscellaneous
-
-```sh
-make cleanup
-make purge
-make commands
 ```
 
 ## Usage
