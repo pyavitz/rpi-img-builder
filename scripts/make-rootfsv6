@@ -9,7 +9,7 @@ IMAGE_FOLDER="img/"
 IMAGE_VERSION="rootfs-armel"
 FILE=debian-${DEBIAN_VERSION}-${IMAGE_VERSION}.tar.xz
 if ls $FILE &>/dev/null; then exit; 
-        else echo "file not found";
+	else echo "file not found";
 fi
 if [ ! -z "$1" ]; then
 	IMAGE_VERSION="$1"
@@ -28,71 +28,63 @@ mkdir -p "$IMAGE_FOLDER"
 if [ $RAM -ne 0 ]; then
 	mount -t tmpfs -o size=1G tmpfs $IMAGE_FOLDER
 fi
-truncate -s 1000MB "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
+truncate -s 1100MB "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
 fdisk "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" <<EOF
 o
 n
 p
 1
 2048
-262143
 a
 t
 b
-n
-p
-2
-262144
+2148436
 
 p
 w
 
 EOF
 IMAGE_LOOP_DEV="$(losetup --show -f ${IMAGE_FOLDER}${IMAGE_FILE_NAME})"
-IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
-IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
+IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p1"
 partprobe "${IMAGE_LOOP_DEV}"
-mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
 mkfs.ext4 -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}"
-mkdir -p p1 p2
-mount "${IMAGE_LOOP_DEV_BOOT}" p1
-mount "${IMAGE_LOOP_DEV_ROOTFS}" p2
+mkdir -p p1
+mount "${IMAGE_LOOP_DEV_ROOTFS}" p1
 sync
-umount p2
-mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2
+umount p1
+mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p1
 
-mkdir -p p2/etc/apt/apt.conf.d p2/etc/dpkg/dpkg.cfg.d
-echo "force-unsafe-io" > "p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
-mkdir -p p2/usr/bin
-cp $(which "qemu-arm-static") p2/usr/bin
+mkdir -p p1/etc/apt/apt.conf.d p1/etc/dpkg/dpkg.cfg.d
+echo "force-unsafe-io" > "p1/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
+mkdir -p p1/usr/bin
+cp $(which "qemu-arm-static") p1/usr/bin
 if [ -n "$PROXY" ] ; then
-    http_proxy="$PROXY" debootstrap --arch armel --foreign ${DEBIAN_VERSION} p2
-    http_proxy="$PROXY" chroot p2 /debootstrap/debootstrap --second-stage
+    http_proxy="$PROXY" debootstrap --arch armel --foreign ${DEBIAN_VERSION} p1
+    http_proxy="$PROXY" chroot p1 /debootstrap/debootstrap --second-stage
 else
-    debootstrap --arch armel --foreign ${DEBIAN_VERSION} p2
-    chroot p2 /debootstrap/debootstrap --second-stage
+    debootstrap --arch armel --foreign ${DEBIAN_VERSION} p1
+    chroot p1 /debootstrap/debootstrap --second-stage
 fi
 if [ -n "$PROXY" ] ; then
-	tee "p2/etc/apt/apt.conf.d/30proxy" <<EOF
+	tee "p1/etc/apt/apt.conf.d/30proxy" <<EOF
 Acquire::http::proxy "http://127.0.0.1:3142";
 EOF
 fi
 
-rm p2/usr/bin/qemu-arm-static
+rm p1/usr/bin/qemu-arm-static
 
 if [ -n "$PROXY" ] ; then
-	rm p2/etc/apt/apt.conf.d/30proxy
+	rm p1/etc/apt/apt.conf.d/30proxy
 fi
-rm p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
+rm p1/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
 
 ### Finish
-e4defrag -c p2
+e4defrag -c p1
 
-cd p2
+cd p1
 tar cfJ ../debian-${DEBIAN_VERSION}-${IMAGE_VERSION}.tar.xz *
 cd ..
 
-umount p2
 umount p1
 
 losetup -d "${IMAGE_LOOP_DEV}"
@@ -101,5 +93,5 @@ if [ $RAM -ne 0 ]; then
 	umount "${IMAGE_FOLDER}"
 fi
 rmdir "${IMAGE_FOLDER}"
-rmdir p1 p2
+rmdir p1
 rm -f debian-${DEBIAN_VERSION}-${IMAGE_VERSION}.img
