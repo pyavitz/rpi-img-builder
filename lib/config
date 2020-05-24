@@ -42,7 +42,5 @@ rm -f tmp0 tmp1 tmp2
 clear
 
 # userdata
-sleep 1s
 echo userdata file created.
 echo
-echo execute: make menu
