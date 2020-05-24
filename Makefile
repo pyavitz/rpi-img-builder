@@ -39,7 +39,7 @@ help:
 	@echo "Usage: "
 	@echo
 	@echo "  make install-depends   Install all dependencies"
-	@echo "  make config            Set user options"
+	@echo "  make config            Create user data file"
 	@echo "  make menu              User menu interface"
 	@echo "  make cleanup           Clean up image errors"
 	@echo "  make purge             Remove tmp directory"
