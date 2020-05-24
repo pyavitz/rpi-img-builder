@@ -37,3 +37,12 @@ echo '"' >> tmp2
 echo '"' >> tmp2
 paste -d '\0' tmp0 tmp1 tmp2  > userdata.txt
 rm -f tmp0 tmp1 tmp2
+
+# clear screen
+clear
+
+# userdata
+sleep 1s
+echo userdata file created.
+echo
+echo execute: make menu
