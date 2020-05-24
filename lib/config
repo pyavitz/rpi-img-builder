@@ -32,6 +32,7 @@ echo passwd='"' >> tmp0
 echo VERSION='"' >> tmp0
 echo menuconfig= >> tmp0
 echo crosscompile= >> tmp0
+echo custom_defconfig=0 >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
 echo '"' >> tmp2
