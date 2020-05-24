@@ -35,15 +35,15 @@ make install-native-depends # (native compile)
 #### Menu interface
 
 ```ssh
-make config
-make menu
+make config     # Create user data file
+make menu       # Open menu interface
 ```
 #### Miscellaneous
 
 ```sh
-make cleanup
-make purge
-make commands
+make cleanup    # Clean up image errors
+make purge      # Remove tmp directory
+make commands   # List legacy commands
 ```
 
 ## Command list (legacy)
