@@ -1,10 +1,8 @@
-`feature branch`
-
 ## Debian Image Builder for the Raspberry Pi 
 
 The boards that are currently supported are;
 * Raspberry Pi 4B (bcm2711)
-* Raspberry Pi 3B/3B+ (bcm2709, bcm2837, bcm2837b0)
+* Raspberry Pi 3B/3B+ (bcm2710, bcm2837, bcm2837b0)
 * Raspberry Pi 0/0W/1/+ (bcm2708, bcm2835)
 
 ## Dependencies
@@ -22,8 +20,6 @@ This has been tested on an AMD64/x86_64 system running on [Debian Buster](https:
 Alternatively, you can run the command `make install-depends` in this directory.
 
 ## Instructions
-
-* Make sure to run `make config` before proceeding.
 
 #### Install dependencies
 
