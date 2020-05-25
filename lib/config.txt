@@ -30,4 +30,4 @@ EEPROM_VERSION="7.0"
 # motd
 BRAND4="Raspberry Pi 4B"
 BRAND3="Raspberry Pi 3B"
-BRAND0="RPiZERO"
+BRAND0="Raspberry Pi"
