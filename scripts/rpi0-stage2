@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-source /root/config.txt
+source /root/source.txt
 source /root/userdata.txt
 
 set -o errexit

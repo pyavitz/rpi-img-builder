@@ -1,6 +1,6 @@
 #!/bin/bash
 #ARMEL ROOTFS
-source lib/config.txt
+source lib/source.txt
 
 set -x
 RAM=0

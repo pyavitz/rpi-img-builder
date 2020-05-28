@@ -1,5 +1,5 @@
 #!/bin/bash
-source lib/kernel.txt
+source lib/source.txt
 source userdata.txt
 mkdir -p ${TMP0}
 cd ${TMP0}

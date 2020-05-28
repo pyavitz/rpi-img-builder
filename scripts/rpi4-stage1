@@ -1,5 +1,5 @@
 #!/bin/bash
-source lib/config.txt
+source lib/source.txt
 source userdata.txt
 
 set -x
@@ -211,7 +211,7 @@ fi
 
 # Setup stage2
 cp scripts/rpi4-stage2 p2/root
-cp lib/config.txt p2/root
+cp lib/source.txt p2/root
 cp userdata.txt p2/root
 cp ${TMP4}/*.deb p2/root
 cp files/misc/* p2/root
@@ -234,7 +234,7 @@ umount p2/boot
 
 rm p2/usr/bin/qemu-aarch64-static
 rm p2/root/rpi4-stage2
-rm p2/root/config.txt
+rm p2/root/source.txt
 rm p2/root/userdata.txt
 
 if [ -n "$PROXY" ] ; then
