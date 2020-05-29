@@ -13,14 +13,15 @@ tar -xf rpi-${VERSION}.tar.gz
 echo Done.
 }
 
-SETUP () {
+# armv6l
+ARMV6_SETUP () {
 cd ${KERNEL}-${VERSION}
-export ARCH=arm64
+export ARCH=arm
+KERNEL=kernel
 #make clean
 #make mrproper
 }
 
-# armv6l
 ARMV6_CCONFIG () {
     echo Making ${MYCONFIG}.
     cp -f ../${DEF}/${MYCONFIG} arch/arm/configs/
@@ -48,6 +49,13 @@ ARMV6_NCOMPILE () {
 }
 
 # aarch64
+ARMV8_SETUP () {
+cd ${KERNEL}-${VERSION}
+export ARCH=arm64
+#make clean
+#make mrproper
+}
+
 ARMV8_CCONFIG () {
     echo Making ${MYCONFIG}.
     cp -f ../${DEF}/${MYCONFIG} arch/arm64/configs/
