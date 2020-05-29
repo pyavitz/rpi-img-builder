@@ -33,6 +33,7 @@ make install-native-depends # (native compile)
 ```ssh
 make config     # Create user data file
 make menu       # Open menu interface
+make dialogrc   # Set builder theme
 ```
 #### Miscellaneous
 
