@@ -14,7 +14,7 @@ DOWNLOAD
 EXTRACT
 
 ### Setup
-SETUP
+ARMV6_SETUP
 
 ### Patching
 case `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null; echo $?` in
