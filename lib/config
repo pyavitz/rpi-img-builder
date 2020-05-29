@@ -1,4 +1,5 @@
 #!/bin/bash
+### DO NOT EDIT
 
 VERSION="5.4.y"
 crosscompile="1"
@@ -44,5 +45,5 @@ rm -f tmp0 tmp1 tmp2
 clear
 
 # userdata
-echo userdata file created.
+echo -e "\e[0;31m userdata file created."
 echo

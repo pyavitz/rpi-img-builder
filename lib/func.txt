@@ -1,0 +1,75 @@
+DOWNLOAD () {
+echo
+echo Downloading kernel.
+wget -cq --show-progress https://github.com/raspberrypi/linux/archive/rpi-${VERSION}.tar.gz
+echo Done.
+}
+
+EXTRACT () {
+echo
+echo Extracting archive.
+tar -xf rpi-${VERSION}.tar.gz
+#rm -f rpi-${VERSION}.tar.gz #remove
+echo Done.
+}
+
+SETUP () {
+cd ${KERNEL}-${VERSION}
+export ARCH=arm64
+#make clean
+#make mrproper
+}
+
+# armv6l
+ARMV6_CCONFIG () {
+    echo Making ${MYCONFIG}.
+    cp -f ../${DEF}/${MYCONFIG} arch/arm/configs/
+    make KBUILD_DEBARCH=armel ARCH=arm ${MYCONFIG}
+    echo Done.
+}
+
+ARMV6_MENUCONFIG () {
+    echo
+    echo Opening menuconfig.
+    sleep 1s
+    make KBUILD_DEBARCH=armel ARCH=arm menuconfig
+}
+
+ARMV6_CCOMPILE () {
+    echo -- CC
+    echo --- Building deb packages.
+    make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- bindeb-pkg
+}
+
+ARMV6_NCOMPILE () {
+    echo -- NC
+    echo --- Building deb packages.
+    make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm bindeb-pkg
+}
+
+# aarch64
+ARMV8_CCONFIG () {
+    echo Making ${MYCONFIG}.
+    cp -f ../${DEF}/${MYCONFIG} arch/arm64/configs/
+    make ARCH=arm64 ${MYCONFIG}
+    echo Done.
+}
+
+ARMV8_MENUCONFIG () {
+    echo
+    echo Opening menuconfig.
+    sleep 1s
+    make menuconfig
+}
+
+ARMV8_CCOMPILE () {
+    echo -- CC
+    echo --- Building deb packages.
+    make -j${CORES} ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
+}
+
+ARMV8_NCOMPILE () {
+    echo -- NC
+    echo --- Building deb packages.
+    make -j${CORES} ARCH=arm64 bindeb-pkg
+}

@@ -14,7 +14,7 @@ display_result() {
 
 while true; do
   exec 3>&1
-  selection=$(dialog \
+  selection=$(dialog --colors \
     --backtitle "Raspberry Pi Image Builder" \
     --title "Boards" \
     --clear \
@@ -29,19 +29,19 @@ while true; do
   case $exit_status in
     $DIALOG_CANCEL)
       clear
-      echo "Program terminated."
+      echo -e "\e[0;31m Program terminated."
       exit
       ;;
     $DIALOG_ESC)
       clear
-      echo "Program aborted." >&2
+      echo -e "\e[0;31m Program aborted." >&2
       exit 1
       ;;
   esac
   case $selection in
     0 )
       clear
-      echo "Program terminated."
+      echo -e "\e[0;31m Program terminated."
       ;;
     1 )
       chmod +x lib/rpi4

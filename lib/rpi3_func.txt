@@ -1,0 +1,28 @@
+# raspberry pi 3b
+
+CCPATCH () {
+    echo
+    echo Applying cc packaging patch.
+    patch -p1 < ../${CC}/rpi3b-packaging.patch
+    cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch
+    sed -i 's/export INITRD=$want_initrd/export INITRD=No/g' scripts/package/builddeb
+    sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
+    echo Done.
+    echo
+}
+
+NCPATCH () {
+    echo
+    echo Applying nc packaging patch.
+    patch -p1 < ../${NC}/rpi3b-packaging.patch
+    sed -i 's/export INITRD=$want_initrd/export INITRD=No/g' scripts/package/builddeb
+    sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
+    echo Done.
+    echo
+}
+
+RPI3_FCONFIG () {
+    echo Making bcmrpi3 defconfig.
+    make ARCH=arm64 bcmrpi3_defconfig &> /dev/null
+    echo Done.
+}

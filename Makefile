@@ -1,6 +1,7 @@
 # menu
 MENU=./lib/menu
 CONF=./lib/config
+DIALOGRC=$(shell cp -f lib/dialogrc ~/.dialogrc)
 
 # rootfs
 RFSV8=./scripts/make-rootfsv8
@@ -82,6 +83,10 @@ commands:
 	@echo
 	@echo "  make rootfs		  arm64"
 	@echo "  make rootfsv6		  armel"
+	@echo
+	@echo "Dialogrc:"
+	@echo
+	@echo "  make dialogrc		  Set builder theme"
 	@echo
 
 # aarch64
@@ -209,3 +214,7 @@ config:
 	# User config menu
 	@chmod +x ${CONF}
 	@${CONF}
+
+dialogrc:
+	# Builder theme set
+	@${DIALOGRC}

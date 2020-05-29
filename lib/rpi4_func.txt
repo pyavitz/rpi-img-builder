@@ -1,0 +1,28 @@
+# raspberry pi 4b
+
+CCPATCH () {
+    echo
+    echo Applying cc packaging patch.
+    patch -p1 < ../${CC}/rpi4b-packaging.patch
+    cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch
+    sed -i 's/export INITRD=$want_initrd/export INITRD=No/g' scripts/package/builddeb
+    sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
+    echo Done.
+    echo
+}
+
+NCPATCH () {
+    echo
+    echo Applying nc packaging patch.
+    patch -p1 < ../${NC}/rpi4b-packaging.patch
+    sed -i 's/export INITRD=$want_initrd/export INITRD=No/g' scripts/package/builddeb
+    sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
+    echo Done.
+    echo
+}
+
+RPI4_FCONFIG () {
+    echo Making bcm2711 defconfig.
+    make ARCH=arm64 bcm2711_defconfig &> /dev/null
+    echo Done.
+}
