@@ -14,7 +14,17 @@ DOWNLOAD
 EXTRACT
 
 ### Setup
-ARMV6_SETUP
+case `grep -Fx "edge=1" "../userdata.txt" >/dev/null; echo $?` in
+  0)
+    EDGEV6_SETUP
+    ;;
+  1)
+    ARMV6_SETUP
+    ;;
+  *)
+    #
+    ;;
+esac
 
 ### Patching
 case `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null; echo $?` in

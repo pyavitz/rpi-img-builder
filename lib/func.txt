@@ -22,6 +22,20 @@ KERNEL=kernel
 #make mrproper
 }
 
+EDGEV6_SETUP () {
+cd ${KERNEL}-${VERSION}
+export ARCH=arm
+KERNEL=kernel
+rm -f scripts/package/builddeb
+rm -f scripts/package/mkdebian
+cp -R ../${PAT}/builddeb scripts/package/
+cp -R ../${PAT}/mkdebian scripts/package/
+chmod +x scripts/package/builddeb
+chmod +x scripts/package/mkdebian
+#make clean
+#make mrproper
+}
+
 ARMV6_CCONFIG () {
     echo Making ${MYCONFIG}.
     cp -f ../${DEF}/${MYCONFIG} arch/arm/configs/
@@ -52,6 +66,19 @@ ARMV6_NCOMPILE () {
 ARMV8_SETUP () {
 cd ${KERNEL}-${VERSION}
 export ARCH=arm64
+#make clean
+#make mrproper
+}
+
+EDGEV8_SETUP () {
+cd ${KERNEL}-${VERSION}
+export ARCH=arm64
+rm -f scripts/package/builddeb
+rm -f scripts/package/mkdebian
+cp -R ../${PAT}/builddeb scripts/package/
+cp -R ../${PAT}/mkdebian scripts/package/
+chmod +x scripts/package/builddeb
+chmod +x scripts/package/mkdebian
 #make clean
 #make mrproper
 }
