@@ -1,6 +1,6 @@
 # raspberry pi 3b
 
-CCPATCH () {
+ccpatch () {
     echo
     echo Applying cc packaging patch.
     patch -p1 < ../${CC}/rpi3b-packaging.patch
@@ -11,7 +11,7 @@ CCPATCH () {
     echo
 }
 
-NCPATCH () {
+ncpatch () {
     echo
     echo Applying nc packaging patch.
     patch -p1 < ../${NC}/rpi3b-packaging.patch
@@ -21,7 +21,7 @@ NCPATCH () {
     echo
 }
 
-RPI3_FCONFIG () {
+rpi3_fconfig () {
     echo Making bcmrpi3 defconfig.
     make ARCH=arm64 bcmrpi3_defconfig &> /dev/null
     echo Done.

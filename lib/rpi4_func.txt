@@ -1,6 +1,6 @@
 # raspberry pi 4b
 
-CCPATCH () {
+ccpatch () {
     echo
     echo Applying cc packaging patch.
     patch -p1 < ../${CC}/rpi4b-packaging.patch
@@ -11,7 +11,7 @@ CCPATCH () {
     echo
 }
 
-NCPATCH () {
+ncpatch () {
     echo
     echo Applying nc packaging patch.
     patch -p1 < ../${NC}/rpi4b-packaging.patch
@@ -21,7 +21,7 @@ NCPATCH () {
     echo
 }
 
-RPI4_FCONFIG () {
+rpi4_fconfig () {
     echo Making bcm2711 defconfig.
     make ARCH=arm64 bcm2711_defconfig &> /dev/null
     echo Done.

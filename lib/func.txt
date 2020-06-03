@@ -1,11 +1,11 @@
-DOWNLOAD () {
+download () {
 echo
 echo Downloading kernel.
 wget -cq --show-progress https://github.com/raspberrypi/linux/archive/rpi-${VERSION}.tar.gz
 echo Done.
 }
 
-EXTRACT () {
+extract () {
 echo
 echo Extracting archive.
 tar -xf rpi-${VERSION}.tar.gz
@@ -14,7 +14,7 @@ echo Done.
 }
 
 # armv6l
-ARMV6_SETUP () {
+armv6_setup () {
 cd ${KERNEL}-${VERSION}
 export ARCH=arm
 KERNEL=kernel
@@ -22,7 +22,7 @@ KERNEL=kernel
 #make mrproper
 }
 
-EDGEV6_SETUP () {
+edgev6_setup () {
 cd ${KERNEL}-${VERSION}
 export ARCH=arm
 KERNEL=kernel
@@ -36,41 +36,41 @@ chmod +x scripts/package/mkdebian
 #make mrproper
 }
 
-ARMV6_CCONFIG () {
+armv6_cconfig () {
     echo Making ${MYCONFIG}.
     cp -f ../${DEF}/${MYCONFIG} arch/arm/configs/
     make KBUILD_DEBARCH=armel ARCH=arm ${MYCONFIG}
     echo Done.
 }
 
-ARMV6_MENUCONFIG () {
+armv6_menuconfig () {
     echo
     echo Opening menuconfig.
     sleep 1s
     make KBUILD_DEBARCH=armel ARCH=arm menuconfig
 }
 
-ARMV6_CCOMPILE () {
+armv6_ccompile () {
     echo -- CC
     echo --- Building deb packages.
     make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- bindeb-pkg
 }
 
-ARMV6_NCOMPILE () {
+armv6_ncompile () {
     echo -- NC
     echo --- Building deb packages.
     make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm bindeb-pkg
 }
 
 # aarch64
-ARMV8_SETUP () {
+armv8_setup () {
 cd ${KERNEL}-${VERSION}
 export ARCH=arm64
 #make clean
 #make mrproper
 }
 
-EDGEV8_SETUP () {
+edgev8_setup () {
 cd ${KERNEL}-${VERSION}
 export ARCH=arm64
 rm -f scripts/package/builddeb
@@ -83,27 +83,27 @@ chmod +x scripts/package/mkdebian
 #make mrproper
 }
 
-ARMV8_CCONFIG () {
+armv8_cconfig () {
     echo Making ${MYCONFIG}.
     cp -f ../${DEF}/${MYCONFIG} arch/arm64/configs/
     make ARCH=arm64 ${MYCONFIG}
     echo Done.
 }
 
-ARMV8_MENUCONFIG () {
+armv8_menuconfig () {
     echo
     echo Opening menuconfig.
     sleep 1s
     make menuconfig
 }
 
-ARMV8_CCOMPILE () {
+armv8_ccompile () {
     echo -- CC
     echo --- Building deb packages.
     make -j${CORES} ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
 }
 
-ARMV8_NCOMPILE () {
+armv8_ncompile () {
     echo -- NC
     echo --- Building deb packages.
     make -j${CORES} ARCH=arm64 bindeb-pkg

@@ -1,6 +1,6 @@
 # raspberry pi
 
-CCPATCH () {
+ccpatch () {
     echo
     echo Applying cc packaging patch.
     patch -p1 < ../${CC}/rpi-packaging.patch
@@ -11,7 +11,7 @@ CCPATCH () {
     echo
 }
 
-NCPATCH () {
+ncpatch () {
     echo
     echo Applying nc packaging patch.
     patch -p1 < ../${NC}/rpi-packaging.patch
@@ -21,7 +21,7 @@ NCPATCH () {
     echo
 }
 
-RPI_FCONFIG () {
+rpi_fconfig () {
     echo Making bcmrpi defconfig.
     make KBUILD_DEBARCH=armel ARCH=arm bcmrpi_defconfig &> /dev/null
     echo Done.

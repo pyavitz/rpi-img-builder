@@ -8,18 +8,18 @@ mkdir -p ${TMP0}
 cd ${TMP0}
 
 ### Download kernel
-DOWNLOAD
+download
 
 ### Extract
-EXTRACT
+extract
 
 ### Setup
 case `grep -Fx "edge=1" "../userdata.txt" >/dev/null; echo $?` in
   0)
-    EDGEV6_SETUP
+    edgev6_setup
     ;;
   1)
-    ARMV6_SETUP
+    armv6_setup
     ;;
   *)
     #
@@ -29,10 +29,10 @@ esac
 ### Patching
 case `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null; echo $?` in
   0)
-    CCPATCH
+    ccpatch
     ;;
   1)
-    NCPATCH
+    ncpatch
     ;;
   *)
     #
@@ -42,10 +42,10 @@ esac
 ### Defconfig
 case `grep -Fx "custom_defconfig=1" "../../userdata.txt" >/dev/null; echo $?` in
   0)
-    ARMV6_CCONFIG
+    armv6_cconfig
     ;;
   1)
-    RPI_FCONFIG
+    rpi_fconfig
     ;;
   *)
     #
@@ -55,7 +55,7 @@ esac
 ### Menuconfig
 case `grep -Fx "menuconfig=1" "../../userdata.txt" >/dev/null; echo $?` in
   0)
-    ARMV6_MENUCONFIG
+    armv6_menuconfig
     ;;
   *)
     #
@@ -65,10 +65,10 @@ esac
 ### Build deb
 case `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null; echo $?` in
   0)
-    ARMV6_CCOMPILE
+    armv6_ccompile
     ;;
   1)
-    ARMV6_NCOMPILE
+    armv6_ncompile
     ;;
   *)
     #
