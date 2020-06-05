@@ -105,4 +105,4 @@ Should you come across any issues, feel free to either open an issue on GitHub o
 
 ### Funding
 
-Please consider [donating](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=VG8GP2SY4CEEW&item_name=For+new+single+board+computers+and+accessories) if you'd like to support development.
+Please consider [donating](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=VG8GP2SY4CEEW&item_name=Raspberry+Pi+Image+Builder) if you'd like to support development.
