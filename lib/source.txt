@@ -1,7 +1,5 @@
 TMP4="rpi4"
-TMP4v7="rpi4v7"
 TMP3="rpi3"
-TMP3v7="rpi3v7"
 TMP0="rpi0"
 
 DEF="../defconfig"
@@ -14,26 +12,26 @@ KERNEL="linux-rpi"
 # do not edit above this line
 
 # stage1
-RPI4="2575MB"
-RPI3="2575MB"
+RPI4="2300MB"
+RPI3="2300MB"
 RPI0="2250MB"
 DEBIAN_VERSION="buster"
 
 PKGS1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
-	cloud-initramfs-growroot e2fsprogs u-boot-tools fonty-rg patch \
-	curl wget apt-transport-https dirmngr cmake rsync psmisc"
+	e2fsprogs fonty-rg patch curl wget apt-transport-https dirmngr \
+	cmake rsync psmisc"
 
-PKGS2="cpu hwinfo neofetch haveged resolvconf git build-essential net-tools \
-        ifplugd fuse wpasupplicant wireless-tools usbutils alsa-utils gettext \
-        bison flex mc nano figlet toilet curl dialog python3 python3-setuptools \
-        openssh-client openssh-server ntfs-3g bc zram-tools libncursesw5-dev \
-        libssl-dev autopoint autoconf automake pkg-config libtool fake-hwclock \
+PKGS2="cpu hwinfo haveged resolvconf git build-essential net-tools ifplugd \
+	fuse wpasupplicant wireless-tools usbutils alsa-utils gettext \
+	bison flex mc nano figlet toilet dialog python3 python3-setuptools \
+	openssh-client openssh-server ntfs-3g bc zram-tools libncursesw5-dev \
+	libssl-dev autopoint autoconf automake pkg-config libtool fake-hwclock \
 	python python-setuptools"
 
 FIRMWARE="firmware-linux"
 
 # https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/
-EEPROM_VERSION="7.0"
+EEPROM_VERSION="7.1"
 
 # motd
 BRAND4="Raspberry Pi 4B"

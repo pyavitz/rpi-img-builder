@@ -384,6 +384,7 @@ echo Done.
 rm -f *.patch
 rm -f *led*
 rm -f *eeprom*
+rm -f growpart
 
 ### Hack
 ln -s /lib/ld-linux.so.3 /lib/ld-linux-armhf.so.3

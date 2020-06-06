@@ -51,7 +51,6 @@ sleep 1s
 cd ~
 mkdir -p /usr/local/bin
 mkdir -p /usr/local/sbin
-mkdir -p /usr/local/src
 # Scripts
 mv -f run-setup /usr/local/bin/
 mv -f set-governor /usr/local/bin/
@@ -59,15 +58,17 @@ mv -f sysinfo /usr/local/bin/
 mv -f temp-monitor /usr/local/bin/tmon
 mv -f wifiscan /usr/local/bin/
 mv -f deb-eeprom-update /usr/local/bin/
+mv -f growpart /usr/bin/
 # Service
 mv -f firstboot /usr/local/sbin/
 mv -f pwrledoff /usr/local/sbin/
 mv -f actledoff /usr/local/sbin/
+chmod +x /usr/bin/growpart
+chown root:root /usr/bin/growpart
 chmod +x /usr/local/bin/*
 chmod +x /usr/local/sbin/*
 chown -R root:root /usr/local/bin/
 chown -R root:root /usr/local/sbin/
-chown -R root:root /usr/local/src/
 echo Done.
 
 #### MOTD
@@ -293,41 +294,22 @@ cd ~
 rm -fdr htop
 echo Done.
 
-### Upgrade and patch bluez
+### Upgrade bluez
 echo
 echo Upgrading bluez.
-echo Fetching dev packages.
 sleep 1s
-apt install -y libasound2-dev libcap-ng-dev libdbus-glib-1-dev libdw-dev libglib2.0-dev libical-dev libreadline-dev libudev-dev check
-echo
-echo Downloading sources.
-sleep 1s
-wget -cq --show-progress http://deb.debian.org/debian/pool/main/b/bluez/bluez_5.52.orig.tar.xz
-wget -cq --show-progress http://deb.debian.org/debian/pool/main/b/bluez/bluez_5.52-1.debian.tar.xz
+wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/bluez-5.52.tar.xz
 echo Done.
 echo
-tar xf bluez_5.52-1.debian.tar.xz
-tar xf bluez_5.52.orig.tar.xz
-rm bluez_5.52-1.debian.tar.xz
-mv debian bluez-5.52/
-mv bluez-5.40-rpi-fixes.patch bluez-5.52/debian/patches/
-echo bluez-5.40-rpi-fixes.patch >> bluez-5.52/debian/patches/series
-mkdir -p build
-mv -f bluez-5.52 build/
-mv bluez_5.52.orig.tar.xz build/
-cd build/bluez-5.52
-dpkg-buildpackage -us -uc
-cd ..
+tar xf bluez-5.52.tar.xz
+rm -f bluez-5.52.tar.xz
+cd bluez-5.52
 rm -f *dbgsym_5.52*
 rm -f *cups_5.52*
 rm -f *source_5.52*
-rm -f bluez_5.52-1.debian.tar.xz
-rm -f bluez_5.52.orig.tar.xz
 dpkg -i *.deb
 cd ..
-rm -fdR build
-apt purge -y libasound2-dev libcap-ng-dev libdbus-glib-1-dev libdw-dev libglib2.0-dev libical-dev libreadline-dev libudev-dev
-apt autoremove -y
+rm -fdR bluez-5.52
 echo Done.
 
 ###  Adding raspi userland
@@ -409,6 +391,15 @@ echo Done.
 #rm -fdR raspi-config*
 #echo Done.
 
+#### Checking for changes
+echo
+echo Checking for changes.
+apt update
+apt upgrade -y
+apt -y clean
+apt -y autoclean
+echo Done.
+
 #### Kernel
 echo
 echo Installing kernel.
@@ -418,6 +409,9 @@ dpkg -i *.deb
 rm -f *.deb
 echo Done.
 sleep 1s
+
+apt -y clean
+apt -y autoclean
 
 ### Add bcm2835 v4l2
 echo
@@ -445,14 +439,8 @@ adduser ${user} input
 adduser ${user} tty
 echo Done.
 
-#### Checking for changes
-echo
-echo Checking for changes.
-apt update
-apt upgrade -y
-apt -y clean
-apt -y autoclean
-echo Done.
+### Clean misc files
+rm -f *.patch
 
 ### Vchiq permissions
 echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' > /etc/udev/rules.d/10-vchiq-permissions.rules
