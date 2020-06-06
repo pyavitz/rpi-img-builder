@@ -208,7 +208,7 @@ echo Done.
 echo
 echo Building raspi-sys-mods package.
 sleep 1s
-apt install -y debhelper d-shlibs rfkill dosfstools psmisc
+apt install -y debhelper d-shlibs rfkill dosfstools psmisc cloud-initramfs-growroot
 git clone https://github.com/RPi-Distro/raspberrypi-sys-mods.git
 cd raspberrypi-sys-mods
 dpkg-buildpackage -us -uc
