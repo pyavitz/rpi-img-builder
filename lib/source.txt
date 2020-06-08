@@ -14,7 +14,7 @@ KERNEL="linux-rpi"
 # stage1
 RPI4="2300MB"
 RPI3="2300MB"
-RPI0="2250MB"
+RPI0="2150MB"
 DEBIAN_VERSION="buster"
 
 PKGS1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \

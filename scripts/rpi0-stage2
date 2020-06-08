@@ -50,18 +50,19 @@ echo Moving scripts.
 sleep 1s
 cd ~
 mkdir -p /usr/local/bin
-mkdir -p /usr/local/src
 mv -f run-setup /usr/local/bin/
 mv -f set-governor /usr/local/bin/
 mv -f sysinfo /usr/local/bin/
 mv -f temp-monitor /usr/local/bin/tmon
 mv -f wifiscan /usr/local/bin/
+mv -f growpart /usr/bin/
 # Service
 mv -f firstboot /usr/local/sbin/
+chmod +x /usr/bin/growpart
+chown root:root /usr/bin/growpart
 chmod +x /usr/local/bin/*
 chmod +x /usr/local/sbin/*
 chown -R root:root /usr/local/bin/
-chown -R root:root /usr/local/src/
 echo Done.
 
 #### MOTD
@@ -208,7 +209,7 @@ echo Done.
 echo
 echo Building raspi-sys-mods package.
 sleep 1s
-apt install -y debhelper d-shlibs rfkill dosfstools psmisc cloud-initramfs-growroot
+apt install -y debhelper d-shlibs rfkill dosfstools psmisc
 git clone https://github.com/RPi-Distro/raspberrypi-sys-mods.git
 cd raspberrypi-sys-mods
 dpkg-buildpackage -us -uc
@@ -339,6 +340,8 @@ echo Done.
 #### Kernel
 echo
 echo Installing kernel.
+apt -y clean
+apt -y autoclean
 sleep 1s
 dpkg -i *.deb
 rm -f *.deb
@@ -384,7 +387,6 @@ echo Done.
 rm -f *.patch
 rm -f *led*
 rm -f *eeprom*
-rm -f growpart
 
 ### Hack
 ln -s /lib/ld-linux.so.3 /lib/ld-linux-armhf.so.3
