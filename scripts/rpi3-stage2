@@ -224,7 +224,7 @@ echo Done.
 
 #### Sudoers file 
 echo
-echo Create sudoers file.
+echo Creating sudoers file.
 sleep 1s
 rm -f /etc/sudoers.d/010_pi-nopasswd
 tee /etc/sudoers.d/010_${user}-nopasswd <<EOF
@@ -307,9 +307,9 @@ cd ~
 rm -fdr htop
 echo Done.
 
-### Upgrade bluez
+### Fixing bluez
 echo
-echo Upgrading bluez.
+echo Fixing bluetooth.
 sleep 1s
 wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/bluez-5.52.tar.xz
 echo Done.
