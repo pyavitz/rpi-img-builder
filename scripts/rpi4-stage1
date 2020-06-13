@@ -159,7 +159,7 @@ EOF
 
 ### Fetching boot bits
 mkdir -p firmware/boot
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/bootcode.bin
+#wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/bootcode.bin
 wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4.dat
 wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4cd.dat
 wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4db.dat
@@ -172,7 +172,7 @@ wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/b
 wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/COPYING.linux
 
 ### Installing boot bits
-install -v -m 0644 firmware/boot/bootcode.bin p1/
+#install -v -m 0644 firmware/boot/bootcode.bin p1/
 install -v -m 0644 firmware/boot/fixup4*.dat p1/
 install -v -m 0644 firmware/boot/start4*.elf p1/
 install -v -m 0644 firmware/boot/LICENCE.broadcom p1/
