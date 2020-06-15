@@ -318,7 +318,7 @@ mv -f userland-remove-hi-pi.patch /root/userland/
 cd userland
 patch -p1 < userland-remove-hi-pi.patch
 rm -f userland-remove-hi-pi.patch
-./buildme --aarch64
+./buildme
 cd ~
 rm -f -d -R userland
 ldconfig
