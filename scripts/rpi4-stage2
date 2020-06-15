@@ -361,7 +361,7 @@ echo rpi-eeprom-update.patch >> debian/patches/series
 mv -f debian rpi-eeprom-${EEPROM_VERSION}/
 mv rpi-eeprom-control.patch rpi-eeprom-${EEPROM_VERSION}/
 cd rpi-eeprom-${EEPROM_VERSION}
-patch -p2 < rpi-eeprom-control.patch
+patch -p1 < rpi-eeprom-control.patch
 rm -f rpi-eeprom-control.patch
 dpkg-buildpackage -us -uc
 cd ..
