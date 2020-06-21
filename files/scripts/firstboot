@@ -1,8 +1,47 @@
 #!/bin/bash
-### Grow Partition
+### Functions
+grow_mmcblk () {
 bash growpart /dev/mmcblk0 2
 sleep 1s
 resize2fs /dev/mmcblk0p2
+}
+
+grow_mmcblk1 () {
+bash growpart /dev/mmcblk1 2
+sleep 1s
+resize2fs /dev/mmcblk1p2
+}
+
+grow_sda () {
+bash growpart /dev/sda 2
+sleep 1s
+resize2fs /dev/sda2
+}
+
+chk_mmcblk () {
+fsck.fat -trawl /dev/mmcblk0p1
+}
+
+chk_mmcblk1 () {
+fsck.fat -trawl /dev/mmcblk1p1
+}
+
+chk_sda () {
+fsck.fat -trawl /dev/sda1
+}
+
+### Grow Partition
+if touch -f /dev/mmcblk0 2>/dev/null; then grow_mmcblk;
+        else echo "Checking for USB boot ..." &>/dev/null;
+fi
+
+if touch -f /dev/mmcblk1 2>/dev/null; then grow_mmcblk1;
+        else echo "" &>/dev/null;
+fi
+
+if touch -f /dev/sda 2>/dev/null; then grow_sda;
+        else echo "" &>/dev/null;
+fi
 ### Renew SSH keys
 sleep 1s
 /bin/rm -v /etc/ssh/ssh_host_*
@@ -11,7 +50,17 @@ systemctl restart ssh
 ### Fix boot partition
 umount /boot
 sleep 1s
-fsck.fat -trawl /dev/mmcblk0p1
+if touch -f /dev/mmcblk0 2>/dev/null; then chk_mmcblk;
+        else echo "Checking for USB boot ..." &>/dev/null;
+fi
+
+if touch -f /dev/mmcblk1 2>/dev/null; then chk_mmcblk1;
+        else echo "" &>/dev/null;
+fi
+
+if touch -f /dev/sda 2>/dev/null; then chk_sda;
+        else echo "" &>/dev/null;
+fi
 sleep 1s
 mount /boot
 ### Clean up
