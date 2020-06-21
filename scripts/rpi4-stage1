@@ -54,9 +54,32 @@ sync
 umount p2
 mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2
 
+### Fetch partition uuid
+echo 'BOOT_UUID="' > boot1
+blkid -o export -- "${IMAGE_LOOP_DEV_BOOT}" | sed -ne 's/^UUID=//p' > boot2
+echo '"' > boot3
+paste -d '\0' boot1 boot2 boot3  > boot-id.txt
+rm -f boot1 boot2 boot3
+
+echo 'ROOT_UUID="' > root1
+blkid -o export -- "${IMAGE_LOOP_DEV_ROOTFS}" | sed -ne 's/^UUID=//p' > root2
+echo '"' > root3
+paste -d '\0' root1 root2 root3  > root-id.txt
+rm -f root1 root2 root3
+
+echo 'ROOT_PARTUUID="' > root1
+blkid -o export -- "${IMAGE_LOOP_DEV_ROOTFS}" | sed -ne 's/^PARTUUID=//p' > root2
+echo '"' > root3
+paste -d '\0' root1 root2 root3  > root-pid.txt
+rm -f root1 root2 root3
+
+source boot-id.txt
+source root-id.txt
+source root-pid.txt
+
 ### Cmdline
 tee p1/cmdline.txt <<EOF
-console=serial0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline fsck.repair=yes logo.nologo rootwait
+console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=ext4 elevator=deadline fsck.repair=yes logo.nologo rootwait
 EOF
 
 ### Rpi config
@@ -198,9 +221,9 @@ deb http://deb.debian.org/debian/ ${DEBIAN_VERSION}-backports main contrib non-f
 EOF
 
 tee p2/etc/fstab <<EOF
-/dev/mmcblk0p1	/boot		vfat    defaults 0 2
-/dev/mmcblk0p2	/		ext4	defaults,noatime,nodiratime,commit=600,errors=remount-ro 0 1
-tmpfs		/tmp		tmpfs	defaults,nosuid 0 0
+UUID=${BOOT_UUID}	/boot		vfat    defaults 0 2
+UUID=${ROOT_UUID}	/		ext4	defaults,noatime,nodiratime,commit=600,errors=remount-ro 0 1
+tmpfs	/tmp		tmpfs	defaults,nosuid 0 0
 EOF
 
 if [ -n "$PROXY" ] ; then
@@ -255,3 +278,4 @@ if [ $RAM -ne 0 ]; then
 fi
 rmdir "${IMAGE_FOLDER}"
 rmdir p1 p2
+rm -f root-pid.txt root-id.txt boot-id.txt
