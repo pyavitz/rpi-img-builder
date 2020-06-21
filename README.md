@@ -112,7 +112,3 @@ MYCONFIG="nameofyour_defconfig"
 ### Support
 
 Should you come across any issues, feel free to either open an issue on GitHub or talk with us directly by joining our channel on Freenode; [`#debianarm-port`](irc://irc.freenode.net/#debianarm-port)
-
-### Funding
-
-Please consider [donating](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=VG8GP2SY4CEEW&item_name=Raspberry+Pi+Image+Builder) if you'd like to support development.
