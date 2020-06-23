@@ -1,0 +1,28 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides: firstboot
+# Required-Start:
+# Required-Stop:
+# Default-Start: 2
+# Default-Stop:
+# Short-Description: Expands the root partition and clears ssh keys
+# Description:
+### END INIT INFO
+
+# chmod +x /etc/init.d/firstboot
+# update-rc.d firstboot defaults 2
+
+. /lib/lsb/init-functions
+
+case "$1" in
+  start)
+    log_daemon_msg "Starting firstboot"
+    /usr/local/sbin/firstboot 2>/dev/null
+    log_end_msg $?
+    ;;
+  *)
+    echo "Usage: $0 start" >&2
+    exit 3
+    ;;
+esac
