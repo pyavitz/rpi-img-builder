@@ -244,13 +244,19 @@ echo Done.
 echo
 echo Building bluez firmware package.
 sleep 1s
-git clone https://github.com/RPi-Distro/bluez-firmware.git
-wget -cq --show-progress http://deb.debian.org/debian/pool/non-free/b/bluez-firmware/bluez-firmware_1.2.orig.tar.gz
+mkdir -p bluez-firmware
 cd bluez-firmware
+wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/b/bluez-firmware/bluez-firmware_1.2.orig.tar.gz
+tar xf bluez-firmware_1.2.orig.tar.gz
+cd bluez-firmware-1.2
+wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/b/bluez-firmware/bluez-firmware_1.2-4+rpt3.debian.tar.xz
+tar xf bluez-firmware_1.2-4+rpt3.debian.tar.xz
+rm -f bluez-firmware_1.2-4+rpt3.debian.tar.xz
 dpkg-buildpackage -us -uc
-cd ~
+cd ..
 dpkg -i bluez-firmware_*.deb
-rm -fdR bluez-firmware*
+cd ~
+rm -fdR bluez-firmware
 echo Done.
 
 ### Pi Bluetooth
