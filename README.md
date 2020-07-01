@@ -90,6 +90,24 @@ make rootfsv6 # (armel)
 ```
 
 ## Usage
+#### /boot/rename_to_credentials.txt
+```sh
+As the file name suggests, rename file to: credentials.txt
+
+SSID=" "			# Service set identifier
+PASSKEY=" "			# Wifi password
+COUNTRYCODE=" "			# Your country code
+
+# set static ip
+MANUAL=n			# Set to y to enable a static ip
+IPADDR=" "			# Static ip address
+NETMASK=" "			# Your Netmask
+GATEWAY=" "			# Your Gateway
+NAMESERVERS=" "			# Your preferred dns
+
+For headless use: ssh user@ip.add.re.ss
+```
+
 #### Updating eeprom
 ```sh
 nano ~/.eeprom
