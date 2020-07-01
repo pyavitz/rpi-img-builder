@@ -59,6 +59,7 @@ mv -f temp-monitor /usr/local/bin/tmon
 mv -f wifiscan /usr/local/bin/
 mv -f deb-eeprom-update /usr/local/bin/
 mv -f growpart /usr/bin/
+mv -f credentials /usr/local/bin/
 # Service
 mv -f firstboot.init /etc/init.d/firstboot
 mv -f firstboot /usr/local/sbin/
@@ -166,6 +167,97 @@ chown root:root /etc/wpa_supplicant/wpa_supplicant.conf
 mkdir -p /etc/udev/rules.d
 mv -f 80-net-setup-link.rules /etc/udev/rules.d/80-net-setup-link.rules
 chown root:root /etc/udev/rules.d/80-net-setup-link.rules
+mv -f credentials.txt /boot/rename_to_credentials.txt
+
+tee /etc/opt/interfaces.manual <<EOF
+### Interfaces
+source /etc/network/interfaces.d/*
+
+### Loopback network interface
+auto lo
+iface lo inet loopback
+
+### Ethernet
+allow-hotplug eth0
+iface eth0 inet dhcp
+    #address 10.0.0.10
+    #netmask 255.255.255.0
+    #gateway 10.0.0.1
+    #dns-nameservers 8.8.8.8 8.8.4.4
+
+### Mobile tether
+#allow-hotplug usb0
+#iface usb0 inet dhcp
+
+### Wifi
+allow-hotplug wlan0
+iface wlan0 inet dhcp
+	wireless-power off
+	#address 10.0.0.10
+	#netmask 255.255.255.0
+	#gateway 10.0.0.1
+	#dns-nameservers 8.8.8.8 8.8.4.4
+	wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+
+EOF
+
+tee /etc/opt/interfaces <<EOF
+### Interfaces
+source /etc/network/interfaces.d/*
+
+### Loopback network interface
+auto lo
+iface lo inet loopback
+
+### Ethernet
+allow-hotplug eth0
+iface eth0 inet dhcp
+    #address 10.0.0.10
+    #netmask 255.255.255.0
+    #gateway 10.0.0.1
+    #dns-nameservers 8.8.8.8 8.8.4.4
+
+### Mobile tether
+#allow-hotplug usb0
+#iface usb0 inet dhcp
+
+### Wifi
+allow-hotplug wlan0
+iface wlan0 inet dhcp
+	wireless-power off
+	wlan_address 10.0.0.10
+	wlan_netmask 255.255.255.0
+	wlan_gateway 10.0.0.1
+	wlan_dns-nameservers 8.8.8.8 8.8.4.4
+	wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+
+EOF
+
+tee /etc/opt/wpa_supplicant.manual <<EOF
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=US
+
+network={
+	ssid="mywifissid"
+	scan_ssid=1
+	key_mgmt=WPA-PSK
+	psk="wifipasskey"
+}
+EOF
+
+tee /etc/opt/wpa_supplicant.conf <<EOF
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+country=
+
+network={
+	name=
+	scan_ssid=1
+	key_mgmt=WPA-PSK
+	password=
+}
+EOF
 echo Done.
 
 ### ZSWAP
@@ -485,6 +577,24 @@ ExecStart=/usr/local/sbin/actledoff &>/dev/null
 WantedBy=multi-user.target
 EOF
 
+#### Apply wifi credentials
+echo
+echo Creating wifi credentials.
+sleep 1s
+tee /etc/systemd/system/credentials.service <<EOF
+[Unit]
+Description=Wifi Credentials
+After=firstboot.service
+Before=rc-local.service
+ConditionPathExists=/usr/local/bin/credentials
+[Service]
+ExecStart=/usr/local/bin/credentials > /dev/null 2>&1
+Type=oneshot
+RemainAfterExit=yes
+[Install]
+WantedBy=multi-user.target
+EOF
+
 #### Create first boot
 echo
 echo Creating first boot.
@@ -555,6 +665,7 @@ systemctl enable zramswap
 systemctl enable bluetooth
 update-rc.d firstboot defaults 2
 systemctl enable firstboot
+systemctl enable credentials
 systemctl enable serial-getty@ttyUSB0.service
 echo Done.
 ### Own it
