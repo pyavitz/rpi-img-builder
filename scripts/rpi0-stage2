@@ -479,9 +479,9 @@ echo Creating wifi credentials.
 sleep 1s
 tee /etc/systemd/system/credentials.service <<EOF
 [Unit]
-Description=Wifi Credentials
-After=firstboot.service
-Before=rc-local.service
+Description=Credentials
+After=network.target
+Before=firstboot.service
 ConditionPathExists=/usr/local/bin/credentials
 [Service]
 ExecStart=/usr/local/bin/credentials > /dev/null 2>&1
@@ -497,8 +497,8 @@ echo Creating first boot.
 sleep 1s
 tee /etc/systemd/system/firstboot.service <<EOF
 [Unit]
-Description=First boot
-After=network.target
+Description=First Boot
+After=credentials.service
 Before=rc-local.service
 ConditionPathExists=/usr/local/sbin/firstboot
 
