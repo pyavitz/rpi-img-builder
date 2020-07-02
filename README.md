@@ -92,7 +92,7 @@ make rootfsv6 # (armel)
 ## Usage
 #### /boot/rename_to_credentials.txt
 ```sh
-As the file name suggests, rename file to: credentials.txt
+Rename file to credentials.txt and input your wifi information.
 
 SSID=" "			# Service set identifier
 PASSKEY=" "			# Wifi password
