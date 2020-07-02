@@ -105,7 +105,7 @@ NETMASK=" "			# Your Netmask
 GATEWAY=" "			# Your Gateway
 NAMESERVERS=" "			# Your preferred dns
 
-For headless use: ssh user@ip.add.re.ss
+For headless use: ssh user@ipaddress
 ```
 
 #### Updating eeprom
