@@ -601,7 +601,7 @@ echo Creating first boot.
 sleep 1s
 tee /etc/systemd/system/firstboot.service <<EOF
 [Unit]
-Description=First boot
+Description=First Boot
 After=credentials.service
 Before=rc-local.service
 ConditionPathExists=/usr/local/sbin/firstboot
