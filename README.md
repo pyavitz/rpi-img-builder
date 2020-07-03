@@ -45,6 +45,13 @@ Edge Branch:    # 1 for any branch above 5.4.y
 Menuconfig:     # 1 to run kernel menuconfig
 Crosscompile:   # 1 to cross compile | 0 to native compile
 ```
+#### User defconfig
+```sh
+nano userdata.txt
+# place config in defconfig directory
+custom_defconfig=1
+MYCONFIG="nameofyour_defconfig"
+```
 #### Miscellaneous
 
 ```sh
@@ -123,14 +130,6 @@ nano ~/.eeprom
 EEPROM_VERSION="6.0" # change version number
 ```
 Execute: `deb-eeprom-update`
-
-#### User defconfig
-```sh
-nano userdata.txt
-# place config in defconfig directory
-custom_defconfig=1
-MYCONFIG="nameofyour_defconfig"
-```
 
 ---
 
