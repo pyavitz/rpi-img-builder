@@ -56,10 +56,11 @@ mv -f run-setup /usr/local/bin/
 mv -f set-governor /usr/local/bin/
 mv -f sysinfo /usr/local/bin/
 mv -f temp-monitor /usr/local/bin/tmon
-mv -f wifiscan /usr/local/bin/
 mv -f deb-eeprom-update /usr/local/bin/
 mv -f growpart /usr/bin/
 mv -f credentials /usr/local/bin/
+wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/scripts/master/swh
+mv -f swh /usr/local/bin/
 wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/scripts/master/fetch
 mv -f fetch /usr/local/bin/
 # Service
