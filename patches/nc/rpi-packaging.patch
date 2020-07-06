@@ -85,8 +85,8 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  ln -sf "/usr/src/linux-headers-$version" "$kernel_headers_dir/lib/modules/$version/build"
  rm -f "$objtree/debian/hdrsrcfiles" "$objtree/debian/hdrobjfiles"
  
-+        chmod 755 $kernel_headers_dir/DEBIAN/postinst
-+
++#        chmod 755 $kernel_headers_dir/DEBIAN/postinst
++#
 +       # remove old linux headers 
 +        cat > $kernel_headers_dir/DEBIAN/preinst <<EOT
 +#!/bin/sh
