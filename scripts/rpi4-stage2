@@ -523,6 +523,7 @@ tee /etc/modules <<EOF
 # This file contains the names of kernel modules that should be loaded
 # at boot time, one per line. Lines beginning with "#" are ignored.
 #bcm2835-v4l2
+#i2c-dev
 
 EOF
 chown root:root /etc/modules
@@ -648,6 +649,8 @@ tee /etc/rc.local <<EOF
 #
 # By default this script does nothing.
 /usr/local/bin/set-governor &
+# tmp wlan pwr mngt fix
+iwconfig wlan0 power off
 exit 0
 EOF
 chmod +x /etc/rc.local
