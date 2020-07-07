@@ -65,8 +65,8 @@ while getopts "123h" OPTION; do
                         ECHO="rpi4"
                         ;;
                 h)                       
-                        echo "help, downloads a premade linux kernel and XL rootfs tarball"
-                        echo "make sure to run 'make config' before 'make image'"
+                        echo "Help, downloads a premade Linux kernel and XL rootfs tarball"
+                        echo "Make sure to run 'make config' before 'make image'"
                         echo "Usage: script/help -opt"
                         echo ""
                         echo -e "   \e[0m-1        Raspberry Pi 0/w/b/+\e[0m"
