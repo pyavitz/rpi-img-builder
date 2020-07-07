@@ -95,6 +95,21 @@ make rpi-all
 make rootfs   # (arm64)
 make rootfsv6 # (armel)
 ```
+## Help
+```sh
+help, downloads a premade linux kernel and XL rootfs tarball
+make sure to run 'make config' before 'make image'
+Usage: script/help -opt
+
+   -1        Raspberry Pi 0/w/b/+
+   -2        Raspberry Pi 3b/+
+   -3        Raspberry Pi 4b
+   -h        Help
+   
+https://github.com/pyavitz/rpi-img-builder/releases/tag/linux
+https://github.com/pyavitz/rootfs-tarballs/releases/tag/xlrootfs
+```
+`chmod +x scripts/help && scripts/help -h`
 
 ## Usage
 #### /boot/rename_to_credentials.txt
