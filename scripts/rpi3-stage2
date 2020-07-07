@@ -122,7 +122,7 @@ apt install -y zip unzip p7zip-full
 unzip -qq master.zip
 rm -f master.zip
 mkdir -p /lib/firmware
-mv -f firmware-nonfree-master/* /lib/firmware
+cp -fr firmware-nonfree-master/* /lib/firmware
 rm -fdR firmware-nonfree-master
 cd /lib/firmware/brcm
 wget -cq --show-progress https://raw.githubusercontent.com/openwrt/cypress-nvram/master/brcmfmac43455-sdio.raspberrypi%2C3-model-b-plus.txt
