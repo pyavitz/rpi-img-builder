@@ -52,7 +52,7 @@ fi
 
 ECHO="false"
 
-while getopts "123h" OPTION; do
+while getopts "1234h" OPTION; do
         case $OPTION in
 
                 1)
