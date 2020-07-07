@@ -97,9 +97,9 @@ make rootfsv6 # (armel)
 ```
 ## Help
 ```sh
-Help, downloads a premade Linux kernel and XL rootfs tarball.
+Help, downloads a binary Linux package and XL rootfs tarball.
 Make sure to run 'make config' before 'make image'.
-Usage: script/help -opt
+Usage: scripts/help -opt
 
    -1        Raspberry Pi 0/w/b/+
    -2        Raspberry Pi 3b/+
