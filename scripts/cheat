@@ -1,0 +1,93 @@
+#!/bin/bash
+
+rpi () {
+echo
+echo -e "\e[1;31mDownloading ... \e[0m"
+wget -cq --show-progress https://github.com/pyavitz/rpi-img-builder/releases/download/linux/rpi-stable.tar.xz
+wget -cq --show-progress https://github.com/pyavitz/rootfs-tarballs/releases/download/xlrootfs/debian-buster-rootfs-armel.tar.xz
+echo -e "\e[1;31mDone.\e[0m"
+echo
+echo -e "\e[1;31mExtracting and setting up directory.\e[0m"
+tar xf rpi-stable.tar.xz
+rm -f rpi-stable.tar.xz
+mv rpi-stable rpi0
+echo -e "\e[1;31mReady.\e[0m"
+}
+
+rpi3 () {
+echo
+echo -e "\e[1;31mDownloading ...\e[0m"
+wget -cq --show-progress https://github.com/pyavitz/rpi-img-builder/releases/download/linux/rpi3-stable.tar.xz
+wget -cq --show-progress https://github.com/pyavitz/rootfs-tarballs/releases/download/xlrootfs/debian-buster-rootfs-aarch64.tar.xz
+echo -e "\e[1;31mDone.\e[0m"
+echo
+echo -e "\e[1;31mExtracting and setting up directory.\e[0m"
+tar xf rpi3-stable.tar.xz
+rm -f rpi3-stable.tar.xz
+mv rpi3-stable rpi3
+echo -e "\e[1;31mReady.\e[0m"
+}
+
+rpi4 () {
+echo
+echo -e "\e[1;31mDownloading ...\e[0m"
+wget -cq --show-progress https://github.com/pyavitz/rpi-img-builder/releases/download/linux/rpi4-stable.tar.xz
+wget -cq --show-progress https://github.com/pyavitz/rootfs-tarballs/releases/download/xlrootfs/debian-buster-rootfs-aarch64.tar.xz
+echo -e "\e[1;31mDone.\e[0m"
+echo
+echo -e "\e[1;31mExtracting and setting up directory.\e[0m"
+tar xf rpi4-stable.tar.xz
+rm -f rpi4-stable.tar.xz
+mv rpi4-stable rpi4
+echo -e "\e[1;31mReady.\e[0m"
+}
+
+if [ $# -eq 0 ]
+then
+        echo -e "\e[0;31mMissing options!\e[0m"
+        echo "(run $0 -h for help)"
+        echo ""
+        exit 0
+fi
+
+ECHO="false"
+
+while getopts "123h" OPTION; do
+        case $OPTION in
+
+                1)
+                        ECHO="rpi"
+                        ;;
+                2)
+                        ECHO="rpi3"
+                        ;;
+                3)
+                        ECHO="rpi4"
+                        ;;
+                h)                       
+                        echo "cheat, downloads a premade linux kernel and XL rootfs tarball"
+                        echo "make sure to run 'make config' before 'make image'"
+                        echo "Usage: ./script/cheat -opt"
+                        echo ""
+                        echo -e "   \e[0m-1        Raspberry Pi 0/w/b/+\e[0m"
+                        echo -e "   \e[0m-2        Raspberry Pi 3b/+\e[0m"
+                        echo -e "   \e[0m-3        Raspberry Pi 4b\e[0m"
+                        echo -e "   \e[0m-h        Help\e[0m"
+                        echo ""
+                        exit 0
+                        ;;
+
+        esac
+done
+if [ $ECHO = "rpi" ]
+then
+        rpi;
+fi
+if [ $ECHO = "rpi3" ]
+then
+        rpi3;
+fi
+if [ $ECHO = "rpi4" ]
+then
+        rpi4;
+fi
