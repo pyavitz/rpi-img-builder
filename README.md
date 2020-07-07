@@ -102,8 +102,8 @@ Make sure to run 'make config' before 'make image'.
 Usage: scripts/help -opt
 
    -1        Raspberry Pi 0/w/b/+
-   -2        Raspberry Pi 3b/+
-   -3        Raspberry Pi 4b
+   -3        Raspberry Pi 3b/+
+   -4        Raspberry Pi 4b
    -h        Help
    
 https://github.com/pyavitz/rpi-img-builder/releases/tag/linux
