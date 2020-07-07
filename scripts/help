@@ -58,10 +58,10 @@ while getopts "123h" OPTION; do
                 1)
                         ECHO="rpi"
                         ;;
-                2)
+                3)
                         ECHO="rpi3"
                         ;;
-                3)
+                4)
                         ECHO="rpi4"
                         ;;
                 h)                       
@@ -70,8 +70,8 @@ while getopts "123h" OPTION; do
                         echo "Usage: scripts/help -opt"
                         echo ""
                         echo -e "   \e[0m-1        Raspberry Pi 0/w/b/+\e[0m"
-                        echo -e "   \e[0m-2        Raspberry Pi 3b/+\e[0m"
-                        echo -e "   \e[0m-3        Raspberry Pi 4b\e[0m"
+                        echo -e "   \e[0m-3        Raspberry Pi 3b/+\e[0m"
+                        echo -e "   \e[0m-4        Raspberry Pi 4b\e[0m"
                         echo -e "   \e[0m-h        Help\e[0m"
                         echo ""
                         exit 0
