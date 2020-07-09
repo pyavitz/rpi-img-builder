@@ -3,6 +3,27 @@ source lib/source.txt
 source lib/func.txt
 source lib/rpi3_func.txt
 source userdata.txt
+UD=userdata.txt
+
+userdata () {
+echo ""
+echo "Please create a userdata.txt file"
+while [ true ] ; do
+read -t 20 -n 1
+if [ $? = 0 ] ; then
+exit ;
+else
+echo "run make config"
+fi
+done
+}
+
+if [ -f "$UD" ]; then
+    echo ""
+    echo "$UD file found."
+else 
+    userdata
+fi
 
 mkdir -p ${TMP3}
 cd ${TMP3}
