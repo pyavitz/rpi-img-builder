@@ -32,6 +32,8 @@ STG02=./scripts/rpi0-stage2
 CLN=./scripts/clean
 CLEAN=sudo ./scripts/clean
 
+# help
+HELPER=./scripts/help
 
 help:
 	@echo
@@ -218,3 +220,23 @@ config:
 dialogrc:
 	# Builder theme set
 	@${DIALOGRC}
+
+helper:
+	# Helper script
+	@chmod +x ${HELPER}
+	@${HELPER} -h
+
+zero:
+	# BCM2708
+	@chmod +x ${HELPER}
+	@${HELPER} -1
+
+three:
+	# BCM2710
+	@chmod +x ${HELPER}
+	@${HELPER} -3
+
+four:
+	# BCM2711
+	@chmod +x ${HELPER}
+	@${HELPER} -4
