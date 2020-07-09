@@ -71,12 +71,10 @@ while getopts "1234h" OPTION; do
                 h)                       
                         echo "Help, downloads a binary Linux package and XL rootfs tarball."
                         echo "Make sure to run 'make config' before 'make image'."
-                        echo "Usage: scripts/help -opt"
                         echo ""
-                        echo -e "   -1        Raspberry Pi 0/w/b/+"
-                        echo -e "   -3        Raspberry Pi 3b/+"
-                        echo -e "   -4        Raspberry Pi 4b"
-                        echo -e "   -h        Help"
+                        echo -e "   make zero        Raspberry Pi 0/w/b/+"
+                        echo -e "   make three       Raspberry Pi 3b/+"
+                        echo -e "   make four        Raspberry Pi 4b"
                         echo ""
                         exit 0
                         ;;
