@@ -1,50 +1,54 @@
 #!/bin/bash
 
+RED="\e[1;31m"
+HELP="\e[1;33m"
+FIN="\e[0m"
+
 rpi () {
 echo
-echo -e "\e[1;31mDownloading ... \e[0m"
+echo -e "${RED}Downloading ... ${FIN}"
 wget -cq --show-progress https://github.com/pyavitz/rpi-img-builder/releases/download/linux/rpi-stable.tar.xz
 wget -cq --show-progress https://github.com/pyavitz/rootfs-tarballs/releases/download/xlrootfs/debian-buster-rootfs-armel.tar.xz
-echo -e "\e[1;31mDone.\e[0m"
+echo -e "${RED}Done.${FIN}"
 echo
-echo -e "\e[1;31mExtracting and setting up directory.\e[0m"
+echo -e "${RED}Extracting and setting up directory.${FIN}"
 tar xf rpi-stable.tar.xz
 rm -f rpi-stable.tar.xz
 mv rpi-stable rpi0
-echo -e "\e[1;31mReady.\e[0m"
+echo -e "${RED}Ready.${FIN}"
 }
 
 rpi3 () {
 echo
-echo -e "\e[1;31mDownloading ...\e[0m"
+echo -e "${RED}Downloading ...${FIN}"
 wget -cq --show-progress https://github.com/pyavitz/rpi-img-builder/releases/download/linux/rpi3-stable.tar.xz
 wget -cq --show-progress https://github.com/pyavitz/rootfs-tarballs/releases/download/xlrootfs/debian-buster-rootfs-aarch64.tar.xz
-echo -e "\e[1;31mDone.\e[0m"
+echo -e "${RED}Done.${FIN}"
 echo
-echo -e "\e[1;31mExtracting and setting up directory.\e[0m"
+echo -e "${RED}Extracting and setting up directory.${FIN}"
 tar xf rpi3-stable.tar.xz
 rm -f rpi3-stable.tar.xz
 mv rpi3-stable rpi3
-echo -e "\e[1;31mReady.\e[0m"
+echo -e "${RED}Ready.${FIN}"
 }
 
 rpi4 () {
 echo
-echo -e "\e[1;31mDownloading ...\e[0m"
+echo -e "${RED}Downloading ...${FIN}"
 wget -cq --show-progress https://github.com/pyavitz/rpi-img-builder/releases/download/linux/rpi4-stable.tar.xz
 wget -cq --show-progress https://github.com/pyavitz/rootfs-tarballs/releases/download/xlrootfs/debian-buster-rootfs-aarch64.tar.xz
-echo -e "\e[1;31mDone.\e[0m"
+echo -e "${RED}Done.${FIN}"
 echo
-echo -e "\e[1;31mExtracting and setting up directory.\e[0m"
+echo -e "${RED}Extracting and setting up directory.${FIN}"
 tar xf rpi4-stable.tar.xz
 rm -f rpi4-stable.tar.xz
 mv rpi4-stable rpi4
-echo -e "\e[1;31mReady.\e[0m"
+echo -e "${RED}Ready.${FIN}"
 }
 
 if [ $# -eq 0 ]
 then
-        echo -e "\e[0;31mMissing options!\e[0m"
+        echo -e "\e[0;31mMissing options!${FIN}"
         echo "(run $0 -h for help)"
         echo ""
         exit 0
@@ -69,10 +73,10 @@ while getopts "1234h" OPTION; do
                         echo "Make sure to run 'make config' before 'make image'."
                         echo "Usage: scripts/help -opt"
                         echo ""
-                        echo -e "   \e[0m-1        Raspberry Pi 0/w/b/+\e[0m"
-                        echo -e "   \e[0m-3        Raspberry Pi 3b/+\e[0m"
-                        echo -e "   \e[0m-4        Raspberry Pi 4b\e[0m"
-                        echo -e "   \e[0m-h        Help\e[0m"
+                        echo -e "   -1        Raspberry Pi 0/w/b/+"
+                        echo -e "   -3        Raspberry Pi 3b/+"
+                        echo -e "   -4        Raspberry Pi 4b"
+                        echo -e "   -h        Help"
                         echo ""
                         exit 0
                         ;;
