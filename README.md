@@ -58,6 +58,7 @@ MYCONFIG="nameofyour_defconfig"
 make cleanup    # Clean up image errors
 make purge      # Remove tmp directory
 make commands   # List legacy commands
+make helper     # Reduce the time it takes to create a new image
 ```
 
 ## Command list (legacy)
