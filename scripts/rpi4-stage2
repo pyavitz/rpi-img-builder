@@ -396,11 +396,9 @@ echo Done.
 
 ### Fixing bluez
 echo
-echo Fixing bluetooth.
+echo Upgrading bluetooth.
 sleep 1s
 wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/bluez-5.52.tar.xz
-echo Done.
-echo
 tar xf bluez-5.52.tar.xz
 rm -f bluez-5.52.tar.xz
 cd bluez-5.52
