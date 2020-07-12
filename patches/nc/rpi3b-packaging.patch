@@ -49,7 +49,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
 +
 +set -e
 +
-+if touch -f /boot/overlays > /dev/null 2>&1; then rm -fdr /boot/overlays;
++if touch -c /boot/overlays > /dev/null 2>&1; then rm -fdr /boot/overlays;
 +        else echo "Missing overlays directory." &>/dev/null;
 +fi
 +

@@ -30,9 +30,9 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  fi
  
 +# install dtb and overlays
-+mkdir -p "$tmpdir/boot/broadcom/overlays"
-+cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2711-rpi-4-b.dtb" "$tmpdir/boot/broadcom/bcm2711-rpi-4-b.dtb"
-+cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/overlays/" "$tmpdir/boot/broadcom/"
++mkdir -p "$tmpdir/boot/overlays"
++cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2711-rpi-4-b.dtb" "$tmpdir/boot/bcm2711-rpi-4-b.dtb"
++cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/overlays/" "$tmpdir/boot/"
 +
  # Install the maintainer scripts
  # Note: hook scripts under /etc/kernel are also executed by official Debian
@@ -48,8 +48,8 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
 +
 +set -e
 +
-+if touch -f /boot/broadcom > /dev/null 2>&1; then rm -fdr /boot/broadcom;
-+        else echo "Missing broadcom directory." &>/dev/null;
++if touch -c /boot/overlays /boot/*.dtb > /dev/null 2>&1; then rm -fdr /boot/overlays /boot/*.dtb;
++        else echo "Missing dtb files." &>/dev/null;
 +fi
 +
 +if ls /boot/System.map-* > /dev/null 2>&1; then rm -f /boot/System.map-*;

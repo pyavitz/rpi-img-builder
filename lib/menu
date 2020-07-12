@@ -1,6 +1,7 @@
 #!/bin/bash
 ### DO NOT EDIT
-
+RED="\e[0;31m"
+FIN="\e[0m"
 DIALOG_CANCEL=1
 DIALOG_ESC=255
 HEIGHT=0
@@ -29,19 +30,19 @@ while true; do
   case $exit_status in
     $DIALOG_CANCEL)
       clear
-      echo -e "\e[0;31m Program terminated."
+      echo -e "${RED}Program terminated.${FIN}"
       exit
       ;;
     $DIALOG_ESC)
       clear
-      echo -e "\e[0;31m Program aborted." >&2
+      echo -e "${RED}Program aborted.${FIN}" >&2
       exit 1
       ;;
   esac
   case $selection in
     0 )
       clear
-      echo -e "\e[0;31m Program terminated."
+      echo -e "%{RED}Program terminated.${FIN}"
       ;;
     1 )
       chmod +x lib/rpi4
