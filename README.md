@@ -46,6 +46,7 @@ Menuconfig:     # 1 to run kernel menuconfig
 Crosscompile:   # 1 to cross compile | 0 to native compile
 ```
 #### User defconfig
+
 ```sh
 nano userdata.txt
 # place config in defconfig directory
@@ -59,6 +60,24 @@ make cleanup    # Clean up image errors
 make purge      # Remove tmp directory
 make commands   # List legacy commands
 make helper     # Reduce the time it takes to create a new image
+```
+## Mainline Linux
+
+#### Commands
+
+```sh
+make mlconfig   # Create mainline user data file
+make mainline   # Build mainline linux kernel
+```
+#### Mainline Config Menu
+
+```sh
+Username:       # Your username
+Password:       # Your password
+Branch:         # Selected kernel branch
+Mainline:       # 1 for kernel x.y-rc above stable
+Menuconfig:     # 1 to run kernel menuconfig
+Crosscompile:   # 1 to cross compile | 0 to native compile
 ```
 
 ## Command list (legacy)

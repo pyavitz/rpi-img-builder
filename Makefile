@@ -1,6 +1,7 @@
 # menu
 MENU=./lib/menu
 CONF=./lib/config
+MLCONF=./lib/ml_config
 DIALOGRC=$(shell cp -f lib/dialogrc ~/.dialogrc)
 
 # rootfs
@@ -21,6 +22,8 @@ KERNEL3=./scripts/make-kernel3
 IMG3=./scripts/rpi3-stage1
 IMAGE3=sudo ./scripts/rpi3-stage1
 STG32=./scripts/rpi3-stage2
+
+MAINLINE=./scripts/make-mainline
 
 # armv6l
 KERNEL0=./scripts/make-kernel0
@@ -81,14 +84,20 @@ commands:
 	@echo "  make rpi-image          Make bootable Debian image"
 	@echo "  make rpi-all            Kernel > rootfs > image"
 	@echo
+	@echo "Mainline:"
+	@echo
+	@echo "  make mlconfig		  Create user data file"
+	@echo "  make mainline		  Builds mainline linux kernel"
+	@echo
 	@echo "Root filesystem:"
 	@echo
 	@echo "  make rootfs		  arm64"
 	@echo "  make rootfsv6		  armel"
 	@echo
-	@echo "Dialogrc:"
+	@echo "Miscellaneous:"
 	@echo
 	@echo "  make dialogrc		  Set builder theme"
+	@echo "  make helper		  Reduce the time it takes to create a new image"
 	@echo
 
 # aarch64
@@ -131,6 +140,11 @@ all:
 	@chmod +x ${IMG4}
 	@chmod +x ${STG42}
 	@${IMAGE4}
+
+mainline:
+	# Mainline Linux | aarch64
+	@chmod +x ${MAINLINE}
+	@${MAINLINE}
 
 # Raspberry Pi 3 | aarch64
 rpi3-kernel:
@@ -216,6 +230,11 @@ config:
 	# User config menu
 	@chmod +x ${CONF}
 	@${CONF}
+
+mlconfig:
+	# User config menu
+	@chmod +x ${MLCONF}
+	@${MLCONF}
 
 dialogrc:
 	# Builder theme set

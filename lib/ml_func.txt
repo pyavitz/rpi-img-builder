@@ -1,0 +1,82 @@
+download_mainline () {
+    echo
+    echo Downloading mainline linux.
+    wget -cq --show-progress https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/${MLKERNEL}-${VERSION}.tar.gz
+    echo Done.
+    echo
+    echo Extracting archive.
+    tar -xf ${MLKERNEL}-${VERSION}.tar.gz
+    echo Done.
+    sleep 1s
+    cd ${MLKERNEL}-${VERSION}
+    export ARCH=arm64
+    rm -f scripts/package/builddeb
+    rm -f scripts/package/mkdebian
+    cp -R ../${PAT}/builddeb scripts/package/
+    cp -R ../${PAT}/mkdebian scripts/package/
+    chmod +x scripts/package/builddeb
+    chmod +x scripts/package/mkdebian
+}
+
+download_stable () {
+    echo
+    echo Downloading stable linux.
+    wget -cq --show-progress https://cdn.kernel.org/pub/linux/kernel/v5.x/${MLKERNEL}-${VERSION}.tar.xz
+    echo Done.
+    echo
+    echo Extracting archive.
+    tar xf ${MLKERNEL}-${VERSION}.tar.xz
+    echo Done.
+    sleep 1s
+    cd ${MLKERNEL}-${VERSION}
+    export ARCH=arm64
+    rm -f scripts/package/builddeb
+    rm -f scripts/package/mkdebian
+    cp -R ../${PAT}/builddeb scripts/package/
+    cp -R ../${PAT}/mkdebian scripts/package/
+    chmod +x scripts/package/builddeb
+    chmod +x scripts/package/mkdebian
+}
+
+patching () {
+    echo
+    echo Applying patches.
+    for i in ../${ML}/*.patch; do patch -p1 < $i; done
+    cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch
+    sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
+    echo Done.
+    echo
+}
+
+cconfig () {
+    echo Making ${MYCONFIG}.
+    cp -f ../${DEF}/${MYCONFIG} arch/arm64/configs/
+    make ARCH=arm64 ${MYCONFIG}
+    echo Done.
+}
+
+rpi_config () {
+    echo Making foundation defconfig.
+    cp -f ../${DEF}/bcm2711_defconfig arch/arm64/configs/
+    make ARCH=arm64 bcm2711_defconfig &> /dev/null
+    echo Done.
+}
+
+menu_config () {
+    echo
+    echo Opening menuconfig.
+    sleep 1s
+    make menuconfig
+}
+
+cross_compile () {
+    echo -- CC
+    echo --- Building deb packages.
+    echo 'y' | make -j${CORES} ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
+}
+
+native_compile () {
+    echo -- NC
+    echo --- Building deb packages.
+    echo 'y' | make -j${CORES} ARCH=arm64 bindeb-pkg
+}
