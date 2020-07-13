@@ -73,10 +73,12 @@ cross_compile () {
     echo -- CC
     echo --- Building deb packages.
     echo 'y' | make -j${CORES} ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
+    rm -f ../*libc*.deb
 }
 
 native_compile () {
     echo -- NC
     echo --- Building deb packages.
     echo 'y' | make -j${CORES} ARCH=arm64 bindeb-pkg
+    rm -f ../*libc*.deb
 }
