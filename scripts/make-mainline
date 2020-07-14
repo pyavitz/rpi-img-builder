@@ -8,13 +8,13 @@ UD=userdata.txt
 
 userdata () {
 echo ""
-echo "Please create a userdata.txt file"
+echo -e "You have ${RED}not${FIN} created a ${RED}userdata.txt${FIN} file."
 while [ true ] ; do
-read -t 20 -n 1
+read -t 3 -n 1
 if [ $? = 0 ] ; then
 exit ;
 else
-echo "run make config"
+dialog --infobox "Please review the README.md or run make mlconfig." 3 53
 fi
 done
 }
@@ -32,12 +32,11 @@ case `grep -Fx "rpiuser=1" "userdata.txt" >/dev/null; echo $?` in
     echo -e "${RED}Wrong userdata file!${FIN}"
     echo ""
     while [ true ] ; do
-    read -t 3 -n 1
+    read -t 2 -n 1
     if [ $? = 0 ] ; then
     exit ;
     else
-    make mlconfig
-    exit ;
+    dialog --infobox "Please review the README.md or run make mlconfig." 3 53
     fi
     done
     ;;

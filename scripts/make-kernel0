@@ -3,17 +3,19 @@ source lib/source.txt
 source lib/func.txt
 source lib/rpi_func.txt
 source userdata.txt
+RED="\e[1;31m"
+FIN="\e[0m"
 UD=userdata.txt
 
 userdata () {
 echo ""
-echo "Please create a userdata.txt file"
+echo -e "You have ${RED}not${FIN} created a ${RED}userdata.txt${FIN} file."
 while [ true ] ; do
-read -t 20 -n 1
+read -t 3 -n 1
 if [ $? = 0 ] ; then
 exit ;
 else
-echo "run make config"
+dialog --infobox "Please review the README.md or run make config." 3 51
 fi
 done
 }
@@ -24,6 +26,25 @@ if [ -f "$UD" ]; then
 else 
     userdata
 fi
+
+case `grep -Fx "devuser=1" "userdata.txt" >/dev/null; echo $?` in
+  0)
+    echo ""
+    echo -e "${RED}Wrong userdata file!${FIN}"
+    echo ""
+    while [ true ] ; do
+    read -t 2 -n 1
+    if [ $? = 0 ] ; then
+    exit ;
+    else
+    dialog --infobox "Please review the README.md or run make config." 3 51
+    fi
+    done
+    ;;
+  *)
+    #
+    ;;
+esac
 
 mkdir -p ${TMP0}
 cd ${TMP0}
