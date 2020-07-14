@@ -82,7 +82,7 @@ Crosscompile:   # 1 to cross compile | 0 to native compile
 #### Disclaimer
 ```sh
 The menu interface does not fully support this feature and nor do I intend on integrating it.
-The intention of mainline is for those interested in development or the progression therein. 
+The intention of mainline is for those interested in development and the progression therein. 
 ```
 ## Command list (legacy)
 
