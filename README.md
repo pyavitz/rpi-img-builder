@@ -61,7 +61,7 @@ make purge      # Remove tmp directory
 make commands   # List legacy commands
 make helper     # Reduce the time it takes to create a new image
 ```
-## Mainline Linux
+## [Mainline Linux](https://github.com/pyavitz/rpi-img-builder/commit/8036430817183d4cb5e6772c63cb84d98709b5b7)
 
 #### Commands
 
@@ -79,7 +79,12 @@ Mainline:       # 1 for kernel x.y-rc above stable
 Menuconfig:     # 1 to run kernel menuconfig
 Crosscompile:   # 1 to cross compile | 0 to native compile
 ```
-
+#### Disclaimer
+```sh
+The menu interface does not fully support this feature and never will.
+The intention of mainline is for those interested in development or the
+progression there of. 
+```
 ## Command list (legacy)
 
 #### Raspberry Pi 4B
