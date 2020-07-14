@@ -3,6 +3,8 @@ source lib/source.txt
 source lib/func.txt
 source lib/rpi4_func.txt
 source userdata.txt
+RED="\e[1;31m"
+FIN="\e[0m"
 UD=userdata.txt
 
 userdata () {
@@ -24,6 +26,26 @@ if [ -f "$UD" ]; then
 else 
     userdata
 fi
+
+case `grep -Fx "devuser=1" "userdata.txt" >/dev/null; echo $?` in
+  0)
+    echo ""
+    echo -e "${RED}Wrong userdata file!${FIN}"
+    echo ""
+    while [ true ] ; do
+    read -t 3 -n 1
+    if [ $? = 0 ] ; then
+    exit ;
+    else
+    make config
+    exit ;
+    fi
+    done
+    ;;
+  *)
+    #
+    ;;
+esac
 
 mkdir -p ${TMP4}
 cd ${TMP4}

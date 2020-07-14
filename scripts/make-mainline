@@ -2,6 +2,8 @@
 source userdata.txt
 source lib/ml_func.txt
 source lib/source.txt
+RED="\e[1;31m"
+FIN="\e[0m"
 UD=userdata.txt
 
 userdata () {
@@ -23,6 +25,26 @@ if [ -f "$UD" ]; then
 else 
     userdata
 fi
+
+case `grep -Fx "rpiuser=1" "userdata.txt" >/dev/null; echo $?` in
+  0)
+    echo ""
+    echo -e "${RED}Wrong userdata file!${FIN}"
+    echo ""
+    while [ true ] ; do
+    read -t 3 -n 1
+    if [ $? = 0 ] ; then
+    exit ;
+    else
+    make mlconfig
+    exit ;
+    fi
+    done
+    ;;
+  *)
+    #
+    ;;
+esac
 
 mkdir -p ${TMP4}
 cd ${TMP4}
