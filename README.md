@@ -83,7 +83,7 @@ Crosscompile:   # 1 to cross compile | 0 to native compile
 ```sh
 The menu interface does not fully support this feature and never will.
 The intention of mainline is for those interested in development or the
-progression there of. 
+progression therein. 
 ```
 ## Command list (legacy)
 
