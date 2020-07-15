@@ -67,7 +67,7 @@ commands:
 	@echo "  rpi                      Raspberry Pi 0/0W/B/+"
 	@echo
 	@echo "RPi4B:"
-	@echo " aacrh64"
+	@echo " aarch64"
 	@echo "  make kernel              Builds linux kernel"
 	@echo "  make image               Make bootable Debian image"
 	@echo "  make all                 Kernel > rootfs > image"
