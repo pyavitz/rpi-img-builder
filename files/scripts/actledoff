@@ -10,4 +10,4 @@ sh -c 'echo 0 > /sys/devices/platform/leds/leds/ACT/brightness'
 }
 
 rpi_switch > /dev/null 2>&1
-ml_switch > /dev/null 2>&1
+#ml_switch > /dev/null 2>&1
