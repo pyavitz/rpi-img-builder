@@ -31,15 +31,15 @@ fsck.fat -trawl /dev/sda1 > /dev/null 2>&1
 }
 
 ### Grow Partition
-if touch -f /dev/mmcblk0 2>/dev/null; then grow_mmcblk;
+if touch -c /dev/mmcblk0 2>/dev/null; then grow_mmcblk;
         else echo "" &>/dev/null;
 fi
 
-if touch -f /dev/mmcblk1 2>/dev/null; then grow_mmcblk1;
+if touch -c /dev/mmcblk1 2>/dev/null; then grow_mmcblk1;
         else echo "" &>/dev/null;
 fi
 
-if touch -f /dev/sda 2>/dev/null; then grow_sda;
+if touch -c /dev/sda 2>/dev/null; then grow_sda;
         else echo "" &>/dev/null;
 fi
 ### Renew SSH keys
@@ -50,15 +50,15 @@ systemctl restart ssh > /dev/null 2>&1
 ### Fix boot partition
 umount /boot
 sleep 1s
-if touch -f /dev/mmcblk0 2>/dev/null; then chk_mmcblk;
+if touch -c /dev/mmcblk0 2>/dev/null; then chk_mmcblk;
         else echo "" &>/dev/null;
 fi
 
-if touch -f /dev/mmcblk1 2>/dev/null; then chk_mmcblk1;
+if touch -c /dev/mmcblk1 2>/dev/null; then chk_mmcblk1;
         else echo "" &>/dev/null;
 fi
 
-if touch -f /dev/sda 2>/dev/null; then chk_sda;
+if touch -c /dev/sda 2>/dev/null; then chk_sda;
         else echo "" &>/dev/null;
 fi
 sleep 1s
