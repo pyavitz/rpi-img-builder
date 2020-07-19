@@ -209,7 +209,7 @@ case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
 esac
 case `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null; echo $?` in
   0)
-	bcm2711_network
+	bcm2710_network
     ;;
 esac
 case `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null; echo $?` in
