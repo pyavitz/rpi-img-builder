@@ -30,7 +30,7 @@ PKGS2="cpu hwinfo haveged resolvconf git build-essential net-tools ifplugd \
 FIRMWARE="firmware-linux"
 
 # https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/
-EEPROM_VERSION="7.5"
+EEPROM_VERSION="7.7"
 
 # motd
 BRAND="Raspberry Pi"
