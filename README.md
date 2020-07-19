@@ -2,8 +2,8 @@
 
 The boards that are currently supported are;
 * Raspberry Pi 4B (bcm2711)
-* Raspberry Pi 3B/3B+ (bcm2710, bcm2837, bcm2837b0)
-* Raspberry Pi 0/0W/1/+ (bcm2708, bcm2835)
+* Raspberry Pi 3B/3B+ (bcm2710)
+* Raspberry Pi 0/W/B/+ (bcm2708)
 
 ## Dependencies
 
@@ -40,6 +40,7 @@ make dialogrc   # Set builder theme (optional)
 ```sh
 Username:       # Your username
 Password:       # Your password
+Debian:         # Supported: buster & unstable
 Branch:         # Selected kernel branch
 Edge Branch:    # 1 for any branch above 5.4.y
 Menuconfig:     # 1 to run kernel menuconfig
@@ -74,6 +75,7 @@ make mainline   # Build mainline linux kernel
 ```sh
 Username:       # Your username
 Password:       # Your password
+Debian:         # Supported: buster & unstable
 Branch:         # Selected kernel branch
 Mainline:       # 1 for kernel x.y-rc above stable
 Menuconfig:     # 1 to run kernel menuconfig
@@ -167,9 +169,20 @@ Usage: fetch -opt
    
 fetch -h will list available options and kernel revisions
 ```
+#### Simple wifi helper
+```sh
+swh -h
+
+   -s       Scan for SSID's
+   -u       Bring up interface
+   -d       Bring down interface
+   -r       Restart interface
+   -W       Edit wpa supplicant
+   -I       Edit interfaces
+```
 
 ---
 
 ### Support
 
-Should you come across any issues, feel free to either open an issue on GitHub or talk with us directly by joining our channel on Freenode; [`#debianarm-port`](irc://irc.freenode.net/#debianarm-port)
+Should you come across any bugs, feel free to either open an issue on GitHub or talk with us directly by joining our channel on Freenode; [`#debianarm-port`](irc://irc.freenode.net/#debianarm-port)

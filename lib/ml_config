@@ -3,12 +3,13 @@
 BRED="\e[1;31m"
 RED="\e[0;31m"
 FIN="\e[0m"
-VERSION="5.8-rc5"
-crosscompile="1"
 user=""
 passwd=""
-menuconfig="0"
+DEBIAN_VERSION="buster"
+VERSION="5.8-rc5"
 mainline="1"
+menuconfig="0"
+crosscompile="1"
 
 # open fd
 exec 3>&1
@@ -18,13 +19,14 @@ VALUES=$(dialog --ok-label "Submit" \
 	  --backtitle "Create a Mainline user data file" \
 	  --title "Config Menu" \
 	  --form "Choose:" \
-15 35 6 \
+15 35 7 \
 	"Username:"	1 1	"$user" 		1 10 15 0 \
 	"Password:"	2 1	"$passwd"  		2 10 15 0 \
-        "Branch:"   	3 1     "$VERSION"        	3 10 10 0 \
-        "Mainline:"	4 1     "$mainline"             4 14 2 0 \
-	"Menuconfig:"	5 1	"$menuconfig"  		5 14 2 0 \
-	"Crosscompile:" 6 1	"$crosscompile" 	6 14 2 0 \
+	"Debian:"	3 1	"$DEBIAN_VERSION"  	3 10 18 0 \
+        "Branch:"   	4 1     "$VERSION"        	4 10 10 0 \
+        "Mainline:"	5 1     "$mainline"             5 14 2 0 \
+	"Menuconfig:"	6 1	"$menuconfig"  		6 14 2 0 \
+	"Crosscompile:" 7 1	"$crosscompile" 	7 14 2 0 \
 2>&1 1>&3)
 
 # close fd
@@ -34,6 +36,7 @@ exec 3>&-
 echo "$VALUES" > tmp1
 echo user='"' > tmp0
 echo passwd='"' >> tmp0
+echo DEBIAN_VERSION='"' >> tmp0
 echo VERSION='"' >> tmp0
 echo mainline= >> tmp0
 echo menuconfig= >> tmp0
@@ -42,6 +45,7 @@ echo custom_defconfig=0 >> tmp0
 echo MYCONFIG='"'nameofyour_defconfig'"' >> tmp0
 echo devuser=1 >> tmp0
 echo '"' > tmp2
+echo '"' >> tmp2
 echo '"' >> tmp2
 echo '"' >> tmp2
 paste -d '\0' tmp0 tmp1 tmp2  > userdata.txt

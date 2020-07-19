@@ -5,31 +5,23 @@ MLCONF=./lib/ml_config
 DIALOGRC=$(shell cp -f lib/dialogrc ~/.dialogrc)
 
 # rootfs
-RFSV8=./scripts/make-rootfsv8
-ROOTFSV8=sudo ./scripts/make-rootfsv8
-RFSV7=./scripts/make-rootfsv7
-ROOTFSV7=sudo ./scripts/make-rootfsv7
-RFSV6=./scripts/make-rootfsv6
-ROOTFSV6=sudo ./scripts/make-rootfsv6
+RFSV8=./scripts/rootfsv8
+ROOTFSV8=sudo ./scripts/rootfsv8
+RFSV6=./scripts/rootfsv6
+ROOTFSV6=sudo ./scripts/rootfsv6
 
 # aarch64
-KERNEL4=./scripts/make-kernel4
-IMG4=./scripts/rpi4-stage1
-IMAGE4=sudo ./scripts/rpi4-stage1
-STG42=./scripts/rpi4-stage2
-
-KERNEL3=./scripts/make-kernel3
-IMG3=./scripts/rpi3-stage1
-IMAGE3=sudo ./scripts/rpi3-stage1
-STG32=./scripts/rpi3-stage2
-
-MAINLINE=./scripts/make-mainline
+BCM2711=./scripts/bcm2711
+BCM2710=./scripts/bcm2710
+MAINLINE=./scripts/mainline
 
 # armv6l
-KERNEL0=./scripts/make-kernel0
-IMG0=./scripts/rpi0-stage1
-IMAGE0=sudo ./scripts/rpi0-stage1
-STG02=./scripts/rpi0-stage2
+BCM2708=./scripts/bcm2708
+
+# stages
+IMG=./scripts/raspberrypi-stage1
+IMAGE=sudo ./scripts/raspberrypi-stage1
+STG2=./scripts/raspberrypi-stage2
 
 # clean
 CLN=./scripts/clean
@@ -62,24 +54,24 @@ commands:
 	@echo
 	@echo "Boards:"
 	@echo
-	@echo "  rpi4                     Raspberry Pi 4B"
-	@echo "  rpi3                     Raspberry Pi 3B/+"
-	@echo "  rpi                      Raspberry Pi 0/0W/B/+"
+	@echo "  bcm2711                     Raspberry Pi 4B"
+	@echo "  bcm2710                     Raspberry Pi 3B/+"
+	@echo "  bcm2708                     Raspberry Pi 0/0W/B/+"
 	@echo
-	@echo "RPi4B:"
-	@echo " aarch64"
+	@echo "bcm2711:"
+	@echo " "
 	@echo "  make kernel              Builds linux kernel"
 	@echo "  make image               Make bootable Debian image"
 	@echo "  make all                 Kernel > rootfs > image"
 	@echo
-	@echo "RPi3B/+:"
-	@echo " aarch64"
+	@echo "bcm2710:"
+	@echo " "
 	@echo "  make rpi3-kernel         Builds linux kernel"
 	@echo "  make rpi3-image          Make bootable Debian image"
 	@echo "  make rpi3-all            Kernel > rootfs > image"
 	@echo
-	@echo "RPi:"
-	@echo " armv6l"	
+	@echo "bcm2708:"
+	@echo " "	
 	@echo "  make rpi-kernel         Builds linux kernel"
 	@echo "  make rpi-image          Make bootable Debian image"
 	@echo "  make rpi-all            Kernel > rootfs > image"
@@ -117,29 +109,31 @@ install-native-depends:
 # Raspberry Pi 4 | aarch64
 kernel:
 	# Linux | aarch64
-	@chmod +x ${KERNEL4}
-	@${KERNEL4}
+	@chmod +x ${BCM2711}
+	@${BCM2711}
 
 image:
 	# Making bootable Debian image
-	@chmod +x ${IMG4}
-	@chmod +x ${STG42}
-	@${IMAGE4}
+	@ echo bcm2711 > soc.txt
+	@chmod +x ${IMG}
+	@chmod +x ${STG2}
+	@${IMAGE}
 
 all:
 	# RPi4B | AARCH64
 	# - - - - - - - -
 	#
 	# Building linux
-	@chmod +x ${KERNEL4}
-	@${KERNEL4}
+	@chmod +x ${BCM2711}
+	@${BCM2711}
 	# Creating ROOTFS tarball
 	@chmod +x ${RFSV8}
 	@${ROOTFSV8}
 	# Making bootable Debian image
-	@chmod +x ${IMG4}
-	@chmod +x ${STG42}
-	@${IMAGE4}
+	@ echo bcm2711 > soc.txt
+	@chmod +x ${IMG}
+	@chmod +x ${STG2}
+	@${IMAGE}
 
 mainline:
 	# Mainline Linux | aarch64
@@ -149,56 +143,60 @@ mainline:
 # Raspberry Pi 3 | aarch64
 rpi3-kernel:
 	# Linux | aarch64
-	@chmod +x ${KERNEL3}
-	@${KERNEL3}
+	@chmod +x ${BCM2710}
+	@${BCM2710}
 
 rpi3-image:
 	# Making bootable Debian image
-	@chmod +x ${IMG3}
-	@chmod +x ${STG32}
-	@${IMAGE3}
+	@ echo bcm2710 > soc.txt
+	@chmod +x ${IMG}
+	@chmod +x ${STG2}
+	@${IMAGE}
 
 rpi3-all:
 	# RPi3B/+ | AARCH64
 	# - - - - - - - -
 	#
 	# Building linux
-	@chmod +x ${KERNEL3}
-	@${KERNEL3}
+	@chmod +x ${BCM2710}
+	@${BCM2710}
 	# Creating ROOTFS tarball
 	@chmod +x ${RFSV8}
 	@${ROOTFSV8}
 	# Making bootable Debian image
-	@chmod +x ${IMG3}
-	@chmod +x ${STG32}
-	@${IMAGE3}
+	@ echo bcm2710 > soc.txt
+	@chmod +x ${IMG}
+	@chmod +x ${STG2}
+	@${IMAGE}
 
 # Raspberry Pi | armv6l
 rpi-kernel:
 	# Linux | armv6l
-	@chmod +x ${KERNEL0}
-	@${KERNEL0}
+	@chmod +x ${BCM2708}
+	@${BCM2708}
 
 rpi-image:
 	# Make bootable Debian image
-	@chmod +x ${IMG0}
-	@chmod +x ${STG02}
-	@${IMAGE0}
+	@ echo bcm2708 > soc.txt
+	@chmod +x ${IMG}
+	@chmod +x ${STG2}
+	@${IMAGE}
 
 rpi-all:
 	# RPi | ARMV6L
 	# - - - - - - - -
 	#
 	# Building linux
-	@chmod +x ${KERNEL0}
-	@${KERNEL0}
+	@chmod +x ${BCM2708}
+	@${BCM2708}
 	# Creating ROOTFS tarball
 	@chmod +x ${RFSV6}
 	@${ROOTFSV6}
 	# Making bootable Debian img
-	@chmod +x ${IMG0}
-	@chmod +x ${STG02}
-	@${IMAGE0}
+	@ echo bcm2708 > soc.txt
+	@chmod +x ${IMG}
+	@chmod +x ${STG2}
+	@${IMAGE}
 
 # rootfs
 rootfs:
@@ -245,17 +243,17 @@ helper:
 	@chmod +x ${HELPER}
 	@${HELPER} -h
 
-zero:
+2708:
 	# BCM2708
 	@chmod +x ${HELPER}
 	@${HELPER} -1
 
-three:
+2710:
 	# BCM2710
 	@chmod +x ${HELPER}
 	@${HELPER} -3
 
-four:
+2711:
 	# BCM2711
 	@chmod +x ${HELPER}
 	@${HELPER} -4

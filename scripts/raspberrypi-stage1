@@ -1,0 +1,250 @@
+#!/bin/bash
+source lib/raspberrypi_func.txt
+source lib/source.txt
+source userdata.txt
+UD=userdata.txt
+
+userdata () {
+echo ""
+echo "Please create a userdata.txt file"
+while [ true ] ; do
+read -t 20 -n 1
+if [ $? = 0 ] ; then
+exit ;
+else
+echo "run make config"
+fi
+done
+}
+
+if [ -f "$UD" ]; then
+    echo ""
+    echo "$UD file found."
+else 
+    userdata
+fi
+
+set -x
+RAM=0
+PROXY=""
+IMAGE_FOLDER="img/"
+case `grep -Fx "bcm2711" "soc.txt" >/dev/null; echo $?` in
+  0)
+	DEVICE_SOC="bcm2711"
+    ;;
+esac
+case `grep -Fx "bcm2710" "soc.txt" >/dev/null; echo $?` in
+  0)
+	DEVICE_SOC="bcm2710"
+    ;;
+esac
+case `grep -Fx "bcm2708" "soc.txt" >/dev/null; echo $?` in
+  0)
+	DEVICE_SOC="bcm2708"
+    ;;
+esac
+set -eux -o pipefail
+IMAGE_LINUX_LOADADDR="0x1080000"
+IMAGE_DATE="$(date +%F)"
+IMAGE_FILE_NAME="${DEVICE_SOC}-debian-${DEBIAN_VERSION}-${IMAGE_DATE}.img"
+if [ $RAM -ne 0 ]; then
+	IMAGE_FOLDER="ram/"
+fi
+mkdir -p "$IMAGE_FOLDER"
+if [ $RAM -ne 0 ]; then
+	mount -t tmpfs -o size=3G tmpfs $IMAGE_FOLDER
+fi
+truncate -s ${IMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
+fdisk "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" <<EOF
+o
+n
+p
+1
+2048
+524287
+a
+c
+t
+b
+n
+p
+2
+524288
+
+p
+w
+
+EOF
+IMAGE_LOOP_DEV="$(losetup --show -f ${IMAGE_FOLDER}${IMAGE_FILE_NAME})"
+IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
+IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
+partprobe "${IMAGE_LOOP_DEV}"
+mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
+mkfs.ext4 -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}"
+mkdir -p p1 p2
+mount "${IMAGE_LOOP_DEV_BOOT}" p1
+mount "${IMAGE_LOOP_DEV_ROOTFS}" p2
+sync
+umount p2
+mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2
+
+### partition uuid
+partition_uuid
+
+### cmd line
+cmdline
+
+### config dot txt
+case `grep -Fx "bcm2711" "soc.txt" >/dev/null; echo $?` in
+  0)
+	bcm2711_config
+    ;;
+esac
+case `grep -Fx "bcm2710" "soc.txt" >/dev/null; echo $?` in
+  0)
+	bcm2710_config
+    ;;
+esac
+case `grep -Fx "bcm2708" "soc.txt" >/dev/null; echo $?` in
+  0)
+	bcm2708_config
+    ;;
+esac
+
+### Fetching boot bits
+case `grep -Fx "bcm2711" "soc.txt" >/dev/null; echo $?` in
+  0)
+	rpi4_bootbins
+    ;;
+esac
+case `grep -Fx "bcm2710" "soc.txt" >/dev/null; echo $?` in
+  0)
+	rpi_bootbins
+    ;;
+esac
+case `grep -Fx "bcm2708" "soc.txt" >/dev/null; echo $?` in
+  0)
+	rpi_bootbins
+    ;;
+esac
+
+### clean boot bits
+rm -f firmware/boot/*
+
+### extract rootfs
+case `grep -Fx "bcm2711" "soc.txt" >/dev/null; echo $?` in
+  0)
+	aarch64_rootfs
+    ;;
+esac
+case `grep -Fx "bcm2710" "soc.txt" >/dev/null; echo $?` in
+  0)
+	aarch64_rootfs
+    ;;
+esac
+case `grep -Fx "bcm2708" "soc.txt" >/dev/null; echo $?` in
+  0)
+	armel_rootfs
+    ;;
+esac
+
+mkdir -p p2/etc/apt/apt.conf.d p2/etc/dpkg/dpkg.cfg.d
+echo "force-unsafe-io" > "p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
+
+mkdir -p p2/usr/bin
+cp $(which "qemu-aarch64-static") p2/usr/bin
+
+case `grep -Fx 'DEBIAN_VERSION="unstable"' "userdata.txt" >/dev/null; echo $?` in
+  0)
+tee p2/etc/apt/sources.list <<EOF
+deb http://deb.debian.org/debian ${DEBIAN_VERSION} main contrib non-free
+EOF
+    ;;
+   1)
+tee p2/etc/apt/sources.list <<EOF
+deb http://deb.debian.org/debian ${DEBIAN_VERSION} main contrib non-free
+deb http://deb.debian.org/debian ${DEBIAN_VERSION}-updates main contrib non-free
+deb http://security.debian.org/debian-security ${DEBIAN_VERSION}/updates main contrib non-free
+deb http://deb.debian.org/debian/ ${DEBIAN_VERSION}-backports main contrib non-free
+EOF
+   ;;
+esac
+
+tee p2/etc/fstab <<EOF
+UUID=${BOOT_UUID}	/boot		vfat    defaults 0 2
+UUID=${ROOT_UUID}	/		ext4	defaults,noatime,nodiratime,commit=600,errors=remount-ro 0 1
+tmpfs	/tmp		tmpfs	defaults,nosuid 0 0
+EOF
+
+if [ -n "$PROXY" ] ; then
+	tee "p2/etc/apt/apt.conf.d/30proxy" <<EOF
+Acquire::http::proxy "http://127.0.0.1:3142";
+EOF
+fi
+
+# setup stage2
+cp scripts/raspberrypi-stage2 p2/root
+cp lib/raspberrypi_func.txt p2/root
+cp lib/source.txt p2/root
+cp userdata.txt p2/root
+cp soc.txt p2/root
+case `grep -Fx "bcm2711" "soc.txt" >/dev/null; echo $?` in
+  0)
+	cp ${TMP4}/*.deb p2/root
+    ;;
+esac
+case `grep -Fx "bcm2710" "soc.txt" >/dev/null; echo $?` in
+  0)
+	cp ${TMP3}/*.deb p2/root
+    ;;
+esac
+case `grep -Fx "bcm2708" "soc.txt" >/dev/null; echo $?` in
+  0)
+	cp ${TMP0}/*.deb p2/root
+    ;;
+esac
+cp files/misc/* p2/root
+cp files/patches/* p2/root
+cp files/rules/* p2/root
+cp files/scripts/* p2/root
+cp files/users/* p2/root
+cp firmware/fw-0a5c_21e8.hcd p2/root
+wget -cq --show-progress https://github.com/RPi-Distro/firmware-nonfree/archive/master.zip
+mv master.zip p2/root
+# Mount and chroot
+mount -o bind p1 p2/boot
+mount -o bind /dev p2/dev
+mount -o bind /dev/pts p2/dev/pts
+chroot p2 /root/raspberrypi-stage2
+# unmount
+umount p2/dev/pts
+umount p2/dev
+umount p2/boot
+
+rm p2/usr/bin/qemu-aarch64-static
+rm p2/root/raspberrypi-stage2
+rm p2/root/raspberrypi_func.txt
+rm p2/root/source.txt
+rm p2/root/userdata.txt
+rm p2/root/soc.txt
+rm -f p2/var/cache/debconf/*
+
+if [ -n "$PROXY" ] ; then
+	rm p2/etc/apt/apt.conf.d/30proxy
+fi
+rm p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
+
+### Finish
+e4defrag -c p2
+
+umount p2
+umount p1
+
+losetup -d "${IMAGE_LOOP_DEV}"
+mv "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" "${IMAGE_FILE_NAME}"
+if [ $RAM -ne 0 ]; then
+	umount "${IMAGE_FOLDER}"
+fi
+rmdir "${IMAGE_FOLDER}"
+rmdir p1 p2
+rm -f root-pid.txt root-id.txt boot-id.txt soc.txt

@@ -14,10 +14,7 @@ MLKERNEL="linux"
 # do not edit above this line
 
 # stage1
-RPI4="2300MB"
-RPI3="2300MB"
-RPI0="2150MB"
-DEBIAN_VERSION="buster"
+IMGSIZE="2300MB"
 
 PKGS1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	e2fsprogs fonty-rg patch curl wget apt-transport-https dirmngr \
@@ -36,6 +33,4 @@ FIRMWARE="firmware-linux"
 EEPROM_VERSION="7.5"
 
 # motd
-BRAND4="Raspberry Pi 4B"
-BRAND3="Raspberry Pi 3B"
-BRAND0="Raspberry Pi"
+BRAND="Raspberry Pi"
