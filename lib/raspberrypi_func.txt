@@ -331,20 +331,20 @@ install -v -m 0644 firmware/boot/COPYING.linux p1/
 rpi_bootbins () {
 mkdir -p firmware/boot
 wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/bootcode.bin
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4.dat
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4cd.dat
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4db.dat
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4x.dat
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start4.elf
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start4cd.elf
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start4db.elf
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start4x.elf
+wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup.dat
+wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup_cd.dat
+wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup_db.dat
+wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup_x.dat
+wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start.elf
+wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start_cd.elf
+wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start_db.elf
+wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start_x.elf
 wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/LICENCE.broadcom
 wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/COPYING.linux
 
 install -v -m 0644 firmware/boot/bootcode.bin p1/
-install -v -m 0644 firmware/boot/fixup4*.dat p1/
-install -v -m 0644 firmware/boot/start4*.elf p1/
+install -v -m 0644 firmware/boot/fixup*.dat p1/
+install -v -m 0644 firmware/boot/start*.elf p1/
 install -v -m 0644 firmware/boot/LICENCE.broadcom p1/
 install -v -m 0644 firmware/boot/COPYING.linux p1/
 }
