@@ -147,12 +147,17 @@ files, whilst leaving rename_to_credentials.txt untouched.
 /etc/opt/wpa_supplicant.manual
 ```
 
-#### Updating eeprom
+#### Using deb-eeprom
 ```sh
-nano ~/.eeprom
-# EEPROM CONFIG
-## https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/
-EEPROM_VERSION="6.0" # change version number
+Raspberry Pi 4B EEPROM Helper Script
+Usage: deb-eeprom -opt
+
+   -v       Edit version variable
+   -U       Upgrade eeprom package
+   -w       Setup and install usb boot
+   -u       Update script
+   -h       Help
+
 ```
 Execute: `deb-eeprom-update`
 
