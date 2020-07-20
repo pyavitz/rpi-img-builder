@@ -159,7 +159,6 @@ Usage: deb-eeprom -opt
    -h       Help
 
 ```
-Execute: `deb-eeprom-update`
 
 #### Using fetch
 ```sh
