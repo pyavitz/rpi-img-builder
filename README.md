@@ -156,7 +156,6 @@ Usage: deb-eeprom -opt
    -U       Upgrade eeprom package
    -w       Setup and install usb boot
    -u       Update script
-   -h       Help
 
 ```
 
@@ -169,7 +168,6 @@ Usage: fetch -opt
    -2       Linux 5.4.y LTS
    -3       Linux Stable Branch
    -u       Update Fetch
-   -h       Help
    
 fetch -h will list available options and kernel revisions
 ```
