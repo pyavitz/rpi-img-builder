@@ -76,6 +76,8 @@ case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
 	mv -f deb-eeprom-update /usr/local/bin/
 	wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/scripts/master/write2usb
 	mv -f write2usb /usr/local/bin/
+	wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/scripts/master/deb-eeprom
+	mv -f deb-eeprom /usr/local/bin/
     ;;
 esac
 mv -f growpart /usr/bin/
