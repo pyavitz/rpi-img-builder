@@ -451,6 +451,13 @@ rm -f *.patch
 rm -f *led*
 rm -f *eeprom*
 
+### Hack
+case `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null; echo $?` in
+  0)
+	ln -s /lib/ld-linux.so.3 /lib/ld-linux-armhf.so.3
+    ;;
+esac
+
 ### Vchiq permissions
 echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' > /etc/udev/rules.d/10-vchiq-permissions.rules
 echo 'SUBSYSTEM=="vcio",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
