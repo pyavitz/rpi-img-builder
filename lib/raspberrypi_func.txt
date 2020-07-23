@@ -530,6 +530,17 @@ EOF
 chown root:root /etc/opt/eeprom
 }
 
+eeprom_choose () {
+case `grep -Fx "admin=1" "/root/userdata.txt" >/dev/null; echo $?` in
+  0)
+	admin_eeprom
+    ;;
+  1)
+	user_eeprom
+    ;;
+esac
+}
+
 bcm_sdio_zero-w () {
 wget -cq --show-progress https://raw.githubusercontent.com/openwrt/cypress-nvram/master/brcmfmac43430-sdio.raspberrypi%2Cmodel-zero-w.txt
 }
