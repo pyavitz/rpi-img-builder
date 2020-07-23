@@ -383,12 +383,9 @@ case `grep -Fx "admin=1" "/root/userdata.txt" >/dev/null; echo $?` in
 	user_config
     ;;
 esac
-case `grep -Fx "admin=1" "/root/userdata.txt" >/dev/null; echo $?` in
+case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
   0)
-	admin_eeprom
-    ;;
-  1)
-	user_eeprom
+	eeprom_choose
     ;;
 esac
 
