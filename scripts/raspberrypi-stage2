@@ -29,36 +29,6 @@ apt dist-upgrade -y
 apt install -y ${PKGS1}
 echo
 
-case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
-  0)
-	bcm2711_user
-    ;;
-esac
-case `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null; echo $?` in
-  0)
-	bcm2710_user
-    ;;
-esac
-case `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null; echo $?` in
-  0)
-	bcm2708_user
-    ;;
-esac
-
-### Password
-echo "${user}:${passwd}" | chpasswd
-adduser ${user} sudo
-adduser ${user} audio
-adduser ${user} dialout
-adduser ${user} video
-adduser ${user} disk
-groupadd spi
-groupadd i2c
-groupadd gpio
-adduser ${user} spi
-adduser ${user} i2c
-adduser ${user} gpio
-
 #### Scripts
 echo
 echo Moving scripts.
@@ -126,27 +96,6 @@ mv -f 20-sysinfo /etc/update-motd.d/20-sysinfo
 chmod +x /etc/update-motd.d/*
 chown root:root /etc/update-motd.d/15-brand
 chown root:root /etc/update-motd.d/20-sysinfo
-echo Done.
-
-### Move mc skins
-echo
-echo Adding mc skins.
-sleep 1s
-mkdir -p /usr/share/mc/skins
-mv -f darkgreen.ini /usr/share/mc/skins/darkgreen.ini
-mv -f darkred.ini /usr/share/mc/skins/darkred.ini
-echo Done.
-echo
-echo Adding mc ini and nanorc
-sleep 1s
-mkdir -p /root/.config/mc
-mv -f root-ini /root/.config/mc/ini
-mv -f nanorc-root /root/.nanorc
-mkdir -p /home/${user}/.config/mc
-mv -f user-ini /home/${user}/.config/mc/ini
-mv -f nanorc-user /home/${user}/.nanorc
-chown -R root:root /root
-chown -R ${user}:${user} /home/${user}
 echo Done.
 
 #### Adding firmware
@@ -279,16 +228,6 @@ dpkg-buildpackage -us -uc
 cd ~
 dpkg -i raspberrypi-sys-mods*.deb
 rm -fdR raspberrypi-sys-mods*
-echo Done.
-
-#### Sudoers file 
-echo
-echo Creating sudoers file.
-sleep 1s
-rm -f /etc/sudoers.d/010_pi-nopasswd
-tee /etc/sudoers.d/010_${user}-nopasswd <<EOF
-${user} ALL=(ALL) NOPASSWD: ALL
-EOF
 echo Done.
 
 ### Bluez firmware.
@@ -435,16 +374,23 @@ case `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null; echo $?` in
     ;;
 esac
 
-### Adding groups
-echo
-echo Adding to more groups.
-sleep 1s
-adduser ${user} plugdev
-adduser ${user} netdev
-adduser ${user} bluetooth
-adduser ${user} input
-adduser ${user} tty
-echo Done.
+### Admin or user
+case `grep -Fx "admin=1" "/root/userdata.txt" >/dev/null; echo $?` in
+  0)
+	admin_config
+    ;;
+  1)
+	user_config
+    ;;
+esac
+case `grep -Fx "admin=1" "/root/userdata.txt" >/dev/null; echo $?` in
+  0)
+	admin_eeprom
+    ;;
+  1)
+	user_eeprom
+    ;;
+esac
 
 ### Clean misc files
 rm -f *.patch
@@ -568,8 +514,7 @@ systemctl enable firstboot
 systemctl enable credentials
 systemctl enable serial-getty@ttyUSB0.service
 echo Done.
-### Own it
-chown -R ${user}:${user} /home/${user}
+
 ###### Finish
 echo
 echo Moving out of stage2 and into IMG creation

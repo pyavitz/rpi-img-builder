@@ -1,4 +1,4 @@
-# stage 1
+### STAGE 1
 partition_uuid () {
 echo 'BOOT_UUID="' > boot1
 blkid -o export -- "${IMAGE_LOOP_DEV_BOOT}" | sed -ne 's/^UUID=//p' > boot2
@@ -357,7 +357,9 @@ armel_rootfs () {
 tar -xf debian-${DEBIAN_VERSION}-rootfs-armel.tar.xz -C p2/
 }
 
-# stage2
+### STAGE 2
+
+# USER CONFIG
 bcm2708_user () {
 echo -n 'bcm2708' > /etc/hostname
 sed -i '1 a 127.0.1.1	bcm2708' /etc/hosts
@@ -374,6 +376,158 @@ bcm2711_user () {
 echo -n 'bcm2711' > /etc/hostname
 sed -i '1 a 127.0.1.1	bcm2711' /etc/hosts
 adduser ${user} --gecos "bcm2711" --disabled-password
+}
+
+user_config () {
+case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
+  0)
+	bcm2711_user
+    ;;
+esac
+case `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null; echo $?` in
+  0)
+	bcm2710_user
+    ;;
+esac
+case `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null; echo $?` in
+  0)
+	bcm2708_user
+    ;;
+esac
+
+echo "${user}:${passwd}" | chpasswd
+adduser ${user} sudo
+adduser ${user} audio
+adduser ${user} dialout
+adduser ${user} video
+adduser ${user} disk
+groupadd spi
+groupadd i2c
+groupadd gpio
+adduser ${user} spi
+adduser ${user} i2c
+adduser ${user} gpio
+adduser ${user} plugdev
+adduser ${user} netdev
+adduser ${user} bluetooth
+adduser ${user} input
+adduser ${user} tty
+
+echo
+echo Adding mc skins.
+sleep 1s
+mkdir -p /usr/share/mc/skins
+mv -f darkgreen.ini /usr/share/mc/skins/darkgreen.ini
+mv -f darkred.ini /usr/share/mc/skins/darkred.ini
+echo Done.
+echo
+echo Adding mc ini and nanorc
+sleep 1s
+mkdir -p /root/.config/mc
+mv -f root-ini /root/.config/mc/ini
+mv -f nanorc-root /root/.nanorc
+mkdir -p /home/${user}/.config/mc
+mv -f user-ini /home/${user}/.config/mc/ini
+mv -f nanorc-user /home/${user}/.nanorc
+chown -R root:root /root
+chown -R ${user}:${user} /home/${user}
+echo Done.
+
+echo
+echo Creating sudoers file.
+sleep 1s
+rm -f /etc/sudoers.d/010_pi-nopasswd
+tee /etc/sudoers.d/010_${user}-nopasswd <<EOF
+${user} ALL=(ALL) NOPASSWD: ALL
+EOF
+echo Done.
+
+rm -f username.txt
+rm -f whogoesthere
+chown -R ${user}:${user} /home/${user}
+}
+
+# ADMIN CONFIG
+bcm2708_admin () {
+echo -n 'bcm2708' > /etc/hostname
+sed -i '1 a 127.0.1.1	bcm2708' /etc/hosts
+}
+
+bcm2710_admin () {
+echo -n 'bcm2710' > /etc/hostname
+sed -i '1 a 127.0.1.1	bcm2710' /etc/hosts
+}
+
+bcm2711_admin () {
+echo -n 'bcm2711' > /etc/hostname
+sed -i '1 a 127.0.1.1	bcm2711' /etc/hosts
+}
+
+admin_config () {
+case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
+  0)
+	bcm2711_admin
+    ;;
+esac
+case `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null; echo $?` in
+  0)
+	bcm2710_admin
+    ;;
+esac
+case `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null; echo $?` in
+  0)
+	bcm2708_admin
+    ;;
+esac
+
+groupadd spi
+groupadd i2c
+groupadd gpio
+
+echo
+echo Adding mc skins.
+sleep 1s
+mkdir -p /usr/share/mc/skins
+mv -f darkgreen.ini /usr/share/mc/skins/darkgreen.ini
+mv -f darkred.ini /usr/share/mc/skins/darkred.ini
+echo Done.
+echo
+echo Adding mc ini and nanorc
+sleep 1s
+mkdir -p /root/.config/mc
+mv -f root-ini /root/.config/mc/ini
+mv -f nanorc-root /root/.nanorc
+mv -f user-ini /etc/opt/user-ini
+mv -f nanorc-user /etc/opt/nanorc-user
+chown -R root:root /root
+echo Done.
+
+mv -f username.txt /boot/
+mv -f whogoesthere /usr/local/bin/
+chmod +x /usr/local/bin/whogoesthere
+chown -R root:root /usr/local/bin/whogoesthere
+}
+
+user_eeprom () {
+echo
+echo Adding user eeprom config.
+tee /home/${user}/.eeprom <<EOF
+# EEPROM CONFIG
+## https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/
+EEPROM_VERSION="${EEPROM_VERSION}"
+EOF
+chown ${user}:${user} /home/${user}/.eeprom
+}
+
+admin_eeprom () {
+echo
+echo Adding user eeprom config.
+tee /etc/opt/eeprom <<EOF
+# EEPROM CONFIG
+## https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/
+EEPROM_VERSION="${EEPROM_VERSION}"
+EOF
+chown root:root /etc/opt/eeprom
 }
 
 bcm_sdio_zero-w () {
@@ -812,14 +966,6 @@ cd ..
 dpkg -i *.deb
 cd ..
 rm -fdr eeprom
-echo
-echo Adding user eeprom config.
-tee /home/${user}/.eeprom <<EOF
-# EEPROM CONFIG
-## https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/
-EEPROM_VERSION="${EEPROM_VERSION}"
-EOF
-chown ${user}:${user} /home/${user}/.eeprom
 echo Done.
 }
 

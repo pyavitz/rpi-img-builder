@@ -2,6 +2,7 @@
 MENU=./lib/menu
 CONF=./lib/config
 MLCONF=./lib/ml_config
+ADMIN=./lib/admin_config
 DIALOGRC=$(shell cp -f lib/dialogrc ~/.dialogrc)
 
 # rootfs
@@ -233,6 +234,11 @@ mlconfig:
 	# User config menu
 	@chmod +x ${MLCONF}
 	@${MLCONF}
+
+admin:
+	# User config menu
+	@chmod +x ${ADMIN}
+	@${ADMIN}
 
 dialogrc:
 	# Builder theme set
