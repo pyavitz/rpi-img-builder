@@ -1097,7 +1097,7 @@ git clone https://github.com/leeadama/htop.git
 cd htop
 ./autogen.sh
 ./configure --prefix=/usr
-make
+make -j4
 make install
 cd ~
 rm -fdr htop
@@ -1106,7 +1106,15 @@ echo Done.
 
 htop_unstable () {
 echo
-echo Installing htop.
-apt install htop -y
+echo Installing htop with cpufreq and thermal support.
+sleep 1s
+git clone https://github.com/leeadama/htop.git
+cd htop
+./autogen.sh
+./configure --prefix=/usr
+make -j4 CC=gcc-9
+make install
+cd ~
+rm -fdr htop
 echo Done.
 }
