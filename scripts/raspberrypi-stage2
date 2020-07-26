@@ -286,18 +286,14 @@ case `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null; echo $?` in
 esac
 
 ### Htop
-echo
-echo Installing htop with cpufreq and thermal support.
-sleep 1s
-git clone https://github.com/leeadama/htop.git
-cd htop
-./autogen.sh
-./configure --prefix=/usr
-make
-make install
-cd ~
-rm -fdr htop
-echo Done.
+case `grep -Fx 'DEBIAN_VERSION="unstable"' "/root/userdata.txt" >/dev/null; echo $?` in
+  0)
+    htop_unstable
+    ;;
+  1)
+    htop_stable
+    ;;
+esac
 
 ### Upgrading bluez
 case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
