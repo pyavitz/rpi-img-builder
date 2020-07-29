@@ -2,7 +2,7 @@
 
 The boards that are currently supported are;
 * Raspberry Pi 4B (bcm2711)
-* Raspberry Pi 3B/3B+ (bcm2710)
+* Raspberry Pi 3B/A/B+ (bcm2710)
 * Raspberry Pi 0/W/B/+ (bcm2708)
 
 ## Dependencies
