@@ -36,7 +36,6 @@ echo menuconfig= >> tmp0
 echo crosscompile= >> tmp0
 echo custom_defconfig=0 >> tmp0
 echo MYCONFIG='"'nameofyour_defconfig'"' >> tmp0
-echo rpiuser=1 >> tmp0
 echo admin=1 >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
