@@ -3,5 +3,5 @@ umount p2/proc p2/sys p2/dev p2/run
 umount -l p1 p2
 rm -fr p1 p2 img
 rm -f root-pid.txt root-id.txt boot-id.txt soc.txt
-losetup -d /dev/loop0
+losetup -d /dev/loop* > /dev/null 2>&1
 echo Done.
