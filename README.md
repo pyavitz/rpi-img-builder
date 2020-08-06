@@ -147,7 +147,8 @@ files, whilst leaving rename_to_credentials.txt untouched.
 /etc/opt/wpa_supplicant.manual
 ```
 
-#### Using deb-eeprom
+#### Using deb-eeprom and [usb_storage.quirks](https://github.com/pyavitz/rpi-img-builder/issues/17)
+
 ```sh
 Raspberry Pi 4B EEPROM Helper Script
 Usage: deb-eeprom -opt
