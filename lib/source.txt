@@ -14,8 +14,8 @@ MLKERNEL="linux"
 # do not edit above this line
 
 # stage1
-IMGSIZE="2350MB"
-IMGSIZE_UNSTABLE="2475MB"
+IMGSIZE="2300MB"
+IMGSIZE_UNSTABLE="2425MB"
 
 PKGS1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	e2fsprogs fonty-rg patch curl wget apt-transport-https dirmngr \
