@@ -116,5 +116,9 @@ case `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null; echo $?` in
     #
     ;;
 esac
-echo Done.
 echo
+cd ..
+rm -f linux-libc-dev*.deb
+rm -f *.buildinfo
+rm -f *.changes
+echo Done.
