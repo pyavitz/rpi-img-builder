@@ -24,8 +24,8 @@ Alternatively, you can run the command `make install-depends` in this directory.
 #### Install dependencies
 
 ```sh
-make install-depends        # (cross compile)
-make install-native-depends # (native compile)
+make install-depends        # Cross compile
+make install-native-depends # Native compile
 ```
 
 #### Menu interface
@@ -118,8 +118,8 @@ make rpi-all
 #### Root Filesystems
 
 ```sh
-make rootfs   # (arm64)
-make rootfsv6 # (armel)
+make rootfs   # arm64
+make rootfsv6 # armel
 ```
 ## Usage
 #### /boot/rename_to_credentials.txt
