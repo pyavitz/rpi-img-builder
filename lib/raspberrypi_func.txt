@@ -1,26 +1,14 @@
 ### STAGE 1
 partition_uuid () {
-echo 'BOOT_UUID="' > boot1
-blkid -o export -- "${IMAGE_LOOP_DEV_BOOT}" | sed -ne 's/^UUID=//p' > boot2
-echo '"' > boot3
-paste -d '\0' boot1 boot2 boot3  > boot-id.txt
-rm -f boot1 boot2 boot3
+BOOT_UUID=$(blkid -o export -- "${IMAGE_LOOP_DEV_BOOT}" | sed -ne 's/^UUID=//p')
+ROOT_UUID=$(blkid -o export -- "${IMAGE_LOOP_DEV_ROOTFS}" | sed -ne 's/^UUID=//p')
+ROOT_PARTUUID=$(blkid -o export -- "${IMAGE_LOOP_DEV_ROOTFS}" | sed -ne 's/^PARTUUID=//p')
 
-echo 'ROOT_UUID="' > root1
-blkid -o export -- "${IMAGE_LOOP_DEV_ROOTFS}" | sed -ne 's/^UUID=//p' > root2
-echo '"' > root3
-paste -d '\0' root1 root2 root3  > root-id.txt
-rm -f root1 root2 root3
+echo BOOT_UUID='"'$BOOT_UUID'"' > part-uuid.txt
+echo ROOT_UUID='"'$ROOT_UUID'"' >> part-uuid.txt
+echo ROOT_PARTUUID='"'$ROOT_PARTUUID'"' >> part-uuid.txt
 
-echo 'ROOT_PARTUUID="' > root1
-blkid -o export -- "${IMAGE_LOOP_DEV_ROOTFS}" | sed -ne 's/^PARTUUID=//p' > root2
-echo '"' > root3
-paste -d '\0' root1 root2 root3  > root-pid.txt
-rm -f root1 root2 root3
-
-source boot-id.txt
-source root-id.txt
-source root-pid.txt
+source part-uuid.txt
 }
 
 cmdline () {

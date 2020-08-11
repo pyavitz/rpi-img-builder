@@ -254,4 +254,4 @@ if [ $RAM -ne 0 ]; then
 fi
 rmdir "${IMAGE_FOLDER}"
 rmdir p1 p2
-rm -f root-pid.txt root-id.txt boot-id.txt soc.txt
+rm -f part-uuid.txt soc.txt
