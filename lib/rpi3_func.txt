@@ -26,3 +26,12 @@ rpi3_fconfig () {
     make ARCH=arm64 bcmrpi3_defconfig &> /dev/null
     echo Done.
 }
+
+rpi3_clean (){
+if ls ${KERNEL}-${VERSION} > /dev/null 2>&1;
+	then echo "" && echo -e "${CLN}Cleaning${FIN} ..." && rm -fdr ${KERNEL}-${VERSION};
+fi
+if ls *.deb > /dev/null 2>&1;
+	then mkdir -p debs && mv -f *.deb debs/;
+fi
+}

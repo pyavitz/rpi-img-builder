@@ -4,6 +4,7 @@ source lib/func.txt
 source lib/rpi4_func.txt
 source userdata.txt
 RED="\e[1;31m"
+CLN="\e[1;33m"
 FIN="\e[0m"
 UD=userdata.txt
 
@@ -22,7 +23,7 @@ done
 
 if [ -f "$UD" ]; then
     echo ""
-    echo "$UD file found."
+    echo -e "${RED}$UD file found${FIN}."
 else 
     userdata
 fi
@@ -30,7 +31,7 @@ fi
 case `grep -Fx "devuser=1" "userdata.txt" >/dev/null; echo $?` in
   0)
     echo ""
-    echo -e "${RED}Wrong userdata file!${FIN}"
+    echo -e "${RED}Wrong userdata file${FIN}!"
     echo ""
     while [ true ] ; do
     read -t 2 -n 1
@@ -48,6 +49,8 @@ esac
 
 mkdir -p ${TMP4}
 cd ${TMP4}
+
+rpi4_clean
 
 ### Download kernel
 download

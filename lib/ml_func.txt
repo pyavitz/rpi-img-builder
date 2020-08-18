@@ -82,3 +82,12 @@ native_compile () {
     echo 'y' | make -j${CORES} ARCH=arm64 bindeb-pkg
     rm -f ../*libc*.deb
 }
+
+mainline_clean (){
+if ls ${MLKERNEL}-${VERSION} > /dev/null 2>&1;
+	then echo "" && echo -e "${CLN}Cleaning${FIN} ..." && rm -fdr ${MLKERNEL}-${VERSION};
+fi
+if ls *.deb > /dev/null 2>&1;
+	then mkdir -p debs && mv -f *.deb debs/;
+fi
+}

@@ -26,3 +26,12 @@ rpi_fconfig () {
     make KBUILD_DEBARCH=armel ARCH=arm bcmrpi_defconfig &> /dev/null
     echo Done.
 }
+
+rpi_clean (){
+if ls ${KERNEL}-${VERSION} > /dev/null 2>&1;
+	then echo "" && echo -e "${CLN}Cleaning${FIN} ..." && rm -fdr ${KERNEL}-${VERSION};
+fi
+if ls *.deb > /dev/null 2>&1;
+	then mkdir -p debs && mv -f *.deb debs/;
+fi
+}
