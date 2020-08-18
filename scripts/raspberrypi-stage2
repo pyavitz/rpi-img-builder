@@ -266,8 +266,10 @@ echo Done.
 echo
 echo Building pi bluetooth package.
 sleep 1s
-git clone https://github.com/RPi-Distro/pi-bluetooth.git
-cd pi-bluetooth
+wget -cq --show-progress https://github.com/RPi-Distro/pi-bluetooth/archive/e71e1230f353cfd5887b536bbd12024b3d63f8fc.zip
+unzip -qq e71e1230f353cfd5887b536bbd12024b3d63f8fc.zip
+rm -f e71e1230f353cfd5887b536bbd12024b3d63f8fc.zip
+cd pi-bluetooth-e71e1230f353cfd5887b536bbd12024b3d63f8fc
 dpkg-buildpackage -us -uc
 cd ~
 dpkg -i pi-bluetooth_*.deb
