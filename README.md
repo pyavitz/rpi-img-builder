@@ -40,7 +40,7 @@ make dialogrc   # Set builder theme (optional)
 ```sh
 Username:       # Your username
 Password:       # Your password
-Debian:         # Supported: buster & unstable
+Debian:         # Supported: buster & unstable (unstable is hit-and-miss)
 Branch:         # Selected kernel branch
 Edge Branch:    # 1 for any branch above 5.4.y
 Menuconfig:     # 1 to run kernel menuconfig
@@ -75,7 +75,7 @@ make mainline   # Build mainline linux kernel
 ```sh
 Username:       # Your username
 Password:       # Your password
-Debian:         # Supported: buster & unstable
+Debian:         # Supported: buster & unstable (unstable is hit-and-miss)
 Branch:         # Selected kernel branch
 Mainline:       # 1 for kernel x.y-rc above stable
 Menuconfig:     # 1 to run kernel menuconfig
