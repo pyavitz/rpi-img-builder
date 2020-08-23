@@ -17,15 +17,15 @@ sudo apt install build-essential bison bc git dialog patch dosfstools zip unzip 
 
 This has been tested on an AMD64/x86_64 system running on [Debian Buster](https://www.debian.org/releases/buster/debian-installer/).
 
-Alternatively, you can run the command `make install-depends` in this directory.
+Alternatively, you can run the command `make ccompile` in this directory.
 
 ## Instructions
 
 #### Install dependencies
 
 ```sh
-make install-depends        # Cross compile
-make install-native-depends # Native compile
+make ccompile	# Install all dependencies
+make ncompile	# Install native dependencies
 ```
 
 #### Menu interface
@@ -182,6 +182,19 @@ swh -h
    -r       Restart interface
    -W       Edit wpa supplicant
    -I       Edit interfaces
+```
+#### CPU frequency scaling
+```sh
+Usage: governor -opt
+
+   -c       Conservative
+   -o       Ondemand
+   -p       Performance
+
+   -r       Run
+   -u       Update
+
+A service runs 'governor -r' during boot.
 ```
 
 ---

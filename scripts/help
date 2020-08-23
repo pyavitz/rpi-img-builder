@@ -6,7 +6,7 @@ FIN="\e[0m"
 
 rpi () {
 echo
-echo -e "${RED}Downloading ... ${FIN}"
+echo -e "${RED}Downloading ...${FIN}"
 wget -cq --show-progress https://github.com/pyavitz/rpi-img-builder/releases/download/linux/rpi-stable.tar.xz
 wget -cq --show-progress https://github.com/pyavitz/rootfs-tarballs/releases/download/xlrootfs/debian-buster-rootfs-armel.tar.xz
 echo -e "${RED}Done.${FIN}"
@@ -69,11 +69,11 @@ while getopts "1234h" OPTION; do
                         ECHO="rpi4"
                         ;;
                 h)                       
-                        echo "Help, downloads a binary Linux package and XL rootfs tarball."
+                        echo "Helper, downloads a binary Linux package and XL rootfs tarball."
                         echo "Make sure to run 'make config' before 'make image'."
                         echo ""
                         echo -e "   make 2708        Raspberry Pi 0/w/b/+"
-                        echo -e "   make 2710        Raspberry Pi 3b/+"
+                        echo -e "   make 2710        Raspberry Pi 3a/b/+"
                         echo -e "   make 2711        Raspberry Pi 4b"
                         echo ""
                         exit 0

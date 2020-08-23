@@ -367,21 +367,15 @@ adduser ${user} --gecos "bcm2711" --disabled-password
 }
 
 user_config () {
-case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
-  0)
-	bcm2711_user
-    ;;
-esac
-case `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null; echo $?` in
-  0)
-	bcm2710_user
-    ;;
-esac
-case `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null; echo $?` in
-  0)
-	bcm2708_user
-    ;;
-esac
+if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
+	then bcm2711_user
+fi
+case `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
+	then bcm2710_user
+fi
+if `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null;`
+	then bcm2708_user
+fi
 
 echo "${user}:${passwd}" | chpasswd
 adduser ${user} sudo
@@ -452,21 +446,15 @@ sed -i '1 a 127.0.1.1	bcm2711' /etc/hosts
 }
 
 admin_config () {
-case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
-  0)
-	bcm2711_admin
-    ;;
-esac
-case `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null; echo $?` in
-  0)
-	bcm2710_admin
-    ;;
-esac
-case `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null; echo $?` in
-  0)
-	bcm2708_admin
-    ;;
-esac
+if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
+	then bcm2711_admin
+fi
+if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
+	then bcm2710_admin
+fi
+if `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null;`
+	then bcm2708_admin
+fi
 
 groupadd spi
 groupadd i2c
@@ -652,11 +640,9 @@ sleep 1s
 rm -f /etc/network/interfaces
 mkdir -p /etc/udev/rules.d
 mv -f 80-net-setup-link.rules /etc/udev/rules.d/80-net-setup-link.rules
-case `grep -Fx 'DEBIAN_VERSION="unstable"' "/root/userdata.txt" >/dev/null; echo $?` in
-  0)
-	sed -i 's/NAME="wlan0"/NAME="eth0"/g' /etc/udev/rules.d/80-net-setup-link.rules
-    ;;
-esac
+if `grep -Fx 'DEBIAN_VERSION="unstable"' "/root/userdata.txt" >/dev/null;`
+	then sed -i 's/NAME="wlan0"/NAME="eth0"/g' /etc/udev/rules.d/80-net-setup-link.rules
+fi
 chown root:root /etc/udev/rules.d/80-net-setup-link.rules
 mv -f credentials.txt /boot/rename_to_credentials.txt
 cp -f soc.txt /etc/opt/

@@ -42,9 +42,6 @@ case `grep -Fx "devuser=1" "userdata.txt" >/dev/null; echo $?` in
     fi
     done
     ;;
-  *)
-    #
-    ;;
 esac
 
 mkdir -p ${TMP4}
@@ -66,9 +63,6 @@ case `grep -Fx "edge=1" "../userdata.txt" >/dev/null; echo $?` in
   1)
     armv8_setup
     ;;
-  *)
-    #
-    ;;
 esac
 
 ### Patching
@@ -78,9 +72,6 @@ case `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null; echo $?` in
     ;;
   1)
     ncpatch
-    ;;
-  *)
-    #
     ;;
 esac
 
@@ -92,20 +83,12 @@ case `grep -Fx "custom_defconfig=1" "../../userdata.txt" >/dev/null; echo $?` in
   1)
     rpi4_fconfig
     ;;
-  *)
-    #
-    ;;
 esac
 
 ### Menuconfig
-case `grep -Fx "menuconfig=1" "../../userdata.txt" >/dev/null; echo $?` in
-  0)
-    armv8_menuconfig
-    ;;
-  *)
-    #
-    ;;
-esac
+if `grep -Fx "menuconfig=1" "../../userdata.txt" >/dev/null;`
+    then armv8_menuconfig
+fi
 
 ### Build deb
 case `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null; echo $?` in
@@ -114,9 +97,6 @@ case `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null; echo $?` in
     ;;
   1)
     armv8_ncompile
-    ;;
-  *)
-    #
     ;;
 esac
 echo
