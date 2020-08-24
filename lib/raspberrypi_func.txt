@@ -370,7 +370,7 @@ user_config () {
 if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
 	then bcm2711_user
 fi
-case `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
+if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
 	then bcm2710_user
 fi
 if `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null;`
