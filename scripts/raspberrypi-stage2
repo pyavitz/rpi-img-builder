@@ -428,8 +428,9 @@ Description=Set Governor
 ConditionPathExists=/usr/local/bin/governor
 
 [Service]
-Type=forking
 ExecStart=/usr/local/bin/governor -r &>/dev/null
+Type=oneshot
+RemainAfterExit=yes
 
 [Install]
 WantedBy=multi-user.target
