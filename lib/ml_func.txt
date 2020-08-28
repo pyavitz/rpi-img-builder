@@ -38,10 +38,20 @@ download_stable () {
     chmod +x scripts/package/mkdebian
 }
 
+userpatches (){
+if
+ls ../${UP}/*.patch > /dev/null 2>&1;
+then echo -e "${GRN}Applying user patches${FIN}." &&
+for i in ../${UP}/*.patch; do patch -p1 < $i; done ;
+else echo -e "${RED}No user patches found${FIN}." 
+fi
+}
+
 patching () {
     echo
     echo Applying patches.
     for i in ../${ML}/*.patch; do patch -p1 < $i; done
+    userpatches
     cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch
     sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
     echo Done.

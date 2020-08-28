@@ -83,6 +83,15 @@ chmod +x scripts/package/mkdebian
 #make mrproper
 }
 
+userpatches (){
+if
+ls ../${UP}/*.patch > /dev/null 2>&1;
+then echo -e "${GRN}Applying user patches${FIN}." &&
+for i in ../${UP}/*.patch; do patch -p1 < $i; done ;
+else echo -e "${RED}No user patches found${FIN}." 
+fi
+}
+
 armv8_cconfig () {
     echo Making ${MYCONFIG}.
     cp -f ../${DEF}/${MYCONFIG} arch/arm64/configs/

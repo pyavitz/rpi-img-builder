@@ -54,6 +54,12 @@ nano userdata.txt
 custom_defconfig=1
 MYCONFIG="nameofyour_defconfig"
 ```
+#### User patches
+
+```sh
+Patches "-p1" placed in patches/userpatches are applied during
+compilation. This works for both Foundation and Mainline kernels.
+```
 #### Miscellaneous
 
 ```sh

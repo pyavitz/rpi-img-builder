@@ -7,6 +7,7 @@ PAT="../patches"
 CC="../patches/cc"
 NC="../patches/nc"
 ML="../patches/ml"
+UP="../patches/userpatches"
 
 CORES=`nproc`
 KERNEL="linux-rpi"

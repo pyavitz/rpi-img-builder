@@ -4,6 +4,7 @@ source lib/func.txt
 source lib/rpi4_func.txt
 source userdata.txt
 RED="\e[1;31m"
+GRN="\e[1;32m"
 CLN="\e[1;33m"
 FIN="\e[0m"
 UD=userdata.txt
