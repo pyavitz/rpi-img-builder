@@ -924,7 +924,7 @@ apt update
 echo
 echo Installing rpi-eeprom.
 sleep 1s
-apt install help2man rsync python pciutils -y
+apt install help2man rsync pciutils -y
 ###
 mkdir -p ~/eeprom
 mkdir -p /usr/local/src
