@@ -249,16 +249,16 @@ helper:
 	@${HELPER} -h
 
 2708:
-	# LINUX
+	# BCM2708
 	@chmod +x ${HELPER}
 	@${HELPER} -1
 
 2710:
-	# LINUX
+	# BCM2710
 	@chmod +x ${HELPER}
 	@${HELPER} -3
 
 2711:
-	# LINUX
+	# BCM2711
 	@chmod +x ${HELPER}
 	@${HELPER} -4
