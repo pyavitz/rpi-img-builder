@@ -1,11 +1,8 @@
 #!/bin/bash
 source userdata.txt
 source lib/ml_func.txt
+source lib/echo_func.txt
 source lib/source.txt
-RED="\e[1;31m"
-GRN="\e[1;32m"
-CLN="\e[1;33m"
-FIN="\e[0m"
 UD=userdata.txt
 
 userdata () {
@@ -23,7 +20,7 @@ done
 
 if [ -f "$UD" ]; then
     echo ""
-    echo -e "${RED}$UD file found${FIN}."
+    echo -e "${YLW}$UD file found${FIN}."
 else 
     userdata
 fi

@@ -11,13 +11,9 @@ ROOTFSV8=sudo ./scripts/rootfsv8
 RFSV6=./scripts/rootfsv6
 ROOTFSV6=sudo ./scripts/rootfsv6
 
-# aarch64
-BCM2711=./scripts/bcm2711
-BCM2710=./scripts/bcm2710
+# kernel
+LINUX=./scripts/linux
 MAINLINE=./scripts/mainline
-
-# armv6l
-BCM2708=./scripts/bcm2708
 
 # stages
 IMG=./scripts/raspberrypi-stage1
@@ -107,8 +103,9 @@ ncompile:
 # Raspberry Pi 4 | aarch64
 kernel:
 	# Linux | aarch64
-	@chmod +x ${BCM2711}
-	@${BCM2711}
+	@ echo bcm2711 > soc.txt
+	@chmod +x ${LINUX}
+	@${LINUX}
 
 image:
 	# Making bootable Debian image
@@ -122,8 +119,9 @@ all:
 	# - - - - - - - -
 	#
 	# Building linux
-	@chmod +x ${BCM2711}
-	@${BCM2711}
+	@ echo bcm2711 > soc.txt
+	@chmod +x ${LINUX}
+	@${LINUX}
 	# Creating ROOTFS tarball
 	@chmod +x ${RFSV8}
 	@${ROOTFSV8}
@@ -141,8 +139,9 @@ mainline:
 # Raspberry Pi 3 | aarch64
 rpi3-kernel:
 	# Linux | aarch64
-	@chmod +x ${BCM2710}
-	@${BCM2710}
+	@ echo bcm2710 > soc.txt
+	@chmod +x ${LINUX}
+	@${LINUX}
 
 rpi3-image:
 	# Making bootable Debian image
@@ -156,8 +155,9 @@ rpi3-all:
 	# - - - - - - - -
 	#
 	# Building linux
-	@chmod +x ${BCM2710}
-	@${BCM2710}
+	@ echo bcm2710 > soc.txt
+	@chmod +x ${LINUX}
+	@${LINUX}
 	# Creating ROOTFS tarball
 	@chmod +x ${RFSV8}
 	@${ROOTFSV8}
@@ -170,8 +170,9 @@ rpi3-all:
 # Raspberry Pi | armv6l
 rpi-kernel:
 	# Linux | armv6l
-	@chmod +x ${BCM2708}
-	@${BCM2708}
+	@ echo bcm2708 > soc.txt
+	@chmod +x ${LINUX}
+	@${LINUX}
 
 rpi-image:
 	# Make bootable Debian image
@@ -185,8 +186,9 @@ rpi-all:
 	# - - - - - - - -
 	#
 	# Building linux
-	@chmod +x ${BCM2708}
-	@${BCM2708}
+	@ echo bcm2708 > soc.txt
+	@chmod +x ${LINUX}
+	@${LINUX}
 	# Creating ROOTFS tarball
 	@chmod +x ${RFSV6}
 	@${ROOTFSV6}
@@ -247,16 +249,16 @@ helper:
 	@${HELPER} -h
 
 2708:
-	# BCM2708
+	# LINUX
 	@chmod +x ${HELPER}
 	@${HELPER} -1
 
 2710:
-	# BCM2710
+	# LINUX
 	@chmod +x ${HELPER}
 	@${HELPER} -3
 
 2711:
-	# BCM2711
+	# LINUX
 	@chmod +x ${HELPER}
 	@${HELPER} -4

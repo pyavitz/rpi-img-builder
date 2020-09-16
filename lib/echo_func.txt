@@ -1,0 +1,59 @@
+# COLORS
+RED="\e[1;31m"
+GRN="\e[1;32m"
+PNK="\e[1;35m"
+YLW="\e[1;33m"
+FIN="\e[0m"
+
+# ECHOES
+echo_extract () {
+echo -e "${RED}Extracting archive${FIN}."
+}
+
+echo_ccpatch () {
+echo -e "${RED}Applying cc packaging patch${FIN}."
+}
+
+echo_ncpatch () {
+echo -e "${RED}Applying nc packaging patch${FIN}."
+}
+
+echo_patch () {
+echo -e "${RED}Applying patches${FIN}."
+}
+
+echo_done () {
+echo -e "${RED}Done${FIN}."
+}
+
+echo_ok () {
+echo -e "${PNK}[${FIN}${GRN}ok${FIN}${PNK}]${FIN}"
+}
+
+echo_kernel () {
+echo -e "${RED}Downloading kernel${FIN}."
+}
+
+echo_stable () {
+echo -e "${RED}Downloading stable linux${FIN}."
+}
+
+echo_mainline () {
+echo -e "${RED}Downloading mainline linux${FIN}."
+}
+
+echo_cconfig () {
+echo -e "${RED}Making ${MYCONFIG}${FIN}."
+}
+
+echo_fconfig () {
+echo -e "${RED}Making foundation defconfig${FIN}."
+}
+
+echo_menuconfig () {
+echo -e "${RED}Opening menuconfig${FIN}."
+}
+
+echo_build () {
+echo -e "${RED}--- Building deb packages${FIN}."
+}

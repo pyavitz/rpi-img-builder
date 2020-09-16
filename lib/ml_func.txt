@@ -1,12 +1,14 @@
 download_mainline () {
     echo
-    echo Downloading mainline linux.
-    wget -cq --show-progress https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/${MLKERNEL}-${VERSION}.tar.gz
-    echo Done.
+    echo_mainline
+    if ls ${MLKERNEL}-${VERSION}.tar.gz > /dev/null 2>&1;
+	then echo -e "${YLW}${MLKERNEL}-${VERSION}.tar.gz found${FIN}.";
+	else aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/${MLKERNEL}-${VERSION}.tar.gz && echo_ok;
+    fi
     echo
-    echo Extracting archive.
-    tar -xf ${MLKERNEL}-${VERSION}.tar.gz
-    echo Done.
+    echo_extract
+    tar -xf ${MLKERNEL}-${VERSION}.tar.gz --checkpoint=.100
+    echo_done
     sleep 1s
     cd ${MLKERNEL}-${VERSION}
     export ARCH=arm64
@@ -20,13 +22,15 @@ download_mainline () {
 
 download_stable () {
     echo
-    echo Downloading stable linux.
-    wget -cq --show-progress https://cdn.kernel.org/pub/linux/kernel/v5.x/${MLKERNEL}-${VERSION}.tar.xz
-    echo Done.
+    echo_stable
+    if ls ${MLKERNEL}-${VERSION}.tar.xz > /dev/null 2>&1;
+	then echo -e "${YLW}${MLKERNEL}-${VERSION}.tar.xz found${FIN}.";
+	else aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false https://cdn.kernel.org/pub/linux/kernel/v5.x/${MLKERNEL}-${VERSION}.tar.xz && echo_ok;
+    fi
     echo
-    echo Extracting archive.
-    tar xf ${MLKERNEL}-${VERSION}.tar.xz
-    echo Done.
+    echo_extract
+    tar xf ${MLKERNEL}-${VERSION}.tar.xz --checkpoint=.100
+    echo_done
     sleep 1s
     cd ${MLKERNEL}-${VERSION}
     export ARCH=arm64
@@ -43,59 +47,59 @@ if
 ls ../${UP}/*.patch > /dev/null 2>&1;
 then echo -e "${GRN}Applying user patches${FIN}." &&
 for i in ../${UP}/*.patch; do patch -p1 < $i; done ;
-else echo -e "${RED}No user patches found${FIN}." 
+else echo -e "${YLW}No user patches found${FIN}." 
 fi
 }
 
 patching () {
     echo
-    echo Applying patches.
+    echo_patch
     for i in ../${ML}/*.patch; do patch -p1 < $i; done
     userpatches
     cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch
     sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
-    echo Done.
+    echo_done
     echo
 }
 
 cconfig () {
-    echo Making ${MYCONFIG}.
+    echo_cconfig.
     cp -f ../${DEF}/${MYCONFIG} arch/arm64/configs/
     make ARCH=arm64 ${MYCONFIG}
-    echo Done.
+    echo_done
 }
 
 rpi_config () {
-    echo Making foundation defconfig.
+    echo_fconfig
     cp -f ../${DEF}/bcm2711_defconfig arch/arm64/configs/
     make ARCH=arm64 bcm2711_defconfig &> /dev/null
-    echo Done.
+    echo_done
 }
 
 menu_config () {
     echo
-    echo Opening menuconfig.
+    echo_menuconfig
     sleep 1s
     make menuconfig
 }
 
 cross_compile () {
-    echo -- CC
-    echo --- Building deb packages.
+    echo -e "-- ${GRN}CC${FIN}"
+    echo_build
     echo 'y' | make -j${CORES} ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
     rm -f ../*libc*.deb
 }
 
 native_compile () {
-    echo -- NC
-    echo --- Building deb packages.
+    echo -e "-- ${GRN}NC${FIN}"
+    echo_build
     echo 'y' | make -j${CORES} ARCH=arm64 bindeb-pkg
     rm -f ../*libc*.deb
 }
 
 mainline_clean (){
 if ls ${MLKERNEL}-${VERSION} > /dev/null 2>&1;
-	then echo "" && echo -e "${CLN}Cleaning${FIN} ..." && rm -fdr ${MLKERNEL}-${VERSION};
+	then echo "" && echo -e "${YLW}Cleaning${FIN} ..." && rm -fdr ${MLKERNEL}-${VERSION};
 fi
 if ls *.deb > /dev/null 2>&1;
 	then mkdir -p debs && mv -f *.deb debs/;
