@@ -116,4 +116,4 @@ cd ..
 rm -f linux-libc-dev*.deb
 rm -f *.buildinfo
 rm -f *.changes
-echo Done.
+echo_done
