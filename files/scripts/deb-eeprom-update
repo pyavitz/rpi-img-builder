@@ -6,7 +6,7 @@ source /home/$USER/.eeprom
 echo Checking for updates.
 sudo apt update
 sudo apt upgrade -y
-sudo apt install help2man rsync python pciutils -y
+sudo apt install help2man rsync python -y
 
 ### RPI-EEPROM INSTALL/UPDATE
 echo
