@@ -858,11 +858,8 @@ echo Updating ca certificates.
 sleep 1s
 mkdir -p certificates
 cd certificates
-wget -cq --show-progress http://deb.debian.org/debian/pool/main/c/ca-certificates/ca-certificates_20200601~deb10u1.tar.xz
-tar -xf ca-certificates_20200601~deb10u1.tar.xz
-cd ca-certificates-20200601~deb10u1
-dpkg-buildpackage -us -uc
-cd ..
+wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/ca-certificates_20200601.deb10u1_all.deb
+wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/ca-certificates-udeb_20200601.deb10u1_all.udeb
 dpkg -i *.deb *.udeb
 cd ~
 rm -fdr certificates
