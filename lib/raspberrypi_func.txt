@@ -869,6 +869,12 @@ rm -fdr certificates
 echo Done.
 }
 
+certificates_choose (){
+if `grep -Fx 'DEBIAN_VERSION="buster"' "/root/userdata.txt" >/dev/null;`
+	then ca_certificates;
+fi
+}
+
 bluez_stable () {
 echo
 echo Upgrading bluetooth.
