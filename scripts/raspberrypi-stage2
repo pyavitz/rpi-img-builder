@@ -273,7 +273,7 @@ fi
 
 ### Certificates
 if `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null;`
-	then ca_certificates
+	then certificates_choose;
 fi
 
 ### Htop
