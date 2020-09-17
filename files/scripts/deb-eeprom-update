@@ -3,11 +3,6 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 source /home/$USER/.eeprom
 
-echo Checking for updates.
-sudo apt update
-sudo apt upgrade -y
-sudo apt install help2man rsync python -y
-
 ### RPI-EEPROM INSTALL/UPDATE
 echo
 echo Setting up build dir.
