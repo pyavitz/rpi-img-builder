@@ -4,5 +4,7 @@ echo
 figlet -f small "Raspberry Pi" -c
 echo
 echo -e "CPU Temp: " $temp°C
+echo -e "Cores:    " $(sudo cat /sys/devices/system/cpu/cpu*/cpufreq/cpuinfo_cur_freq)
+echo -e "Governor: " $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
 echo -e "Uptime:   " $(uptime)
 echo
