@@ -3,7 +3,7 @@ download_mainline () {
     echo_mainline
     if ls ${MLKERNEL}-${VERSION}.tar.gz > /dev/null 2>&1;
 	then echo -e "${YLW}${MLKERNEL}-${VERSION}.tar.gz found${FIN}.";
-	else aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/${MLKERNEL}-${VERSION}.tar.gz && echo_ok;
+	else aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/${MLKERNEL}-${VERSION}.tar.gz && echo_bdone;
     fi
     echo
     echo_extract
@@ -25,7 +25,7 @@ download_stable () {
     echo_stable
     if ls ${MLKERNEL}-${VERSION}.tar.xz > /dev/null 2>&1;
 	then echo -e "${YLW}${MLKERNEL}-${VERSION}.tar.xz found${FIN}.";
-	else aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false https://cdn.kernel.org/pub/linux/kernel/v5.x/${MLKERNEL}-${VERSION}.tar.xz && echo_ok;
+	else aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false https://cdn.kernel.org/pub/linux/kernel/v5.x/${MLKERNEL}-${VERSION}.tar.xz && echo_bdone;
     fi
     echo
     echo_extract
