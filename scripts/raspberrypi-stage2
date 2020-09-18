@@ -46,7 +46,7 @@ mkdir -p /usr/local/sbin
 # Scripts
 mv -f run-setup /usr/local/bin/
 mv -f sysinfo /usr/local/bin/
-mv -f temp-monitor /usr/local/bin/smon
+mv -f smon /usr/local/bin/
 case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
   0)
 	wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/scripts/master/write2usb
