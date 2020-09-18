@@ -69,14 +69,6 @@ KERNEL=kernel
 #make mrproper
 }
 
-edgev6_setup (){
-cd ${KERNEL}-${VERSION}
-export ARCH=arm
-KERNEL=kernel
-#make clean
-#make mrproper
-}
-
 armv6_cconfig (){
     echo_cconfig
     cp -f ../${DEF}/${MYCONFIG} arch/arm/configs/
@@ -105,13 +97,6 @@ armv6_ncompile (){
 
 # aarch64
 armv8_setup (){
-cd ${KERNEL}-${VERSION}
-export ARCH=arm64
-#make clean
-#make mrproper
-}
-
-edgev8_setup (){
 cd ${KERNEL}-${VERSION}
 export ARCH=arm64
 #make clean
@@ -214,28 +199,6 @@ rpi_fconfig (){
     echo -e "${RED}Making bcmrpi defconfig${FIN}."
     make KBUILD_DEBARCH=armel ARCH=arm bcmrpi_defconfig &> /dev/null
     echo_done
-}
-
-choose_v8_setup (){
-case `grep -Fx "edge=1" "../userdata.txt" >/dev/null; echo $?` in
-  0)
-    edgev8_setup
-    ;;
-  1)
-    armv8_setup
-    ;;
-esac
-}
-
-choose_v6_setup (){
-case `grep -Fx "edge=1" "../userdata.txt" >/dev/null; echo $?` in
-  0)
-    edgev6_setup
-    ;;
-  1)
-    armv6_setup
-    ;;
-esac
 }
 
 choose_rpi4_defconfig (){
