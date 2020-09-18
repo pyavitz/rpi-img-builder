@@ -73,12 +73,6 @@ edgev6_setup (){
 cd ${KERNEL}-${VERSION}
 export ARCH=arm
 KERNEL=kernel
-rm -f scripts/package/builddeb
-rm -f scripts/package/mkdebian
-cp -R ../${PAT}/builddeb scripts/package/
-cp -R ../${PAT}/mkdebian scripts/package/
-chmod +x scripts/package/builddeb
-chmod +x scripts/package/mkdebian
 #make clean
 #make mrproper
 }
@@ -120,12 +114,6 @@ export ARCH=arm64
 edgev8_setup (){
 cd ${KERNEL}-${VERSION}
 export ARCH=arm64
-rm -f scripts/package/builddeb
-rm -f scripts/package/mkdebian
-cp -R ../${PAT}/builddeb scripts/package/
-cp -R ../${PAT}/mkdebian scripts/package/
-chmod +x scripts/package/builddeb
-chmod +x scripts/package/mkdebian
 #make clean
 #make mrproper
 }
@@ -168,6 +156,13 @@ armv8_ncompile (){
 ccpatch (){
     echo
     echo_ccpatch
+    userpatches
+    rm -f scripts/package/builddeb
+    rm -f scripts/package/mkdebian
+    cp -R ../${PAT}/builddeb scripts/package/
+    cp -R ../${PAT}/mkdebian scripts/package/
+    chmod +x scripts/package/builddeb
+    chmod +x scripts/package/mkdebian
     if `grep -Fx "bcm2711" "../../soc.txt" >/dev/null;`
 	then patch -p1 < ../${CC}/rpi4b-packaging.patch;
     fi
@@ -177,7 +172,6 @@ ccpatch (){
     if `grep -Fx "bcm2708" "../../soc.txt" >/dev/null;`
 	then patch -p1 < ../${CC}/rpi-packaging.patch;
     fi
-    userpatches
     cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch
     sed -i 's/export INITRD=$want_initrd/export INITRD=No/g' scripts/package/builddeb
     sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb

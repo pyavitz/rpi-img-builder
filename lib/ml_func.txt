@@ -12,12 +12,6 @@ download_mainline () {
     sleep 1s
     cd ${MLKERNEL}-${VERSION}
     export ARCH=arm64
-    rm -f scripts/package/builddeb
-    rm -f scripts/package/mkdebian
-    cp -R ../${PAT}/builddeb scripts/package/
-    cp -R ../${PAT}/mkdebian scripts/package/
-    chmod +x scripts/package/builddeb
-    chmod +x scripts/package/mkdebian
 }
 
 download_stable () {
@@ -34,12 +28,6 @@ download_stable () {
     sleep 1s
     cd ${MLKERNEL}-${VERSION}
     export ARCH=arm64
-    rm -f scripts/package/builddeb
-    rm -f scripts/package/mkdebian
-    cp -R ../${PAT}/builddeb scripts/package/
-    cp -R ../${PAT}/mkdebian scripts/package/
-    chmod +x scripts/package/builddeb
-    chmod +x scripts/package/mkdebian
 }
 
 userpatches (){
@@ -54,8 +42,14 @@ fi
 patching () {
     echo
     echo_patch
-    for i in ../${ML}/*.patch; do patch -p1 < $i; done
     userpatches
+    rm -f scripts/package/builddeb
+    rm -f scripts/package/mkdebian
+    cp -R ../${PAT}/builddeb scripts/package/
+    cp -R ../${PAT}/mkdebian scripts/package/
+    chmod +x scripts/package/builddeb
+    chmod +x scripts/package/mkdebian
+    for i in ../${ML}/*.patch; do patch -p1 < $i; done
     cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch
     sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
     echo_done
@@ -99,7 +93,7 @@ native_compile () {
 
 mainline_clean (){
 if ls ${MLKERNEL}-${VERSION} > /dev/null 2>&1;
-	then echo "" && echo -e "${YLW}Cleaning${FIN} ..." && rm -fdr ${MLKERNEL}-${VERSION};
+	then echo "" && echo -e "${PNK}Cleaning${FIN} ..." && rm -fdr ${MLKERNEL}-${VERSION};
 fi
 if ls *.deb > /dev/null 2>&1;
 	then mkdir -p debs && mv -f *.deb debs/;
