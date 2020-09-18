@@ -167,6 +167,13 @@ ccpatch (){
 ncpatch (){
     echo
     echo_ncpatch
+    userpatches
+    rm -f scripts/package/builddeb
+    rm -f scripts/package/mkdebian
+    cp -R ../${PAT}/builddeb scripts/package/
+    cp -R ../${PAT}/mkdebian scripts/package/
+    chmod +x scripts/package/builddeb
+    chmod +x scripts/package/mkdebian
     if `grep -Fx "bcm2711" "../../soc.txt" >/dev/null;`
 	then patch -p1 < ../${NC}/rpi4b-packaging.patch;
     fi
@@ -176,7 +183,6 @@ ncpatch (){
     if `grep -Fx "bcm2708" "../../soc.txt" >/dev/null;`
 	then patch -p1 < ../${NC}/rpi-packaging.patch;
     fi
-    userpatches
     sed -i 's/export INITRD=$want_initrd/export INITRD=No/g' scripts/package/builddeb
     sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
     echo_done
