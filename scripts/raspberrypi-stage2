@@ -46,7 +46,7 @@ mkdir -p /usr/local/sbin
 # Scripts
 mv -f run-setup /usr/local/bin/
 mv -f sysinfo /usr/local/bin/
-mv -f temp-monitor /usr/local/bin/tmon
+mv -f temp-monitor /usr/local/bin/smon
 case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
   0)
 	mv -f deb-eeprom-update /usr/local/bin/
