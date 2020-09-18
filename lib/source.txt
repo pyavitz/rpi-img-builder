@@ -20,7 +20,7 @@ IMGSIZE_UNSTABLE="2425MB"
 
 PKGS1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	e2fsprogs fonty-rg patch curl wget apt-transport-https dirmngr \
-	cmake rsync psmisc"
+	cmake rsync psmisc parted"
 
 PKGS2="cpu hwinfo haveged resolvconf git build-essential net-tools ifplugd \
 	fuse wpasupplicant wireless-tools usbutils alsa-utils gettext \
