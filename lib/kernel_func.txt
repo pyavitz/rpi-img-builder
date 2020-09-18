@@ -48,7 +48,7 @@ echo
 echo_kernel
 if ls ${KERNEL}-${VERSION}.tar.gz > /dev/null 2>&1;
 	then echo -e "${YLW}${KERNEL}-${VERSION}.tar.gz found${FIN}.";
-	else aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false https://github.com/raspberrypi/linux/archive/rpi-${VERSION}.tar.gz && echo_ok;
+	else aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false https://github.com/raspberrypi/linux/archive/rpi-${VERSION}.tar.gz && echo_bdone;
 fi
 }
 
