@@ -49,7 +49,6 @@ mv -f sysinfo /usr/local/bin/
 mv -f temp-monitor /usr/local/bin/smon
 case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
   0)
-	mv -f deb-eeprom-update /usr/local/bin/
 	wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/scripts/master/write2usb
 	mv -f write2usb /usr/local/bin/
 	wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/scripts/master/deb-eeprom
