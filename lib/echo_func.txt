@@ -30,6 +30,10 @@ echo_ok () {
 echo -e "${PNK}[${FIN}${GRN}ok${FIN}${PNK}]${FIN}"
 }
 
+echo_bdone () {
+echo -e "${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
+}
+
 echo_kernel () {
 echo -e "${RED}Downloading kernel${FIN}."
 }
