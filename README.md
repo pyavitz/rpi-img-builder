@@ -41,8 +41,7 @@ make dialogrc   # Set builder theme (optional)
 Username:       # Your username
 Password:       # Your password
 Debian:         # Supported: buster & unstable (unstable is hit-and-miss)
-Branch:         # Selected kernel branch
-Edge Branch:    # 1 for any branch above 5.4.y
+Branch:         # Supported: 5.4.y and above
 Menuconfig:     # 1 to run kernel menuconfig
 Crosscompile:   # 1 to cross compile | 0 to native compile
 ```
