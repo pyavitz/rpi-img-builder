@@ -17,7 +17,7 @@ wget -cq --show-progress https://github.com/pyavitz/rootfs-tarballs/releases/dow
 }
 
 if `grep -Fx "devuan=1" "soc.txt" >/dev/null;`
-	then make devuan_rootfs;
+	then make devuan_rootfs && exit;
 fi
 
 RAM=0
