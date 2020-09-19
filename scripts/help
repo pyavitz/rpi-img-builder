@@ -6,44 +6,41 @@ FIN="\e[0m"
 
 rpi () {
 echo
-echo -e "${RED}Downloading ...${FIN}"
+echo -e "${RED}Downloading${FIN} ..."
 wget -cq --show-progress https://github.com/pyavitz/rpi-img-builder/releases/download/linux/rpi-stable.tar.xz
-wget -cq --show-progress https://github.com/pyavitz/rootfs-tarballs/releases/download/xlrootfs/debian-buster-rootfs-armel.tar.xz
-echo -e "${RED}Done.${FIN}"
+echo -e "${RED}Done${FIN}."
 echo
-echo -e "${RED}Extracting and setting up directory.${FIN}"
+echo -e "${RED}Extracting and setting up directory${FIN}."
 tar xf rpi-stable.tar.xz
 rm -f rpi-stable.tar.xz
 mv rpi-stable rpi0
-echo -e "${RED}Ready.${FIN}"
+echo -e "${RED}Ready${FIN}."
 }
 
 rpi3 () {
 echo
-echo -e "${RED}Downloading ...${FIN}"
+echo -e "${RED}Downloading${FIN} ..."
 wget -cq --show-progress https://github.com/pyavitz/rpi-img-builder/releases/download/linux/rpi3-stable.tar.xz
-wget -cq --show-progress https://github.com/pyavitz/rootfs-tarballs/releases/download/xlrootfs/debian-buster-rootfs-aarch64.tar.xz
-echo -e "${RED}Done.${FIN}"
+echo -e "${RED}Done${FIN}."
 echo
-echo -e "${RED}Extracting and setting up directory.${FIN}"
+echo -e "${RED}Extracting and setting up directory${FIN}."
 tar xf rpi3-stable.tar.xz
 rm -f rpi3-stable.tar.xz
 mv rpi3-stable rpi3
-echo -e "${RED}Ready.${FIN}"
+echo -e "${RED}Ready${FIN}."
 }
 
 rpi4 () {
 echo
-echo -e "${RED}Downloading ...${FIN}"
+echo -e "${RED}Downloading${FIN} ..."
 wget -cq --show-progress https://github.com/pyavitz/rpi-img-builder/releases/download/linux/rpi4-stable.tar.xz
-wget -cq --show-progress https://github.com/pyavitz/rootfs-tarballs/releases/download/xlrootfs/debian-buster-rootfs-aarch64.tar.xz
-echo -e "${RED}Done.${FIN}"
+echo -e "${RED}Done${FIN}."
 echo
-echo -e "${RED}Extracting and setting up directory.${FIN}"
+echo -e "${RED}Extracting and setting up directory${FIN}."
 tar xf rpi4-stable.tar.xz
 rm -f rpi4-stable.tar.xz
 mv rpi4-stable rpi4
-echo -e "${RED}Ready.${FIN}"
+echo -e "${RED}Ready${FIN}."
 }
 
 if [ $# -eq 0 ]
@@ -69,8 +66,8 @@ while getopts "1234h" OPTION; do
                         ECHO="rpi4"
                         ;;
                 h)                       
-                        echo "Helper, downloads a binary Linux package and XL rootfs tarball."
-                        echo "Make sure to run 'make config' before 'make image'."
+                        echo -e "${RED}Helper, downloads a binary Linux package${FIN}."
+                        echo -e "${RED}Make sure to run 'make config' before 'make image'${FIN}."
                         echo ""
                         echo -e "   make 2708        Raspberry Pi 0/w/b/+"
                         echo -e "   make 2710        Raspberry Pi 3a/b/+"

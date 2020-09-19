@@ -3,12 +3,39 @@
 source userdata.txt
 source lib/source.txt
 
+devuan_rootfs (){
+DEVUAN_STABLE=devuan-${DISTRO_VERSION}-rootfs-aarch64.tar.xz
+DEVUAN_TESTING=devuan-${DISTRO_VERSION}-rootfs-aarch64.tar.xz
+if ls $DEVUAN_STABLE &>/dev/null; then exit; 
+	else echo "";
+fi
+if ls $DEVUAN_TESTING &>/dev/null; then exit; 
+	else echo "";
+fi
+wget -cq --show-progress https://github.com/pyavitz/rootfs-tarballs/releases/download/rootfs/devuan-${DISTRO_VERSION}-rootfs-aarch64.tar.xz
+}
+
+ubuntu_rootfs (){
+UBUNTU_RELEASE=ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.gz
+if ls $UBUNTU_RELEASE &>/dev/null; then exit; 
+	else echo "";
+fi
+wget -cq --show-progress http://cdimage.ubuntu.com/ubuntu-base/releases/${DISTRO_VERSION}/release/ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.gz
+}
+
+if `grep -Fx "devuan=1" "userdata.txt" >/dev/null;`
+	then devuan_rootfs && exit;
+fi
+if `grep -Fx "ubuntu=1" "userdata.txt" >/dev/null;`
+	then ubuntu_rootfs && exit;
+fi
+
 set -x
 RAM=0
 PROXY=""
 IMAGE_FOLDER="img/"
 IMAGE_VERSION="rootfs-aarch64"
-FILE=debian-${DEBIAN_VERSION}-${IMAGE_VERSION}.tar.xz
+FILE=debian-${DISTRO_VERSION}-${IMAGE_VERSION}.tar.xz
 if ls $FILE &>/dev/null; then exit; 
 	else echo "file not found";
 fi
@@ -16,11 +43,11 @@ if [ ! -z "$1" ]; then
 	IMAGE_VERSION="$1"
 fi
 if [ ! -z "$2" ]; then
-	DEBIAN_VERSION="$2"
+	DISTRO_VERSION="$2"
 fi
 set -eux -o pipefail
 IMAGE_FILE_SUFFIX="$(date +%F)"
-IMAGE_FILE_NAME="debian-${DEBIAN_VERSION}-${IMAGE_VERSION}.img"
+IMAGE_FILE_NAME="debian-${DISTRO_VERSION}-${IMAGE_VERSION}.img"
 if [ $RAM -ne 0 ]; then
 	IMAGE_FOLDER="ram/"
 fi
@@ -59,10 +86,10 @@ echo "force-unsafe-io" > "p1/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
 mkdir -p p1/usr/bin
 cp $(which "qemu-aarch64-static") p1/usr/bin
 if [ -n "$PROXY" ] ; then
-    http_proxy="$PROXY" debootstrap --arch arm64 --foreign ${DEBIAN_VERSION} p1
+    http_proxy="$PROXY" debootstrap --arch arm64 --foreign ${DISTRO_VERSION} p1
     http_proxy="$PROXY" chroot p1 /debootstrap/debootstrap --second-stage
 else
-    debootstrap --arch arm64 --foreign ${DEBIAN_VERSION} p1
+    debootstrap --arch arm64 --foreign ${DISTRO_VERSION} p1
     chroot p1 /debootstrap/debootstrap --second-stage
 fi
 if [ -n "$PROXY" ] ; then
@@ -82,7 +109,7 @@ rm p1/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
 e4defrag -c p1
 
 cd p1
-tar cfJ ../debian-${DEBIAN_VERSION}-${IMAGE_VERSION}.tar.xz *
+tar cfJ ../debian-${DISTRO_VERSION}-${IMAGE_VERSION}.tar.xz *
 cd ..
 
 umount p1
@@ -94,4 +121,4 @@ if [ $RAM -ne 0 ]; then
 fi
 rmdir "${IMAGE_FOLDER}"
 rmdir p1
-rm -f debian-${DEBIAN_VERSION}-${IMAGE_VERSION}.img
+rm -f debian-${DISTRO_VERSION}-${IMAGE_VERSION}.img

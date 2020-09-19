@@ -1,0 +1,14 @@
+--- userland-master/makefiles/cmake/vmcs.cmake.orig	2018-11-03 19:36:21.138948163 +0000
++++ userland-master/makefiles/cmake/vmcs.cmake	2018-11-04 12:41:56.000000000 +0000
+@@ -59,8 +59,8 @@
+ #        PERMISSIONS OWNER_WRITE WORLD_READ)
+ 
+ # provide hello_pi demos
+-install(DIRECTORY host_applications/linux/apps/hello_pi
+-        DESTINATION ${VMCS_INSTALL_PREFIX}/src)
++#install(DIRECTORY host_applications/linux/apps/hello_pi
++#        DESTINATION ${VMCS_INSTALL_PREFIX}/src)
+ 
+ # provide header files
+ #install(DIRECTORY host_applications/linux/libs/bcm_host/include
+

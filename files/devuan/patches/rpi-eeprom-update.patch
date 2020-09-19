@@ -1,0 +1,39 @@
+Description: <short summary of the patch>
+ TODO: Put a short summary on the line above and replace this paragraph
+ with a longer explanation of this change. Complete the meta-information
+ with other relevant fields (see below for details). To make it easier, the
+ information below has been extracted from the changelog. Adjust it or drop
+ it.
+ .
+ rpi-eeprom (5.2-1) buster; urgency=medium
+ .
+   [ andrum99 ]
+   * release-notes.md - fix typos
+ .
+   [ Tim Gover ]
+   * pieeprom-2020-03-16 - Minor fix for Option97 GUID
+   * pieeprom-2020-03-19: Minor fixes for manufacture test
+Author: Serge Schneider <serge@raspberrypi.org>
+
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Origin: <vendor|upstream|other>, <url of original patch>
+Bug: <url in upstream bugtracker>
+Bug-Debian: https://bugs.debian.org/<bugnumber>
+Bug-Ubuntu: https://launchpad.net/bugs/<bugnumber>
+Forwarded: <no|not-needed|url proving that it has been forwarded>
+Reviewed-By: <name and email of someone who approved the patch>
+Last-Update: 2020-03-23
+
+--- rpi-eeprom-5.2.orig/rpi-eeprom-update
++++ rpi-eeprom-5.2/rpi-eeprom-update
+@@ -1,5 +1,5 @@
+ #!/bin/sh
+-
++PATH="$PATH:/opt/vc/bin"
+ # Raspberry Pi4 boot EEPROM updater.
+ 
+ set -e

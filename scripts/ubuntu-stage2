@@ -1,0 +1,451 @@
+#!/usr/bin/env bash
+source /root/ubuntu_func.txt
+source /root/source.txt
+source /root/userdata.txt
+UNMINIMIZE=/usr/local/sbin/unminimize
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+echo 'nameserver 8.8.8.8' > /etc/resolv.conf
+echo 'nameserver 8.8.4.4' >> /etc/resolv.conf
+
+mount -t proc proc proc/
+mount -t sysfs sys sys/
+
+export DEBIAN_FRONTEND="noninteractive"
+
+apt-get update
+apt-get install -y apt-utils
+### Locales
+apt install -y locales locales-all
+localedef -c -f UTF-8 -i en_US en_US.UTF-8
+dpkg-reconfigure locales
+### Timezone
+ln -snf /usr/share/zoneinfo/America/New_York /etc/localtime
+echo -n 'America/New_York' > /etc/timezone
+apt upgrade -y
+apt dist-upgrade -y
+
+if [ -f "$UNMINIMIZE" ]; then
+    echo 'y' | unminimize
+else 
+    echo "$UNMINIMIZE does not exist."
+fi
+
+apt install -y ${UBUNTU1}
+echo
+
+#### Scripts
+echo
+echo Moving scripts.
+sleep 1s
+cd ~
+mkdir -p /usr/local/bin
+mkdir -p /usr/local/sbin
+# Scripts
+led_service
+mv -f run-setup /usr/local/bin/
+mv -f sysinfo /usr/local/bin/
+mv -f smon /usr/local/bin/
+case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
+  0)
+	wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/scripts/master/write2usb
+	mv -f write2usb /usr/local/bin/
+	wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/scripts/master/deb-eeprom
+	mv -f deb-eeprom /usr/local/bin/
+    ;;
+esac
+mv -f growpart /usr/bin/
+mv -f credentials /usr/local/bin/
+wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/scripts/master/fetch
+mv -f fetch /usr/local/bin/
+wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/scripts/master/governor
+mv -f governor /usr/local/bin/
+# Service
+mv -f firstboot.init /etc/init.d/firstboot
+mv -f firstboot /usr/local/sbin/
+chmod +x /usr/bin/growpart
+chown root:root /usr/bin/growpart
+chmod +x /etc/init.d/firstboot
+chown root:root /etc/init.d/firstboot
+chmod +x /usr/local/bin/*
+chmod +x /usr/local/sbin/*
+chown -R root:root /usr/local/bin/
+chown -R root:root /usr/local/sbin/
+echo Done.
+
+#### MOTD
+echo
+echo Adding motd.
+sleep 1s
+mkdir -p /etc/update-motd.d
+tee /etc/update-motd.d/15-brand <<EOF
+#!/bin/bash
+echo
+toilet -f small --filter metal '${BRAND}'
+echo 
+EOF
+mv -f 20-sysinfo /etc/update-motd.d/20-sysinfo
+rm -f /etc/update-motd.d/10-help-text
+chmod +x /etc/update-motd.d/*
+chown root:root /etc/update-motd.d/15-brand
+chown root:root /etc/update-motd.d/20-sysinfo
+echo Done.
+
+#### Adding firmware
+echo
+echo Adding pi firmware.
+sleep 1s
+apt install -y zip unzip p7zip-full
+unzip -qq master.zip
+rm -f master.zip
+mkdir -p /lib/firmware
+cp -fr firmware-nonfree-master/* /lib/firmware
+rm -fdR firmware-nonfree-master
+cd /lib/firmware/brcm
+if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
+	then bcm_sdio_4-b ;
+fi
+if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
+	then bcm_sdio_3-b-plus ;
+fi
+cd ~
+echo Done.
+
+#### Extra bluetooth firmware
+echo
+echo Adding extra bluetooth firmware.
+sleep 1s
+mv fw-0a5c_21e8.hcd /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd
+cp /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd /lib/firmware/brcm/BCM20702A1-0a5c-21e8.hcd
+chown root:root /lib/firmware/brcm/BCM20702A1-0a5c-21e8.hcd
+chown root:root /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd
+echo Done.
+
+####
+echo
+echo Bluetooth udev rule.
+sleep 1s
+mkdir -p /lib/udev/rules.d/
+mv -f 99-com.rules /lib/udev/rules.d/99-com.rules
+echo Done.
+
+#### Software
+echo
+echo Installing needed packages.
+sleep 1s
+apt -y clean
+apt -y autoclean
+apt update
+apt install -y ${UBUNTU2}
+
+### Network Setup
+if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
+	then bcm2711_network ;
+fi
+if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
+	then bcm2710_network ;
+fi
+
+### ZSWAP
+echo
+echo Adding zramswap config.
+sleep 1s
+rm -f /etc/default/zramswap
+mv -f zramswap /etc/default/zramswap
+chown root:root /etc/default/zramswap
+echo Done.
+
+### MOTD instructions
+echo
+echo Adding motd first boot.
+sleep 1s
+rm -f /etc/motd
+mv -f motd /etc/motd
+mv -f new.motd /etc/new.motd
+chown root:root /etc/motd
+chown root:root /etc/new.motd
+echo Done.
+
+#### Clean up packages
+echo
+echo Cleaning up.
+sleep 1s
+apt -y autoremove
+apt -y clean
+apt -y autoclean
+echo Done.
+
+###
+echo
+echo Adding regdb.
+sleep 1s
+apt update
+apt install -y crda
+echo 'KERNEL=="regulatory*", ACTION=="change", SUBSYSTEM=="platform", RUN+="/sbin/crda"' > /etc/udev/rules.d/60-regdb.rules
+git clone https://kernel.googlesource.com/pub/scm/linux/kernel/git/sforshee/wireless-regdb
+echo
+echo Moving db files.
+sleep 1s
+cd wireless-regdb
+cp -f regulatory.db /lib/firmware/regulatory.db
+cp -f regulatory.db.p7s /lib/firmware/regulatory.db.p7s
+cd ~
+rm -fdr wireless-regdb
+echo Done.
+
+### Adding sys-mods
+echo
+echo Building raspi-sys-mods package.
+sleep 1s
+apt install -y debhelper d-shlibs rfkill dosfstools psmisc
+git clone https://github.com/RPi-Distro/raspberrypi-sys-mods.git
+cd raspberrypi-sys-mods
+dpkg-buildpackage -us -uc
+cd ~
+dpkg -i raspberrypi-sys-mods*.deb
+rm -fdR raspberrypi-sys-mods*
+echo Done.
+
+### Bluez firmware.
+echo
+echo Installing bluetooth.
+sleep 1s
+apt install -y bluetooth bluez bluez-tools
+echo Done.
+echo
+echo Building bluez firmware package.
+sleep 1s
+mkdir -p bluez-firmware
+cd bluez-firmware
+wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/b/bluez-firmware/bluez-firmware_1.2.orig.tar.gz
+tar xf bluez-firmware_1.2.orig.tar.gz
+cd bluez-firmware-1.2
+wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/b/bluez-firmware/bluez-firmware_1.2-4+rpt3.debian.tar.xz
+tar xf bluez-firmware_1.2-4+rpt3.debian.tar.xz
+rm -f bluez-firmware_1.2-4+rpt3.debian.tar.xz
+dpkg-buildpackage -us -uc
+cd ..
+dpkg -i bluez-firmware_*.deb
+cd ~
+rm -fdR bluez-firmware
+echo Done.
+
+### Pi Bluetooth
+echo
+echo Building pi bluetooth package.
+sleep 1s
+git clone https://github.com/pyavitz/pi-bluetooth.git
+cd pi-bluetooth
+chmod +x debian/rules
+dpkg-buildpackage -us -uc
+cd ~
+dpkg -i pi-bluetooth_*.deb
+rm -fdR pi-bluetooth*
+echo Done.
+
+### Cypress wifi firmware
+if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
+	then bcm2710_cypress ;
+fi
+
+### Htop
+echo
+echo Installing htop with cpufreq and thermal support.
+sleep 1s
+git clone https://github.com/leeadama/htop.git
+cd htop
+./autogen.sh
+./configure --prefix=/usr
+make
+make install
+cd ~
+rm -fdr htop
+echo Done.
+
+### Upgrading bluez
+bluez_upgrade
+
+###  Adding raspi userland
+armv8_userland
+
+### Adding eeprom
+if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
+	then bcm2711_eeprom ;
+fi
+
+#### Checking for changes
+echo
+echo Checking for changes.
+apt update
+apt upgrade -y
+apt -y clean
+apt -y autoclean
+echo Done.
+
+#### Kernel
+echo
+echo Installing kernel.
+sleep 1s
+cd ~
+dpkg -i *.deb
+rm -f *.deb
+echo Done.
+sleep 1s
+
+### Modules
+if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
+	then bcm2711_modules ;
+fi
+if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
+	then bcm2710_modules ;
+fi
+
+### Admin or user
+case `grep -Fx "admin=1" "/root/userdata.txt" >/dev/null; echo $?` in
+  0)
+	admin_config
+    ;;
+  1)
+	user_config
+    ;;
+esac
+if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
+	then eeprom_choose ;
+fi
+
+### Clean misc files
+rm -f *.patch
+rm -f *led*
+rm -f *eeprom*
+
+### Vchiq permissions
+echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' > /etc/udev/rules.d/10-vchiq-permissions.rules
+echo 'SUBSYSTEM=="vcio",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
+echo 'SUBSYSTEM=="vc-mem",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
+
+#### Led switches
+led_switches
+
+#### Create first boot
+echo
+echo Creating first boot.
+sleep 1s
+tee /etc/systemd/system/firstboot.service <<EOF
+[Unit]
+Description=First Boot
+After=network.target
+Before=rc-local.service
+ConditionPathExists=/usr/local/sbin/firstboot
+
+[Service]
+ExecStart=/etc/init.d/firstboot start > /dev/null 2>&1
+Type=oneshot
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+#### Credentials
+echo
+echo Creating wifi credentials.
+sleep 1s
+tee /etc/systemd/system/credentials.service <<EOF
+[Unit]
+Description=Credentials
+After=network.target
+Before=firstboot.service
+ConditionPathExists=/usr/local/bin/credentials
+
+[Service]
+ExecStart=/usr/local/bin/credentials > /dev/null 2>&1
+Type=oneshot
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+####
+echo
+echo Creating governor service.
+sleep 1s
+tee /etc/systemd/system/governor.service <<EOF
+[Unit]
+Description=Set Governor
+ConditionPathExists=/usr/local/bin/governor
+
+[Service]
+ExecStart=/usr/local/bin/governor -r &>/dev/null
+Type=oneshot
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+#### Create RC.LOCAL
+echo
+echo Creating rc.local file.
+sleep 1s
+tee /etc/systemd/system/rc-local.service <<EOF
+[Unit]
+Description=/etc/rc.local
+ConditionPathExists=/etc/rc.local
+
+[Service]
+Type=forking
+ExecStart=/etc/rc.local start
+TimeoutSec=0
+StandardOutput=tty
+RemainAfterExit=yes
+SysVStartPriority=99
+
+[Install]
+WantedBy=multi-user.target
+EOF
+tee /etc/rc.local <<EOF
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+# tmp wlan pwr mngt fix
+iwconfig wlan0 power off
+exit 0
+EOF
+chmod +x /etc/rc.local
+echo Done.
+### Enable services
+echo
+echo Enabling Services
+sleep 1s
+systemctl enable rc-local
+systemctl enable ifplugd
+systemctl enable haveged
+systemctl enable zramswap
+systemctl enable bluetooth
+update-rc.d firstboot defaults 2
+systemctl enable firstboot
+systemctl enable credentials
+systemctl enable governor
+systemctl enable serial-getty@ttyUSB0.service
+echo Done.
+
+###### Finish
+echo
+echo Moving out of stage2 and creating image
+sleep 2s
+
+umount /proc /sys

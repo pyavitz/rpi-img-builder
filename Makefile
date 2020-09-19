@@ -16,9 +16,20 @@ LINUX=./scripts/linux
 MAINLINE=./scripts/mainline
 
 # stages
-IMG=./scripts/raspberrypi-stage1
-IMAGE=sudo ./scripts/raspberrypi-stage1
-STG2=./scripts/raspberrypi-stage2
+DEB=./scripts/debian-stage1
+DEBIAN=sudo ./scripts/debian-stage1
+DEBSTG2=./scripts/debian-stage2
+
+DEV=./scripts/devuan-stage1
+DEVUAN=sudo ./scripts/devuan-stage1
+DEVSTG2=./scripts/devuan-stage2
+
+UBU=./scripts/ubuntu-stage1
+UBUNTU=sudo ./scripts/ubuntu-stage1
+UBUSTG2=./scripts/ubuntu-stage2
+
+# choose distribution
+CHOOSE=./scripts/choose
 
 # clean
 CLN=./scripts/clean
@@ -29,7 +40,7 @@ HELPER=./scripts/help
 
 help:
 	@echo
-	@echo "Debian Image Builder for the Raspberry Pi"
+	@echo "Raspberry Pi Image Builder"
 	@echo
 	@echo "Usage: "
 	@echo
@@ -55,19 +66,19 @@ commands:
 	@echo "bcm2711:"
 	@echo " "
 	@echo "  make kernel             Builds linux kernel"
-	@echo "  make image              Make bootable Debian image"
+	@echo "  make image              Make bootable image"
 	@echo "  make all                Kernel > rootfs > image"
 	@echo
 	@echo "bcm2710:"
 	@echo " "
 	@echo "  make rpi3-kernel        Builds linux kernel"
-	@echo "  make rpi3-image         Make bootable Debian image"
+	@echo "  make rpi3-image         Make bootable image"
 	@echo "  make rpi3-all           Kernel > rootfs > image"
 	@echo
 	@echo "bcm2708:"
 	@echo " "
 	@echo "  make rpi-kernel         Builds linux kernel"
-	@echo "  make rpi-image          Make bootable Debian image"
+	@echo "  make rpi-image          Make bootable image"
 	@echo "  make rpi-all            Kernel > rootfs > image"
 	@echo
 	@echo "Mainline:"
@@ -110,9 +121,8 @@ kernel:
 image:
 	# Making bootable Debian image
 	@ echo bcm2711 > soc.txt
-	@chmod +x ${IMG}
-	@chmod +x ${STG2}
-	@${IMAGE}
+	@chmod +x ${CHOOSE}
+	@${CHOOSE}
 
 all:
 	# RPi4B | aarch64
@@ -125,11 +135,10 @@ all:
 	# Creating ROOTFS tarball
 	@chmod +x ${RFSV8}
 	@${ROOTFSV8}
-	# Making bootable Debian image
+	# Making bootable image
 	@ echo bcm2711 > soc.txt
-	@chmod +x ${IMG}
-	@chmod +x ${STG2}
-	@${IMAGE}
+	@chmod +x ${CHOOSE}
+	@${CHOOSE}
 
 mainline:
 	# Mainline Linux | aarch64
@@ -144,11 +153,10 @@ rpi3-kernel:
 	@${LINUX}
 
 rpi3-image:
-	# Making bootable Debian image
+	# Making bootable image
 	@ echo bcm2710 > soc.txt
-	@chmod +x ${IMG}
-	@chmod +x ${STG2}
-	@${IMAGE}
+	@chmod +x ${CHOOSE}
+	@${CHOOSE}
 
 rpi3-all:
 	# RPi3B/+ | aarch64
@@ -161,11 +169,10 @@ rpi3-all:
 	# Creating ROOTFS tarball
 	@chmod +x ${RFSV8}
 	@${ROOTFSV8}
-	# Making bootable Debian image
+	# Making bootable image
 	@ echo bcm2710 > soc.txt
-	@chmod +x ${IMG}
-	@chmod +x ${STG2}
-	@${IMAGE}
+	@chmod +x ${CHOOSE}
+	@${CHOOSE}
 
 # Raspberry Pi | armv6l
 rpi-kernel:
@@ -175,11 +182,10 @@ rpi-kernel:
 	@${LINUX}
 
 rpi-image:
-	# Make bootable Debian image
+	# Make bootable image
 	@ echo bcm2708 > soc.txt
-	@chmod +x ${IMG}
-	@chmod +x ${STG2}
-	@${IMAGE}
+	@chmod +x ${CHOOSE}
+	@${CHOOSE}
 
 rpi-all:
 	# RPi | armv6l
@@ -192,20 +198,19 @@ rpi-all:
 	# Creating ROOTFS tarball
 	@chmod +x ${RFSV6}
 	@${ROOTFSV6}
-	# Making bootable Debian img
+	# Making bootable img
 	@ echo bcm2708 > soc.txt
-	@chmod +x ${IMG}
-	@chmod +x ${STG2}
-	@${IMAGE}
+	@chmod +x ${CHOOSE}
+	@${CHOOSE}
 
 # rootfs
 rootfs:
-	# ARM64 DEBIAN ROOTFS
+	# ARM64 ROOTFS
 	@chmod +x ${RFSV8}
 	@${ROOTFSV8}
 
 rootfsv6:
-	# ARMEL DEBIAN ROOTFS
+	# ARMEL ROOTFS
 	@chmod +x ${RFSV6}
 	@${ROOTFSV6}
 
@@ -226,22 +231,77 @@ menu:
 	@${MENU}
 config:
 	# User config menu
+	@chmod go=rx files/scripts/*
+	@chmod go=rx files/debian/scripts/*
+	@chmod go=rx files/devuan/scripts/*
+	@chmod go=rx files/ubuntu/scripts/*
+	@chmod go=r files/misc/*
+	@chmod go=r files/debian/misc/*
+	@chmod go=r files/devuan/misc/*
+	@chmod go=r files/ubuntu/misc/*
+	@chmod go=r files/debian/rules/*
+	@chmod go=r files/devuan/rules/*
+	@chmod go=r files/ubuntu/rules/*
+	@chmod go=r files/users/*
 	@chmod +x ${CONF}
 	@${CONF}
 
 mlconfig:
 	# User config menu
+	@chmod go=rx files/scripts/*
+	@chmod go=rx files/debian/scripts/*
+	@chmod go=rx files/devuan/scripts/*
+	@chmod go=rx files/ubuntu/scripts/*
+	@chmod go=r files/misc/*
+	@chmod go=r files/debian/misc/*
+	@chmod go=r files/devuan/misc/*
+	@chmod go=r files/ubuntu/misc/*
+	@chmod go=r files/debian/rules/*
+	@chmod go=r files/devuan/rules/*
+	@chmod go=r files/ubuntu/rules/*
+	@chmod go=r files/users/*
 	@chmod +x ${MLCONF}
 	@${MLCONF}
 
 admin:
 	# User config menu
+	@chmod go=rx files/scripts/*
+	@chmod go=rx files/debian/scripts/*
+	@chmod go=rx files/devuan/scripts/*
+	@chmod go=rx files/ubuntu/scripts/*
+	@chmod go=r files/misc/*
+	@chmod go=r files/debian/misc/*
+	@chmod go=r files/devuan/misc/*
+	@chmod go=r files/ubuntu/misc/*
+	@chmod go=r files/debian/rules/*
+	@chmod go=r files/devuan/rules/*
+	@chmod go=r files/ubuntu/rules/*
+	@chmod go=r files/users/*
 	@chmod +x ${ADMIN}
 	@${ADMIN}
 
 dialogrc:
 	# Builder theme set
 	@${DIALOGRC}
+
+# distros
+debianos:
+	# Debian
+	@chmod +x ${DEB}
+	@chmod +x ${DEBSTG2}
+	@${DEBIAN}
+
+devuanos:
+	# Devuan
+	@chmod +x ${DEV}
+	@chmod +x ${DEVSTG2}
+	@${DEVUAN}
+
+ubuntuos:
+	# UBuntu
+	@chmod +x ${UBU}
+	@chmod +x ${UBUSTG2}
+	@${UBUNTU}
 
 helper:
 	# Helper script

@@ -1,0 +1,382 @@
+#!/usr/bin/env bash
+source /root/devuan_func.txt
+source /root/source.txt
+source /root/userdata.txt
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+echo 'nameserver 8.8.8.8' > /etc/resolv.conf
+echo 'nameserver 8.8.4.4' >> /etc/resolv.conf
+
+mount -t proc proc proc/
+mount -t sysfs sys sys/
+
+export DEBIAN_FRONTEND="noninteractive"
+
+apt-get update
+apt-get install -y apt-utils
+### Locales
+apt install -y locales locales-all
+localedef -c -f UTF-8 -i en_US en_US.UTF-8
+dpkg-reconfigure locales
+### Timezone
+ln -snf /usr/share/zoneinfo/America/New_York /etc/localtime
+echo -n 'America/New_York' > /etc/timezone
+apt upgrade -y
+apt dist-upgrade -y
+case `grep -Fx 'DEVUAN_VERSION="testing"' "/root/userdata.txt" >/dev/null; echo $?` in
+  0)
+    apt install -y ${DEVUAN1} gcc-9
+    export CC=/usr/bin/gcc-9
+    ;;
+  1)
+    apt install -y ${DEVUAN1}
+    ;;
+esac
+echo
+
+#### Scripts
+firstboot_service
+led_service
+chmod +x /usr/local/sbin/*
+chown -R root:root /usr/local/sbin/
+echo
+echo Moving scripts.
+sleep 1s
+cd ~
+mkdir -p /usr/local/bin
+mkdir -p /usr/local/sbin
+# Scripts
+mv -f run-setup /usr/local/bin/
+mv -f sysinfo /usr/local/bin/
+mv -f smon /usr/local/bin/
+mv -f growpart /usr/bin/
+mv -f credentials.sh /usr/local/bin/credentials
+wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/scripts/master/swh
+mv -f swh /usr/local/bin/
+wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/scripts/master/fetch
+mv -f fetch /usr/local/bin/
+wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/scripts/master/governor
+mv -f governor /usr/local/bin/
+case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
+  0)
+	wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/scripts/master/write2usb
+	mv -f write2usb /usr/local/bin/
+	wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/scripts/master/deb-eeprom
+	mv -f deb-eeprom /usr/local/bin/
+    ;;
+esac
+# Inits
+mv -f firstboot /etc/init.d/
+mv -f pwrledoff /etc/init.d/
+mv -f actledoff /etc/init.d/
+mv -f governor.init /etc/init.d/governor
+mv -f bthelper /etc/init.d/
+mv -f zramswap /etc/init.d/
+mv -f network /etc/init.d/
+mv -f credentials /etc/init.d/
+# Own
+chmod +x /usr/bin/growpart
+chown root:root /usr/bin/growpart
+chmod +x /usr/local/bin/*
+chown -R root:root /usr/local/bin/
+echo Done.
+
+#### MOTD
+echo
+echo Adding motd.
+sleep 1s
+mkdir -p /etc/update-motd.d
+tee /etc/update-motd.d/15-brand <<EOF
+#!/bin/bash
+echo
+toilet -f small --filter metal '${BRAND}'
+echo 
+EOF
+mv -f 20-sysinfo /etc/update-motd.d/20-sysinfo
+rm -f /etc/update-motd.d/10-help-text
+chmod +x /etc/update-motd.d/*
+chown root:root /etc/update-motd.d/15-brand
+chown root:root /etc/update-motd.d/20-sysinfo
+echo Done.
+
+#### Adding firmware
+echo
+echo Adding pi firmware.
+sleep 1s
+apt install -y zip unzip p7zip-full
+unzip -qq master.zip
+rm -f master.zip
+mkdir -p /lib/firmware
+cp -fr firmware-nonfree-master/* /lib/firmware
+rm -fdR firmware-nonfree-master
+cd /lib/firmware/brcm
+if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
+	then bcm_sdio_4-b
+fi
+if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
+	then bcm_sdio_3-b-plus
+fi
+if `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null;`
+	then bcm_sdio_zero-w
+fi
+cd ~
+echo Done.
+
+#### Extra bluetooth firmware
+echo
+echo Adding extra bluetooth firmware.
+sleep 1s
+mv fw-0a5c_21e8.hcd /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd
+cp /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd /lib/firmware/brcm/BCM20702A1-0a5c-21e8.hcd
+chown root:root /lib/firmware/brcm/BCM20702A1-0a5c-21e8.hcd
+chown root:root /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd
+echo Done.
+
+####
+echo
+echo Bluetooth udev rule.
+sleep 1s
+mkdir -p /lib/udev/rules.d/
+mv -f 99-com.rules /lib/udev/rules.d/99-com.rules
+echo Done.
+
+#### Software
+echo
+echo Installing needed packages.
+sleep 1s
+apt -y clean
+apt -y autoclean
+apt update
+apt install -y ${DEVUAN2}
+
+### Network Setup
+if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
+	then bcm2711_network
+fi
+if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
+	then bcm2710_network
+fi
+if `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null;`
+	then bcm2708_network
+fi
+
+### ZSWAP
+echo
+echo Adding zramswap config.
+sleep 1s
+rm -f /etc/default/zramswap
+mv -f zramswap.conf /etc/default/zramswap
+chown root:root /etc/default/zramswap
+echo Done.
+
+### MOTD instructions
+echo
+echo Adding motd first boot.
+sleep 1s
+rm -f /etc/motd
+mv -f motd /etc/motd
+mv -f new.motd /etc/new.motd
+chown root:root /etc/motd
+chown root:root /etc/new.motd
+echo Done.
+
+#### Clean up packages
+echo
+echo Cleaning up.
+sleep 1s
+apt -y autoremove
+apt -y clean
+apt -y autoclean
+echo Done.
+
+###
+echo
+echo Adding regdb.
+sleep 1s
+apt update
+apt install -y crda
+git clone https://kernel.googlesource.com/pub/scm/linux/kernel/git/sforshee/wireless-regdb
+echo
+echo Moving db files.
+sleep 1s
+cd wireless-regdb
+cp -f regulatory.db /lib/firmware/regulatory.db
+cp -f regulatory.db.p7s /lib/firmware/regulatory.db.p7s
+cd ~
+rm -fdr wireless-regdb
+echo Done.
+
+### Adding sys-mods
+echo
+echo Building raspi-sys-mods package.
+sleep 1s
+apt install -y debhelper d-shlibs rfkill dosfstools psmisc
+git clone https://github.com/RPi-Distro/raspberrypi-sys-mods.git
+mv raspberrypi-sys-mods.patch raspberrypi-sys-mods/
+cd raspberrypi-sys-mods
+patch -p1 < raspberrypi-sys-mods.patch
+rm -f raspberrypi-sys-mods.patch
+dpkg-buildpackage -us -uc
+cd ~
+dpkg -i raspberrypi-sys-mods*.deb
+rm -fdR raspberrypi-sys-mods*
+echo Done.
+
+### Bluez firmware.
+echo
+echo Installing bluetooth.
+sleep 1s
+apt install -y bluetooth bluez bluez-tools
+echo Done.
+bluez_firmware_choose
+#bluez_firmware_stable
+
+### Pi Bluetooth
+echo
+echo Building pi bluetooth package.
+sleep 1s
+git clone https://github.com/pyavitz/pi-bluetooth.git
+cd pi-bluetooth
+chmod +x debian/rules
+dpkg-buildpackage -us -uc
+cd ~
+dpkg -i pi-bluetooth_*.deb
+rm -fdR pi-bluetooth*
+echo Done.
+
+### Cypress wifi firmware
+if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
+	then bcm2710_cypress
+fi
+if `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null;`
+	then bcm2708_cypress
+fi
+
+### Certificates
+if `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null;`
+	then ca_certificates
+fi
+
+### Htop
+case `grep -Fx 'DEBIAN_VERSION="testing"' "/root/userdata.txt" >/dev/null; echo $?` in
+  0)
+    htop_unstable
+    ;;
+  1)
+    htop_stable
+    ;;
+esac
+
+### Upgrading bluez
+if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
+	then bluez_choose
+fi
+if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
+	then bluez_choose
+fi
+
+###  Raspi userland
+if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
+	then armv8_userland
+fi
+if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
+	then armv8_userland
+fi
+if `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null;`
+	then arm_userland
+fi
+
+### Adding eeprom
+if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
+	then bcm2711_eeprom
+fi
+
+#### Kernel
+echo
+echo Installing kernel.
+apt -y clean
+apt -y autoclean
+sleep 1s
+cd ~
+dpkg -i *.deb
+rm -f *.deb
+echo Done.
+sleep 1s
+
+### Modules
+if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
+	then bcm_modules
+fi
+if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
+	then bcm2710_modules
+fi
+if `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null;`
+	then bcm_modules
+fi
+
+### Admin or user
+case `grep -Fx "admin=1" "/root/userdata.txt" >/dev/null; echo $?` in
+  0)
+	admin_config
+    ;;
+  1)
+	user_config
+    ;;
+esac
+
+if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
+	then eeprom_choose
+fi
+
+#### Checking for changes
+echo
+echo Checking for changes.
+apt update
+apt upgrade -y
+apt -y clean
+apt -y autoclean
+echo Done.
+
+### Clean misc files
+rm -f *.patch
+rm -f *led*
+rm -f *eeprom*
+
+### RPi Hack
+if `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null;`
+	then ln -s /lib/ld-linux.so.3 /lib/ld-linux-armhf.so.3
+fi
+
+### Vchiq permissions
+echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' > /etc/udev/rules.d/10-vchiq-permissions.rules
+echo 'SUBSYSTEM=="vcio",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
+echo 'SUBSYSTEM=="vc-mem",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
+
+# Load services
+echo
+echo Adding services
+chmod +x /etc/init.d/governor
+chmod +x /etc/init.d/firstboot
+chmod +x /etc/init.d/pwrledoff
+chmod +x /etc/init.d/actledoff
+chmod +x /etc/init.d/bthelper
+chmod +x /etc/init.d/zramswap
+chmod +x /etc/init.d/network
+chmod +x /etc/init.d/credentials
+update-rc.d -f networking remove
+update-rc.d firstboot defaults 2
+update-rc.d governor defaults 2
+update-rc.d bthelper defaults 2
+update-rc.d zramswap defaults 2
+update-rc.d credentials defaults 2
+echo Done.
+
+###### Finish
+echo
+echo Moving out of stage2 and creating image
+sleep 2s
+
+umount /proc /sys

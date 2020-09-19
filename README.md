@@ -1,4 +1,4 @@
-## Debian Image Builder for the Raspberry Pi 
+## Image Builder for the Raspberry Pi
 
 The boards that are currently supported are;
 * Raspberry Pi 4B (bcm2711)
@@ -40,10 +40,15 @@ make dialogrc   # Set builder theme (optional)
 ```sh
 Username:       # Your username
 Password:       # Your password
-Debian:         # Supported: buster & unstable (unstable is hit-and-miss)
 Branch:         # Supported: 5.4.y and above
 Menuconfig:     # 1 to run kernel menuconfig
 Crosscompile:   # 1 to cross compile | 0 to native compile
+
+Distributions
+Release:	# Supported: buster, beowulf and 20.04
+Debian:		# 1 to select (buster/unstable)
+Devuan:		# 1 to select (beowulf/testing)
+Ubuntu:		# 1 to select (20.04)
 ```
 #### User defconfig
 
@@ -102,7 +107,7 @@ make image
 make all
 ```
 
-#### Raspberry Pi 3B/+
+#### Raspberry Pi 3A/B/+
 
 ```sh
 # AARCH64
@@ -127,6 +132,8 @@ make rootfs   # arm64
 make rootfsv6 # armel
 ```
 ## Usage
+
+### Debian / Devuan
 #### /boot/rename_to_credentials.txt
 ```sh
 Rename file to credentials.txt and input your wifi information.
@@ -150,6 +157,24 @@ files, whilst leaving rename_to_credentials.txt untouched.
 
 /etc/opt/interfaces.manual
 /etc/opt/wpa_supplicant.manual
+```
+
+### Ubuntu
+#### /boot/rename_to_credentials.txt
+```sh
+Rename file to credentials.txt and input your wifi information.
+
+NAME=" "			# Name of the connection
+SSID=" "			# Service set identifier
+PASSKEY=" "			# Wifi password
+COUNTRYCODE=" "			# Your country code
+
+MANUAL=n			# Set to y to enable a static ip
+IPADDR=" "			# Static ip address
+GATEWAY=" "			# Your Gateway
+DNS=""				# Your preferred dns
+
+For headless use: ssh user@ipaddress
 ```
 
 #### Using deb-eeprom and [usb_storage.quirks](https://github.com/pyavitz/rpi-img-builder/issues/17)

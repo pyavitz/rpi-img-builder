@@ -1,0 +1,27 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides: pwrled
+# Required-Start:
+# Required-Stop:
+# Default-Start: 2
+# Default-Stop:
+# Short-Description: Turns off power led
+# Description:
+### END INIT INFO
+
+# chmod +x /etc/init.d/pwrled
+# update-rc.d pwrled defaults 2
+
+. /lib/lsb/init-functions
+
+case "$1" in
+  start)
+    log_daemon_msg "Turning off power led"
+    /usr/local/sbin/pwrled 2>/dev/null
+    log_end_msg $?
+    ;;
+  *)
+    echo "Usage: $0 start" >&2
+    exit 3
+    ;;
+esac
