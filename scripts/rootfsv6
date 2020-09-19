@@ -3,7 +3,6 @@
 source userdata.txt
 source lib/source.txt
 
-set -x
 devuan_rootfs (){
 DEVUAN_STABLE=devuan-${DISTRO_VERSION}-rootfs-armel.tar.xz
 DEVUAN_TESTING=devuan-${DISTRO_VERSION}-rootfs-armel.tar.xz
@@ -16,10 +15,11 @@ fi
 wget -cq --show-progress https://github.com/pyavitz/rootfs-tarballs/releases/download/rootfs/devuan-${DISTRO_VERSION}-rootfs-armel.tar.xz
 }
 
-if `grep -Fx "devuan=1" "soc.txt" >/dev/null;`
-	then make devuan_rootfs && exit;
+if `grep -Fx "devuan=1" "userdata.txt" >/dev/null;`
+	then devuan_rootfs && exit;
 fi
 
+set -x
 RAM=0
 PROXY=""
 IMAGE_FOLDER="img/"
