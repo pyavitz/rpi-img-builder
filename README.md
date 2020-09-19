@@ -85,11 +85,16 @@ make mainline   # Build mainline linux kernel
 ```sh
 Username:       # Your username
 Password:       # Your password
-Debian:         # Supported: buster & unstable (unstable is hit-and-miss)
 Branch:         # Selected kernel branch
 Mainline:       # 1 for kernel x.y-rc above stable
 Menuconfig:     # 1 to run kernel menuconfig
 Crosscompile:   # 1 to cross compile | 0 to native compile
+
+Distributions
+Release:	# Supported: buster, beowulf and 20.04
+Debian:		# 1 to select (buster/unstable)
+Devuan:		# 1 to select (beowulf/testing)
+Ubuntu:		# 1 to select (20.04)
 ```
 #### Disclaimer
 ```sh
