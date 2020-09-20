@@ -207,7 +207,7 @@ Usage: fetch -opt
    
 fetch -h will list available options and kernel revisions
 ```
-#### Simple wifi helper
+#### Simple wifi helper (Debian/Devuan)
 ```sh
 swh -h
 
