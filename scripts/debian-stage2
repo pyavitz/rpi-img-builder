@@ -26,7 +26,7 @@ ln -snf /usr/share/zoneinfo/America/New_York /etc/localtime
 echo -n 'America/New_York' > /etc/timezone
 apt upgrade -y
 apt dist-upgrade -y
-case `grep -Fx 'DEBIAN_VERSION="unstable"' "/root/userdata.txt" >/dev/null; echo $?` in
+case `grep -Fx 'DISTRO_VERSION="unstable"' "/root/userdata.txt" >/dev/null; echo $?` in
   0)
     apt install -y ${DEBIAN1} gcc-9
     export CC=/usr/bin/gcc-9
@@ -270,14 +270,9 @@ if `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null;`
 fi
 
 ### Htop
-case `grep -Fx 'DEBIAN_VERSION="unstable"' "/root/userdata.txt" >/dev/null; echo $?` in
-  0)
-    htop_unstable
-    ;;
-  1)
-    htop_stable
-    ;;
-esac
+if `grep -Fx 'DISTRO_VERSION="buster"' "/root/userdata.txt" >/dev/null;`
+	then htop_stable;
+fi
 
 ### Upgrading bluez
 if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
