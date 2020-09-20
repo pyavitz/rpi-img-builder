@@ -976,10 +976,7 @@ sleep 1s
 apt install help2man rsync pciutils -y
 ###
 mkdir -p ~/eeprom
-mkdir -p /usr/local/src
-cp -f rpi-eeprom-update.patch /usr/local/src/
 mv -f rpi-eeprom-update.patch /root/eeprom/
-cp -f rpi-eeprom-control.patch /usr/local/src/
 mv -f rpi-eeprom-control.patch /root/eeprom/
 cd ~/eeprom
 wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
