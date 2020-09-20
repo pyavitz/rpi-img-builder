@@ -63,7 +63,7 @@ UBUNTU2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
 FIRMWARE="firmware-linux"
 
 # https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/
-EEPROM_VERSION="8.0"
+EEPROM_VERSION="9.0"
 
 # motd
 BRAND="Raspberry Pi"
