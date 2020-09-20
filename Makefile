@@ -205,12 +205,12 @@ rpi-all:
 
 # rootfs
 rootfs:
-	# ARM64 ROOTFS
+	# ROOTFS
 	@chmod +x ${RFSV8}
 	@${ROOTFSV8}
 
 rootfsv6:
-	# ARMEL ROOTFS
+	# ROOTFS
 	@chmod +x ${RFSV6}
 	@${ROOTFSV6}
 
