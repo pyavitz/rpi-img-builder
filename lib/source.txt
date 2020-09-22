@@ -20,14 +20,14 @@ DEBIANIMGSIZE_UNSTABLE="2425MB"
 
 DEBIAN1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	e2fsprogs fonty-rg patch curl wget apt-transport-https dirmngr \
-	cmake rsync psmisc parted"
+	cmake rsync psmisc parted pv zip unzip p7zip-full aria2"
 
 DEBIAN2="cpu hwinfo haveged resolvconf git build-essential net-tools ifplugd \
 	fuse wpasupplicant wireless-tools usbutils alsa-utils gettext \
 	bison flex mc nano figlet toilet dialog python3 python3-setuptools \
 	openssh-client openssh-server ntfs-3g bc zram-tools libncursesw5-dev \
 	libssl-dev autopoint autoconf automake pkg-config libtool fake-hwclock \
-	avahi-utils pv"
+	avahi-utils"
 
 # devuan
 DEVUANIMGSIZE="2350MB"
@@ -35,14 +35,14 @@ DEVUANIMGSIZE_TESTING="2475MB"
 
 DEVUAN1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	e2fsprogs fonty-rg patch curl wget apt-transport-https dirmngr \
-	cmake rsync psmisc"
+	cmake rsync psmisc parted pv zip unzip p7zip-full aria2"
 
 DEVUAN2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
 	fuse wpasupplicant wireless-tools usbutils alsa-utils gettext \
 	bison flex mc nano figlet toilet dialog python3 python3-setuptools \
 	openssh-client openssh-server ntfs-3g bc zram-tools libncursesw5-dev \
 	libssl-dev autopoint autoconf automake pkg-config libtool fake-hwclock \
-	ntp ifupdown-extra avahi-utils pv"
+	ntp ifupdown-extra avahi-utils"
 
 # ubuntu
 UBUNTUIMGSIZE="2300MB"
@@ -50,14 +50,14 @@ UBUNTUIMGSIZE="2300MB"
 # stage2
 UBUNTU1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	e2fsprogs fonty-rg patch curl wget apt-transport-https dirmngr \
-	cmake rsync psmisc"
+	cmake rsync psmisc parted pv zip unzip p7zip-full aria2"
 
 UBUNTU2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
 	fuse wpasupplicant wireless-tools usbutils alsa-utils gettext \
 	bison flex mc nano figlet toilet dialog python3 python3-setuptools \
 	openssh-client openssh-server ntfs-3g bc zram-tools libncursesw5-dev \
 	libssl-dev autopoint autoconf automake pkg-config libtool fake-hwclock \
-	network-manager avahi-utils pv"
+	network-manager avahi-utils"
 
 # firmware
 FIRMWARE="firmware-linux"

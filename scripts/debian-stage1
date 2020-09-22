@@ -1,7 +1,7 @@
 #!/bin/bash
 source lib/debian_func.txt
 source lib/source.txt
-source userdata.txt
+source userdata.txt > /dev/null 2>&1;
 UD=userdata.txt
 
 userdata () {
@@ -23,7 +23,6 @@ if [ -f "$UD" ]; then
 else 
     userdata
 fi
-
 set -x
 RAM=0
 PROXY=""
@@ -186,9 +185,11 @@ cp files/debian/scripts/* p2/root
 cp files/misc/* p2/root
 cp files/scripts/* p2/root
 cp files/users/* p2/root
+if ls firmware/firmware-nonfree-master.tar.gz > /dev/null 2>&1;
+	then cp firmware/firmware-nonfree-master.tar.gz p2/root > /dev/null 2>&1;
+	else rpi-firmware && cp firmware/firmware-nonfree-master.tar.gz p2/root;
+fi
 cp firmware/fw-0a5c_21e8.hcd p2/root
-wget -cq --show-progress https://github.com/RPi-Distro/firmware-nonfree/archive/master.zip
-mv master.zip p2/root
 # Mount and chroot
 mount -o bind p1 p2/boot
 mount -o bind /dev p2/dev

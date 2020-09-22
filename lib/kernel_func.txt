@@ -55,9 +55,9 @@ fi
 extract (){
 echo
 echo_extract
-tar -xf ${KERNEL}-${VERSION}.tar.gz --checkpoint=.100
-#rm -f ${KERNEL}-${VERSION}.tar.gz #remove
-echo_done
+echo -e -n "${WHT}"
+pv ${KERNEL}-${VERSION}.tar.gz | tar -xzf - -C .
+echo -e -n "${FIN}"
 }
 
 # armv6l

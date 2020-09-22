@@ -103,9 +103,8 @@ echo Done.
 echo
 echo Adding pi firmware.
 sleep 1s
-apt install -y zip unzip p7zip-full
-unzip -qq master.zip
-rm -f master.zip
+pv firmware-nonfree-master.tar.gz | tar -xzf - -C .
+rm -f firmware-nonfree-master.tar.gz
 mkdir -p /lib/firmware
 cp -fr firmware-nonfree-master/* /lib/firmware
 rm -fdR firmware-nonfree-master
@@ -142,7 +141,7 @@ echo Done.
 
 #### Software
 echo
-echo Installing firmware and needed packages.
+echo Installing needed packages.
 sleep 1s
 apt -y clean
 apt -y autoclean

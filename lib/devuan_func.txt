@@ -345,6 +345,13 @@ armel_rootfs () {
 tar -xf devuan-${DISTRO_VERSION}-rootfs-armel.tar.xz -C p2/
 }
 
+rpi-firmware(){
+aria2c -c --download-result=hide --console-log-level=error \
+--disable-ipv6=true --summary-interval=0 --show-files=false \
+https://github.com/RPi-Distro/firmware-nonfree/archive/master.tar.gz
+mv -f firmware-nonfree-master.tar.gz firmware/
+}
+
 ### STAGE 2
 # USER CONFIG
 bcm2708_user () {

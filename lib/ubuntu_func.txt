@@ -255,6 +255,13 @@ if ls ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.xz > /dev/null 2>&1;
 fi
 }
 
+rpi-firmware(){
+aria2c -c --download-result=hide --console-log-level=error \
+--disable-ipv6=true --summary-interval=0 --show-files=false \
+https://github.com/RPi-Distro/firmware-nonfree/archive/master.tar.gz
+mv -f firmware-nonfree-master.tar.gz firmware/
+}
+
 ### STAGE 2
 
 # USER CONFIG

@@ -103,13 +103,14 @@ ccompile:
 	sudo apt install build-essential bison bc git dialog patch \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
-	crossbuild-essential-arm64 crossbuild-essential-armel
+	aria2 pv crossbuild-essential-arm64 crossbuild-essential-armel
 
 ncompile:
 	# Install native dependencies:
 	sudo apt install build-essential bison bc git dialog patch \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
-	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
+	aria2 pv
 
 # Raspberry Pi 4 | aarch64
 kernel:
