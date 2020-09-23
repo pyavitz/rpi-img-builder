@@ -539,19 +539,20 @@ echo Done.
 }
 
 bluez_upgrade () {
+VERSION="5.55"
 echo
-echo Upgrading bluez.
+echo Upgrading bluetooth.
 sleep 1s
-wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/bluez-5.53.tar.xz
-tar xf bluez-5.53.tar.xz
-rm -f bluez-5.53.tar.xz
-cd bluez-5.53
-rm -f *dbg_5.53*
-rm -f *cups_5.53*
-rm -f *source_5.53*
+wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/bluez-${VERSION}-ubuntu-arm64.tar.xz
+tar xf bluez-${VERSION}-ubuntu-arm64.tar.xz
+rm -f bluez-${VERSION}-ubuntu-arm64.tar.xz
+cd bluez-${VERSION}-ubuntu-arm64
+rm -f *dbgsym_${VERSION}*
+rm -f *cups_${VERSION}*
+rm -f *source_${VERSION}*
 dpkg -i *.deb
 cd ..
-rm -fdR bluez-5.53
+rm -fdR bluez-${VERSION}
 apt-mark hold bluez
 echo Done.
 }

@@ -1087,19 +1087,20 @@ esac
 }
 
 bluez_stable () {
+VERSION="5.55"
 echo
 echo Upgrading bluetooth.
 sleep 1s
-wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/bluez-5.52.tar.xz
-tar xf bluez-5.52.tar.xz
-rm -f bluez-5.52.tar.xz
-cd bluez-5.52
-rm -f *dbgsym_5.52*
-rm -f *cups_5.52*
-rm -f *source_5.52*
+wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/bluez-${VERSION}-debian-arm64.tar.xz
+tar xf bluez-${VERSION}-debian-arm64.tar.xz
+rm -f bluez-${VERSION}-debian-arm64.tar.xz
+cd bluez-${VERSION}-debian-arm64
+rm -f *dbgsym_${VERSION}*
+rm -f *cups_${VERSION}*
+rm -f *source_${VERSION}*
 dpkg -i *.deb
 cd ..
-rm -fdR bluez-5.52
+rm -fdR bluez-${VERSION}
 apt-mark hold bluez
 echo Done.
 }
@@ -1108,16 +1109,16 @@ bluez_unstable () {
 echo
 echo Upgrading bluetooth.
 sleep 1s
-wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/bluez-unstable-5.52.tar.xz
-tar xf bluez-unstable-5.52.tar.xz
-rm -f bluez-unstable-5.52.tar.xz
-cd bluez-unstable-5.52
-rm -f *dbgsym_5.52*
-rm -f *cups_5.52*
-rm -f *source_5.52*
+wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/bluez-unstable-5.54.tar.xz
+tar xf bluez-unstable-5.54.tar.xz
+rm -f bluez-unstable-5.54.tar.xz
+cd bluez-unstable-5.54
+rm -f *dbgsym_5.54*
+rm -f *cups_5.54*
+rm -f *source_5.54*
 dpkg -i *.deb
 cd ..
-rm -fdR bluez-unstable-5.52
+rm -fdR bluez-unstable-5.54
 apt-mark hold bluez
 echo Done.
 }
