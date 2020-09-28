@@ -40,19 +40,19 @@ HELPER=./scripts/help
 
 help:
 	@echo
-	@echo "Raspberry Pi Image Builder"
+	@echo "\e[1;31mRaspberry Pi Image Builder\e[0m"
 	@echo
-	@echo "Usage: "
+	@echo "\e[1;37mUsage:\e[0m "
 	@echo
 	@echo "  make ccompile          Install all dependencies"
 	@echo "  make ncompile          Install native dependencies"
 	@echo "  make config            Create user data file"
 	@echo "  make menu              User menu interface"
 	@echo "  make cleanup           Clean up image errors"
-	@echo "  make purge             Remove tmp directory"
+	@echo "  make purge             Remove source directory"
 	@echo "  make commands          List legacy commands"
 	@echo
-	@echo "For details consult the README.md"
+	@echo "For details consult the \e[1;37mREADME.md\e[0m"
 	@echo
 
 commands:
@@ -224,7 +224,7 @@ cleanup:
 
 purge:
 	# Removing tmp directory
-	sudo rm -fdr rpi*
+	sudo rm -fdr source
 
 # menu
 menu:
