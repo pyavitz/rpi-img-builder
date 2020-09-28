@@ -46,19 +46,19 @@ while true; do
       ;;
     1 )
       make rpi-kernel
-      dialog --prgbox "Results:" "ls output/bcm2708/*.deb" 30 60
+      dialog --prgbox "Results:" "ls output/bcm2708/*.deb" 30 70
       ;;
     2 )
       make rootfsv6
-      dialog --prgbox "Results:" "ls *armel*" 30 60
+      dialog --prgbox "Results:" "ls *armel*" 30 70
       ;;
     3 )
       make rpi-image
-      dialog --prgbox "Results:" "ls *.img" 30 60
+      dialog --prgbox "Results:" "ls *.img" 30 70
       ;;
     4 )
       make rpi-all
-      dialog --prgbox "Results:" "ls *.img *armel* output/bcm2708/*.deb" 30 60
+      dialog --prgbox "Results:" "ls *.img *armel* output/bcm2708/*.deb" 30 70
       exit 0
       ;;
   esac

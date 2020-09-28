@@ -46,19 +46,19 @@ while true; do
       ;;
     1 )
       make kernel
-      dialog --prgbox "Results:" "ls output/bcm2711/*.deb" 30 60
+      dialog --prgbox "Results:" "ls output/bcm2711/*.deb" 30 70
       ;;
     2 )
       make rootfs
-      dialog --prgbox "Results:" "ls *aarch64*" 30 60
+      dialog --prgbox "Results:" "ls *aarch64*" 30 70
       ;;
     3 )
       make image
-      dialog --prgbox "Results:" "ls *.img" 30 60
+      dialog --prgbox "Results:" "ls *.img" 30 70
       ;;
     4 )
       make all
-      dialog --prgbox "Results:" "ls *.img *aarch64* output/bcm2711/*.deb" 30 60
+      dialog --prgbox "Results:" "ls *.img *aarch64* output/bcm2711/*.deb" 30 70
       exit 0
       ;;
   esac
