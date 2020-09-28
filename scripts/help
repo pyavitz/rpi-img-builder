@@ -13,7 +13,8 @@ echo
 echo -e "${RED}Extracting and setting up directory${FIN}."
 tar xf rpi-stable.tar.xz
 rm -f rpi-stable.tar.xz
-mv rpi-stable rpi0
+mkdir -p output
+mv rpi-stable output/bcm2708
 echo -e "${RED}Ready${FIN}."
 }
 
@@ -26,7 +27,8 @@ echo
 echo -e "${RED}Extracting and setting up directory${FIN}."
 tar xf rpi3-stable.tar.xz
 rm -f rpi3-stable.tar.xz
-mv rpi3-stable rpi3
+mkdir -p output
+mv rpi3-stable output/bcm2710
 echo -e "${RED}Ready${FIN}."
 }
 
@@ -39,7 +41,8 @@ echo
 echo -e "${RED}Extracting and setting up directory${FIN}."
 tar xf rpi4-stable.tar.xz
 rm -f rpi4-stable.tar.xz
-mv rpi4-stable rpi4
+mkdir -p output
+mv rpi4-stable output/bcm2711
 echo -e "${RED}Ready${FIN}."
 }
 

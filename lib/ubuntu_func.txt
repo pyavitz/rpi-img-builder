@@ -1,4 +1,40 @@
 ### STAGE 1
+partitions(){
+truncate -s ${UBUNTUIMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
+fdisk "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" <<EOF
+o
+n
+p
+1
+2048
+524287
+a
+c
+t
+b
+n
+p
+2
+524288
+
+p
+w
+
+EOF
+IMAGE_LOOP_DEV="$(losetup --show -f ${IMAGE_FOLDER}${IMAGE_FILE_NAME})"
+IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
+IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
+partprobe "${IMAGE_LOOP_DEV}"
+mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
+mkfs.ext4 -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}"
+mkdir -p p1 p2
+mount "${IMAGE_LOOP_DEV_BOOT}" p1
+mount "${IMAGE_LOOP_DEV_ROOTFS}" p2
+sync
+umount p2
+mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2
+}
+
 partition_uuid () {
 BOOT_UUID=$(blkid -o export -- "${IMAGE_LOOP_DEV_BOOT}" | sed -ne 's/^UUID=//p')
 ROOT_UUID=$(blkid -o export -- "${IMAGE_LOOP_DEV_ROOTFS}" | sed -ne 's/^UUID=//p')
@@ -206,53 +242,151 @@ disable_splash=1
 EOF
 }
 
-rpi4_bootbins () {
+rpi4_bootbins(){
 mkdir -p firmware/boot
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4.dat
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4cd.dat
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4db.dat
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4x.dat
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start4.elf
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start4cd.elf
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start4db.elf
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start4x.elf
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/LICENCE.broadcom
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/COPYING.linux
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4.dat
+if ls firmware/boot/fixup4.dat > /dev/null 2>&1
+	then echo -n "fixup4.dat " && echo_nok;
+	else echo -n "fixup4.dat " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4cd.dat
+if ls firmware/boot/fixup4cd.dat > /dev/null 2>&1
+	then echo -n "fixup4cd.dat " && echo_nok;
+	else echo -n "fixup4cd.dat " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4db.dat
+if ls firmware/boot/fixup4db.dat > /dev/null 2>&1
+	then echo -n "fixup4db.dat " && echo_nok;
+	else echo -n "fixup4db.dat " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4x.dat
+if ls firmware/boot/fixup4x.dat > /dev/null 2>&1
+	then echo -n "fixup4x.dat " && echo_nok;
+	else echo -n "fixup4x.dat " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start4.elf
+if ls firmware/boot/start4.elf > /dev/null 2>&1
+	then echo -n "start4.elf " && echo_nok;
+	else echo -n "start4.elf " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start4cd.elf
+if ls firmware/boot/start4cd.elf > /dev/null 2>&1
+	then echo -n "start4cd.elf " && echo_nok;
+	else echo -n "start4cd.elf " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start4db.elf
+if ls firmware/boot/start4db.elf > /dev/null 2>&1
+	then echo -n "start4db.elf " && echo_nok;
+	else echo -n "start4db.elf " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start4x.elf
+if ls firmware/boot/start4x.elf > /dev/null 2>&1
+	then echo -n "start4x.elf " && echo_nok;
+	else echo -n "start4x.elf " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/LICENCE.broadcom
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/COPYING.linux
 
-install -v -m 0644 firmware/boot/fixup4*.dat p1/
-install -v -m 0644 firmware/boot/start4*.elf p1/
-install -v -m 0644 firmware/boot/LICENCE.broadcom p1/
-install -v -m 0644 firmware/boot/COPYING.linux p1/
+install -v -m 0644 firmware/boot/fixup4*.dat p1/ > /dev/null 2>&1
+install -v -m 0644 firmware/boot/start4*.elf p1/ > /dev/null 2>&1
+install -v -m 0644 firmware/boot/LICENCE.broadcom p1/ > /dev/null 2>&1
+install -v -m 0644 firmware/boot/COPYING.linux p1/ > /dev/null 2>&1
+if ls p1/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf} > /dev/null 2>&1
+	then echo -n "install " && echo_bdone;
+	else echo -n "install " && echo_fail && exit;
+fi
 }
 
-rpi_bootbins () {
+rpi_bootbins(){
 mkdir -p firmware/boot
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/bootcode.bin
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup.dat
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup_cd.dat
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup_db.dat
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup_x.dat
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start.elf
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start_cd.elf
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start_db.elf
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start_x.elf
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/LICENCE.broadcom
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/COPYING.linux
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/bootcode.bin
+if ls firmware/boot/bootcode.bin > /dev/null 2>&1
+	then echo -n "bootcode.bin " && echo_nok;
+	else echo -n "bootcode.bin " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup.dat
+if ls firmware/boot/fixup.dat > /dev/null 2>&1
+	then echo -n "fixup.dat " && echo_nok;
+	else echo -n "fixup.dat " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup_cd.dat
+if ls firmware/boot/fixup_cd.dat > /dev/null 2>&1
+	then echo -n "fixup_cd.dat " && echo_nok;
+	else echo -n "fixup_cd.dat " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup_db.dat
+if ls firmware/boot/fixup_db.dat > /dev/null 2>&1
+	then echo -n "fixup_db.dat " && echo_nok;
+	else echo -n "fixup_db.dat " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup_x.dat
+if ls firmware/boot/fixup_x.dat > /dev/null 2>&1
+	then echo -n "fixup_x.dat " && echo_nok;
+	else echo -n "fixup_x.dat " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start.elf
+if ls firmware/boot/start.elf > /dev/null 2>&1
+	then echo -n "start.elf " && echo_nok;
+	else echo -n "start.elf " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start_cd.elf
+if ls firmware/boot/start_cd.elf > /dev/null 2>&1
+	then echo -n "start_cd.elf " && echo_nok;
+	else echo -n "start_cd.elf " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start_db.elf
+if ls firmware/boot/start_db.elf > /dev/null 2>&1
+	then echo -n "start_db.elf " && echo_nok;
+	else echo -n "start_db.elf " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start_x.elf
+if ls firmware/boot/start_x.elf > /dev/null 2>&1
+	then echo -n "start_x.elf " && echo_nok;
+	else echo -n "start_x.elf " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/LICENCE.broadcom
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/COPYING.linux
 
-install -v -m 0644 firmware/boot/bootcode.bin p1/
-install -v -m 0644 firmware/boot/fixup*.dat p1/
-install -v -m 0644 firmware/boot/start*.elf p1/
-install -v -m 0644 firmware/boot/LICENCE.broadcom p1/
-install -v -m 0644 firmware/boot/COPYING.linux p1/
+install -v -m 0644 firmware/boot/bootcode.bin p1/ > /dev/null 2>&1
+install -v -m 0644 firmware/boot/fixup*.dat p1/ > /dev/null 2>&1
+install -v -m 0644 firmware/boot/start*.elf p1/ > /dev/null 2>&1
+install -v -m 0644 firmware/boot/LICENCE.broadcom p1/ > /dev/null 2>&1
+install -v -m 0644 firmware/boot/COPYING.linux p1/ > /dev/null 2>&1
+if ls p1/{bootcode.bin,fixup.dat,fixup_cd.dat,fixup_db.dat,fixup_x.dat,start.elf,start_cd.elf,start_db.elf,start_x.elf} > /dev/null 2>&1
+	then echo -n "install " && echo_bdone;
+	else echo -n "install " && echo_fail && exit;
+fi
 }
 
-aarch64_rootfs () {
-if ls ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.gz > /dev/null 2>&1;
-	then tar -xf ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.gz -C p2/
+aarch64_extract () {
+tar -xf ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.gz -C p2/
+}
+
+aarch64_rootfs(){
+if ls ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.gz > /dev/null 2>&1
+	then echo -n "Extracting rootfs " && aarch64_extract && echo_bdone;
+	else echo -e "${YLW}Missing rootfs tarball${FIN}!" && exit;
 fi
-if ls ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.xz > /dev/null 2>&1;
-	then tar xf ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.xz -C p2/
-fi
+echo
 }
 
 rpi-firmware(){

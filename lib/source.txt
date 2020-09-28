@@ -1,13 +1,13 @@
-TMP4="rpi4"
-TMP3="rpi3"
-TMP0="rpi0"
-
 DEF="../defconfig"
 PAT="../patches"
 CC="../patches/cc"
 NC="../patches/nc"
 ML="../patches/ml"
 UP="../patches/userpatches"
+OUT4="../output/bcm2711"
+OUT3="../output/bcm2710"
+OUT="../output/bcm2708"
+SRC="source"
 
 CORES=`nproc`
 KERNEL="linux-rpi"

@@ -41,8 +41,7 @@ case `grep -Fx "rpiuser=1" "userdata.txt" >/dev/null; echo $?` in
     ;;
 esac
 
-mkdir -p ${TMP4}
-cd ${TMP4}
+source_dir
 mainline_clean
 
 ### Download kernel
@@ -91,4 +90,7 @@ cd ..
 rm -f linux-libc-dev*.deb
 rm -f *.buildinfo
 rm -f *.changes
-echo Done.
+if `grep -Fx "bcm2711" "../soc.txt" >/dev/null;`
+	then mkdir -p ${OUT4} && mv -f *.deb ${OUT4}/;
+fi
+echo_done

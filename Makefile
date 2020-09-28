@@ -103,14 +103,14 @@ ccompile:
 	sudo apt install build-essential bison bc git dialog patch \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
-	aria2 pv crossbuild-essential-arm64 crossbuild-essential-armel
+	aria2 pv toilet crossbuild-essential-arm64 crossbuild-essential-armel
 
 ncompile:
 	# Install native dependencies:
 	sudo apt install build-essential bison bc git dialog patch \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
-	aria2 pv
+	aria2 pv toilet
 
 # Raspberry Pi 4 | aarch64
 kernel:
@@ -120,7 +120,7 @@ kernel:
 	@${LINUX}
 
 image:
-	# Making bootable Debian image
+	# Making bootable image
 	@ echo bcm2711 > soc.txt
 	@chmod +x ${CHOOSE}
 	@${CHOOSE}
@@ -143,6 +143,7 @@ all:
 
 mainline:
 	# Mainline Linux | aarch64
+	@ echo bcm2711 > soc.txt
 	@chmod +x ${MAINLINE}
 	@${MAINLINE}
 
@@ -299,7 +300,7 @@ devuanos:
 	@${DEVUAN}
 
 ubuntuos:
-	# UBuntu
+	# Ubuntu
 	@chmod +x ${UBU}
 	@chmod +x ${UBUSTG2}
 	@${UBUNTU}

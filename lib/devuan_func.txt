@@ -1,5 +1,48 @@
 ### STAGE 1
-partition_uuid () {
+partitions(){
+case `grep -Fx 'DISTRO_VERSION="testing"' "userdata.txt" >/dev/null; echo $?` in
+  0)
+    truncate -s ${DEVUANIMGSIZE_TESTING} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
+    ;;
+  1)
+    truncate -s ${DEVUANIMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
+    ;;
+esac
+fdisk "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" <<EOF
+o
+n
+p
+1
+2048
+524287
+a
+c
+t
+b
+n
+p
+2
+524288
+
+p
+w
+
+EOF
+IMAGE_LOOP_DEV="$(losetup --show -f ${IMAGE_FOLDER}${IMAGE_FILE_NAME})"
+IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
+IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
+partprobe "${IMAGE_LOOP_DEV}"
+mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
+mkfs.ext4 -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}"
+mkdir -p p1 p2
+mount "${IMAGE_LOOP_DEV_BOOT}" p1
+mount "${IMAGE_LOOP_DEV_ROOTFS}" p2
+sync
+umount p2
+mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2
+}
+
+partition_uuid(){
 BOOT_UUID=$(blkid -o export -- "${IMAGE_LOOP_DEV_BOOT}" | sed -ne 's/^UUID=//p')
 ROOT_UUID=$(blkid -o export -- "${IMAGE_LOOP_DEV_ROOTFS}" | sed -ne 's/^UUID=//p')
 ROOT_PARTUUID=$(blkid -o export -- "${IMAGE_LOOP_DEV_ROOTFS}" | sed -ne 's/^PARTUUID=//p')
@@ -11,13 +54,13 @@ echo ROOT_PARTUUID='"'$ROOT_PARTUUID'"' >> part-uuid.txt
 source part-uuid.txt
 }
 
-cmdline () {
+cmdline(){
 tee p1/cmdline.txt <<EOF
 console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=ext4 elevator=deadline fsck.repair=yes logo.nologo rootwait
 EOF
 }
 
-bcm2711_config () {
+bcm2711_config(){
 tee p1/config.txt <<EOF
 arm_64bit=1
 kernel=kernel8.img
@@ -114,7 +157,7 @@ max_framebuffers=2
 EOF
 }
 
-bcm2710_config () {
+bcm2710_config(){
 tee p1/config.txt <<EOF
 arm_64bit=1
 kernel=kernel8.img
@@ -206,7 +249,7 @@ disable_splash=1
 EOF
 }
 
-bcm2708_config () {
+bcm2708_config(){
 tee p1/config.txt <<EOF
 kernel=kernel.img
 
@@ -297,52 +340,163 @@ disable_splash=1
 EOF
 }
 
-rpi4_bootbins () {
+rpi4_bootbins(){
 mkdir -p firmware/boot
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4.dat
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4cd.dat
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4db.dat
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4x.dat
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start4.elf
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start4cd.elf
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start4db.elf
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start4x.elf
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/LICENCE.broadcom
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/COPYING.linux
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4.dat
+if ls firmware/boot/fixup4.dat > /dev/null 2>&1
+	then echo -n "fixup4.dat " && echo_nok;
+	else echo -n "fixup4.dat " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4cd.dat
+if ls firmware/boot/fixup4cd.dat > /dev/null 2>&1
+	then echo -n "fixup4cd.dat " && echo_nok;
+	else echo -n "fixup4cd.dat " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4db.dat
+if ls firmware/boot/fixup4db.dat > /dev/null 2>&1
+	then echo -n "fixup4db.dat " && echo_nok;
+	else echo -n "fixup4db.dat " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4x.dat
+if ls firmware/boot/fixup4x.dat > /dev/null 2>&1
+	then echo -n "fixup4x.dat " && echo_nok;
+	else echo -n "fixup4x.dat " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start4.elf
+if ls firmware/boot/start4.elf > /dev/null 2>&1
+	then echo -n "start4.elf " && echo_nok;
+	else echo -n "start4.elf " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start4cd.elf
+if ls firmware/boot/start4cd.elf > /dev/null 2>&1
+	then echo -n "start4cd.elf " && echo_nok;
+	else echo -n "start4cd.elf " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start4db.elf
+if ls firmware/boot/start4db.elf > /dev/null 2>&1
+	then echo -n "start4db.elf " && echo_nok;
+	else echo -n "start4db.elf " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start4x.elf
+if ls firmware/boot/start4x.elf > /dev/null 2>&1
+	then echo -n "start4x.elf " && echo_nok;
+	else echo -n "start4x.elf " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/LICENCE.broadcom
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/COPYING.linux
 
-install -v -m 0644 firmware/boot/fixup4*.dat p1/
-install -v -m 0644 firmware/boot/start4*.elf p1/
-install -v -m 0644 firmware/boot/LICENCE.broadcom p1/
-install -v -m 0644 firmware/boot/COPYING.linux p1/
+install -v -m 0644 firmware/boot/fixup4*.dat p1/ > /dev/null 2>&1
+install -v -m 0644 firmware/boot/start4*.elf p1/ > /dev/null 2>&1
+install -v -m 0644 firmware/boot/LICENCE.broadcom p1/ > /dev/null 2>&1
+install -v -m 0644 firmware/boot/COPYING.linux p1/ > /dev/null 2>&1
+if ls p1/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf} > /dev/null 2>&1
+	then echo -n "install " && echo_bdone;
+	else echo -n "install " && echo_fail && exit;
+fi
 }
 
-rpi_bootbins () {
+rpi_bootbins(){
 mkdir -p firmware/boot
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/bootcode.bin
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup.dat
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup_cd.dat
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup_db.dat
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup_x.dat
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start.elf
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start_cd.elf
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start_db.elf
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start_x.elf
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/LICENCE.broadcom
-wget -c -q -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/COPYING.linux
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/bootcode.bin
+if ls firmware/boot/bootcode.bin > /dev/null 2>&1
+	then echo -n "bootcode.bin " && echo_nok;
+	else echo -n "bootcode.bin " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup.dat
+if ls firmware/boot/fixup.dat > /dev/null 2>&1
+	then echo -n "fixup.dat " && echo_nok;
+	else echo -n "fixup.dat " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup_cd.dat
+if ls firmware/boot/fixup_cd.dat > /dev/null 2>&1
+	then echo -n "fixup_cd.dat " && echo_nok;
+	else echo -n "fixup_cd.dat " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup_db.dat
+if ls firmware/boot/fixup_db.dat > /dev/null 2>&1
+	then echo -n "fixup_db.dat " && echo_nok;
+	else echo -n "fixup_db.dat " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup_x.dat
+if ls firmware/boot/fixup_x.dat > /dev/null 2>&1
+	then echo -n "fixup_x.dat " && echo_nok;
+	else echo -n "fixup_x.dat " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start.elf
+if ls firmware/boot/start.elf > /dev/null 2>&1
+	then echo -n "start.elf " && echo_nok;
+	else echo -n "start.elf " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start_cd.elf
+if ls firmware/boot/start_cd.elf > /dev/null 2>&1
+	then echo -n "start_cd.elf " && echo_nok;
+	else echo -n "start_cd.elf " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start_db.elf
+if ls firmware/boot/start_db.elf > /dev/null 2>&1
+	then echo -n "start_db.elf " && echo_nok;
+	else echo -n "start_db.elf " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/start_x.elf
+if ls firmware/boot/start_x.elf > /dev/null 2>&1
+	then echo -n "start_x.elf " && echo_nok;
+	else echo -n "start_x.elf " && echo_fail;
+fi
+echo
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/LICENCE.broadcom
+wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/COPYING.linux
 
-install -v -m 0644 firmware/boot/bootcode.bin p1/
-install -v -m 0644 firmware/boot/fixup*.dat p1/
-install -v -m 0644 firmware/boot/start*.elf p1/
-install -v -m 0644 firmware/boot/LICENCE.broadcom p1/
-install -v -m 0644 firmware/boot/COPYING.linux p1/
+install -v -m 0644 firmware/boot/bootcode.bin p1/ > /dev/null 2>&1
+install -v -m 0644 firmware/boot/fixup*.dat p1/ > /dev/null 2>&1
+install -v -m 0644 firmware/boot/start*.elf p1/ > /dev/null 2>&1
+install -v -m 0644 firmware/boot/LICENCE.broadcom p1/ > /dev/null 2>&1
+install -v -m 0644 firmware/boot/COPYING.linux p1/ > /dev/null 2>&1
+if ls p1/{bootcode.bin,fixup.dat,fixup_cd.dat,fixup_db.dat,fixup_x.dat,start.elf,start_cd.elf,start_db.elf,start_x.elf} > /dev/null 2>&1
+	then echo -n "install " && echo_bdone;
+	else echo -n "install " && echo_fail && exit;
+fi
 }
 
-aarch64_rootfs () {
+aarch64_extract(){
 tar -xf devuan-${DISTRO_VERSION}-rootfs-aarch64.tar.xz -C p2/
 }
 
-armel_rootfs () {
+armel_extract(){
 tar -xf devuan-${DISTRO_VERSION}-rootfs-armel.tar.xz -C p2/
+}
+
+aarch64_rootfs(){
+if ls devuan-${DISTRO_VERSION}-rootfs-aarch64.tar.xz > /dev/null 2>&1
+	then echo -n "Extracting rootfs " && aarch64_extract && echo_bdone;
+	else echo -e "${YLW}Missing rootfs tarball${FIN}!" && exit;
+fi
+echo
+}
+
+armel_rootfs(){
+if ls devuan-${DISTRO_VERSION}-rootfs-armel.tar.xz > /dev/null 2>&1
+	then echo -n "Extracting rootfs " && armel_extract && echo_bdone;
+	else echo -e "${YLW}Missing rootfs tarball${FIN}!" && exit;
+fi
+echo
 }
 
 rpi-firmware(){
@@ -354,25 +508,25 @@ mv -f firmware-nonfree-master.tar.gz firmware/
 
 ### STAGE 2
 # USER CONFIG
-bcm2708_user () {
+bcm2708_user(){
 echo -n 'bcm2708' > /etc/hostname
 sed -i '1 a 127.0.1.1	bcm2708' /etc/hosts
 adduser ${user} --gecos "bcm2708" --disabled-password
 }
 
-bcm2710_user () {
+bcm2710_user(){
 echo -n 'bcm2710' > /etc/hostname
 sed -i '1 a 127.0.1.1	bcm2710' /etc/hosts
 adduser ${user} --gecos "bcm2710" --disabled-password
 }
 
-bcm2711_user () {
+bcm2711_user(){
 echo -n 'bcm2711' > /etc/hostname
 sed -i '1 a 127.0.1.1	bcm2711' /etc/hosts
 adduser ${user} --gecos "bcm2711" --disabled-password
 }
 
-user_config () {
+user_config(){
 if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
 	then bcm2711_user
 fi
@@ -439,22 +593,22 @@ chown -R ${user}:${user} /home/${user}
 }
 
 # ADMIN CONFIG
-bcm2708_admin () {
+bcm2708_admin(){
 echo -n 'bcm2708' > /etc/hostname
 sed -i '1 a 127.0.1.1	bcm2708' /etc/hosts
 }
 
-bcm2710_admin () {
+bcm2710_admin(){
 echo -n 'bcm2710' > /etc/hostname
 sed -i '1 a 127.0.1.1	bcm2710' /etc/hosts
 }
 
-bcm2711_admin () {
+bcm2711_admin(){
 echo -n 'bcm2711' > /etc/hostname
 sed -i '1 a 127.0.1.1	bcm2711' /etc/hosts
 }
 
-admin_config () {
+admin_config(){
 if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
 	then bcm2711_admin
 fi
@@ -496,7 +650,7 @@ chmod +x /usr/local/bin/whogoesthere
 chown -R root:root /usr/local/bin/whogoesthere
 }
 
-user_eeprom () {
+user_eeprom(){
 echo
 echo Adding user eeprom config.
 tee /home/${user}/.eeprom <<EOF
@@ -507,7 +661,7 @@ EOF
 chown ${user}:${user} /home/${user}/.eeprom
 }
 
-admin_eeprom () {
+admin_eeprom(){
 echo
 echo Adding user eeprom config.
 tee /etc/opt/eeprom <<EOF
@@ -518,7 +672,7 @@ EOF
 chown root:root /etc/opt/eeprom
 }
 
-eeprom_choose () {
+eeprom_choose(){
 case `grep -Fx "admin=1" "/root/userdata.txt" >/dev/null; echo $?` in
   0)
 	admin_eeprom
@@ -529,51 +683,51 @@ case `grep -Fx "admin=1" "/root/userdata.txt" >/dev/null; echo $?` in
 esac
 }
 
-bcm_sdio_zero-w () {
+bcm_sdio_zero-w(){
 wget -cq --show-progress https://raw.githubusercontent.com/openwrt/cypress-nvram/master/brcmfmac43430-sdio.raspberrypi%2Cmodel-zero-w.txt
 }
 
-bcm_sdio_3-b-plus () {
+bcm_sdio_3-b-plus(){
 wget -cq --show-progress https://raw.githubusercontent.com/openwrt/cypress-nvram/master/brcmfmac43455-sdio.raspberrypi%2C3-model-b-plus.txt
 }
 
-bcm_sdio_4-b () {
+bcm_sdio_4-b(){
 wget -cq --show-progress https://raw.githubusercontent.com/openwrt/cypress-nvram/master/brcmfmac43455-sdio.raspberrypi%2C4-model-b.txt
 }
 
-firstboot_service () {
+firstboot_service(){
 echo
 echo Creating firstboot.
 tee /usr/local/sbin/firstboot <<EOF
 #!/bin/bash
 ### Functions
-grow_mmcblk () {
+grow_mmcblk(){
 bash growpart /dev/mmcblk0 2 > /dev/null 2>&1
 sleep 1s
 resize2fs /dev/mmcblk0p2 > /dev/null 2>&1
 }
 
-grow_mmcblk1 () {
+grow_mmcblk1(){
 bash growpart /dev/mmcblk1 2 > /dev/null 2>&1
 sleep 1s
 resize2fs /dev/mmcblk1p2 > /dev/null 2>&1
 }
 
-grow_sda () {
+grow_sda(){
 bash growpart /dev/sda 2 > /dev/null 2>&1
 sleep 1s
 resize2fs /dev/sda2 > /dev/null 2>&1
 }
 
-chk_mmcblk () {
+chk_mmcblk(){
 fsck.fat -trawl /dev/mmcblk0p1 > /dev/null 2>&1
 }
 
-chk_mmcblk1 () {
+chk_mmcblk1(){
 fsck.fat -trawl /dev/mmcblk1p1 > /dev/null 2>&1
 }
 
-chk_sda () {
+chk_sda(){
 fsck.fat -trawl /dev/sda1 > /dev/null 2>&1
 }
 
@@ -625,7 +779,7 @@ rm /etc/init.d/firstboot
 EOF
 }
 
-led_service () {
+led_service(){
 echo
 echo Creating actled switch.
 tee /usr/local/sbin/actled <<EOF
@@ -671,7 +825,7 @@ fi
 EOF
 }
 
-bcm2711_network () {
+bcm2711_network(){
 echo
 echo Adding network configs and rules.
 sleep 1s
@@ -776,7 +930,7 @@ EOF
 echo Done.
 }
 
-bcm2710_network () {
+bcm2710_network(){
 echo
 echo Adding network configs and rules.
 sleep 1s
@@ -895,7 +1049,7 @@ EOF
 echo Done.
 }
 
-bcm2708_network () {
+bcm2708_network(){
 echo
 echo Adding network configs and rules.
 sleep 1s
@@ -976,7 +1130,7 @@ EOF
 echo Done.
 }
 
-bcm2710_cypress () {
+bcm2710_cypress(){
 echo
 echo Adding brcm firmware from cypress.
 sleep 1s
@@ -992,7 +1146,7 @@ rm -fdr cypress
 echo Done.
 }
 
-bcm2708_cypress () {
+bcm2708_cypress(){
 echo
 echo Adding brcm firmware from cypress.
 sleep 1s
@@ -1008,7 +1162,7 @@ rm -fdr cypress
 echo Done.
 }
 
-ca_certificates () {
+ca_certificates(){
 echo
 echo Updating ca certificates.
 sleep 1s
@@ -1022,7 +1176,7 @@ rm -fdr certificates
 echo Done.
 }
 
-bluez_firmware_stable () {
+bluez_firmware_stable(){
 echo
 echo Building bluez firmware package.
 sleep 1s
@@ -1042,7 +1196,7 @@ rm -fdR bluez-firmware
 echo Done.
 }
 
-bluez_firmware_unstable () {
+bluez_firmware_unstable(){
 echo
 echo Installing bluez firmware package.
 sleep 1s
@@ -1075,7 +1229,7 @@ rm -fdR bluez-firmware
 echo Done.
 }
 
-bluez_firmware_choose () {
+bluez_firmware_choose(){
 case `grep -Fx 'DISTRO_VERSION="testing"' "/root/userdata.txt" >/dev/null; echo $?` in
   0)
 	bluez_firmware_unstable
@@ -1124,7 +1278,7 @@ apt-mark hold bluez
 echo Done.
 }
 
-bluez_choose () {
+bluez_choose(){
 case `grep -Fx 'DISTRO_VERSION="testing"' "/root/userdata.txt" >/dev/null; echo $?` in
   0)
 	bluez_unstable
@@ -1135,7 +1289,7 @@ case `grep -Fx 'DISTRO_VERSION="testing"' "/root/userdata.txt" >/dev/null; echo 
 esac
 }
 
-bcm2711_eeprom () {
+bcm2711_eeprom(){
 echo
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 echo Checking for updates.
@@ -1170,7 +1324,7 @@ rm -fdr eeprom
 echo Done.
 }
 
-bcm_modules () {
+bcm_modules(){
 echo
 echo Updating etc modules.
 rm -f /etc/modules
@@ -1187,7 +1341,7 @@ chown root:root /etc/modules
 echo Done.
 }
 
-bcm2710_modules () {
+bcm2710_modules(){
 echo
 echo Updating etc modules.
 rm -f /etc/modules
@@ -1205,7 +1359,7 @@ chown root:root /etc/modules
 echo Done.
 }
 
-armv8_userland () {
+armv8_userland(){
 echo
 echo Adding raspi userland.
 rm -f /etc/profile
@@ -1227,7 +1381,7 @@ ldconfig
 echo Done.
 }
 
-arm_userland () {
+arm_userland(){
 echo
 echo Adding raspi userland.
 rm -f /etc/profile
@@ -1249,7 +1403,7 @@ ldconfig
 echo Done.
 }
 
-htop_stable () {
+htop_stable(){
 echo
 echo Installing htop with cpufreq and thermal support.
 sleep 1s
@@ -1264,7 +1418,7 @@ rm -fdr htop
 echo Done.
 }
 
-htop_unstable () {
+htop_unstable(){
 echo
 echo Installing htop with cpufreq and thermal support.
 sleep 1s

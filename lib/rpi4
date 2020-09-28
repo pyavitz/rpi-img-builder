@@ -46,7 +46,7 @@ while true; do
       ;;
     1 )
       make kernel
-      dialog --prgbox "Results:" "ls rpi4/*.deb" 30 60
+      dialog --prgbox "Results:" "ls output/bcm2711/*.deb" 30 60
       ;;
     2 )
       make rootfs
@@ -58,7 +58,7 @@ while true; do
       ;;
     4 )
       make all
-      dialog --prgbox "Results:" "ls *.img *aarch64* rpi4/*.deb" 30 60
+      dialog --prgbox "Results:" "ls *.img *aarch64* output/bcm2711/*.deb" 30 60
       exit 0
       ;;
   esac

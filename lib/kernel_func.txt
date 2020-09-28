@@ -1,45 +1,12 @@
-tmp4 (){
-mkdir -p ${TMP4}
-cp -f soc.txt ${TMP4}/
-cd ${TMP4}
+source_dir (){
+mkdir -p ${SRC}
+cp -f soc.txt ${SRC}/
+cd ${SRC}
 }
 
-tmp3 (){
-mkdir -p ${TMP3}
-cp -f soc.txt ${TMP3}/
-cd ${TMP3}
-}
-
-tmp (){
-mkdir -p ${TMP0}
-cp -f soc.txt ${TMP0}/
-cd ${TMP0}
-}
-
-rpi4_clean (){
+clean_source (){
 if ls ${KERNEL}-${VERSION} > /dev/null 2>&1;
 	then echo "" && echo -e "${PNK}Cleaning${FIN} ..." && rm -fdr ${KERNEL}-${VERSION};
-fi
-if ls *.deb > /dev/null 2>&1;
-	then mkdir -p debs && mv -f *.deb debs/;
-fi
-}
-
-rpi3_clean (){
-if ls ${KERNEL}-${VERSION} > /dev/null 2>&1;
-	then echo "" && echo -e "${PNK}Cleaning${FIN} ..." && rm -fdr ${KERNEL}-${VERSION};
-fi
-if ls *.deb > /dev/null 2>&1;
-	then mkdir -p debs && mv -f *.deb debs/;
-fi
-}
-
-rpi_clean (){
-if ls ${KERNEL}-${VERSION} > /dev/null 2>&1;
-	then echo "" && echo -e "${PNK}Cleaning${FIN} ..." && rm -fdr ${KERNEL}-${VERSION};
-fi
-if ls *.deb > /dev/null 2>&1;
-	then mkdir -p debs && mv -f *.deb debs/;
 fi
 }
 

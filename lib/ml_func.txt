@@ -1,4 +1,16 @@
-download_mainline () {
+source_dir (){
+mkdir -p ${SRC}
+cp -f soc.txt ${SRC}/
+cd ${SRC}
+}
+
+mainline_clean (){
+if ls ${MLKERNEL}-${VERSION} > /dev/null 2>&1;
+	then echo "" && echo -e "${PNK}Cleaning${FIN} ..." && rm -fdr ${MLKERNEL}-${VERSION};
+fi
+}
+
+download_mainline(){
     echo
     echo_mainline
     if ls ${MLKERNEL}-${VERSION}.tar.gz > /dev/null 2>&1;
@@ -7,14 +19,14 @@ download_mainline () {
     fi
     echo
     echo_extract
-    tar -xf ${MLKERNEL}-${VERSION}.tar.gz --checkpoint=.100
-    echo_done
-    sleep 1s
+    echo -e -n "${WHT}"
+    pv ${MLKERNEL}-${VERSION}.tar.gz | tar -xzf - -C .
+    echo -e -n "${FIN}"
     cd ${MLKERNEL}-${VERSION}
     export ARCH=arm64
 }
 
-download_stable () {
+download_stable(){
     echo
     echo_stable
     if ls ${MLKERNEL}-${VERSION}.tar.xz > /dev/null 2>&1;
@@ -23,9 +35,9 @@ download_stable () {
     fi
     echo
     echo_extract
-    tar xf ${MLKERNEL}-${VERSION}.tar.xz --checkpoint=.100
-    echo_done
-    sleep 1s
+    echo -e -n "${WHT}"
+    pv ${MLKERNEL}-${VERSION}.tar.xz | tar -xJ ${MLKERNEL}-${VERSION}
+    echo -e -n "${FIN}"
     cd ${MLKERNEL}-${VERSION}
     export ARCH=arm64
 }
@@ -39,7 +51,7 @@ else echo -e "${YLW}No user patches found${FIN}."
 fi
 }
 
-patching () {
+patching(){
     echo
     echo_patch
     userpatches
@@ -56,46 +68,37 @@ patching () {
     echo
 }
 
-cconfig () {
+cconfig(){
     echo_cconfig.
     cp -f ../${DEF}/${MYCONFIG} arch/arm64/configs/
     make ARCH=arm64 ${MYCONFIG}
     echo_done
 }
 
-rpi_config () {
+rpi_config(){
     echo_fconfig
     cp -f ../${DEF}/bcm2711_defconfig arch/arm64/configs/
     make ARCH=arm64 bcm2711_defconfig &> /dev/null
     echo_done
 }
 
-menu_config () {
+menu_config(){
     echo
     echo_menuconfig
     sleep 1s
     make menuconfig
 }
 
-cross_compile () {
+cross_compile(){
     echo -e "-- ${GRN}CC${FIN}"
     echo_build
     echo 'y' | make -j${CORES} ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
     rm -f ../*libc*.deb
 }
 
-native_compile () {
+native_compile(){
     echo -e "-- ${GRN}NC${FIN}"
     echo_build
     echo 'y' | make -j${CORES} ARCH=arm64 bindeb-pkg
     rm -f ../*libc*.deb
-}
-
-mainline_clean (){
-if ls ${MLKERNEL}-${VERSION} > /dev/null 2>&1;
-	then echo "" && echo -e "${PNK}Cleaning${FIN} ..." && rm -fdr ${MLKERNEL}-${VERSION};
-fi
-if ls *.deb > /dev/null 2>&1;
-	then mkdir -p debs && mv -f *.deb debs/;
-fi
 }

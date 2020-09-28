@@ -1,7 +1,8 @@
 #!/bin/bash
 source lib/devuan_func.txt
+source lib/echo_func.txt
 source lib/source.txt
-source userdata.txt > /dev/null 2>&1;
+source userdata.txt > /dev/null 2>&1
 UD=userdata.txt
 
 userdata () {
@@ -19,25 +20,30 @@ done
 
 if [ -f "$UD" ]; then
     echo ""
-    echo "$UD file found."
+    echo "$UD file found." > /dev/null 2>&1;
 else 
     userdata
 fi
-
-set -x
+if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
+	then set -eux -o pipefail;
+	else set -eu -o pipefail;
+fi
+if ls /usr/bin/toilet > /dev/null 2>&1
+	then toilet -f small --filter metal 'Raspberry Pi';
+	else echo -e "${RED}Raspberry Pi Image Builder${FIN}";
+fi
 RAM=0
 PROXY=""
 IMAGE_FOLDER="img/"
 if `grep -Fx "bcm2711" "soc.txt" >/dev/null;`
-	then DEVICE_SOC="bcm2711"
+	then DEVICE_SOC="bcm2711";
 fi
 if `grep -Fx "bcm2710" "soc.txt" >/dev/null;`
-	then DEVICE_SOC="bcm2710"
+	then DEVICE_SOC="bcm2710";
 fi
 if `grep -Fx "bcm2708" "soc.txt" >/dev/null;`
-	then DEVICE_SOC="bcm2708"
+	then DEVICE_SOC="bcm2708";
 fi
-set -eux -o pipefail
 IMAGE_DATE="$(date +%F)"
 IMAGE_FILE_NAME="${DEVICE_SOC}-devuan-${DISTRO_VERSION}-${IMAGE_DATE}.img"
 if [ $RAM -ne 0 ]; then
@@ -47,73 +53,47 @@ mkdir -p "$IMAGE_FOLDER"
 if [ $RAM -ne 0 ]; then
 	mount -t tmpfs -o size=3G tmpfs $IMAGE_FOLDER
 fi
-case `grep -Fx 'DISTRO_VERSION="testing"' "userdata.txt" >/dev/null; echo $?` in
-  0)
-    truncate -s ${DEVUANIMGSIZE_TESTING} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
-    ;;
-  1)
-    truncate -s ${DEVUANIMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
-    ;;
-esac
-fdisk "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" <<EOF
-o
-n
-p
-1
-2048
-524287
-a
-c
-t
-b
-n
-p
-2
-524288
 
-p
-w
-
-EOF
-IMAGE_LOOP_DEV="$(losetup --show -f ${IMAGE_FOLDER}${IMAGE_FILE_NAME})"
-IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
-IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
-partprobe "${IMAGE_LOOP_DEV}"
-mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
-mkfs.ext4 -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}"
-mkdir -p p1 p2
-mount "${IMAGE_LOOP_DEV_BOOT}" p1
-mount "${IMAGE_LOOP_DEV_ROOTFS}" p2
-sync
-umount p2
-mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2
-
-### partition uuid
-partition_uuid
+if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
+	then partitions;
+	else partitions > /dev/null 2>&1;
+fi
+if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
+	then partition_uuid;
+	else partition_uuid > /dev/null 2>&1;
+fi
 
 ### cmd line
-cmdline
-
+echo && echo
+echo -e -n "${RED}Installing boot bits${FIN}."
+cmdline > /dev/null 2>&1
+if ls p1/cmdline.txt > /dev/null 2>&1
+	then echo && echo -n "cmdline.txt " && sleep 1s && echo_nok;
+	else echo && echo -n "cmdline.txt " && sleep 1s && echo_fail && exit;
+fi
 ### config dot txt
 if `grep -Fx "bcm2711" "soc.txt" >/dev/null;`
-	then bcm2711_config
+	then bcm2711_config > /dev/null 2>&1;
 fi
 if `grep -Fx "bcm2710" "soc.txt" >/dev/null;`
-	then bcm2710_config
+	then bcm2710_config > /dev/null 2>&1;
 fi
 if `grep -Fx "bcm2708" "soc.txt" >/dev/null;`
-	then bcm2708_config
+	then bcm2708_config > /dev/null 2>&1;
 fi
-
+if ls p1/config.txt > /dev/null 2>&1
+	then echo && echo -n "config.txt " && sleep 1s && echo_nok;
+	else echo && echo -n "config.txt " && sleep 1s && echo_fail && exit;
+fi
 ### Fetching boot bits
 if `grep -Fx "bcm2711" "soc.txt" >/dev/null;`
-	then rpi4_bootbins
+	then rpi4_bootbins;
 fi
 if `grep -Fx "bcm2710" "soc.txt" >/dev/null;`
-	then rpi_bootbins
+	then rpi_bootbins;
 fi
 if `grep -Fx "bcm2708" "soc.txt" >/dev/null;`
-	then rpi_bootbins
+	then rpi_bootbins;
 fi
 
 ### clean boot bits
@@ -121,13 +101,13 @@ rm -f firmware/boot/*
 
 ### extract rootfs
 if `grep -Fx "bcm2711" "soc.txt" >/dev/null;`
-	then aarch64_rootfs
+	then aarch64_rootfs;
 fi
 if `grep -Fx "bcm2710" "soc.txt" >/dev/null;`
-	then aarch64_rootfs
+	then aarch64_rootfs;
 fi
 if `grep -Fx "bcm2708" "soc.txt" >/dev/null;`
-	then armel_rootfs
+	then armel_rootfs;
 fi
 
 mkdir -p p2/etc/apt/apt.conf.d p2/etc/dpkg/dpkg.cfg.d
@@ -136,6 +116,7 @@ echo "force-unsafe-io" > "p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
 mkdir -p p2/usr/bin
 cp $(which "qemu-aarch64-static") p2/usr/bin
 
+distro_release(){
 case `grep -Fx 'DISTRO_VERSION="testing"' "userdata.txt" >/dev/null; echo $?` in
   0)
 tee p2/etc/apt/sources.list <<EOF
@@ -151,12 +132,24 @@ deb http://deb.devuan.org/merged ${DISTRO_VERSION}-backports main contrib non-fr
 EOF
    ;;
 esac
+}
 
+create_fstab(){
 tee p2/etc/fstab <<EOF
 UUID=${BOOT_UUID}	/boot		vfat    defaults 0 2
 UUID=${ROOT_UUID}	/		ext4	defaults,noatime,nodiratime,commit=600,errors=remount-ro 0 1
 tmpfs	/tmp		tmpfs	defaults,nosuid 0 0
 EOF
+}
+
+if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
+	then distro_release;
+	else distro_release > /dev/null 2>&1;
+fi
+if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
+	then create_fstab;
+	else create_fstab > /dev/null 2>&1;
+fi
 
 if [ -n "$PROXY" ] ; then
 	tee "p2/etc/apt/apt.conf.d/30proxy" <<EOF
@@ -171,13 +164,13 @@ cp lib/source.txt p2/root
 cp userdata.txt p2/root
 cp soc.txt p2/root
 if `grep -Fx "bcm2711" "soc.txt" >/dev/null;`
-	then cp ${TMP4}/*.deb p2/root
+	then cp output/bcm2711/*.deb p2/root;
 fi
 if `grep -Fx "bcm2710" "soc.txt" >/dev/null;`
-	then cp ${TMP3}/*.deb p2/root
+	then cp output/bcm2710/*.deb p2/root;
 fi
 if `grep -Fx "bcm2708" "soc.txt" >/dev/null;`
-	then cp ${TMP0}/*.deb p2/root
+	then cp output/bcm2708/*.deb p2/root;
 fi
 cp files/devuan/misc/* p2/root
 cp files/devuan/patches/* p2/root
@@ -187,8 +180,8 @@ cp files/misc/* p2/root
 cp files/scripts/* p2/root
 cp files/users/* p2/root
 if ls firmware/firmware-nonfree-master.tar.gz > /dev/null 2>&1;
-	then cp firmware/firmware-nonfree-master.tar.gz p2/root > /dev/null 2>&1;
-	else rpi-firmware && cp firmware/firmware-nonfree-master.tar.gz p2/root;
+	then echo -e "${RED}Starting chroot${FIN} ..." && cp firmware/firmware-nonfree-master.tar.gz p2/root > /dev/null 2>&1;
+	else rpi-firmware && cp firmware/firmware-nonfree-master.tar.gz p2/root && echo -e "${RED}Starting chroot${FIN} ...";
 fi
 cp firmware/fw-0a5c_21e8.hcd p2/root
 # Mount and chroot

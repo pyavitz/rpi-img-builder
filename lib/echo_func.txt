@@ -31,6 +31,14 @@ echo_ok () {
 echo -e "${PNK}[${FIN}${GRN}ok${FIN}${PNK}]${FIN}"
 }
 
+echo_nok () {
+echo -e -n "${PNK}[${FIN}${GRN}ok${FIN}${PNK}]${FIN}"
+}
+
+echo_fail () {
+echo -n -e "${PNK}[${FIN}${RED}failed${FIN}${PNK}]${FIN}"
+}
+
 echo_bdone () {
 echo -e "${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
 }
