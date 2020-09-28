@@ -7,3 +7,4 @@ run-setup will ask and perform the following:
 Change passwd: sudo passwd $USER
 
 Enjoy!
+
