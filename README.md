@@ -97,10 +97,9 @@ Devuan:		# 1 to select (beowulf/testing)
 Ubuntu:		# 1 to select (20.04)
 ```
 #### Disclaimer
-```sh
-The menu interface does not fully support this feature and nor do I intend on integrating it.
-The intention of mainline is for those interested in development and the progression therein. 
-```
+The menu interface in this builder does not fully support this feature. If you are really
+interested in using mainline on the Raspberry Pi 4B, than I suggest you use my other [Image Builder](https://github.com/pyavitz/debian-image-builder).
+
 ## Command list (legacy)
 
 #### Raspberry Pi 4B
