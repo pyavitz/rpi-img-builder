@@ -99,15 +99,22 @@ chown root:root /etc/update-motd.d/15-brand
 chown root:root /etc/update-motd.d/20-sysinfo
 echo Done.
 
+#### Software
+echo
+echo Installing needed packages.
+sleep 1s
+apt -y clean
+apt -y autoclean
+apt update
+apt install -y ${DEBIAN2} ${FIRMWARE}
+
 #### Adding firmware
 echo
 echo Adding pi firmware.
 sleep 1s
-pv firmware-nonfree-master.tar.gz | tar -xzf - -C .
-rm -f firmware-nonfree-master.tar.gz
-mkdir -p /lib/firmware
-cp -fr firmware-nonfree-master/* /lib/firmware
-rm -fdR firmware-nonfree-master
+wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/firmware-brcm80211_20190114-1+rpt8_all.deb
+dpkg -i firmware-brcm80211_20190114-1+rpt8_all.deb
+rm -f firmware-brcm80211_20190114-1+rpt8_all.deb
 cd /lib/firmware/brcm
 if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
 	then bcm_sdio_4-b
@@ -138,15 +145,6 @@ sleep 1s
 mkdir -p /lib/udev/rules.d/
 mv -f 99-com.rules /lib/udev/rules.d/99-com.rules
 echo Done.
-
-#### Software
-echo
-echo Installing needed packages.
-sleep 1s
-apt -y clean
-apt -y autoclean
-apt update
-apt install -y ${DEBIAN2} ${FIRMWARE}
 
 ### Network Setup
 if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
@@ -255,6 +253,14 @@ dpkg -i pi-bluetooth_*.deb
 rm -fdR pi-bluetooth*
 echo Done.
 
+### Upgrading bluez
+if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
+	then bluez_choose
+fi
+if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
+	then bluez_choose
+fi
+
 ### Cypress wifi firmware
 if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
 	then bcm2710_cypress
@@ -271,14 +277,6 @@ fi
 ### Htop
 if `grep -Fx 'DISTRO_VERSION="buster"' "/root/userdata.txt" >/dev/null;`
 	then htop_stable;
-fi
-
-### Upgrading bluez
-if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
-	then bluez_choose
-fi
-if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
-	then bluez_choose
 fi
 
 ###  Raspi userland
@@ -483,7 +481,8 @@ echo Done.
 
 ###### Finish
 echo
-echo Moving out of stage2 and creating image
+echo Moving out of stage2 and creating image.
+echo
 sleep 2s
 
 umount /proc /sys

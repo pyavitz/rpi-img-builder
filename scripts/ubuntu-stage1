@@ -137,11 +137,8 @@ cp files/ubuntu/scripts/* p2/root
 cp files/misc/* p2/root
 cp files/scripts/* p2/root
 cp files/users/* p2/root
-if ls firmware/firmware-nonfree-master.tar.gz > /dev/null 2>&1;
-	then echo -e "${RED}Starting chroot${FIN} ..." && cp firmware/firmware-nonfree-master.tar.gz p2/root > /dev/null 2>&1;
-	else rpi-firmware && cp firmware/firmware-nonfree-master.tar.gz p2/root && echo -e "${RED}Starting chroot${FIN} ...";
-fi
 cp firmware/fw-0a5c_21e8.hcd p2/root
+echo -e "${RED}Starting chroot${FIN} ..."
 # Mount and chroot
 mount -o bind p1 p2/boot
 mount -o bind /dev p2/dev

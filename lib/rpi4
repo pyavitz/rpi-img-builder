@@ -20,10 +20,10 @@ while true; do
     --clear \
     --cancel-label "Exit" \
     --menu "Select:" $HEIGHT $WIDTH 4 \
-    "1" "Make Kernel" \
-    "2" "Make ROOTFS" \
-    "3" "Make Image" \
-    "4" "Make All" \
+    "1" "Make All" \
+    "2" "Make Kernel" \
+    "3" "Make ROOTFS" \
+    "4" "Make Image" \
     2>&1 1>&3)
   exit_status=$?
   exec 3>&-;
@@ -45,21 +45,21 @@ while true; do
       echo "Program terminated."
       ;;
     1 )
-      make kernel
-      dialog --prgbox "Results:" "ls output/bcm2711/*.deb" 30 70
-      ;;
-    2 )
-      make rootfs
-      dialog --prgbox "Results:" "ls *aarch64*" 30 70
-      ;;
-    3 )
-      make image
-      dialog --prgbox "Results:" "ls *.img" 30 70
-      ;;
-    4 )
       make all
       dialog --prgbox "Results:" "ls *.img *aarch64* output/bcm2711/*.deb" 30 70
       exit 0
+      ;;
+    2 )
+      make kernel
+      dialog --prgbox "Results:" "ls output/bcm2711/*.deb" 30 70
+      ;;
+    3 )
+      make rootfs
+      dialog --prgbox "Results:" "ls *aarch64*" 30 70
+      ;;
+    4 )
+      make image
+      dialog --prgbox "Results:" "ls *.img" 30 70
       ;;
   esac
 done

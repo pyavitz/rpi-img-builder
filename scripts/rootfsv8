@@ -1,6 +1,6 @@
 #!/bin/bash
 #AARCH64 ROOTFS
-source userdata.txt
+source userdata.txt > /dev/null 2>&1;
 source lib/source.txt
 source lib/rootfs_func.txt
 
@@ -81,7 +81,8 @@ rm p1/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
 
 ### Finish
 e4defrag -c p1
-
+echo
+echo "Archiving root filesystem ..."
 cd p1
 tar cfJ ../debian-${DISTRO_VERSION}-${IMAGE_VERSION}.tar.xz *
 cd ..
