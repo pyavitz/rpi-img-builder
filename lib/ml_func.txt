@@ -61,7 +61,14 @@ patching(){
     cp -R ../${PAT}/mkdebian scripts/package/
     chmod +x scripts/package/builddeb
     chmod +x scripts/package/mkdebian
-    for i in ../${ML}/*.patch; do patch -p1 < $i; done
+    if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
+	then for i in ../${MLCC}/*.patch; do patch -p1 < $i; done ;
+	else for i in ../${MLNC}/*.patch; do patch -p1 < $i; done ;
+    fi
+    if ls ../${ML}/*.patch > /dev/null 2>&1;
+	then for i in ../${ML}/*.patch; do patch -p1 < $i; done ;
+	else : ;
+    fi
     cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch
     sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
     echo_done
