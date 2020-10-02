@@ -20,10 +20,10 @@ while true; do
     --clear \
     --cancel-label "Exit" \
     --menu "Select:" $HEIGHT $WIDTH 4 \
-    "1" "Make Kernel" \
-    "2" "Make ROOTFS" \
-    "3" "Make Image" \
-    "4" "Make All" \
+    "1" "Make All" \
+    "2" "Make Kernel" \
+    "3" "Make ROOTFS" \
+    "4" "Make Image" \
     2>&1 1>&3)
   exit_status=$?
   exec 3>&-;
