@@ -70,5 +70,4 @@ rm -f tmp0 tmp1 tmp2
 clear
 
 # userdata
-echo -e "${RED}userdata file created.${FIN}"
-echo
+echo -e "${RED}userdata file created${FIN}."

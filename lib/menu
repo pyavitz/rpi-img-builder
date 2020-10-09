@@ -30,19 +30,19 @@ while true; do
   case $exit_status in
     $DIALOG_CANCEL)
       clear
-      echo -e "${RED}Program terminated.${FIN}"
+      echo -e "${RED}Program terminated${FIN}."
       exit
       ;;
     $DIALOG_ESC)
       clear
-      echo -e "${RED}Program aborted.${FIN}" >&2
+      echo -e "${RED}Program aborted${FIN}." >&2
       exit 1
       ;;
   esac
   case $selection in
     0 )
       clear
-      echo -e "%{RED}Program terminated.${FIN}"
+      echo -e "%{RED}Program terminated${FIN}."
       ;;
     1 )
       chmod +x lib/rpi4
