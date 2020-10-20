@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 source /root/ubuntu_func.txt
+source /root/universal_func.txt
 source /root/source.txt
 source /root/userdata.txt
 UNMINIMIZE=/usr/local/sbin/unminimize

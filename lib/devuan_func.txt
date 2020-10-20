@@ -878,41 +878,6 @@ case `grep -Fx 'DISTRO_VERSION="testing"' "/root/userdata.txt" >/dev/null; echo 
 esac
 }
 
-bcm2711_eeprom(){
-echo
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-echo Checking for updates.
-apt update
-echo
-echo Installing rpi-eeprom.
-sleep 1s
-apt install help2man rsync pciutils -y
-###
-mkdir -p ~/eeprom
-mv -f rpi-eeprom-update.patch /root/eeprom/
-mv -f rpi-eeprom-control.patch /root/eeprom/
-cd ~/eeprom
-wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
-wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz
-tar xf rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz
-tar xf rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
-rm -f rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
-mkdir -p debian/patches
-mv rpi-eeprom-update.patch debian/patches/rpi-eeprom-update.patch 
-echo rpi-eeprom-update.patch >> debian/patches/series
-mv -f debian rpi-eeprom-${EEPROM_VERSION}/
-mv rpi-eeprom-control.patch rpi-eeprom-${EEPROM_VERSION}/
-cd rpi-eeprom-${EEPROM_VERSION}
-patch -p1 < rpi-eeprom-control.patch
-rm -f rpi-eeprom-control.patch
-dpkg-buildpackage -us -uc
-cd ..
-dpkg -i *.deb
-cd ..
-rm -fdr eeprom
-echo Done.
-}
-
 bcm_modules(){
 echo
 echo Updating etc modules.

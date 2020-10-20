@@ -122,6 +122,7 @@ fi
 # setup stage2
 cp scripts/ubuntu-stage2 p2/root
 cp lib/ubuntu_func.txt p2/root
+cp lib/universal_func.txt p2/root
 cp lib/source.txt p2/root
 cp userdata.txt p2/root
 cp soc.txt p2/root
@@ -153,6 +154,7 @@ umount p2/boot
 rm p2/usr/bin/qemu-aarch64-static
 rm p2/root/ubuntu-stage2
 rm p2/root/ubuntu_func.txt
+rm p2/root/universal_func.txt
 rm p2/root/source.txt
 rm p2/root/userdata.txt
 rm p2/root/soc.txt
