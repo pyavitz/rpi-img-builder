@@ -1,41 +1,20 @@
 ### STAGE 1
-partitions(){
-truncate -s ${UBUNTUIMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
-fdisk "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" <<EOF
-o
-n
-p
-1
-2048
-524287
-a
-c
-t
-b
-n
-p
-2
-524288
+image_size(){
+if `grep -Fx 'DISTRO_VERSION="20.04"' "userdata.txt" >/dev/null;`
+	then truncate -s ${UBUNTUIMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+fi
 
-p
-w
+if `grep -Fx 'DISTRO_VERSION="20.04.1"' "userdata.txt" >/dev/null;`
+	then truncate -s ${UBUNTUIMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+fi
 
-EOF
-IMAGE_LOOP_DEV="$(losetup --show -f ${IMAGE_FOLDER}${IMAGE_FILE_NAME})"
-IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
-IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
-partprobe "${IMAGE_LOOP_DEV}"
-mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
-mkfs.ext4 -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}"
-mkdir -p p1 p2
-mount "${IMAGE_LOOP_DEV_BOOT}" p1
-mount "${IMAGE_LOOP_DEV_ROOTFS}" p2
-sync
-umount p2
-mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2
+if `grep -Fx 'DISTRO_VERSION="20.10-beta"' "userdata.txt" >/dev/null;`
+	then truncate -s ${UBUNTUIMGSIZE_UNSTABLE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+fi
+partitions
 }
 
-aarch64_extract () {
+aarch64_extract(){
 tar -xf ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.gz -C p2/
 }
 
@@ -56,19 +35,19 @@ mv -f firmware-nonfree-master.tar.gz firmware/
 
 ### STAGE 2
 # USER CONFIG
-bcm2710_user () {
+bcm2710_user(){
 echo -n 'bcm2710' > /etc/hostname
 sed -i '1 a 127.0.1.1	bcm2710' /etc/hosts
 adduser ${user} --gecos "bcm2710" --disabled-password
 }
 
-bcm2711_user () {
+bcm2711_user(){
 echo -n 'bcm2711' > /etc/hostname
 sed -i '1 a 127.0.1.1	bcm2711' /etc/hosts
 adduser ${user} --gecos "bcm2711" --disabled-password
 }
 
-user_config () {
+user_config(){
 case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
   0)
 	bcm2711_user
@@ -133,17 +112,17 @@ chown -R ${user}:${user} /home/${user}
 }
 
 # ADMIN CONFIG
-bcm2710_admin () {
+bcm2710_admin(){
 echo -n 'bcm2710' > /etc/hostname
 sed -i '1 a 127.0.1.1	bcm2710' /etc/hosts
 }
 
-bcm2711_admin () {
+bcm2711_admin(){
 echo -n 'bcm2711' > /etc/hostname
 sed -i '1 a 127.0.1.1	bcm2711' /etc/hosts
 }
 
-admin_config () {
+admin_config(){
 case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
   0)
 	bcm2711_admin
@@ -183,7 +162,7 @@ chmod +x /usr/local/bin/whogoesthere
 chown -R root:root /usr/local/bin/whogoesthere
 }
 
-led_service () {
+led_service(){
 echo
 echo Creating actled switch.
 tee /usr/local/sbin/actled <<EOF
@@ -229,7 +208,7 @@ fi
 EOF
 }
 
-user_eeprom () {
+user_eeprom(){
 echo
 echo Adding user eeprom config.
 tee /home/${user}/.eeprom <<EOF
@@ -240,7 +219,7 @@ EOF
 chown ${user}:${user} /home/${user}/.eeprom
 }
 
-admin_eeprom () {
+admin_eeprom(){
 echo
 echo Adding user eeprom config.
 tee /etc/opt/eeprom <<EOF
@@ -251,7 +230,7 @@ EOF
 chown root:root /etc/opt/eeprom
 }
 
-eeprom_choose () {
+eeprom_choose(){
 case `grep -Fx "admin=1" "/root/userdata.txt" >/dev/null; echo $?` in
   0)
 	admin_eeprom
@@ -262,7 +241,7 @@ case `grep -Fx "admin=1" "/root/userdata.txt" >/dev/null; echo $?` in
 esac
 }
 
-bcm_sdio_zero-w () {
+bcm_sdio_zero-w(){
 wget -cq --show-progress https://raw.githubusercontent.com/openwrt/cypress-nvram/master/brcmfmac43430-sdio.raspberrypi%2Cmodel-zero-w.txt
 }
 
@@ -271,11 +250,11 @@ wget -cq --show-progress https://raw.githubusercontent.com/openwrt/cypress-nvram
 wget -cq --show-progress https://raw.githubusercontent.com/RPi-Distro/firmware-nonfree/master/brcm/brcmfmac43430-sdio.raspberrypi-rpi.txt
 }
 
-bcm_sdio_4-b () {
+bcm_sdio_4-b(){
 wget -cq --show-progress https://raw.githubusercontent.com/openwrt/cypress-nvram/master/brcmfmac43455-sdio.raspberrypi%2C4-model-b.txt
 }
 
-bcm2711_network () {
+bcm2711_network(){
 echo
 echo Adding network configs and rules.
 sleep 1s
@@ -294,7 +273,7 @@ chown root:root /etc/opt/soc.txt
 echo Done.
 }
 
-bcm2710_network () {
+bcm2710_network(){
 echo
 echo Adding network configs and rules.
 sleep 1s
@@ -314,31 +293,24 @@ chown root:root /etc/opt/soc.txt
 echo Done.
 }
 
-bcm2710_cypress(){
+pi_bluetooth(){
 echo
-echo Adding brcm firmware from cypress.
+echo Building pi bluetooth package.
 sleep 1s
-mkdir cypress
-cd cypress
-### 2018 brcm firmware
-#wget -cq --show-progress https://community.cypress.com/servlet/JiveServlet/download/15932-1-39799/cypress-fmac-v4.14.52-2018_0928.zip
-#unzip -qq cypress-fmac-v4.14.52-2018_0928.zip
-#tar -xf cypress-firmware-v4.14.52-2018_0928.tar.gz
-#rm -f firmware/*pcie*
-### 2019 brcm firmware
-wget -cq --show-progress https://community.cypress.com/servlet/JiveServlet/download/19000-1-51721/cypress-fmac-v4.14.77-2020_0115.zip
-unzip -qq cypress-fmac-v4.14.77-2020_0115.zip
-tar -xf cypress-firmware-v4.14.77-2020_0115.tar.gz
-cp -f firmware/* /lib/firmware/brcm/
+git clone https://github.com/pyavitz/pi-bluetooth.git
+cd pi-bluetooth
+chmod +x debian/rules
+dpkg-buildpackage -us -uc
 cd ~
-rm -fdr cypress
+dpkg -i pi-bluetooth_*.deb
+rm -fdR pi-bluetooth*
 echo Done.
 }
 
-bluez_upgrade () {
+bluez_stable(){
 BLUEZ_VERSION="5.55"
 echo
-echo Upgrading bluetooth.
+echo Updating bluetooth.
 sleep 1s
 wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/bluez-${BLUEZ_VERSION}-ubuntu-arm64.tar.xz
 tar xf bluez-${BLUEZ_VERSION}-ubuntu-arm64.tar.xz
@@ -354,64 +326,53 @@ apt-mark hold bluez
 echo Done.
 }
 
-bcm2711_modules () {
+bluez_unstable(){
+BLUEZ_VERSION="5.55"
 echo
-echo Updating etc modules.
-rm -f /etc/modules
-tee /etc/modules <<EOF
-# /etc/modules: kernel modules to load at boot time.
-#
-# This file contains the names of kernel modules that should be loaded
-# at boot time, one per line. Lines beginning with "#" are ignored.
-#bcm2835-v4l2
-#i2c-dev
-
-EOF
-chown root:root /etc/modules
-echo Done.
-}
-
-bcm2710_modules () {
-echo
-echo Updating etc modules.
-rm -f /etc/modules
-tee /etc/modules <<EOF
-# /etc/modules: kernel modules to load at boot time.
-#
-# This file contains the names of kernel modules that should be loaded
-# at boot time, one per line. Lines beginning with "#" are ignored.
-#bcm2835-v4l2
-#i2c-dev
-snd_bcm2835
-
-EOF
-chown root:root /etc/modules
-echo Done.
-}
-
-armv8_userland () {
-echo
-echo Adding raspi userland.
-rm -f /etc/profile
-mv -f profile /etc/profile
-mv rpi-vc.conf /etc/ld.so.conf.d/rpi-vc.conf
-chown root:root /etc/profile
-chown root:root /etc/ld.so.conf.d/rpi-vc.conf
+echo Updating bluetooth.
 sleep 1s
-mkdir -p /opt
-git clone https://github.com/raspberrypi/userland.git
-mv -f userland-remove-hi-pi.patch /root/userland/
-cd userland
-patch -p1 < userland-remove-hi-pi.patch
-rm -f userland-remove-hi-pi.patch
-./buildme --aarch64
-cd ~
-rm -f -d -R userland
-ldconfig
+wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/bluez-${BLUEZ_VERSION}-ubuntu-unstable-arm64.tar.xz
+tar xf bluez-${BLUEZ_VERSION}-ubuntu-unstable-arm64.tar.xz
+rm -f bluez-${BLUEZ_VERSION}-ubuntu-unstable-arm64.tar.xz
+cd bluez-${BLUEZ_VERSION}-ubuntu-unstable-arm64
+rm -f *dbg_${BLUEZ_VERSION}*
+rm -f *cups_${BLUEZ_VERSION}*
+rm -f *source_${BLUEZ_VERSION}*
+dpkg -i *.deb
+cd ..
+rm -fdR bluez-${BLUEZ_VERSION}-ubuntu-unstable-arm64
+apt-mark hold bluez
 echo Done.
 }
 
-led_switches () {
+bluez_choose(){
+if `grep -Fx 'DISTRO_VERSION="20.04"' "/root/userdata.txt" >/dev/null;`
+	then bluez_stable;
+fi
+if `grep -Fx 'DISTRO_VERSION="20.04.1"' "/root/userdata.txt" >/dev/null;`
+	then bluez_stable;
+fi
+if `grep -Fx 'DISTRO_VERSION="20.10-beta"' "/root/userdata.txt" >/dev/null;`
+	then bluez_unstable;
+fi
+}
+
+htop_stable(){
+echo
+echo Installing htop with cpufreq and thermal support.
+sleep 1s
+git clone https://github.com/leeadama/htop.git
+cd htop
+./autogen.sh
+./configure --prefix=/usr
+make
+make install
+cd ~
+rm -fdr htop
+echo Done.
+}
+
+led_switches(){
 echo
 echo Creating power led switch.
 sleep 1s

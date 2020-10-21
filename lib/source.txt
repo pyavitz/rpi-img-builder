@@ -18,6 +18,7 @@ MLKERNEL="linux"
 
 # debian
 DEBIANIMGSIZE="2000MB"
+DEBIANIMGSIZE_TESTING="2125MB"
 DEBIANIMGSIZE_UNSTABLE="2125MB"
 
 DEBIAN1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
@@ -33,7 +34,8 @@ DEBIAN2="cpu hwinfo haveged resolvconf git build-essential net-tools ifplugd \
 
 # devuan
 DEVUANIMGSIZE="2050MB"
-DEVUANIMGSIZE_TESTING="2175MB"
+DEVUANIMGSIZE_TESTING="2200MB"
+DEVUANIMGSIZE_UNSTABLE="2200MB"
 
 DEVUAN1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	e2fsprogs fonty-rg patch curl wget apt-transport-https dirmngr \
@@ -48,6 +50,7 @@ DEVUAN2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
 
 # ubuntu
 UBUNTUIMGSIZE="2000MB"
+UBUNTUIMGSIZE_UNSTABLE="2125MB"
 
 # stage2
 UBUNTU1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \

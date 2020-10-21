@@ -1,4 +1,5 @@
 #!/bin/bash
+source lib/universal_func.txt
 source lib/debian_func.txt
 source lib/boot_func.txt
 source lib/echo_func.txt
@@ -56,8 +57,8 @@ if [ $RAM -ne 0 ]; then
 fi
 
 if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
-	then partitions;
-	else partitions > /dev/null 2>&1;
+	then image_size;
+	else image_size > /dev/null 2>&1;
 fi
 if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
 	then partition_uuid;
@@ -116,32 +117,6 @@ echo "force-unsafe-io" > "p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
 
 mkdir -p p2/usr/bin
 cp $(which "qemu-aarch64-static") p2/usr/bin
-
-distro_release(){
-case `grep -Fx 'DISTRO_VERSION="unstable"' "userdata.txt" >/dev/null; echo $?` in
-  0)
-tee p2/etc/apt/sources.list <<EOF
-deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free
-EOF
-    ;;
-   1)
-tee p2/etc/apt/sources.list <<EOF
-deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free
-deb http://deb.debian.org/debian ${DISTRO_VERSION}-updates main contrib non-free
-deb http://security.debian.org/debian-security ${DISTRO_VERSION}/updates main contrib non-free
-deb http://deb.debian.org/debian/ ${DISTRO_VERSION}-backports main contrib non-free
-EOF
-   ;;
-esac
-}
-
-create_fstab(){
-tee p2/etc/fstab <<EOF
-UUID=${BOOT_UUID}	/boot		vfat    defaults 0 2
-UUID=${ROOT_UUID}	/		ext4	defaults,noatime,nodiratime,commit=600,errors=remount-ro 0 1
-tmpfs	/tmp		tmpfs	defaults,nosuid 0 0
-EOF
-}
 
 if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
 	then distro_release;

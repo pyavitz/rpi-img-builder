@@ -12,7 +12,7 @@ In order to install the required dependencies, run the following command:
 ```
 sudo apt install build-essential bison bc git dialog patch dosfstools zip unzip qemu debootstrap \
                  qemu-user-static rsync kmod cpio flex libssl-dev libncurses5-dev parted fakeroot \
-                 swig aria2 pv toilet crossbuild-essential-arm64 crossbuild-essential-armel figlet
+                 swig aria2 pv toilet figlet crossbuild-essential-arm64 crossbuild-essential-armel
 ```
 
 This has been tested on an AMD64/x86_64 system running on [Debian Buster](https://www.debian.org/releases/buster/debian-installer/).
@@ -46,9 +46,9 @@ Crosscompile:   # 1 to cross compile | 0 to native compile
 
 Distributions
 Release:	# Supported: buster, beowulf and 20.04
-Debian:		# 1 to select (buster/unstable)
-Devuan:		# 1 to select (beowulf/testing)
-Ubuntu:		# 1 to select (20.04)
+Debian:		# 1 to select (buster/bullseye/testing/unstable/sid)
+Devuan:		# 1 to select (beowulf/testing/unstable/ceres)
+Ubuntu:		# 1 to select (20.04/20.04.1/20.10-beta)
 ```
 #### User defconfig
 

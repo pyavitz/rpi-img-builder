@@ -35,8 +35,15 @@ else
     echo "$UNMINIMIZE does not exist."
 fi
 
-apt install -y ${UBUNTU1}
-echo
+if `grep -Fx 'DISTRO_VERSION="20.04"' "/root/userdata.txt" >/dev/null;`
+	then apt install -y ${UBUNTU1} ;
+fi
+if `grep -Fx 'DISTRO_VERSION="20.04.1"' "/root/userdata.txt" >/dev/null;`
+	then apt install -y ${UBUNTU1} ;
+fi
+if `grep -Fx 'DISTRO_VERSION="20.10-beta"' "/root/userdata.txt" >/dev/null;`
+	then apt install -y ${UBUNTU1} fdisk gcc-9 && export CC=/usr/bin/gcc-9 ;
+fi
 
 #### Scripts
 echo
@@ -117,9 +124,6 @@ if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
 fi
 if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
 	then bcm_sdio_3-b-plus
-fi
-if `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null;`
-	then bcm_sdio_zero-w
 fi
 cd ~
 echo Done.
@@ -235,20 +239,13 @@ rm -fdR bluez-firmware
 echo Done.
 
 ### Pi Bluetooth
-echo
-echo Building pi bluetooth package.
-sleep 1s
-git clone https://github.com/pyavitz/pi-bluetooth.git
-cd pi-bluetooth
-chmod +x debian/rules
-dpkg-buildpackage -us -uc
-cd ~
-dpkg -i pi-bluetooth_*.deb
-rm -fdR pi-bluetooth*
-echo Done.
+if `grep -Fx 'DISTRO_VERSION="20.10-beta"' "/root/userdata.txt" >/dev/null;`
+	then pi_bluetooth && apt-mark hold pi-bluetooth;
+	else pi_bluetooth;
+fi
 
-### Upgrading bluez
-bluez_upgrade
+### Updating bluez
+bluez_choose
 
 ### Cypress wifi firmware
 if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
@@ -256,18 +253,12 @@ if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
 fi
 
 ### Htop
-echo
-echo Installing htop with cpufreq and thermal support.
-sleep 1s
-git clone https://github.com/leeadama/htop.git
-cd htop
-./autogen.sh
-./configure --prefix=/usr
-make
-make install
-cd ~
-rm -fdr htop
-echo Done.
+if `grep -Fx 'DISTRO_VERSION="20.04"' "/root/userdata.txt" >/dev/null;`
+	then htop_stable;
+fi
+if `grep -Fx 'DISTRO_VERSION="20.04.1"' "/root/userdata.txt" >/dev/null;`
+	then htop_stable;
+fi
 
 ###  Adding raspi userland
 armv8_userland
@@ -298,7 +289,7 @@ sleep 1s
 
 ### Modules
 if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
-	then bcm2711_modules ;
+	then bcm_modules ;
 fi
 if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
 	then bcm2710_modules ;

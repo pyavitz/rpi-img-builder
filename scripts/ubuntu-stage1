@@ -1,4 +1,5 @@
 #!/bin/bash
+source lib/universal_func.txt
 source lib/ubuntu_func.txt
 source lib/boot_func.txt
 source lib/echo_func.txt
@@ -53,8 +54,8 @@ if [ $RAM -ne 0 ]; then
 fi
 
 if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
-	then partitions;
-	else partitions > /dev/null 2>&1;
+	then image_size;
+	else image_size > /dev/null 2>&1;
 fi
 if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
 	then partition_uuid;
@@ -99,14 +100,6 @@ echo "force-unsafe-io" > "p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
 
 mkdir -p p2/usr/bin
 cp $(which "qemu-aarch64-static") p2/usr/bin
-
-create_fstab(){
-tee p2/etc/fstab <<EOF
-UUID=${BOOT_UUID}	/boot		vfat    defaults 0 2
-UUID=${ROOT_UUID}	/		ext4	defaults,noatime,nodiratime,commit=600,errors=remount-ro 0 1
-tmpfs	/tmp		tmpfs	defaults,nosuid 0 0
-EOF
-}
 
 if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
 	then create_fstab;

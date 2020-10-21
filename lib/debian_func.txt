@@ -1,45 +1,54 @@
 ### STAGE 1
-partitions(){
-case `grep -Fx 'DISTRO_VERSION="unstable"' "userdata.txt" >/dev/null; echo $?` in
-  0)
-    truncate -s ${DEBIANIMGSIZE_UNSTABLE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
-    ;;
-  1)
-    truncate -s ${DEBIANIMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
-    ;;
-esac
-fdisk "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" <<EOF
-o
-n
-p
-1
-2048
-524287
-a
-c
-t
-b
-n
-p
-2
-524288
+image_size(){
+if `grep -Fx 'DISTRO_VERSION="buster"' "userdata.txt" >/dev/null;`
+	then truncate -s ${DEBIANIMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+fi
+if `grep -Fx 'DISTRO_VERSION="bullseye"' "userdata.txt" >/dev/null;`
+	then truncate -s ${DEBIANIMGSIZE_TESTING} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+fi
+if `grep -Fx 'DISTRO_VERSION="testing"' "userdata.txt" >/dev/null;`
+	then truncate -s ${DEBIANIMGSIZE_TESTING} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+fi
+if `grep -Fx 'DISTRO_VERSION="unstable"' "userdata.txt" >/dev/null;`
+	then truncate -s ${DEBIANIMGSIZE_UNSTABLE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+fi
+if `grep -Fx 'DISTRO_VERSION="sid"' "userdata.txt" >/dev/null;`
+	then truncate -s ${DEBIANIMGSIZE_UNSTABLE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+fi
+partitions
+}
 
-p
-w
-
+stable_sources(){
+tee p2/etc/apt/sources.list <<EOF
+deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free
+deb http://deb.debian.org/debian ${DISTRO_VERSION}-updates main contrib non-free
+deb http://security.debian.org/debian-security ${DISTRO_VERSION}/updates main contrib non-free
+deb http://deb.debian.org/debian/ ${DISTRO_VERSION}-backports main contrib non-free
 EOF
-IMAGE_LOOP_DEV="$(losetup --show -f ${IMAGE_FOLDER}${IMAGE_FILE_NAME})"
-IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
-IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
-partprobe "${IMAGE_LOOP_DEV}"
-mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
-mkfs.ext4 -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}"
-mkdir -p p1 p2
-mount "${IMAGE_LOOP_DEV_BOOT}" p1
-mount "${IMAGE_LOOP_DEV_ROOTFS}" p2
-sync
-umount p2
-mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2
+}
+
+unstable_sources(){
+tee p2/etc/apt/sources.list <<EOF
+deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free
+EOF
+}
+
+distro_release(){
+if `grep -Fx 'DISTRO_VERSION="buster"' "userdata.txt" >/dev/null;`
+	then stable_sources;
+fi
+if `grep -Fx 'DISTRO_VERSION="bullseye"' "userdata.txt" >/dev/null;`
+	then unstable_sources;
+fi
+if `grep -Fx 'DISTRO_VERSION="testing"' "userdata.txt" >/dev/null;`
+	then unstable_sources;
+fi
+if `grep -Fx 'DISTRO_VERSION="sid"' "userdata.txt" >/dev/null;`
+	then unstable_sources;
+fi
+if `grep -Fx 'DISTRO_VERSION="unstable"' "userdata.txt" >/dev/null;`
+	then unstable_sources;
+fi
 }
 
 aarch64_extract(){
@@ -610,57 +619,6 @@ EOF
 echo Done.
 }
 
-bcm2710_cypress(){
-echo
-echo Adding brcm firmware from cypress.
-sleep 1s
-mkdir cypress
-cd cypress
-### 2018 brcm firmware
-#wget -cq --show-progress https://community.cypress.com/servlet/JiveServlet/download/15932-1-39799/cypress-fmac-v4.14.52-2018_0928.zip
-#unzip -qq cypress-fmac-v4.14.52-2018_0928.zip
-#tar -xf cypress-firmware-v4.14.52-2018_0928.tar.gz
-#rm -f firmware/*pcie*
-### 2019 brcm firmware
-wget -cq --show-progress https://community.cypress.com/servlet/JiveServlet/download/19000-1-51721/cypress-fmac-v4.14.77-2020_0115.zip
-unzip -qq cypress-fmac-v4.14.77-2020_0115.zip
-tar -xf cypress-firmware-v4.14.77-2020_0115.tar.gz
-cp -f firmware/* /lib/firmware/brcm/
-cd ~
-rm -fdr cypress
-echo Done.
-}
-
-bcm2708_cypress(){
-echo
-echo Adding brcm firmware from cypress.
-sleep 1s
-mkdir cypress
-cd cypress
-wget -cq --show-progress https://community.cypress.com/servlet/JiveServlet/download/19000-1-51721/cypress-fmac-v4.14.77-2020_0115.zip
-unzip -qq cypress-fmac-v4.14.77-2020_0115.zip
-tar -xf cypress-firmware-v4.14.77-2020_0115.tar.gz
-rm -f firmware/*pcie*
-cp -f firmware/* /lib/firmware/brcm/
-cd ~
-rm -fdr cypress
-echo Done.
-}
-
-ca_certificates(){
-echo
-echo Updating ca certificates.
-sleep 1s
-mkdir -p certificates
-cd certificates
-wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/ca-certificates_20200601.deb10u1_all.deb
-wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/ca-certificates-udeb_20200601.deb10u1_all.udeb
-dpkg -i *.deb *.udeb
-cd ~
-rm -fdr certificates
-echo Done.
-}
-
 certificates_choose (){
 if `grep -Fx 'DISTRO_VERSION="buster"' "/root/userdata.txt" >/dev/null;`
 	then ca_certificates;
@@ -706,93 +664,21 @@ echo Done.
 }
 
 bluez_choose(){
-case `grep -Fx 'DISTRO_VERSION="unstable"' "/root/userdata.txt" >/dev/null; echo $?` in
-  0)
-	bluez_unstable
-    ;;
-  1)
-	bluez_stable
-    ;;
-esac
-}
-
-bcm_modules(){
-echo
-echo Updating etc modules.
-rm -f /etc/modules
-tee /etc/modules <<EOF
-# /etc/modules: kernel modules to load at boot time.
-#
-# This file contains the names of kernel modules that should be loaded
-# at boot time, one per line. Lines beginning with "#" are ignored.
-#bcm2835-v4l2
-#i2c-dev
-
-EOF
-chown root:root /etc/modules
-echo Done.
-}
-
-bcm2710_modules(){
-echo
-echo Updating etc modules.
-rm -f /etc/modules
-tee /etc/modules <<EOF
-# /etc/modules: kernel modules to load at boot time.
-#
-# This file contains the names of kernel modules that should be loaded
-# at boot time, one per line. Lines beginning with "#" are ignored.
-#bcm2835-v4l2
-#i2c-dev
-snd_bcm2835
-
-EOF
-chown root:root /etc/modules
-echo Done.
-}
-
-armv8_userland(){
-echo
-echo Adding raspi userland.
-rm -f /etc/profile
-mv -f profile /etc/profile
-mv rpi-vc.conf /etc/ld.so.conf.d/rpi-vc.conf
-chown root:root /etc/profile
-chown root:root /etc/ld.so.conf.d/rpi-vc.conf
-sleep 1s
-mkdir -p /opt
-git clone https://github.com/raspberrypi/userland.git
-mv -f userland-remove-hi-pi.patch /root/userland/
-cd userland
-patch -p1 < userland-remove-hi-pi.patch
-rm -f userland-remove-hi-pi.patch
-./buildme --aarch64
-cd ~
-rm -f -d -R userland
-ldconfig
-echo Done.
-}
-
-arm_userland(){
-echo
-echo Adding raspi userland.
-rm -f /etc/profile
-mv -f profile /etc/profile
-mv rpi-vc.conf /etc/ld.so.conf.d/rpi-vc.conf
-chown root:root /etc/profile
-chown root:root /etc/ld.so.conf.d/rpi-vc.conf
-sleep 1s
-mkdir -p /opt
-git clone https://github.com/raspberrypi/userland.git
-mv -f userland-remove-hi-pi.patch /root/userland/
-cd userland
-patch -p1 < userland-remove-hi-pi.patch
-rm -f userland-remove-hi-pi.patch
-./buildme
-cd ~
-rm -f -d -R userland
-ldconfig
-echo Done.
+if `grep -Fx 'DISTRO_VERSION="buster"' "/root/userdata.txt" >/dev/null;`
+	then bluez_stable;
+fi
+if `grep -Fx 'DISTRO_VERSION="bullseye"' "/root/userdata.txt" >/dev/null;`
+	then bluez_unstable;
+fi
+if `grep -Fx 'DISTRO_VERSION="testing"' "/root/userdata.txt" >/dev/null;`
+	then bluez_unstable;
+fi
+if `grep -Fx 'DISTRO_VERSION="unstable"' "/root/userdata.txt" >/dev/null;`
+	then bluez_unstable;
+fi
+if `grep -Fx 'DISTRO_VERSION="sid"' "/root/userdata.txt" >/dev/null;`
+	then bluez_unstable;
+fi
 }
 
 led_switches(){
