@@ -18,7 +18,7 @@ if ls $UBUNTU_RELEASE &>/dev/null; then exit;
 	else : ;
 fi
 if `grep "20.10-beta" "userdata.txt" >/dev/null;`
-	then wget -cq --show-progress http://cdimage.ubuntu.com/ubuntu-base/releases/20.10/beta/ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.gz ;
+	then wget -cq --show-progress http://cdimage.ubuntu.com/ubuntu-base/releases/${DISTRO_VERSION}/release/ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.gz ;
 	else wget -cq --show-progress http://cdimage.ubuntu.com/ubuntu-base/releases/${DISTRO_VERSION}/release/ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.gz ;
 fi
 }
