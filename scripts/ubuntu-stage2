@@ -41,7 +41,7 @@ fi
 if `grep -Fx 'DISTRO_VERSION="20.04.1"' "/root/userdata.txt" >/dev/null;`
 	then apt install -y ${UBUNTU1} ;
 fi
-if `grep -Fx 'DISTRO_VERSION="20.10-beta"' "/root/userdata.txt" >/dev/null;`
+if `grep -Fx 'DISTRO_VERSION="20.10"' "/root/userdata.txt" >/dev/null;`
 	then apt install -y ${UBUNTU1} fdisk gcc-9 && export CC=/usr/bin/gcc-9 ;
 fi
 
@@ -239,7 +239,7 @@ rm -fdR bluez-firmware
 echo Done.
 
 ### Pi Bluetooth
-if `grep -Fx 'DISTRO_VERSION="20.10-beta"' "/root/userdata.txt" >/dev/null;`
+if `grep -Fx 'DISTRO_VERSION="20.10"' "/root/userdata.txt" >/dev/null;`
 	then pi_bluetooth && apt-mark hold pi-bluetooth;
 	else pi_bluetooth;
 fi

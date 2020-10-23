@@ -8,7 +8,7 @@ if `grep -Fx 'DISTRO_VERSION="20.04.1"' "userdata.txt" >/dev/null;`
 	then truncate -s ${UBUNTUIMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
 fi
 
-if `grep -Fx 'DISTRO_VERSION="20.10-beta"' "userdata.txt" >/dev/null;`
+if `grep -Fx 'DISTRO_VERSION="20.10"' "userdata.txt" >/dev/null;`
 	then truncate -s ${UBUNTUIMGSIZE_UNSTABLE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
 fi
 partitions
@@ -352,7 +352,7 @@ fi
 if `grep -Fx 'DISTRO_VERSION="20.04.1"' "/root/userdata.txt" >/dev/null;`
 	then bluez_stable;
 fi
-if `grep -Fx 'DISTRO_VERSION="20.10-beta"' "/root/userdata.txt" >/dev/null;`
+if `grep -Fx 'DISTRO_VERSION="20.10"' "/root/userdata.txt" >/dev/null;`
 	then bluez_unstable;
 fi
 }
