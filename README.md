@@ -48,7 +48,7 @@ Distributions
 Release:	# Supported: buster, beowulf and 20.04
 Debian:		# 1 to select (buster/bullseye/testing/unstable/sid)
 Devuan:		# 1 to select (beowulf/testing/unstable/ceres)
-Ubuntu:		# 1 to select (20.04/20.04.1/20.10-beta)
+Ubuntu:		# 1 to select (20.04/20.04.1/20.10)
 ```
 #### User defconfig
 
