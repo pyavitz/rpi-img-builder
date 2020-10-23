@@ -17,10 +17,7 @@ UBUNTU_RELEASE=ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.gz
 if ls $UBUNTU_RELEASE &>/dev/null; then exit; 
 	else : ;
 fi
-if `grep "20.10-beta" "userdata.txt" >/dev/null;`
-	then wget -cq --show-progress http://cdimage.ubuntu.com/ubuntu-base/releases/${DISTRO_VERSION}/release/ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.gz ;
-	else wget -cq --show-progress http://cdimage.ubuntu.com/ubuntu-base/releases/${DISTRO_VERSION}/release/ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.gz ;
-fi
+wget -cq --show-progress http://cdimage.ubuntu.com/ubuntu-base/releases/${DISTRO_VERSION}/release/ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.gz
 }
 
 if `grep -Fx "devuan=1" "userdata.txt" >/dev/null;`
