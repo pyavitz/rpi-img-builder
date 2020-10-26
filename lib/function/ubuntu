@@ -1,4 +1,4 @@
-### STAGE 1
+# STAGE 1
 image_size(){
 if `grep -Fx 'DISTRO_VERSION="20.04"' "userdata.txt" >/dev/null;`
 	then truncate -s ${UBUNTUIMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
@@ -33,7 +33,7 @@ https://github.com/RPi-Distro/firmware-nonfree/archive/master.tar.gz
 mv -f firmware-nonfree-master.tar.gz firmware/
 }
 
-### STAGE 2
+# STAGE 2
 # USER CONFIG
 bcm2710_user(){
 echo -n 'bcm2710' > /etc/hostname

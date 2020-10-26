@@ -1,8 +1,8 @@
 #!/bin/bash
 source userdata.txt
-source lib/ml_func.txt
-source lib/echo_func.txt
-source lib/source.txt
+source lib/function/mainline
+source lib/function/echoes
+source lib/source
 UD=userdata.txt
 
 userdata () {

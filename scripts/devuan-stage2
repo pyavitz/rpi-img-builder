@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-source /root/devuan_func.txt
-source /root/universal_func.txt
+source /root/devuan.txt
+source /root/universal.txt
 source /root/source.txt
 source /root/userdata.txt
 

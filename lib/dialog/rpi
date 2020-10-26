@@ -16,7 +16,7 @@ while true; do
   exec 3>&1
   selection=$(dialog \
     --backtitle "Raspberry Pi Image Builder" \
-    --title "Raspberry Pi 3B/+" \
+    --title "Raspberry Pi 0/0W/B" \
     --clear \
     --cancel-label "Exit" \
     --menu "Select:" $HEIGHT $WIDTH 4 \
@@ -45,21 +45,21 @@ while true; do
       echo "Program terminated."
       ;;
     1 )
-      make rpi3-all
-      dialog --prgbox "Results:" "ls *.img *aarch64* output/bcm2710/*.deb" 30 70
+      make rpi-all
+      dialog --prgbox "Results:" "ls bcm2708*.img *armel* output/bcm2708/*.deb" 30 70
       exit 0
       ;;
     2 )
-      make rpi3-kernel
-      dialog --prgbox "Results:" "ls output/bcm2710/*.deb" 30 70
+      make rpi-kernel
+      dialog --prgbox "Results:" "ls output/bcm2708/*.deb" 30 70
       ;;
     3 )
-      make rootfs
-      dialog --prgbox "Results:" "ls *aarch64*" 30 70
+      make rootfsv6
+      dialog --prgbox "Results:" "ls *armel*" 30 70
       ;;
     4 )
-      make rpi3-image
-      dialog --prgbox "Results:" "ls *.img" 30 70
+      make rpi-image
+      dialog --prgbox "Results:" "ls bcm2708*.img" 30 70
       ;;
   esac
 done

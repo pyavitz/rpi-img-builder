@@ -1,8 +1,8 @@
 # menu
-MENU=./lib/menu
-CONF=./lib/config
-MLCONF=./lib/ml_config
-ADMIN=./lib/admin_config
+MENU=./lib/dialog/menu
+CONF=./lib/dialog/config
+MLCONF=./lib/dialog/ml_config
+ADMIN=./lib/dialog/admin_config
 DIALOGRC=$(shell cp -f lib/dialogrc ~/.dialogrc)
 
 # rootfs

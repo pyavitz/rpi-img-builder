@@ -1,7 +1,7 @@
 #!/bin/bash
-source lib/source.txt
-source lib/kernel_func.txt
-source lib/echo_func.txt
+source lib/source
+source lib/function/kernel
+source lib/function/echoes
 source userdata.txt
 UD=userdata.txt
 

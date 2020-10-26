@@ -1,8 +1,8 @@
 #!/bin/bash
 #ARMEL ROOTFS
 source userdata.txt > /dev/null 2>&1;
-source lib/source.txt
-source lib/rootfs_func.txt
+source lib/source
+source lib/function/rootfs
 
 devuan_rootfs (){
 DEVUAN_STABLE=devuan-${DISTRO_VERSION}-rootfs-armel.tar.xz

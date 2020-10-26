@@ -1,49 +1,43 @@
-### STAGE 1
+# STAGE 1
 image_size(){
-if `grep -Fx 'DISTRO_VERSION="buster"' "userdata.txt" >/dev/null;`
-	then truncate -s ${DEBIANIMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
-fi
-if `grep -Fx 'DISTRO_VERSION="bullseye"' "userdata.txt" >/dev/null;`
-	then truncate -s ${DEBIANIMGSIZE_TESTING} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+if `grep -Fx 'DISTRO_VERSION="beowulf"' "userdata.txt" >/dev/null;`
+	then truncate -s ${DEVUANIMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
 fi
 if `grep -Fx 'DISTRO_VERSION="testing"' "userdata.txt" >/dev/null;`
-	then truncate -s ${DEBIANIMGSIZE_TESTING} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+	then truncate -s ${DEVUANIMGSIZE_TESTING} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+fi
+if `grep -Fx 'DISTRO_VERSION="ceres"' "userdata.txt" >/dev/null;`
+	then truncate -s ${DEVUANIMGSIZE_UNSTABLE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
 fi
 if `grep -Fx 'DISTRO_VERSION="unstable"' "userdata.txt" >/dev/null;`
-	then truncate -s ${DEBIANIMGSIZE_UNSTABLE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
-fi
-if `grep -Fx 'DISTRO_VERSION="sid"' "userdata.txt" >/dev/null;`
-	then truncate -s ${DEBIANIMGSIZE_UNSTABLE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+	then truncate -s ${DEVUANIMGSIZE_UNSTABLE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
 fi
 partitions
 }
 
 stable_sources(){
 tee p2/etc/apt/sources.list <<EOF
-deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free
-deb http://deb.debian.org/debian ${DISTRO_VERSION}-updates main contrib non-free
-deb http://security.debian.org/debian-security ${DISTRO_VERSION}/updates main contrib non-free
-deb http://deb.debian.org/debian/ ${DISTRO_VERSION}-backports main contrib non-free
+deb http://deb.devuan.org/merged ${DISTRO_VERSION} main contrib non-free
+deb http://deb.devuan.org/merged ${DISTRO_VERSION}-updates main contrib non-free
+deb http://deb.devuan.org/merged ${DISTRO_VERSION}-security main contrib non-free
+deb http://deb.devuan.org/merged ${DISTRO_VERSION}-backports main contrib non-free
 EOF
 }
 
 unstable_sources(){
 tee p2/etc/apt/sources.list <<EOF
-deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free
+deb http://deb.devuan.org/merged ${DISTRO_VERSION} main contrib non-free
 EOF
 }
 
 distro_release(){
-if `grep -Fx 'DISTRO_VERSION="buster"' "userdata.txt" >/dev/null;`
+if `grep -Fx 'DISTRO_VERSION="beowulf"' "userdata.txt" >/dev/null;`
 	then stable_sources;
-fi
-if `grep -Fx 'DISTRO_VERSION="bullseye"' "userdata.txt" >/dev/null;`
-	then unstable_sources;
 fi
 if `grep -Fx 'DISTRO_VERSION="testing"' "userdata.txt" >/dev/null;`
 	then unstable_sources;
 fi
-if `grep -Fx 'DISTRO_VERSION="sid"' "userdata.txt" >/dev/null;`
+if `grep -Fx 'DISTRO_VERSION="ceres"' "userdata.txt" >/dev/null;`
 	then unstable_sources;
 fi
 if `grep -Fx 'DISTRO_VERSION="unstable"' "userdata.txt" >/dev/null;`
@@ -52,15 +46,15 @@ fi
 }
 
 aarch64_extract(){
-tar -xf debian-${DISTRO_VERSION}-rootfs-aarch64.tar.xz -C p2/
+tar -xf devuan-${DISTRO_VERSION}-rootfs-aarch64.tar.xz -C p2/
 }
 
 armel_extract(){
-tar -xf debian-${DISTRO_VERSION}-rootfs-armel.tar.xz -C p2/
+tar -xf devuan-${DISTRO_VERSION}-rootfs-armel.tar.xz -C p2/
 }
 
 aarch64_rootfs(){
-if ls debian-${DISTRO_VERSION}-rootfs-aarch64.tar.xz > /dev/null 2>&1
+if ls devuan-${DISTRO_VERSION}-rootfs-aarch64.tar.xz > /dev/null 2>&1
 	then echo -n "Extracting rootfs " && aarch64_extract && echo_bdone;
 	else echo -e "${YLW}Missing rootfs tarball${FIN}!" && exit;
 fi
@@ -68,7 +62,7 @@ echo
 }
 
 armel_rootfs(){
-if ls debian-${DISTRO_VERSION}-rootfs-armel.tar.xz > /dev/null 2>&1
+if ls devuan-${DISTRO_VERSION}-rootfs-armel.tar.xz > /dev/null 2>&1
 	then echo -n "Extracting rootfs " && armel_extract && echo_bdone;
 	else echo -e "${YLW}Missing rootfs tarball${FIN}!" && exit;
 fi
@@ -82,7 +76,7 @@ https://github.com/RPi-Distro/firmware-nonfree/archive/master.tar.gz
 mv -f firmware-nonfree-master.tar.gz firmware/
 }
 
-### STAGE 2
+# STAGE 2
 # USER CONFIG
 bcm2708_user(){
 echo -n 'bcm2708' > /etc/hostname
@@ -130,6 +124,9 @@ adduser ${user} netdev
 adduser ${user} bluetooth
 adduser ${user} input
 adduser ${user} tty
+if `grep -Fx 'DISTRO_VERSION="beowulf"' "/root/userdata.txt" >/dev/null;`
+	then addgroup --gid 125 kvm
+fi
 
 echo
 echo Adding mc skins.
@@ -195,6 +192,9 @@ fi
 groupadd spi
 groupadd i2c
 groupadd gpio
+if `grep -Fx 'DISTRO_VERSION="beowulf"' "/root/userdata.txt" >/dev/null;`
+	then addgroup --gid 125 kvm
+fi
 
 echo
 echo Adding mc skins.
@@ -218,52 +218,6 @@ mv -f username.txt /boot/
 mv -f whogoesthere /usr/local/bin/
 chmod +x /usr/local/bin/whogoesthere
 chown -R root:root /usr/local/bin/whogoesthere
-}
-
-led_service(){
-echo
-echo Creating actled switch.
-tee /usr/local/sbin/actled <<EOF
-#!/bin/bash
-# activity led switch
-rpi_switch (){
-sh -c 'echo 0 > /sys/devices/platform/leds/leds/led0/brightness'
-}
-
-ml_switch (){
-sh -c 'echo 0 > /sys/devices/platform/leds/leds/ACT/brightness'
-}
-
-if ls /sys/devices/platform/leds/leds/led0/brightness > /dev/null 2>&1;
-	then rpi_switch;
-fi
-if ls /sys/devices/platform/leds/leds/ACT/brightness > /dev/null 2>&1;
-	then ml_switch;
-fi
-
-EOF
-
-echo
-echo Creating pwrled switch.
-tee /usr/local/sbin/pwrled <<EOF
-#!/bin/bash
-# power led switch
-rpi_switch (){
-sh -c 'echo 0 > /sys/devices/platform/leds/leds/led1/brightness'
-}
-
-ml_switch (){
-sh -c 'echo 0 > /sys/devices/platform/leds/leds/PWR/brightness'
-}
-
-if ls /sys/devices/platform/leds/leds/led1/brightness > /dev/null 2>&1;
-	then rpi_switch;
-fi
-if ls /sys/devices/platform/leds/leds/PWR/brightness > /dev/null 2>&1;
-	then ml_switch;
-fi
-
-EOF
 }
 
 user_eeprom(){
@@ -312,14 +266,145 @@ bcm_sdio_4-b(){
 wget -cq --show-progress https://raw.githubusercontent.com/openwrt/cypress-nvram/master/brcmfmac43455-sdio.raspberrypi%2C4-model-b.txt
 }
 
+firstboot_service(){
+echo
+echo Creating firstboot.
+tee /usr/local/sbin/firstboot <<EOF
+#!/bin/bash
+### Functions
+grow_mmcblk(){
+bash growpart /dev/mmcblk0 2 > /dev/null 2>&1
+sleep 1s
+resize2fs /dev/mmcblk0p2 > /dev/null 2>&1
+}
+
+grow_mmcblk1(){
+bash growpart /dev/mmcblk1 2 > /dev/null 2>&1
+sleep 1s
+resize2fs /dev/mmcblk1p2 > /dev/null 2>&1
+}
+
+grow_sda(){
+bash growpart /dev/sda 2 > /dev/null 2>&1
+sleep 1s
+resize2fs /dev/sda2 > /dev/null 2>&1
+}
+
+chk_mmcblk(){
+fsck.fat -trawl /dev/mmcblk0p1 > /dev/null 2>&1
+}
+
+chk_mmcblk1(){
+fsck.fat -trawl /dev/mmcblk1p1 > /dev/null 2>&1
+}
+
+chk_sda(){
+fsck.fat -trawl /dev/sda1 > /dev/null 2>&1
+}
+
+### Grow Partition
+echo
+echo -e "\e[0;31mExpanding root filesystem\e[0m ..."
+if touch -c /dev/mmcblk0 2>/dev/null; then grow_mmcblk;
+        else echo "Checking for USB boot ..." &>/dev/null;
+fi
+
+if touch -c /dev/mmcblk1 2>/dev/null; then grow_mmcblk1;
+        else echo "" &>/dev/null;
+fi
+
+if touch -c /dev/sda 2>/dev/null; then grow_sda;
+        else echo "" &>/dev/null;
+fi
+
+### Renew SSH keys
+sleep 1s
+echo -e "\e[0;31mCreating new ssh keys\e[0m ..."
+/bin/rm -v /etc/ssh/ssh_host_* > /dev/null 2>&1
+dpkg-reconfigure openssh-server
+service ssh restart
+
+### Fix boot partition
+echo -e "\e[0;31mRunning fsck on boot partition\e[0m ..."
+umount /boot
+sleep 1s
+if touch -c /dev/mmcblk0 2>/dev/null; then chk_mmcblk;
+        else echo "Checking for USB boot ..." &>/dev/null;
+fi
+
+if touch -c /dev/mmcblk1 2>/dev/null; then chk_mmcblk1;
+        else echo "" &>/dev/null;
+fi
+
+if touch -c /dev/sda 2>/dev/null; then chk_sda;
+        else echo "" &>/dev/null;
+fi
+sleep 1s
+mount /boot
+
+### Clean up
+rm -f /var/cache/debconf/*
+rm -f /usr/local/sbin/firstboot
+update-rc.d firstboot remove
+rm /etc/init.d/firstboot
+EOF
+}
+
+led_service(){
+echo
+echo Creating actled switch.
+tee /usr/local/sbin/actled <<EOF
+#!/bin/bash
+# activity led switch
+rpi_switch (){
+sh -c 'echo 0 > /sys/devices/platform/leds/leds/led0/brightness'
+}
+
+ml_switch (){
+sh -c 'echo 0 > /sys/devices/platform/leds/leds/ACT/brightness'
+}
+
+if ls /sys/devices/platform/leds/leds/led0/brightness > /dev/null 2>&1;
+	then rpi_switch;
+fi
+if ls /sys/devices/platform/leds/leds/ACT/brightness > /dev/null 2>&1;
+	then ml_switch;
+fi
+
+EOF
+
+echo
+echo Creating pwrled switch.
+tee /usr/local/sbin/pwrled <<EOF
+#!/bin/bash
+# power led switch
+rpi_switch (){
+sh -c 'echo 0 > /sys/devices/platform/leds/leds/led1/brightness'
+}
+
+ml_switch (){
+sh -c 'echo 0 > /sys/devices/platform/leds/leds/PWR/brightness'
+}
+
+if ls /sys/devices/platform/leds/leds/led1/brightness > /dev/null 2>&1;
+	then rpi_switch;
+fi
+if ls /sys/devices/platform/leds/leds/PWR/brightness > /dev/null 2>&1;
+	then ml_switch;
+fi
+
+EOF
+}
+
 bcm2711_network(){
 echo
 echo Adding network configs and rules.
 sleep 1s
 rm -f /etc/network/interfaces
-mkdir -p /etc/udev/rules.d
-mv -f 80-net-setup-link.rules /etc/udev/rules.d/80-net-setup-link.rules
-chown root:root /etc/udev/rules.d/80-net-setup-link.rules
+ln -sr /etc/network/if-up.d/00check-network-cable /etc/network/if-pre-up.d/00check-network-cable
+sed -i 's/#CONFIGURE_INTERFACES=yes/CONFIGURE_INTERFACES=yes/g' /etc/default/networking
+sed -i 's/#WAIT_ONLINE_METHOD=ifup/WAIT_ONLINE_METHOD=ifup/g' /etc/default/networking
+sed -i 's/#WAIT_ONLINE_TIMEOUT=300/WAIT_ONLINE_TIMEOUT=10/g' /etc/default/networking
 mv -f credentials.txt /boot/rename_to_credentials.txt
 cp -f soc.txt /etc/opt/
 chown root:root /etc/opt/soc.txt
@@ -421,15 +506,29 @@ echo
 echo Adding network configs and rules.
 sleep 1s
 rm -f /etc/network/interfaces
-mkdir -p /etc/udev/rules.d
-mv -f 80-net-setup-link.rules /etc/udev/rules.d/80-net-setup-link.rules
-if `grep -Fx 'DISTRO_VERSION="unstable"' "/root/userdata.txt" >/dev/null;`
-	then sed -i 's/NAME="wlan0"/NAME="eth0"/g' /etc/udev/rules.d/80-net-setup-link.rules
-fi
-chown root:root /etc/udev/rules.d/80-net-setup-link.rules
+ln -sr /etc/network/if-up.d/00check-network-cable /etc/network/if-pre-up.d/00check-network-cable
+sed -i 's/#CONFIGURE_INTERFACES=yes/CONFIGURE_INTERFACES=yes/g' /etc/default/networking
+sed -i 's/#WAIT_ONLINE_METHOD=ifup/WAIT_ONLINE_METHOD=ifup/g' /etc/default/networking
+sed -i 's/#WAIT_ONLINE_TIMEOUT=300/WAIT_ONLINE_TIMEOUT=10/g' /etc/default/networking
 mv -f credentials.txt /boot/rename_to_credentials.txt
 cp -f soc.txt /etc/opt/
 chown root:root /etc/opt/soc.txt
+
+tee /etc/udev/rules.d/80-net-setup-link.rules <<EOF
+# raspberry pi 3b eth interface
+
+SUBSYSTEM!="net", GOTO="net_setup_link_end"
+
+IMPORT{builtin}="path_id"
+
+ACTION!="add", GOTO="net_setup_link_end"
+
+IMPORT{builtin}="net_setup_link"
+
+NAME=="", ENV{ID_NET_NAME}!="", NAME="eth0"
+
+LABEL="net_setup_link_end"
+EOF
 
 tee /etc/opt/interfaces.manual <<EOF
 ### Interfaces
@@ -460,7 +559,6 @@ iface wlan0 inet dhcp
 	#gateway 10.0.0.1
 	#dns-nameservers 8.8.8.8 8.8.4.4
 	wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
-
 EOF
 
 tee /etc/opt/interfaces <<EOF
@@ -492,7 +590,6 @@ iface wlan0 inet dhcp
 	wlan_gateway 10.0.0.1
 	wlan_dns-nameservers 8.8.8.8 8.8.4.4
 	wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
-
 EOF
 
 tee /etc/opt/wpa_supplicant.manual <<EOF
@@ -528,9 +625,10 @@ echo
 echo Adding network configs and rules.
 sleep 1s
 rm -f /etc/network/interfaces
-mkdir -p /etc/udev/rules.d
-mv -f 80-net-setup-link.rules /etc/udev/rules.d/80-net-setup-link.rules
-chown root:root /etc/udev/rules.d/80-net-setup-link.rules
+ln -sr /etc/network/if-up.d/00check-network-cable /etc/network/if-pre-up.d/00check-network-cable
+sed -i 's/#CONFIGURE_INTERFACES=yes/CONFIGURE_INTERFACES=yes/g' /etc/default/networking
+sed -i 's/#WAIT_ONLINE_METHOD=ifup/WAIT_ONLINE_METHOD=ifup/g' /etc/default/networking
+sed -i 's/#WAIT_ONLINE_TIMEOUT=300/WAIT_ONLINE_TIMEOUT=10/g' /etc/default/networking
 mv -f credentials.txt /boot/rename_to_credentials.txt
 cp -f soc.txt /etc/opt/
 chown root:root /etc/opt/soc.txt
@@ -619,9 +717,71 @@ EOF
 echo Done.
 }
 
-certificates_choose (){
-if `grep -Fx 'DISTRO_VERSION="buster"' "/root/userdata.txt" >/dev/null;`
-	then ca_certificates;
+bluez_firmware_stable(){
+echo
+echo Building bluez firmware package.
+sleep 1s
+mkdir -p bluez-firmware
+cd bluez-firmware
+wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/b/bluez-firmware/bluez-firmware_1.2.orig.tar.gz
+tar xf bluez-firmware_1.2.orig.tar.gz
+cd bluez-firmware-1.2
+wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/b/bluez-firmware/bluez-firmware_1.2-4+rpt3.debian.tar.xz
+tar xf bluez-firmware_1.2-4+rpt3.debian.tar.xz
+rm -f bluez-firmware_1.2-4+rpt3.debian.tar.xz
+dpkg-buildpackage -us -uc
+cd ..
+dpkg -i bluez-firmware_*.deb
+cd ~
+rm -fdR bluez-firmware
+echo Done.
+}
+
+bluez_firmware_unstable(){
+echo
+echo Installing bluez firmware package.
+sleep 1s
+apt install -y bluez-firmware
+mkdir -p /lib/firmware/brcm
+mkdir -p /lib/firmware/st
+mkdir -p bluez-firmware
+cd bluez-firmware
+wget -cq --show-progress https://github.com/RPi-Distro/bluez-firmware/raw/master/broadcom/BCM2033-2.13-FW.bin
+wget -cq --show-progress https://github.com/RPi-Distro/bluez-firmware/raw/master/broadcom/BCM2033-2.14-FW.bin
+wget -cq --show-progress https://github.com/RPi-Distro/bluez-firmware/raw/master/broadcom/BCM2033-2.15-FW.bin
+wget -cq --show-progress https://github.com/RPi-Distro/bluez-firmware/raw/master/broadcom/BCM2033-2.16-FW.bin
+wget -cq --show-progress https://github.com/RPi-Distro/bluez-firmware/raw/master/broadcom/BCM2033-FW.bin
+wget -cq --show-progress https://github.com/RPi-Distro/bluez-firmware/raw/master/broadcom/BCM2033-MD.hex
+wget -cq --show-progress https://github.com/RPi-Distro/bluez-firmware/raw/master/broadcom/BCM43430A1.hcd
+wget -cq --show-progress https://github.com/RPi-Distro/bluez-firmware/raw/master/broadcom/BCM4345C0.hcd
+wget -cq --show-progress https://github.com/RPi-Distro/bluez-firmware/raw/master/broadcom/BCM4345C5.hcd
+cd ..
+cp -f bluez-firmware/* /lib/firmware/brcm/
+rm -fdr bluez-firmware/*
+cd bluez-firmware
+wget -cq --show-progress https://github.com/RPi-Distro/bluez-firmware/raw/master/st/STLC2500_R4_00_03.ptc
+wget -cq --show-progress https://github.com/RPi-Distro/bluez-firmware/raw/master/st/STLC2500_R4_00_06.ssf
+wget -cq --show-progress https://github.com/RPi-Distro/bluez-firmware/raw/master/st/STLC2500_R4_02_02_WLAN.ssf
+wget -cq --show-progress https://github.com/RPi-Distro/bluez-firmware/raw/master/st/STLC2500_R4_02_04.ptc
+cd ..
+cp -f bluez-firmware/* /lib/firmware/st/
+cd ~
+rm -fdR bluez-firmware
+echo Done.
+}
+
+bluez_firmware_choose(){
+if `grep -Fx 'DISTRO_VERSION="beowulf"' "/root/userdata.txt" >/dev/null;`
+	then bluez_firmware_stable
+fi
+if `grep -Fx 'DISTRO_VERSION="testing"' "/root/userdata.txt" >/dev/null;`
+	then bluez_firmware_unstable;
+fi
+if `grep -Fx 'DISTRO_VERSION="unstable"' "/root/userdata.txt" >/dev/null;`
+	then bluez_firmware_unstable;
+fi
+if `grep -Fx 'DISTRO_VERSION="ceres"' "/root/userdata.txt" >/dev/null;`
+	then bluez_firmware_unstable;
 fi
 }
 
@@ -664,11 +824,8 @@ echo Done.
 }
 
 bluez_choose(){
-if `grep -Fx 'DISTRO_VERSION="buster"' "/root/userdata.txt" >/dev/null;`
-	then bluez_stable;
-fi
-if `grep -Fx 'DISTRO_VERSION="bullseye"' "/root/userdata.txt" >/dev/null;`
-	then bluez_unstable;
+if `grep -Fx 'DISTRO_VERSION="beowulf"' "/root/userdata.txt" >/dev/null;`
+	then bluez_stable
 fi
 if `grep -Fx 'DISTRO_VERSION="testing"' "/root/userdata.txt" >/dev/null;`
 	then bluez_unstable;
@@ -676,39 +833,9 @@ fi
 if `grep -Fx 'DISTRO_VERSION="unstable"' "/root/userdata.txt" >/dev/null;`
 	then bluez_unstable;
 fi
-if `grep -Fx 'DISTRO_VERSION="sid"' "/root/userdata.txt" >/dev/null;`
+if `grep -Fx 'DISTRO_VERSION="ceres"' "/root/userdata.txt" >/dev/null;`
 	then bluez_unstable;
 fi
-}
-
-led_switches(){
-echo
-echo Creating power led switch.
-sleep 1s
-tee /etc/systemd/system/pwrledoff.service <<EOF
-[Unit]
-Description=Turn off power led
-ConditionPathExists=/usr/local/sbin/pwrled
-[Service]
-Type=forking
-ExecStart=/usr/local/sbin/pwrled &>/dev/null
-[Install]
-WantedBy=multi-user.target
-EOF
-
-echo
-echo Creating activity led switch. 
-sleep 1s
-tee /etc/systemd/system/actledoff.service <<EOF
-[Unit]
-Description=Turn off activity led
-ConditionPathExists=/usr/local/sbin/actled
-[Service]
-Type=forking
-ExecStart=/usr/local/sbin/actled &>/dev/null
-[Install]
-WantedBy=multi-user.target
-EOF
 }
 
 htop_stable(){

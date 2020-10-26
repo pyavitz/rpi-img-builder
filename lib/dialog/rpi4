@@ -46,7 +46,7 @@ while true; do
       ;;
     1 )
       make all
-      dialog --prgbox "Results:" "ls *.img *aarch64* output/bcm2711/*.deb" 30 70
+      dialog --prgbox "Results:" "ls bcm2711*.img *aarch64* output/bcm2711/*.deb" 30 70
       exit 0
       ;;
     2 )
@@ -59,7 +59,7 @@ while true; do
       ;;
     4 )
       make image
-      dialog --prgbox "Results:" "ls *.img" 30 70
+      dialog --prgbox "Results:" "ls bcm2711*.img" 30 70
       ;;
   esac
 done

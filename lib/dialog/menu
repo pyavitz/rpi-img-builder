@@ -45,16 +45,16 @@ while true; do
       echo -e "%{RED}Program terminated${FIN}."
       ;;
     1 )
-      chmod +x lib/rpi4
-      ./lib/rpi4
+      chmod +x lib/dialog/rpi4
+      ./lib/dialog/rpi4
       ;;
     2 )
-      chmod +x lib/rpi3
-      ./lib/rpi3
+      chmod +x lib/dialog/rpi3
+      ./lib/dialog/rpi3
       ;;
     3 )
-      chmod +x lib/rpi
-      ./lib/rpi
+      chmod +x lib/dialog/rpi
+      ./lib/dialog/rpi
       ;;
   esac
 done
