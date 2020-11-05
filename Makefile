@@ -12,6 +12,7 @@ RFSV6=./scripts/rootfsv6
 ROOTFSV6=sudo ./scripts/rootfsv6
 
 # kernel
+SELECT=./scripts/select
 LINUX=./scripts/linux
 MAINLINE=./scripts/mainline
 
@@ -131,8 +132,8 @@ all:
 	#
 	# Building linux
 	@ echo bcm2711 > soc.txt
-	@chmod +x ${LINUX}
-	@${LINUX}
+	@chmod +x ${SELECT}
+	@${SELECT}
 	# Creating ROOTFS tarball
 	@chmod +x ${RFSV8}
 	@${ROOTFSV8}
@@ -285,6 +286,12 @@ admin:
 dialogrc:
 	# Builder theme set
 	@${DIALOGRC}
+
+# Raspberry Pi 4 Select
+select:
+	# Selecting kernel
+	@chmod +x ${SELECT}
+	@${SELECT}
 
 # distros
 debianos:

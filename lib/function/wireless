@@ -1,0 +1,134 @@
+# RTL8812AU
+rtl8812au_download(){
+echo
+echo -e "${RED}Downloading rtl88XXau wifi module${FIN}."
+if ls rtl8812au > /dev/null 2>&1;
+	then echo -e "${YLW}rtl88XXau found${FIN}.";
+	else git clone https://github.com/aircrack-ng/rtl8812au rtl8812au ;
+fi
+echo_done
+}
+
+rtl8812au(){
+rm -rf ${KERNEL}-${VERSION}/drivers/net/wireless/rtl8812au
+mkdir -p ${KERNEL}-${VERSION}/drivers/net/wireless/rtl8812au/
+cp -R rtl8812au/{core,hal,include,os_dep,platform} ${KERNEL}-${VERSION}/drivers/net/wireless/rtl8812au
+cp -R rtl8812au/Makefile ${KERNEL}-${VERSION}/drivers/net/wireless/rtl8812au/Makefile
+cp -R rtl8812au/Kconfig ${KERNEL}-${VERSION}/drivers/net/wireless/rtl8812au/Kconfig
+echo "obj-\$(CONFIG_88XXAU) += rtl8812au/" >> "${KERNEL}-${VERSION}/drivers/net/wireless/Makefile"
+sed -i '/source "drivers\/net\/wireless\/ti\/Kconfig"/a source "drivers\/net\/wireless\/rtl8812au\/Kconfig"' \
+${KERNEL}-${VERSION}/drivers/net/wireless/Kconfig
+}
+
+rtl8812au_select(){
+if `grep -Fx "bcm2711" "../../soc.txt" >/dev/null;`
+	then echo CONFIG_88XXAU=m >> arch/arm64/configs/bcm2711_defconfig ;
+fi
+if `grep -Fx "bcm2710" "../../soc.txt" >/dev/null;`
+	then echo CONFIG_88XXAU=m >> arch/arm64/configs/bcmrpi3_defconfig ;
+fi
+if `grep -Fx "bcm2708" "../../soc.txt" >/dev/null;`
+	then echo CONFIG_88XXAU=m >> arch/arm/configs/bcmrpi_defconfig ;
+fi
+}
+
+rtl8812au_module(){
+if `grep -Fx "rtl8812au=1" "../../userdata.txt" >/dev/null;`
+	then rtl8812au_select;
+fi
+}
+
+# RTL8811CU
+# Other source
+# https://github.com/brektrou/rtl8821CU
+rtl8811cu_download(){
+echo
+echo -e "${RED}Downloading rtl88XXcu wifi module${FIN}."
+if ls rtl8811cu > /dev/null 2>&1;
+	then echo -e "${YLW}rtl88XXcu found${FIN}.";
+	else git clone https://github.com/pyavitz/rtl8821cu.git rtl8811cu ;
+fi
+echo_done
+}
+
+rtl8811cu(){
+rm -rf ${KERNEL}-${VERSION}/drivers/net/wireless/rtl8811cu
+mkdir -p ${KERNEL}-${VERSION}/drivers/net/wireless/rtl8811cu/
+cp -R rtl8811cu/{core,hal,include,os_dep,platform,rtl8821c.mk,halmac.mk} \
+${KERNEL}-${VERSION}/drivers/net/wireless/rtl8811cu
+cp -R rtl8811cu/Makefile ${KERNEL}-${VERSION}/drivers/net/wireless/rtl8811cu/Makefile
+cp -R rtl8811cu/Kconfig ${KERNEL}-${VERSION}/drivers/net/wireless/rtl8811cu/Kconfig
+sed -i 's/---help---/help/g' ${KERNEL}-${VERSION}/drivers/net/wireless/rtl8811cu/Kconfig
+sed -i "s/^CONFIG_RTW_DEBUG.*/CONFIG_RTW_DEBUG = n/" \
+${KERNEL}-${VERSION}/drivers/net/wireless/rtl8811cu/Makefile
+sed -i "s/^CONFIG_MP_VHT_HW_TX_MODE.*/CONFIG_MP_VHT_HW_TX_MODE = n/" \
+${KERNEL}-${VERSION}/drivers/net/wireless/rtl8811cu/Makefile
+echo "obj-\$(CONFIG_RTL8821CU) += rtl8811cu/" >> ${KERNEL}-${VERSION}/drivers/net/wireless/Makefile
+sed -i '/source "drivers\/net\/wireless\/ti\/Kconfig"/a source "drivers\/net\/wireless\/rtl8811cu\/Kconfig"' \
+${KERNEL}-${VERSION}/drivers/net/wireless/Kconfig
+}
+
+rtl8811cu_select(){
+if `grep -Fx "bcm2711" "../../soc.txt" >/dev/null;`
+	then echo CONFIG_RTL8821CU=m >> arch/arm64/configs/bcm2711_defconfig ;
+fi
+if `grep -Fx "bcm2710" "../../soc.txt" >/dev/null;`
+	then echo CONFIG_RTL8821CU=m >> arch/arm64/configs/bcmrpi3_defconfig ;
+fi
+if `grep -Fx "bcm2708" "../../soc.txt" >/dev/null;`
+	then echo CONFIG_RTL8821CU=m >> arch/arm/configs/bcmrpi_defconfig ;
+fi
+}
+
+rtl8811cu_module(){
+if `grep -Fx "rtl8811cu=1" "../../userdata.txt" >/dev/null;`
+	then rtl8811cu_select;
+fi
+}
+
+# RTL88X2BU
+# Other sources
+# https://github.com/cilynx/rtl88x2bu
+# https://github.com/mabrand/rtl88x2bu.git -b linux-5.8-compatibility rtl88x2bu
+rtl88x2bu_download(){
+echo
+echo -e "${RED}Downloading rtl88X2bu wifi module${FIN}."
+if ls rtl88x2bu > /dev/null 2>&1;
+	then echo -e "${YLW}rtl88X2bu found${FIN}.";
+	else git clone https://github.com/pyavitz/rtl88x2bu.git rtl88x2bu ;
+fi
+echo_done
+}
+
+rtl88x2bu(){
+rm -rf ${KERNEL}-${VERSION}/drivers/net/wireless/rtl88x2bu
+mkdir -p ${KERNEL}-${VERSION}/drivers/net/wireless/rtl88x2bu/
+cp -R rtl88x2bu/{core,hal,include,os_dep,platform,halmac.mk,rtl8822b.mk} \
+${KERNEL}-${VERSION}/drivers/net/wireless/rtl88x2bu
+cp -f rtl88x2bu/Makefile ${KERNEL}-${VERSION}/drivers/net/wireless/rtl88x2bu/Makefile
+cp -f rtl88x2bu/Kconfig ${KERNEL}-${VERSION}/drivers/net/wireless/rtl88x2bu/Kconfig
+sed -i 's/---help---/help/g' ${KERNEL}-${VERSION}/drivers/net/wireless/rtl88x2bu/Kconfig
+sed -i 's/include $(src)\/rtl8822b.mk /include $(TopDIR)\/drivers\/net\/wireless\/rtl88x2bu\/rtl8822b.mk/' \
+${KERNEL}-${VERSION}/drivers/net/wireless/rtl88x2bu/Makefile
+echo "obj-\$(CONFIG_RTL8822BU) += rtl88x2bu/" >> ${KERNEL}-${VERSION}/drivers/net/wireless/Makefile
+sed -i '/source "drivers\/net\/wireless\/ti\/Kconfig"/a source "drivers\/net\/wireless\/rtl88x2bu\/Kconfig"' \
+${KERNEL}-${VERSION}/drivers/net/wireless/Kconfig
+}
+
+rtl88x2bu_select(){
+if `grep -Fx "bcm2711" "../../soc.txt" >/dev/null;`
+	then echo CONFIG_RTL8822BU=m >> arch/arm64/configs/bcm2711_defconfig ;
+fi
+if `grep -Fx "bcm2710" "../../soc.txt" >/dev/null;`
+	then echo CONFIG_RTL8822BU=m >> arch/arm64/configs/bcmrpi3_defconfig ;
+fi
+if `grep -Fx "bcm2708" "../../soc.txt" >/dev/null;`
+	then echo CONFIG_RTL8822BU=m >> arch/arm/configs/bcmrpi_defconfig ;
+fi
+}
+
+rtl88x2bu_module(){
+if `grep -Fx "rtl88x2bu=1" "../../userdata.txt" >/dev/null;`
+	then rtl88x2bu_select;
+fi
+}

@@ -31,10 +31,12 @@ make ncompile	# Install native dependencies
 #### Menu interface
 
 ```sh
-make config     # Create user data file
+make config     # Create user data file (Foundation Kernel)
+make mlconfig   # Create user data file (Mainline Kernel)
 make menu       # Open menu interface
 make dialogrc   # Set builder theme (optional)
 ```
+
 #### Config Menu
 
 ```sh
@@ -49,38 +51,14 @@ Release:	# Supported: buster, beowulf and 20.04
 Debian:		# 1 to select (buster/bullseye/testing/unstable/sid)
 Devuan:		# 1 to select (beowulf/testing/unstable/ceres)
 Ubuntu:		# 1 to select (20.04/20.04.1/20.10)
-```
-#### User defconfig
 
-```sh
-nano userdata.txt
-# place config in defconfig directory
-custom_defconfig=1
-MYCONFIG="nameofyour_defconfig"
+Wireless
+rtl88XXau:      # 1 to add Realtek 8812AU/14AU/21AU wireless support
+rtl88XXbu:      # 1 to add Realtek 88X2BU wireless support
+rtl88XXcu:      # 1 to add Realtek 8811CU/21CU wireless support
 ```
-#### User patches
 
-```sh
-Patches "-p1" placed in patches/userpatches are applied during
-compilation. This works for both Foundation and Mainline kernels.
-```
-#### Miscellaneous
-
-```sh
-make cleanup    # Clean up image errors
-make purge      # Remove tmp directory
-make commands   # List legacy commands
-make helper     # Reduce the time it takes to create a new image
-```
-## [Mainline Linux](https://github.com/pyavitz/rpi-img-builder/commit/8036430817183d4cb5e6772c63cb84d98709b5b7)
-
-#### Commands
-
-```sh
-make mlconfig   # Create mainline user data file
-make mainline   # Build mainline linux kernel
-```
-#### Mainline Config Menu
+#### Mainline Config Menu (RPi4B ONLY)
 
 ```sh
 Username:       # Your username
@@ -95,18 +73,40 @@ Release:	# Supported: buster, beowulf and 20.04
 Debian:		# 1 to select (buster/unstable)
 Devuan:		# 1 to select (beowulf/testing)
 Ubuntu:		# 1 to select (20.04)
-```
-#### Disclaimer
-The menu interface in this builder does not fully support this feature. If you are really
-interested in using mainline on the Raspberry Pi 4B, than I suggest you use my other [Image Builder](https://github.com/pyavitz/debian-image-builder).
 
-## Command list (legacy)
+Wireless
+rtl88XXau:      # 1 to add Realtek 8812AU/14AU/21AU wireless support
+rtl88XXbu:      # 1 to add Realtek 88X2BU wireless support
+rtl88XXcu:      # 1 to add Realtek 8811CU/21CU wireless support
+```
+### Furthermore
+If interested in building a Raspberry Pi 4B image that uses mainline u-boot and linux
+use our other [builder](https://github.com/pyavitz/debian-image-builder).
+
+#### User defconfig
+
+```sh
+nano userdata.txt
+# place config in defconfig directory
+custom_defconfig=1
+MYCONFIG="nameofyour_defconfig"
+```
+
+#### User patches
+
+```sh
+Patches "-p1" placed in patches/userpatches are applied during
+compilation. This works for both Foundation and Mainline kernels.
+```
+
+## Command list
 
 #### Raspberry Pi 4B
 
 ```sh
 # AARCH64
-make kernel
+make kernel	# Foundation
+make mainline	# Mainline
 make image
 make all
 ```
@@ -135,6 +135,16 @@ make rpi-all
 make rootfs   # arm64
 make rootfsv6 # armel
 ```
+
+#### Miscellaneous
+
+```sh
+make cleanup    # Clean up image errors
+make purge      # Remove source directory
+make commands   # List legacy commands
+make helper     # Download a binary Linux package
+```
+
 ## Usage
 
 ### Debian / Devuan

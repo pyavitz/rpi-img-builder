@@ -50,7 +50,7 @@ while true; do
       exit 0
       ;;
     2 )
-      make kernel
+      make select
       dialog --prgbox "Results:" "ls output/bcm2711/*.deb" 30 70
       ;;
     3 )
