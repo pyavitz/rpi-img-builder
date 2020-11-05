@@ -202,6 +202,8 @@ Usage: deb-eeprom -opt
    -w       Setup and install usb boot
    -u       Update script
 
+Note:
+Upon install please run 'deb-eeprom -u' before using this script.
 ```
 
 #### Using fetch
