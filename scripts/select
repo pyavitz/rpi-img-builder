@@ -1,5 +1,6 @@
 #!/bin/bash
 source userdata.txt > /dev/null 2>&1;
+source lib/function/echoes
 UD=userdata.txt
 
 userdata () {
@@ -15,9 +16,7 @@ fi
 done
 }
 
-if [ -f "$UD" ]; then
-    echo ""
-    echo -e "${YLW}$UD file found${FIN}."
+if [ -f "$UD" ]; then :
 else 
     userdata
 fi
