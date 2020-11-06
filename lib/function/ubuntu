@@ -297,7 +297,7 @@ pi_bluetooth(){
 echo
 echo Building pi bluetooth package.
 sleep 1s
-git clone https://github.com/pyavitz/pi-bluetooth.git
+git clone https://github.com/pyavitz/pi-bluetooth.git -b ubuntu
 cd pi-bluetooth
 chmod +x debian/rules
 dpkg-buildpackage -us -uc
