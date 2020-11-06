@@ -13,8 +13,10 @@ ROOTFSV6=sudo ./scripts/rootfsv6
 
 # kernel
 SELECT=./scripts/select
-LINUX=./scripts/linux
-MAINLINE=./scripts/mainline
+XLINUX=./scripts/linux
+LINUX=sudo ./scripts/linux
+XMAINLINE=./scripts/mainline
+MAINLINE=sudo ./scripts/mainline
 
 # stages
 DEB=./scripts/debian-stage1
@@ -36,8 +38,13 @@ CHOOSE=./scripts/choose
 CLN=./scripts/clean
 CLEAN=sudo ./scripts/clean
 
+# purge
+PURGE=$(shell sudo rm -fdr source)
+PURGEALL=$(shell sudo rm -fdr source output)
+
 # help
-HELPER=./scripts/help
+XHELPER=./scripts/help
+HELPER=sudo ./scripts/help
 
 help:
 	@echo
@@ -51,6 +58,7 @@ help:
 	@echo "  make menu              User menu interface"
 	@echo "  make cleanup           Clean up image errors"
 	@echo "  make purge             Remove source directory"
+	@echo "  make purge-all         Remove source and output directory"
 	@echo "  make commands          List legacy commands"
 	@echo
 	@echo "For details consult the \e[1;37mREADME.md\e[0m"
@@ -117,7 +125,7 @@ ncompile:
 kernel:
 	# Linux | aarch64
 	@ echo bcm2711 > soc.txt
-	@chmod +x ${LINUX}
+	@chmod +x ${XLINUX}
 	@${LINUX}
 
 image:
@@ -145,14 +153,14 @@ all:
 mainline:
 	# Mainline Linux | aarch64
 	@ echo bcm2711 > soc.txt
-	@chmod +x ${MAINLINE}
+	@chmod +x ${XMAINLINE}
 	@${MAINLINE}
 
 # Raspberry Pi 3 | aarch64
 rpi3-kernel:
 	# Linux | aarch64
 	@ echo bcm2710 > soc.txt
-	@chmod +x ${LINUX}
+	@chmod +x ${XLINUX}
 	@${LINUX}
 
 rpi3-image:
@@ -167,7 +175,7 @@ rpi3-all:
 	#
 	# Building linux
 	@ echo bcm2710 > soc.txt
-	@chmod +x ${LINUX}
+	@chmod +x ${XLINUX}
 	@${LINUX}
 	# Creating ROOTFS tarball
 	@chmod +x ${RFSV8}
@@ -181,7 +189,7 @@ rpi3-all:
 rpi-kernel:
 	# Linux | armv6l
 	@ echo bcm2708 > soc.txt
-	@chmod +x ${LINUX}
+	@chmod +x ${XLINUX}
 	@${LINUX}
 
 rpi-image:
@@ -196,7 +204,7 @@ rpi-all:
 	#
 	# Building linux
 	@ echo bcm2708 > soc.txt
-	@chmod +x ${LINUX}
+	@chmod +x ${XLINUX}
 	@${LINUX}
 	# Creating ROOTFS tarball
 	@chmod +x ${RFSV6}
@@ -224,8 +232,12 @@ cleanup:
 	@${CLEAN}
 
 purge:
-	# Removing tmp directory
-	sudo rm -fdr source
+	# Removing source directory
+	@${PURGE}
+
+purge-all:
+	# Removing source and output directory
+	@${PURGEALL}
 
 # menu
 menu:
@@ -314,20 +326,20 @@ ubuntuos:
 
 helper:
 	# Helper script
-	@chmod +x ${HELPER}
+	@chmod +x ${XHELPER}
 	@${HELPER} -h
 
 2708:
 	# BCM2708
-	@chmod +x ${HELPER}
+	@chmod +x ${XHELPER}
 	@${HELPER} -1
 
 2710:
 	# BCM2710
-	@chmod +x ${HELPER}
+	@chmod +x ${XHELPER}
 	@${HELPER} -3
 
 2711:
 	# BCM2711
-	@chmod +x ${HELPER}
+	@chmod +x ${XHELPER}
 	@${HELPER} -4
