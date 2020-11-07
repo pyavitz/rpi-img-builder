@@ -112,7 +112,7 @@ patching(){
 }
 
 cconfig(){
-    echo_cconfig.
+    echo_cconfig
     cp -f ../${DEF}/${MYCONFIG} arch/arm64/configs/
     make ARCH=arm64 ${MYCONFIG}
     echo_done
