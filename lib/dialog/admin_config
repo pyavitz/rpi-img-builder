@@ -21,21 +21,22 @@ VALUES=$(dialog --ok-label "Submit" --no-cancel \
 	  --backtitle "Raspberry Pi Image Builder | Administrator" \
 	  --title "Config Menu" \
 	  --form "Choose:" \
-21 40 14 \
-        "Branch:"   	1 1     "$VERSION"        	1 9 7 0 \
-	"Menuconfig:"	2 1	"$menuconfig"  		2 13 2 0 \
-	"Crosscompile:" 3 1	"$crosscompile" 	3 15 2 0 \
-	""		4 1	""	 		4 14 0 0 \
-	"Distributions"	5 1	""	 		5 14 0 0 \
-	"Release:"	6 1	"$DISTRO_VERSION"  	6 10 15 0 \
-	"Debian:"	7 1	"$debian" 		7 9 2 0 \
-	"Devuan:"	8 1	"$devuan" 		8 9 2 0 \
-	"Ubuntu:"	9 1	"$ubuntu"	 	9 9 2 0 \
-	""		10 1	""	 		10 14 0 0 \
-	"Wireless"	11 1	""	 		11 14 0 0 \
-	"rtl88XXau:"	12 1	"$rtl88XXau"	 	12 12 2 0 \
-	"rtl88X2bu:"	13 1	"$rtl88X2bu"	 	13 12 2 0 \
-	"rtl88XXcu:"	14 1	"$rtl88XXcu"	 	14 12 2 0 \
+22 40 15 \
+	"Linux kernel"	1 1	""	 		1 14 0 0 \
+        "Branch:"   	2 1     "$VERSION"        	2 9 7 0 \
+	"Menuconfig:"	3 1	"$menuconfig"  		3 13 2 0 \
+	"Crosscompile:" 4 1	"$crosscompile" 	4 15 2 0 \
+	""		5 1	""	 		5 14 0 0 \
+	"Distributions"	6 1	""	 		6 14 0 0 \
+	"Release:"	7 1	"$DISTRO_VERSION"  	7 10 15 0 \
+	"Debian:"	8 1	"$debian" 		8 9 2 0 \
+	"Devuan:"	9 1	"$devuan" 		9 9 2 0 \
+	"Ubuntu:"	10 1	"$ubuntu"	 	10 9 2 0 \
+	""		11 1	""	 		11 14 0 0 \
+	"Wireless"	12 1	""	 		12 14 0 0 \
+	"rtl88XXau:"	13 1	"$rtl88XXau"	 	13 12 2 0 \
+	"rtl88X2bu:"	14 1	"$rtl88X2bu"	 	14 12 2 0 \
+	"rtl88XXcu:"	15 1	"$rtl88XXcu"	 	15 12 2 0 \
 2>&1 1>&3)
 
 # close fd
@@ -63,6 +64,13 @@ echo >> tmp2
 echo '"' >> tmp2
 paste -d '\0' tmp0 tmp1 tmp2  > userdata.txt
 rm -f tmp0 tmp1 tmp2
+
+# categories
+sed -i '1i### LINUX KERNEL' userdata.txt
+sed -i '5i### DISTRIBUTIONS' userdata.txt
+sed -i '10i### WIRELESS' userdata.txt
+sed -i '14i### CUSTOM' userdata.txt
+sed -i '18i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # clear screen
 clear
