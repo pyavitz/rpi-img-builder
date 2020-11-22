@@ -119,9 +119,9 @@ apt install -y ${DEBIAN2} ${FIRMWARE}
 echo
 echo Adding pi firmware.
 sleep 1s
-wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/f/firmware-nonfree/firmware-brcm80211_20190114-1+rpt8_all.deb
-dpkg -i firmware-brcm80211_20190114-1+rpt8_all.deb
-rm -f firmware-brcm80211_20190114-1+rpt8_all.deb
+wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/f/firmware-nonfree/firmware-brcm80211_20190114-1+rpt9_all.deb
+dpkg -i firmware-brcm80211_20190114-1+rpt9_all.deb
+rm -f firmware-brcm80211_20190114-1+rpt9_all.deb
 cd /lib/firmware/brcm
 if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
 	then bcm_sdio_4-b
