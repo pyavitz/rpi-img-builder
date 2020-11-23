@@ -256,12 +256,7 @@ if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
 fi
 
 ### Cypress wifi firmware
-if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
-	then bcm2710_cypress
-fi
-if `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null;`
-	then bcm2708_cypress
-fi
+cypress_firmware
 
 ### Certificates
 if `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null;`

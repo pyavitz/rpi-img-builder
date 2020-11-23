@@ -248,9 +248,7 @@ fi
 bluez_choose
 
 ### Cypress wifi firmware
-if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
-	then bcm2710_cypress ;
-fi
+cypress_firmware
 
 ### Htop
 if `grep -Fx 'DISTRO_VERSION="20.04"' "/root/userdata.txt" >/dev/null;`
