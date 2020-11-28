@@ -48,7 +48,7 @@ cp $(which "qemu-aarch64-static") p2/usr/bin
 
 qemu_arm(){
 mkdir -p p2/usr/bin
-cp $(which "qemu-aarch64-static") p2/usr/bin
+cp $(which "qemu-arm-static") p2/usr/bin
 }
 
 qemu_arm64_remove(){
