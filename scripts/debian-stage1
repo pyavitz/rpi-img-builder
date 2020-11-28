@@ -115,8 +115,16 @@ fi
 mkdir -p p2/etc/apt/apt.conf.d p2/etc/dpkg/dpkg.cfg.d
 echo "force-unsafe-io" > "p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
 
-mkdir -p p2/usr/bin
-cp $(which "qemu-aarch64-static") p2/usr/bin
+# qemu static
+if `grep -Fx "bcm2711" "soc.txt" >/dev/null;`
+	then qemu_arm64;
+fi
+if `grep -Fx "bcm2710" "soc.txt" >/dev/null;`
+	then qemu_arm64;
+fi
+if `grep -Fx "bcm2708" "soc.txt" >/dev/null;`
+	then qemu_arm;
+fi
 
 if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
 	then distro_release;
@@ -168,7 +176,16 @@ umount p2/dev/pts
 umount p2/dev
 umount p2/boot
 
-rm p2/usr/bin/qemu-aarch64-static
+# qemu remove static
+if `grep -Fx "bcm2711" "soc.txt" >/dev/null;`
+	then qemu_arm64_remove;
+fi
+if `grep -Fx "bcm2710" "soc.txt" >/dev/null;`
+	then qemu_arm64_remove;
+fi
+if `grep -Fx "bcm2708" "soc.txt" >/dev/null;`
+	then qemu_arm_remove;
+fi
 rm p2/root/debian-stage2
 rm -f p2/root/*.txt
 rm -f p2/var/cache/debconf/*

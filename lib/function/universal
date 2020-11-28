@@ -41,6 +41,24 @@ tmpfs	/tmp		tmpfs	defaults,nosuid 0 0
 EOF
 }
 
+qemu_arm64(){
+mkdir -p p2/usr/bin
+cp $(which "qemu-aarch64-static") p2/usr/bin
+}
+
+qemu_arm(){
+mkdir -p p2/usr/bin
+cp $(which "qemu-aarch64-static") p2/usr/bin
+}
+
+qemu_arm64_remove(){
+rm p2/usr/bin/qemu-aarch64-static
+}
+
+qemu_arm_remove(){
+rm p2/usr/bin/qemu-arm-static
+}
+
 bcm2711_eeprom(){
 echo
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
