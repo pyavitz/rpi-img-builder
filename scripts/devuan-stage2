@@ -165,11 +165,9 @@ fi
 
 ### ZSWAP
 echo
-echo Adding zramswap config.
+echo Adjusting zramswap config.
 sleep 1s
-rm -f /etc/default/zramswap
-mv -f zramswap.conf /etc/default/zramswap
-chown root:root /etc/default/zramswap
+zramswap_config
 echo Done.
 
 ### MOTD instructions
