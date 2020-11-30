@@ -30,7 +30,7 @@ DEBIAN2="cpu hwinfo haveged resolvconf git build-essential net-tools ifplugd \
 	bison flex mc nano figlet toilet dialog python3 python3-setuptools \
 	openssh-client openssh-server ntfs-3g bc zram-tools libncursesw5-dev \
 	libssl-dev autopoint autoconf automake pkg-config libtool fake-hwclock \
-	avahi-utils"
+	avahi-utils distro-info-data lsb-release"
 
 # devuan
 DEVUANIMGSIZE="2050MB"
@@ -46,7 +46,7 @@ DEVUAN2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
 	bison flex mc nano figlet toilet dialog python3 python3-setuptools \
 	openssh-client openssh-server ntfs-3g bc zram-tools libncursesw5-dev \
 	libssl-dev autopoint autoconf automake pkg-config libtool fake-hwclock \
-	ntp ifupdown-extra avahi-utils"
+	ntp ifupdown-extra avahi-utils distro-info-data lsb-release"
 
 # ubuntu
 UBUNTUIMGSIZE="2000MB"
@@ -62,7 +62,7 @@ UBUNTU2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
 	bison flex mc nano figlet toilet dialog python3 python3-setuptools \
 	openssh-client openssh-server ntfs-3g bc zram-tools libncursesw5-dev \
 	libssl-dev autopoint autoconf automake pkg-config libtool fake-hwclock \
-	network-manager avahi-utils"
+	network-manager avahi-utils distro-info-data lsb-release"
 
 # firmware
 FIRMWARE="firmware-linux-nonfree firmware-linux firmware-misc-nonfree \
