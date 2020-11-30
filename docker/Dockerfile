@@ -44,6 +44,8 @@ RUN apt-get update && \
     crossbuild-essential-armel \
     udev \
     unzip \
+    gcc-aarch64-linux-gnu \
+    gcc-arm-linux-gnueabi \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 

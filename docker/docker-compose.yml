@@ -1,9 +1,9 @@
 version: '3.8'
 services:
-  arm-image-builder:
+  arm-img-builder:
  #   build: .
-    image: pttrr/arm-img-builder:dev  #for pulling the image and dont need to build it
-#    image: arm-image-builder
+    image: pttrr/arm-img-builder:latest  #for pulling the image and dont need to build it
+#    image: arm-img-builder
     cap_add:
     - SYS_ADMIN
     container_name: arm-img-builder
@@ -12,7 +12,7 @@ services:
       restart_policy:
         condition: on-failure
         max_attempts: 3
-    hostname: arm-image-builder
+    hostname: arm-img-builder
     network_mode: bridge
     privileged: true
     tmpfs:
