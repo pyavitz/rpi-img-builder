@@ -1,9 +1,9 @@
 version: '3.8'
 services:
   arm-img-builder:
- #   build: .
-    image: pttrr/arm-img-builder:latest  #for pulling the image and dont need to build it
-#    image: arm-img-builder
+    build: .
+#    image: pttrr/arm-img-builder:latest  #for pulling the image and dont need to build it
+    image: arm-img-builder
     cap_add:
     - SYS_ADMIN
     container_name: arm-img-builder

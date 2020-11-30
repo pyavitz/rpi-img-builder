@@ -46,6 +46,8 @@ RUN apt-get update && \
     unzip \
     gcc-aarch64-linux-gnu \
     gcc-arm-linux-gnueabi \
+    distro-info-data \
+    lsb-release \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 

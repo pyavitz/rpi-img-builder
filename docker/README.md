@@ -12,9 +12,9 @@ When the container is successfully created you can exec into it with the followi
 
 ## The Dockerfile is fetching serveral repos:
 
-* rpi-image-builder is located at /build/rpi - you will find more here: https://github.com/pyavitz/rpi-img-builder
-* debian image builder is located at /build/debian you will find more here: https://github.com/pyavitz/debian-img-builder
-* Native-Kernel-Compiler is located at /build/kernelbuiild - you will find more here : https://github.com/pyavitz/builddeb
+* rpi-image-builder is located at /build/rpi-img-builder - you will find more here: https://github.com/pyavitz/rpi-img-builder
+* debian image builder is located at /build/debian-img-builder you will find more here: https://github.com/pyavitz/debian-img-builder
+* Native-Kernel-Compiler is located at /build/kernelbuild - you will find more here : https://github.com/pyavitz/builddeb
 
 So if you want for example build your Image with the rpi-img-builder and youre in the container run following commands:
 
