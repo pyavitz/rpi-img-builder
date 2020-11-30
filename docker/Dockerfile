@@ -63,7 +63,7 @@ RUN git clone https://github.com/pyavitz/rpi-img-builder.git /build/rpi-img-buil
 
 RUN git clone https://github.com/pyavitz/debian-image-builder.git /build/debian-image-builder
 
-RUN git clone https://github.com/pyavitz/builddeb /build/kernelbuild
+RUN git clone https://github.com/pyavitz/builddeb.git /build/kernelbuild
 
 WORKDIR /build
 
