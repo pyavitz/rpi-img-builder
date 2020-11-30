@@ -12,6 +12,7 @@ RUN apt-get update && \
     dialog \
     patch \
     zip \
+    bc \
     nano \
     libterm-readline-gnu-perl \
     systemd \

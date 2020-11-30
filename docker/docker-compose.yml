@@ -1,12 +1,12 @@
 version: '3.8'
 services:
   arm-image-builder:
-    build: .
-  #  image: pttrr/arm-image-builder  #for pulling the image and dont need to build it.
-    image: arm-image-builder
+ #   build: .
+    image: pttrr/arm-img-builder:dev  #for pulling the image and dont need to build it
+#    image: arm-image-builder
     cap_add:
     - SYS_ADMIN
-    container_name: arm-image-builder
+    container_name: arm-img-builder
     deploy:
       replicas: 1
       restart_policy:
