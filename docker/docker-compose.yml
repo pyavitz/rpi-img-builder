@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  arm-image-builder:
+    build: .
+    image: arm-image-builder
+    cap_add:
+    - SYS_ADMIN
+    container_name: arm-image-builder
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+    hostname: arm-image-builder
+    network_mode: bridge
+    privileged: true
+    tmpfs:
+    - /tmp
+    - /run
+    - /run/lock
+    volumes:
+    - /dev:/dev
+    - /sys/fs/cgroup:/sys/fs/cgroup:ro
+
+# Run this and exec in the Container for configuring the image.
+# docker-compose --compatibility up -d --build
+# docker exec -it arm-image-builder /bin/bash
+# At this point your root in the host system and can work like in a just normal linux system
+# rpi image builder is located at /rpi | its also possible to "git pull"
+# debian image builder is located at /debian
+# docker cp arm-image-builder:/path-where-the-images-is-located
+
+#Then you can run the commands more in README.md
