@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  arm-img-builder:
+    build: .
+#    image: pttrr/arm-img-builder:latest  #for pulling the image and dont need to build it
+    image: arm-img-builder
+    cap_add:
+    - SYS_ADMIN
+    container_name: arm-img-builder
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        max_attempts: 3
+    hostname: arm-img-builder
+    network_mode: bridge
+    privileged: true
+    tmpfs:
+    - /tmp
+    - /run
+    - /run/lock
+    volumes:
+    - /dev:/dev
+    - /sys/fs/cgroup:/sys/fs/cgroup:ro
