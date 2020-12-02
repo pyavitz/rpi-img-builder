@@ -110,28 +110,28 @@ compilation. This works for both Foundation and Mainline kernels.
 
 ```sh
 # AARCH64
+make all	# kernel > rootfs > image (run at own risk)
 make kernel	# Foundation
 make mainline	# Mainline
 make image
-make all
 ```
 
 #### Raspberry Pi 3A/B/+
 
 ```sh
 # AARCH64
+make rpi3-all	# kernel > rootfs > image (run at own risk)
 make rpi3-kernel
 make rpi3-image
-make rpi3-all
 ```
 
 #### Raspberry Pi 0/0W/B/+
 
 ```sh
 # ARMv6l
+make rpi-all	# kernel > rootfs > image (run at own risk)
 make rpi-kernel
 make rpi-image
-make rpi-all
 ```
 
 #### Root Filesystems
