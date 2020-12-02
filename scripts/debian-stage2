@@ -27,21 +27,7 @@ ln -snf /usr/share/zoneinfo/America/New_York /etc/localtime
 echo -n 'America/New_York' > /etc/timezone
 apt upgrade -y
 apt dist-upgrade -y
-if `grep -Fx 'DISTRO_VERSION="buster"' "/root/userdata.txt" >/dev/null;`
-	then apt install -y ${DEBIAN1} ;
-fi
-if `grep -Fx 'DISTRO_VERSION="bullseye"' "/root/userdata.txt" >/dev/null;`
-	then apt install -y ${DEBIAN1} gcc-9 && export CC=/usr/bin/gcc-9 ;
-fi
-if `grep -Fx 'DISTRO_VERSION="testing"' "/root/userdata.txt" >/dev/null;`
-	then apt install -y ${DEBIAN1} gcc-9 && export CC=/usr/bin/gcc-9 ;
-fi
-if `grep -Fx 'DISTRO_VERSION="unstable"' "/root/userdata.txt" >/dev/null;`
-	then apt install -y ${DEBIAN1} gcc-9 && export CC=/usr/bin/gcc-9 ;
-fi
-if `grep -Fx 'DISTRO_VERSION="sid"' "/root/userdata.txt" >/dev/null;`
-	then apt install -y ${DEBIAN1} gcc-9 && export CC=/usr/bin/gcc-9 ;
-fi
+apt install -y ${DEBIAN1}
 
 #### Scripts
 echo
