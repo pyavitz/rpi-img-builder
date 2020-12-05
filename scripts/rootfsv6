@@ -87,7 +87,7 @@ echo -e "${BRED}Archiving root filesystem${FIN} ..."
 cd p1
 echo -e -n ${WHT}
 #tar cfJ ../debian-${DISTRO_VERSION}-${IMAGE_VERSION}.tar.xz *
-tar cfJ - * | (pv > ../debian-${DISTRO_VERSION}-${IMAGE_VERSION}.tar.xz)
+XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - * | (pv -terb > ../debian-${DISTRO_VERSION}-${IMAGE_VERSION}.tar.xz)
 echo -e -n ${FIN}
 cd ..
 

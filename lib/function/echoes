@@ -7,66 +7,70 @@ WHT="\e[1;37m"
 FIN="\e[0m"
 
 # ECHOES
-echo_extract () {
+echo_extract(){
 echo -e "${RED}Extracting archive${FIN}."
 }
 
-echo_ccpatch () {
+echo_compress(){
+echo -e "${RED}Compressing image${FIN}."
+}
+
+echo_ccpatch(){
 echo -e "${RED}Applying cc packaging patch${FIN}."
 }
 
-echo_ncpatch () {
+echo_ncpatch(){
 echo -e "${RED}Applying nc packaging patch${FIN}."
 }
 
-echo_patch () {
+echo_patch(){
 echo -e "${RED}Applying patches${FIN}."
 }
 
-echo_done () {
+echo_done(){
 echo -e "${RED}Done${FIN}."
 }
 
-echo_ok () {
+echo_ok(){
 echo -e "${PNK}[${FIN}${GRN}ok${FIN}${PNK}]${FIN}"
 }
 
-echo_nok () {
+echo_nok(){
 echo -e -n "${PNK}[${FIN}${GRN}ok${FIN}${PNK}]${FIN}"
 }
 
-echo_fail () {
+echo_fail(){
 echo -n -e "${PNK}[${FIN}${RED}failed${FIN}${PNK}]${FIN}"
 }
 
-echo_bdone () {
+echo_bdone(){
 echo -e "${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
 }
 
-echo_kernel () {
+echo_kernel(){
 echo -e "${RED}Downloading kernel${FIN}."
 }
 
-echo_stable () {
+echo_stable(){
 echo -e "${RED}Downloading stable linux${FIN}."
 }
 
-echo_mainline () {
+echo_mainline(){
 echo -e "${RED}Downloading mainline linux${FIN}."
 }
 
-echo_cconfig () {
+echo_cconfig(){
 echo -e "${RED}Making ${MYCONFIG}${FIN}."
 }
 
-echo_fconfig () {
+echo_fconfig(){
 echo -e "${RED}Making foundation defconfig${FIN}."
 }
 
-echo_menuconfig () {
+echo_menuconfig(){
 echo -e "${RED}Opening menuconfig${FIN}."
 }
 
-echo_build () {
+echo_build(){
 echo -e "${RED}--- Building deb packages${FIN}."
 }

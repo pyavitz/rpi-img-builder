@@ -33,6 +33,24 @@ https://github.com/RPi-Distro/firmware-nonfree/archive/master.tar.gz
 mv -f firmware-nonfree-master.tar.gz firmware/
 }
 
+compress_bcm2711(){
+XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - ${DEVICE_SOC}-ubuntu-${DISTRO_VERSION}-${IMAGE_DATE}.img | (pv -terb > rpi-4-ubuntu-${DISTRO_VERSION}-${IMAGE_DATE}.tar.xz)
+}
+
+compress_bcm2710(){
+XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - ${DEVICE_SOC}-ubuntu-${DISTRO_VERSION}-${IMAGE_DATE}.img | (pv -terb > rpi-3-ubuntu-${DISTRO_VERSION}-${IMAGE_DATE}.tar.xz)
+}
+
+
+choose_compression(){
+if `grep -Fx "bcm2711" "soc.txt" >/dev/null;`
+	then compress_bcm2711;
+fi
+if `grep -Fx "bcm2710" "soc.txt" >/dev/null;`
+	then compress_bcm2710;
+fi
+}
+
 # STAGE 2
 # USER CONFIG
 bcm2710_user(){
