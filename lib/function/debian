@@ -336,32 +336,11 @@ bcm_sdio_4-b(){
 wget -cq --show-progress https://raw.githubusercontent.com/openwrt/cypress-nvram/master/brcmfmac43455-sdio.raspberrypi%2C4-model-b.txt
 }
 
-udev_rule(){
-if `grep -Fx 'DISTRO_VERSION="bullseye"' "/root/userdata.txt" >/dev/null;`
-	then sed -i 's/NAME="wlan0"/NAME="eth0"/g' /etc/udev/rules.d/80-net-setup-link.rules;
-fi
-if `grep -Fx 'DISTRO_VERSION="testing"' "/root/userdata.txt" >/dev/null;`
-	then sed -i 's/NAME="wlan0"/NAME="eth0"/g' /etc/udev/rules.d/80-net-setup-link.rules;
-fi
-if `grep -Fx 'DISTRO_VERSION="unstable"' "/root/userdata.txt" >/dev/null;`
-	then sed -i 's/NAME="wlan0"/NAME="eth0"/g' /etc/udev/rules.d/80-net-setup-link.rules;
-fi
-if `grep -Fx 'DISTRO_VERSION="sid"' "/root/userdata.txt" >/dev/null;`
-	then sed -i 's/NAME="wlan0"/NAME="eth0"/g' /etc/udev/rules.d/80-net-setup-link.rules;
-fi
-}
-
 bcm2711_network(){
 echo
 echo Adding network configs and rules.
 sleep 1s
 rm -f /etc/network/interfaces
-mkdir -p /etc/udev/rules.d
-mv -f 80-net-setup-link.rules /etc/udev/rules.d/80-net-setup-link.rules
-if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
-	then udev_rule;
-fi
-chown root:root /etc/udev/rules.d/80-net-setup-link.rules
 mv -f credentials.txt /boot/rename_to_credentials.txt
 cp -f soc.txt /etc/opt/
 chown root:root /etc/opt/soc.txt
@@ -463,12 +442,6 @@ echo
 echo Adding network configs and rules.
 sleep 1s
 rm -f /etc/network/interfaces
-mkdir -p /etc/udev/rules.d
-mv -f 80-net-setup-link.rules /etc/udev/rules.d/80-net-setup-link.rules
-if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
-	then udev_rule;
-fi
-chown root:root /etc/udev/rules.d/80-net-setup-link.rules
 mv -f credentials.txt /boot/rename_to_credentials.txt
 cp -f soc.txt /etc/opt/
 chown root:root /etc/opt/soc.txt
@@ -570,9 +543,6 @@ echo
 echo Adding network configs and rules.
 sleep 1s
 rm -f /etc/network/interfaces
-mkdir -p /etc/udev/rules.d
-mv -f 80-net-setup-link.rules /etc/udev/rules.d/80-net-setup-link.rules
-chown root:root /etc/udev/rules.d/80-net-setup-link.rules
 mv -f credentials.txt /boot/rename_to_credentials.txt
 cp -f soc.txt /etc/opt/
 chown root:root /etc/opt/soc.txt

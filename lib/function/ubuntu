@@ -281,9 +281,6 @@ mv -f interfaces /etc/network/interfaces
 chown root:root /etc/network/interfaces
 mv -f wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf
 chown root:root /etc/wpa_supplicant/wpa_supplicant.conf
-mkdir -p /etc/udev/rules.d
-mv -f 80-net-setup-link.rules /etc/udev/rules.d/80-net-setup-link.rules
-chown root:root /etc/udev/rules.d/80-net-setup-link.rules
 rm -f /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf
 mv -f credentials.txt /boot/rename_to_credentials.txt
 cp -f soc.txt /etc/opt/
@@ -300,10 +297,6 @@ mv -f interfaces /etc/network/interfaces
 chown root:root /etc/network/interfaces
 mv -f wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf
 chown root:root /etc/wpa_supplicant/wpa_supplicant.conf
-mkdir -p /etc/udev/rules.d
-mv -f 80-net-setup-link.rules /etc/udev/rules.d/80-net-setup-link.rules
-sed -i 's/NAME="wlan0"/NAME="eth0"/g' /etc/udev/rules.d/80-net-setup-link.rules
-chown root:root /etc/udev/rules.d/80-net-setup-link.rules
 rm -f /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf
 mv -f credentials.txt /boot/rename_to_credentials.txt
 cp -f soc.txt /etc/opt/
