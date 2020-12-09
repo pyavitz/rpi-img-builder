@@ -302,7 +302,7 @@ dpkg -i *.deb
 rm -f *.deb
 echo Done.
 sleep 1s
-
+fetch_version
 apt -y clean
 apt -y autoclean
 

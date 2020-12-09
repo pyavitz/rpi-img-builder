@@ -2,6 +2,6 @@
 umount p2/proc p2/sys p2/dev p2/run
 umount -l p1 p2
 rm -fr p1 p2 img
-rm -f part-uuid.txt soc.txt
+rm -f part-uuid.txt soc.txt kernel.txt
 losetup -d /dev/loop* > /dev/null 2>&1
 echo Done.

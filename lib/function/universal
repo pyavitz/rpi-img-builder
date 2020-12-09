@@ -211,3 +211,11 @@ sed -i 's/#ALLOCATION=256/ALLOCATION=1024/g' /etc/default/zramswap
 sed -i 's/#SIZE=256/SIZE=1024/g' /etc/default/zramswap
 sed -i 's/#PRIORITY=100/PRIORITY=100/g' /etc/default/zramswap
 }
+
+fetch_version(){
+echo 'INSTALLED_KERNEL="' > /root/kernel1
+cat /usr/src/linux-headers*/include/config/kernel.release > /root/kernel2
+echo '"' > /root/kernel3
+paste -d '\0' kernel1 kernel2 kernel3  > /root/kernel.txt
+rm -f kernel1 kernel2 kernel3
+}
