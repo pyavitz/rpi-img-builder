@@ -1,0 +1,18 @@
+#!/bin/bash
+# depends: curl
+RED="\e[1;31m"
+FIN="\e[0m"
+
+echo "Example: 5.9"
+echo
+echo -e -n "${RED}Select branch: ${FIN}"
+read branch
+
+run_check(){
+curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile | grep -m1 VERSION
+curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile | grep -m1 PATCHLEVEL
+curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile | grep -m1 SUBLEVEL
+curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile | grep -m1 EXTRAVERSION
+}
+
+run_check

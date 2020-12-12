@@ -45,6 +45,8 @@ PURGEALL=$(shell sudo rm -fdr source output)
 # help
 XHELPER=./scripts/help
 HELPER=sudo ./scripts/help
+XCHECK=./scripts/check
+CHECK=./scripts/check
 
 help:
 	@echo
@@ -103,6 +105,7 @@ commands:
 	@echo "Miscellaneous:"
 	@echo
 	@echo "  make dialogrc		  Set builder theme"
+	@echo "  make check		  Shows latest revision of selected branch"
 	@echo "  make helper		  Reduce the time it takes to create a new image"
 	@echo
 
@@ -299,6 +302,11 @@ admin:
 dialogrc:
 	# Builder theme set
 	@${DIALOGRC}
+
+check:
+	# Check kernel revisions
+	@chmod +x ${XCHECK}
+	@${CHECK}
 
 # Raspberry Pi 4 Select
 select:
