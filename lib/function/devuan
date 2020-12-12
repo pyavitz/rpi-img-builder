@@ -76,6 +76,11 @@ https://github.com/RPi-Distro/firmware-nonfree/archive/master.tar.gz
 mv -f firmware-nonfree-master.tar.gz firmware/
 }
 
+rename_image(){
+source kernel.txt
+mv -f ${DEVICE_SOC}-devuan-${DISTRO_VERSION}-${IMAGE_DATE}.img ${DEVICE_SOC}-devuan-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${IMAGE_DATE}.img
+}
+
 compress_image(){
 source kernel.txt
 mv -f ${DEVICE_SOC}-devuan-${DISTRO_VERSION}-${IMAGE_DATE}.img ${DEVICE_SOC}-devuan-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${IMAGE_DATE}.img

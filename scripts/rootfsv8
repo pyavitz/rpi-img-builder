@@ -20,11 +20,12 @@ wget -cq --show-progress https://github.com/pyavitz/rootfs-tarballs/releases/dow
 }
 
 ubuntu_rootfs (){
-UBUNTU_RELEASE=ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.gz
+UBUNTU_RELEASE=ubuntu-base-${DISTRO_VERSION}-base-aarch64.tar.gz
 if ls $UBUNTU_RELEASE > /dev/null 2>&1; then exit; 
 	else : ;
 fi
 wget -cq --show-progress http://cdimage.ubuntu.com/ubuntu-base/releases/${DISTRO_VERSION}/release/ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.gz
+mv -f ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.gz ubuntu-base-${DISTRO_VERSION}-base-aarch64.tar.gz
 }
 
 if `grep -Fx "devuan=1" "userdata.txt" > /dev/null 2>&1;`

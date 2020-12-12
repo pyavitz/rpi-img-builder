@@ -212,5 +212,6 @@ rmdir p1 p2
 
 if `grep -Fx "admin=1" "userdata.txt" >/dev/null;`
 	then echo && echo_compress && compress_image && echo_done;
+	else rename_image;
 fi
 rm -f part-uuid.txt soc.txt kernel.txt

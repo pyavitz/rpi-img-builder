@@ -1,9 +1,5 @@
 # STAGE 1
 image_size(){
-if `grep -Fx 'DISTRO_VERSION="20.04"' "userdata.txt" >/dev/null;`
-	then truncate -s ${UBUNTUIMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
-fi
-
 if `grep -Fx 'DISTRO_VERSION="20.04.1"' "userdata.txt" >/dev/null;`
 	then truncate -s ${UBUNTUIMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
 fi
@@ -15,11 +11,11 @@ partitions
 }
 
 aarch64_extract(){
-tar -xf ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.gz -C p2/
+tar -xf ubuntu-base-${DISTRO_VERSION}-base-aarch64.tar.gz -C p2/
 }
 
 aarch64_rootfs(){
-if ls ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.gz > /dev/null 2>&1
+if ls ubuntu-base-${DISTRO_VERSION}-base-aarch64.tar.gz > /dev/null 2>&1
 	then echo -n "Extracting rootfs " && aarch64_extract && echo_bdone;
 	else echo -e "${YLW}Missing rootfs tarball${FIN}!" && exit;
 fi
@@ -31,6 +27,11 @@ aria2c -c --download-result=hide --console-log-level=error \
 --disable-ipv6=true --summary-interval=0 --show-files=false \
 https://github.com/RPi-Distro/firmware-nonfree/archive/master.tar.gz
 mv -f firmware-nonfree-master.tar.gz firmware/
+}
+
+rename_image(){
+source kernel.txt
+mv -f ${DEVICE_SOC}-ubuntu-${DISTRO_VERSION}-${IMAGE_DATE}.img ${DEVICE_SOC}-ubuntu-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${IMAGE_DATE}.img
 }
 
 compress_image(){
