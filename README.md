@@ -13,7 +13,7 @@ In order to install the required dependencies, run the following command:
 sudo apt install build-essential bison bc git dialog patch dosfstools zip unzip qemu debootstrap \
                  qemu-user-static rsync kmod cpio flex libssl-dev libncurses5-dev parted fakeroot \
                  swig aria2 pv toilet figlet crossbuild-essential-arm64 crossbuild-essential-armel \
-                 distro-info-data lsb-release xz-utils
+                 distro-info-data lsb-release xz-utils curl
 ```
 
 This has been tested on an AMD64/x86_64 system running on [Debian Buster](https://www.debian.org/releases/buster/debian-installer/).
