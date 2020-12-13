@@ -67,6 +67,7 @@ echo rtl88x2bu= >> tmp0
 echo rtl8811cu= >> tmp0
 echo custom_defconfig=0 >> tmp0
 echo MYCONFIG='"'nameofyour_defconfig'"' >> tmp0
+echo userscripts=0 >> tmp0
 echo verbose=0 >> tmp0
 echo devuser=1 >> tmp0
 echo '"' > tmp2
@@ -84,7 +85,7 @@ sed -i '3i### LINUX KERNEL' userdata.txt
 sed -i '8i### DISTRIBUTIONS' userdata.txt
 sed -i '13i### WIRELESS' userdata.txt
 sed -i '17i### CUSTOM' userdata.txt
-sed -i '21i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '22i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # clear screen
 clear

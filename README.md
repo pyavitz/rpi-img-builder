@@ -110,6 +110,13 @@ Patches "-p1" placed in patches/userpatches are applied during
 compilation. This works for both Foundation and Mainline kernels.
 ```
 
+### User scripts
+```sh
+nano userdata.txt
+# place scripts in files/userscripts directory
+userscripts=0	# 1 to enable | 0 to disable	
+``` 
+
 ## Command list
 
 #### Raspberry Pi 4B

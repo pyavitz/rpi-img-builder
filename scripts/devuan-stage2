@@ -60,6 +60,9 @@ case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
 	mv -f deb-eeprom /usr/local/bin/
     ;;
 esac
+if `grep -Fx "userscripts=1" "/root/userdata.txt" >/dev/null;`
+	then uscripts_stage2;
+fi
 # Inits
 mv -f firstboot /etc/init.d/
 mv -f pwrledoff /etc/init.d/

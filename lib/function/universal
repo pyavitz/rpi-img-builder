@@ -219,3 +219,21 @@ echo '"' > /root/kernel3
 paste -d '\0' kernel1 kernel2 kernel3  > /root/kernel.txt
 rm -f kernel1 kernel2 kernel3
 }
+
+uscripts_stage1(){
+mkdir -p p2/root/userscripts
+cp -f files/userscripts/* p2/root/userscripts/
+rm -f p2/root/userscripts/README.md
+}
+
+uscripts_stage2(){
+echo
+echo -e "\e[1;33mAdding user scripts\e[0m."
+mkdir -p /usr/local/bin
+cp -f userscripts/* /usr/local/bin/
+rm -fdr userscripts 
+chmod +x /usr/local/bin/*
+sleep 1s
+echo -e "\e[1;33mDone\e[0m."
+echo
+}
