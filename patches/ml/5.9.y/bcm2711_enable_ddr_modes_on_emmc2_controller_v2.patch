@@ -1,0 +1,12 @@
+diff --git a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
+index 222d7825e1ab..1851efebe9c6 100644
+--- a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
++++ b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
+@@ -191,6 +191,7 @@ &emmc2 {
+ 	vqmmc-supply = <&sd_io_1v8_reg>;
+ 	vmmc-supply = <&sd_vcc_reg>;
+ 	broken-cd;
++	mmc-ddr-3_3v;
+ 	status = "okay";
+ };
+ 

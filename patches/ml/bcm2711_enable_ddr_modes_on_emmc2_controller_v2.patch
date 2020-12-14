@@ -1,8 +1,6 @@
-diff --git a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-index 222d7825e1ab..1851efebe9c6 100644
---- a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-+++ b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts
-@@ -191,6 +191,7 @@ &emmc2 {
+--- a/arch/arm/boot/dts/bcm2711-rpi-4-b.dts	2020-12-13 17:41:30.000000000 -0500
++++ b/arch/arm/boot/dts/bcm2711-rpi-4-b.dts	2020-12-14 08:42:34.613601617 -0500
+@@ -238,6 +238,7 @@
  	vqmmc-supply = <&sd_io_1v8_reg>;
  	vmmc-supply = <&sd_vcc_reg>;
  	broken-cd;
