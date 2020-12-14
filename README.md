@@ -67,7 +67,7 @@ rtl88XXbu:      # 1 to add Realtek 88X2BU wireless support
 rtl88XXcu:      # 1 to add Realtek 8811CU/21CU wireless support
 ```
 
-#### Mainline Config Menu (RPi4B ONLY) (review [commit](https://github.com/pyavitz/rpi-img-builder/commit/8beea03bb025fd68b71736bf92c65c38dcbc1741))
+#### Mainline Config Menu (RPi4B ONLY)
 
 ```sh
 Username:       # Your username
