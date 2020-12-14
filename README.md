@@ -232,8 +232,10 @@ Usage: fetch -opt
 
    -1       Linux 5.4.y LTS
    -2       Linux Stable Branch
+   -3       Linux Mainline Branch
    -u       Update Fetch
-   
+   -s       Not working? Setup Fetch
+
 fetch -h will list available options and kernel revisions
 ```
 #### Simple wifi helper (Debian / Devuan)
