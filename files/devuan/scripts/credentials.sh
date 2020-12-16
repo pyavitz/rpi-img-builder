@@ -2,6 +2,24 @@
 source /boot/credentials.txt
 
 ### Functions
+change_hostname(){
+sed -i "s/bcm2711/${HOSTNAME}/g" /etc/hostname
+sed -i "s/bcm2710/${HOSTNAME}/g" /etc/hostname
+sed -i "s/bcm2708/${HOSTNAME}/g" /etc/hostname
+sed -i "s/musicbox/${HOSTNAME}/g" /etc/hostname
+sed -i "s/bcm2711/${HOSTNAME}/g" /etc/hosts
+sed -i "s/bcm2710/${HOSTNAME}/g" /etc/hosts
+sed -i "s/bcm2708/${HOSTNAME}/g" /etc/hosts
+sed -i "s/musicbox/${HOSTNAME}/g" /etc/hosts
+}
+
+change_branding(){
+sed -i "s/Raspberry Pi/${BRANDING}/g" /etc/update-motd.d/15-brand
+sed -i "s/Raspberry Pi/${BRANDING}/g" /etc/update-motd.d/15-brand
+sed -i "s/Raspberry Pi/${BRANDING}/g" /etc/update-motd.d/15-brand
+sed -i "s/Musicbox/${BRANDING}/g" /etc/update-motd.d/15-brand
+}
+
 dhcp () {
 sed -i "s/wlan_address 10.0.0.10/#address 10.0.0.10/g" /etc/opt/interfaces
 sed -i "s/wlan_netmask 255.255.255.0/#netmask 255.255.255.0/g" /etc/opt/interfaces
@@ -50,6 +68,14 @@ case `grep -Fx "MANUAL=y" "/boot/credentials.txt" >/dev/null; echo $?` in
 esac
 }
 
+hostname_branding(){
+if `grep -Fx "CHANGE=y" "/boot/credentials.txt" >/dev/null;`
+	then change_hostname && change_branding;
+	else : > /dev/null 2>&1;
+fi
+service hostname.sh --full-restart
+}
+
 remove_wifi () {
 update-rc.d -f credentials remove
 sed -i 's/# Default-Start:/# Default-Start: S/g' /etc/init.d/network
@@ -66,6 +92,9 @@ service network start
 
 ### Check Credentials
 if ls /boot/username.txt > /dev/null 2>&1; then /usr/local/bin/whogoesthere > /dev/null 2>&1;
+        else : > /dev/null 2>&1;
+fi
+if ls /boot/credentials.txt > /dev/null 2>&1; then hostname_branding;
         else : > /dev/null 2>&1;
 fi
 if ls /boot/credentials.txt > /dev/null 2>&1; then connect_wifi;

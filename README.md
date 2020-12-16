@@ -182,6 +182,10 @@ NETMASK=" "			# Your Netmask
 GATEWAY=" "			# Your Gateway
 NAMESERVERS=" "			# Your preferred dns
 
+CHANGE=n			# Set to y to enable
+HOSTNAME="raspberrypi"
+BRANDING="Raspberry Pi"
+
 For headless use: ssh user@ipaddress
 
 Note:
@@ -206,6 +210,10 @@ MANUAL=n			# Set to y to enable a static ip
 IPADDR=" "			# Static ip address
 GATEWAY=" "			# Your Gateway
 DNS=""				# Your preferred dns
+
+CHANGE=n			# Set to y to enable
+HOSTNAME="raspberrypi"
+BRANDING="Raspberry Pi"
 
 For headless use: ssh user@ipaddress
 ```
