@@ -183,8 +183,8 @@ GATEWAY=" "			# Your Gateway
 NAMESERVERS=" "			# Your preferred dns
 
 CHANGE=n			# Set to y to enable
-HOSTNAME="raspberrypi"
-BRANDING="Raspberry Pi"
+HOSTNAME="raspberrypi"		# Set the system's host name
+BRANDING="Raspberry Pi"		# Set ASCII text banner
 
 For headless use: ssh user@ipaddress
 
@@ -212,8 +212,8 @@ GATEWAY=" "			# Your Gateway
 DNS=""				# Your preferred dns
 
 CHANGE=n			# Set to y to enable
-HOSTNAME="raspberrypi"
-BRANDING="Raspberry Pi"
+HOSTNAME="raspberrypi"		# Set the system's host name
+BRANDING="Raspberry Pi"		# Set ASCII text banner
 
 For headless use: ssh user@ipaddress
 ```

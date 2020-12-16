@@ -98,19 +98,19 @@ xz -zevk --threads=${CORES} ${DEVICE_SOC}-debian-${DISTRO_VERSION}-${INSTALLED_K
 bcm2708_user(){
 echo -n 'bcm2708' > /etc/hostname
 sed -i '1 a 127.0.1.1	bcm2708' /etc/hosts
-adduser ${user} --gecos "bcm2708" --disabled-password
+adduser ${user} --gecos ${user^} --disabled-password
 }
 
 bcm2710_user(){
 echo -n 'bcm2710' > /etc/hostname
 sed -i '1 a 127.0.1.1	bcm2710' /etc/hosts
-adduser ${user} --gecos "bcm2710" --disabled-password
+adduser ${user} --gecos ${user^} --disabled-password
 }
 
 bcm2711_user(){
 echo -n 'bcm2711' > /etc/hostname
 sed -i '1 a 127.0.1.1	bcm2711' /etc/hosts
-adduser ${user} --gecos "bcm2711" --disabled-password
+adduser ${user} --gecos ${user^} --disabled-password
 }
 
 user_config(){

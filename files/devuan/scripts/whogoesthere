@@ -3,7 +3,7 @@ source /boot/username.txt
 source /etc/opt/soc.txt
 
 bcm2711_user () {
-adduser ${user} --gecos "bcm2711" --disabled-password
+adduser ${user} --gecos ${user^} --disabled-password
 echo "${user}:${passwd}" | chpasswd
 adduser ${user} sudo
 adduser ${user} audio
@@ -21,7 +21,7 @@ adduser ${user} tty
 }
 
 bcm2710_user () {
-adduser ${user} --gecos "bcm2710" --disabled-password
+adduser ${user} --gecos ${user^} --disabled-password
 echo "${user}:${passwd}" | chpasswd
 adduser ${user} sudo
 adduser ${user} audio
@@ -39,7 +39,7 @@ adduser ${user} tty
 }
 
 bcm2708_user () {
-adduser ${user} --gecos "bcm2708" --disabled-password
+adduser ${user} --gecos ${user^} --disabled-password
 echo "${user}:${passwd}" | chpasswd
 adduser ${user} sudo
 adduser ${user} audio
