@@ -116,11 +116,11 @@ commands:
 	@echo
 	@echo "Docker:"
 	@echo
-	@echo "  make dmakefile          Create the docker Makfile"
-	@echo "  make bmakefile          Create the builder Makefile"
+	@echo "  make dmakefile          Create the docker Makefile"
+	@echo "  make bmakefile          Remove the docker Makefile"
 	@echo
 	@echo "\e[1;31mNote\e[0m\e[1;37m: For 'git pull' to function correctly the builder Makefile"
-	@echo "      needs to be in place.\e[0m"
+	@echo "      may need to be in place.\e[0m"
 	@echo
 
 # aarch64
