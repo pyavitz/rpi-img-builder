@@ -1,0 +1,18 @@
+#!/bin/bash
+source lib/function/echoes
+
+builder_makefile(){
+rm -f Makefile
+mv -f Makefile.orig Makefile
+}
+
+bmakefile(){
+if ls Makefile.orig > /dev/null 2>&1
+	then builder_makefile;
+	else echo -e "${RED}Please review the Docker Wiki or README.md${FIN}${WHT}.${FIN}" && exit;
+fi
+}
+
+sleep 1s
+bmakefile
+echo_done
