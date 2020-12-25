@@ -80,10 +80,10 @@ Menuconfig:     # 1 to run kernel menuconfig
 Crosscompile:   # 1 to cross compile | 0 to native compile
 
 Distributions
-Release:	# Supported: buster, beowulf and 20.04
-Debian:		# 1 to select (buster/unstable)
-Devuan:		# 1 to select (beowulf/testing)
-Ubuntu:		# 1 to select (20.04)
+Release:	# Supported: buster, beowulf and 20.04.1
+Debian:		# 1 to select (buster/bullseye/testing/unstable/sid)
+Devuan:		# 1 to select (beowulf/testing/unstable/ceres)
+Ubuntu:		# 1 to select (20.04.1/20.10)
 
 Wireless
 rtl88XXau:      # 1 to add Realtek 8812AU/14AU/21AU wireless support
