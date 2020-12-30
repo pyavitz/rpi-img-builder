@@ -162,6 +162,7 @@ make purge      # Remove source directory
 make purge-all  # Remove source and output directory
 make commands   # List legacy commands
 make helper     # Download a binary Linux package
+make check      # Shows latest revision of selected branch
 ```
 
 ## Usage
