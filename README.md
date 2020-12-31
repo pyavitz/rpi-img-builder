@@ -1,3 +1,8 @@
+## Notice
+**5.10.y and current issues you should know about before using or trying to compile:** [4023](https://github.com/raspberrypi/linux/issues/4023) [4036](https://github.com/raspberrypi/linux/issues/4036)
+
+---
+
 <img src="https://socialify.git.ci/pyavitz/rpi-img-builder/image?description=1&font=KoHo&forks=1&issues=1&logo=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fde%2Fthumb%2Fc%2Fcb%2FRaspberry_Pi_Logo.svg%2F475px-Raspberry_Pi_Logo.svg.png&owner=1&pattern=Charlie%20Brown&stargazers=1&theme=Dark" alt="rpi-img-builder" width="640" height="320" />
 
 ## The boards and distributions that are currently supported
