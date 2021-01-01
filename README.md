@@ -1,5 +1,5 @@
 ## Notice
-**5.10.y and current issues you should know about before using or trying to compile:** [4023](https://github.com/raspberrypi/linux/issues/4023) [4036](https://github.com/raspberrypi/linux/issues/4036)
+**5.10.y and current issues you should know about before using or trying to compile:** [4023](https://github.com/raspberrypi/linux/issues/4023)
 
 ---
 

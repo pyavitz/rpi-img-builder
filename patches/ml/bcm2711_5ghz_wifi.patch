@@ -1,6 +1,6 @@
 diff -Naur a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c	2020-12-13 17:41:30.000000000 -0500
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c	2020-12-14 08:02:20.000000000 -0500
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c	2020-12-30 05:54:29.000000000 -0500
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c	2021-01-01 05:56:19.000000000 -0500
 @@ -9,6 +9,7 @@
  #include <linux/etherdevice.h>
  #include <linux/module.h>
@@ -9,7 +9,7 @@ diff -Naur a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drive
  #include <net/cfg80211.h>
  #include <net/netlink.h>
  #include <uapi/linux/if_arp.h>
-@@ -2936,7 +2937,7 @@
+@@ -2937,7 +2938,7 @@
  		brcmf_dbg(INFO, "Do not enable power save for P2P clients\n");
  		pm = PM_OFF;
  	}
@@ -18,7 +18,7 @@ diff -Naur a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drive
  
  	err = brcmf_fil_cmd_int_set(ifp, BRCMF_C_SET_PM, pm);
  	if (err) {
-@@ -2946,6 +2947,7 @@
+@@ -2947,6 +2948,7 @@
  			bphy_err(drvr, "error (%d)\n", err);
  	}
  
@@ -26,7 +26,7 @@ diff -Naur a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drive
  	err = brcmf_fil_iovar_int_set(ifp, "pm2_sleep_ret",
  				min_t(u32, timeout, BRCMF_PS_MAX_TIMEOUT_MS));
  	if (err)
-@@ -7349,12 +7351,18 @@
+@@ -7350,12 +7352,18 @@
  	struct brcmfmac_pd_cc *country_codes;
  	struct brcmfmac_pd_cc_entry *cc;
  	s32 found_index;
@@ -47,7 +47,7 @@ diff -Naur a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drive
  	}
  
  	if ((alpha2[0] == ccreq->country_abbrev[0]) &&
-@@ -7378,10 +7386,14 @@
+@@ -7379,10 +7387,14 @@
  		brcmf_dbg(TRACE, "No country code match found\n");
  		return -EINVAL;
  	}
@@ -65,7 +65,7 @@ diff -Naur a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drive
  	ccreq->country_abbrev[0] = alpha2[0];
  	ccreq->country_abbrev[1] = alpha2[1];
  	ccreq->country_abbrev[2] = 0;
-@@ -7396,31 +7408,45 @@
+@@ -7397,31 +7409,45 @@
  	struct brcmf_if *ifp = brcmf_get_ifp(cfg->pub, 0);
  	struct brcmf_pub *drvr = cfg->pub;
  	struct brcmf_fil_country_le ccreq;
@@ -124,8 +124,8 @@ diff -Naur a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drive
  		return;
  
 diff -Naur a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c	2020-12-13 17:41:30.000000000 -0500
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c	2020-12-14 08:02:20.000000000 -0500
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c	2020-12-30 05:54:29.000000000 -0500
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c	2021-01-01 05:56:19.000000000 -0500
 @@ -10,6 +10,7 @@
  #include <linux/firmware.h>
  #include <linux/module.h>
@@ -172,8 +172,8 @@ diff -Naur a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c b/drive
  	if (free_bcm47xx_nvram)
  		bcm47xx_nvram_release_contents(data);
 diff -Naur a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c	2020-12-13 17:41:30.000000000 -0500
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c	2020-12-14 08:02:20.000000000 -0500
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c	2020-12-30 05:54:29.000000000 -0500
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c	2021-01-01 05:56:19.000000000 -0500
 @@ -611,12 +611,14 @@
  BRCMF_FW_DEF(4330, "brcmfmac4330-sdio");
  BRCMF_FW_DEF(4334, "brcmfmac4334-sdio");
