@@ -30,6 +30,40 @@ chk_sda () {
 fsck.fat -trawl /dev/sda1 > /dev/null 2>&1
 }
 
+partition_uuid(){
+echo 'ROOT_PARTUUID="' > root1
+if ls /dev/mmcblk0p2  > /dev/null 2>&1;
+	then blkid -o export -- "/dev/mmcblk0p2" | sed -ne 's/^PARTUUID=//p' > root2;
+fi
+if ls /dev/mmcblk1p2  > /dev/null 2>&1;
+	then blkid -o export -- "/dev/mmcblk1p2" | sed -ne 's/^PARTUUID=//p' > root2;
+fi
+if ls /dev/sda2  > /dev/null 2>&1;
+	then blkid -o export -- "/dev/sda2" | sed -ne 's/^PARTUUID=//p' > root2;
+fi
+echo '"' > root3
+paste -d '\0' root1 root2 root3  > /etc/opt/root-pid.txt
+rm -f root1 root2 root3
+}
+
+create_cmdline(){
+source /etc/opt/root-pid.txt
+rm -f /boot/cmdline.txt
+tee /boot/cmdline.txt <<EOF
+console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=ext4 elevator=deadline fsck.repair=yes logo.nologo rootwait
+EOF
+rm -f /etc/opt/root-pid.txt
+}
+
+fix_cmdline(){
+if `grep -Fx "bcm2708" "/etc/opt/soc.txt" >/dev/null;`
+	then partition_uuid > /dev/null 2>&1;
+fi
+if `grep -Fx "bcm2708" "/etc/opt/soc.txt" >/dev/null;`
+	then create_cmdline > /dev/null 2>&1;
+fi
+}
+
 ### Grow Partition
 if touch -c /dev/mmcblk0 2>/dev/null; then grow_mmcblk;
         else echo "" &>/dev/null;
@@ -63,6 +97,9 @@ if touch -c /dev/sda 2>/dev/null; then chk_sda;
 fi
 sleep 1s
 mount /boot
+sleep 1s
+fix_cmdline
+
 ### Clean up
 systemctl disable firstboot > /dev/null 2>&1
 update-rc.d firstboot remove > /dev/null 2>&1
