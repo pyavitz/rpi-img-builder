@@ -110,9 +110,7 @@ apt install -y ${DEVUAN2}
 echo
 echo Adding pi firmware.
 sleep 1s
-wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/f/firmware-nonfree/firmware-brcm80211_20190114-1+rpt9_all.deb
-dpkg -i firmware-brcm80211_20190114-1+rpt9_all.deb
-rm -f firmware-brcm80211_20190114-1+rpt9_all.deb
+brcm_firmware
 cd /lib/firmware/brcm
 if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
 	then bcm_sdio_4-b
@@ -222,7 +220,6 @@ sleep 1s
 apt install -y bluetooth bluez bluez-tools
 echo Done.
 bluez_firmware_choose
-#bluez_firmware_stable
 
 ### Pi Bluetooth
 echo

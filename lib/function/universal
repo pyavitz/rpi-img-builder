@@ -237,3 +237,29 @@ sleep 1s
 echo -e "\e[1;33mDone\e[0m."
 echo
 }
+
+bluez_firmware(){
+BRPT="rpt7"
+echo Building bluez firmware package.
+sleep 1s
+mkdir -p bluez-firmware
+cd bluez-firmware
+wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/b/bluez-firmware/bluez-firmware_1.2.orig.tar.gz
+tar xf bluez-firmware_1.2.orig.tar.gz
+cd bluez-firmware-1.2
+wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/b/bluez-firmware/bluez-firmware_1.2-4+${BRPT}.debian.tar.xz
+tar xf bluez-firmware_1.2-4+${BRPT}.debian.tar.xz
+rm -f bluez-firmware_1.2-4+${BRPT}.debian.tar.xz
+dpkg-buildpackage -us -uc
+cd ..
+dpkg -i bluez-firmware_*.deb
+cd ~
+rm -fdR bluez-firmware
+}
+
+brcm_firmware(){
+WRPT="rpt10"
+wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/f/firmware-nonfree/firmware-brcm80211_20190114-1+${WRPT}_all.deb
+dpkg -i firmware-brcm80211_20190114-1+${WRPT}_all.deb
+rm -f firmware-brcm80211_20190114-1+${WRPT}_all.deb
+}
