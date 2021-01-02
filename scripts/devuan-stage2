@@ -30,14 +30,14 @@ apt dist-upgrade -y
 apt install -y ${DEVUAN1}
 
 #### Scripts
-firstboot_service
+cd ~
 led_service
+mv -f firstboot.sh /usr/local/sbin/firstboot 
 chmod +x /usr/local/sbin/*
 chown -R root:root /usr/local/sbin/
 echo
 echo Moving scripts.
 sleep 1s
-cd ~
 mkdir -p /usr/local/bin
 mkdir -p /usr/local/sbin
 # Scripts
