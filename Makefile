@@ -48,12 +48,6 @@ HELPER=sudo ./scripts/help
 XCHECK=./scripts/check
 CHECK=./scripts/check
 
-# docker
-XDMAKE=./scripts/dmakefile
-DMAKE=./scripts/dmakefile
-XBMAKE=./scripts/bmakefile
-BMAKE=./scripts/bmakefile
-
 help:
 	@echo
 	@echo "\e[1;31m             Raspberry Pi Image Builder\e[0m"
@@ -113,14 +107,6 @@ commands:
 	@echo "  make dialogrc		  Set builder theme"
 	@echo "  make check		  Shows latest revision of selected branch"
 	@echo "  make helper		  Reduce the time it takes to create a new image"
-	@echo
-	@echo "Docker:"
-	@echo
-	@echo "  make dmakefile          Create the docker Makefile"
-	@echo "  make bmakefile          Remove the docker Makefile"
-	@echo
-	@echo "\e[1;31mNote\e[0m\e[1;37m: For 'git pull' to function correctly the builder Makefile"
-	@echo "      may need to be in place.\e[0m"
 	@echo
 
 # aarch64
@@ -368,14 +354,3 @@ helper:
 	# BCM2711
 	@chmod +x ${XHELPER}
 	@${HELPER} -4
-
-# docker	
-dmakefile:
-	# Creating docker makefile
-	@chmod +x ${XDMAKE}
-	@${DMAKE}
-
-bmakefile:
-	# Creating builder makefile
-	@chmod +x ${XBMAKE}
-	@${BMAKE}
