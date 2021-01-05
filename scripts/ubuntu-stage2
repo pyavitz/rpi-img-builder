@@ -290,9 +290,9 @@ rm -f *led*
 rm -f *eeprom*
 
 ### Vchiq permissions
-echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' > /etc/udev/rules.d/10-vchiq-permissions.rules
-echo 'SUBSYSTEM=="vcio",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
-echo 'SUBSYSTEM=="vc-mem",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
+echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0777"' > /etc/udev/rules.d/10-vchiq-permissions.rules
+echo 'SUBSYSTEM=="vcio",GROUP="video",MODE="0777"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
+echo 'SUBSYSTEM=="vc-mem",GROUP="video",MODE="0777"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
 
 #### Led switches
 led_switches
