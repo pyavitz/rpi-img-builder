@@ -242,6 +242,8 @@ Usage: fetch -opt
    -1       Linux 5.4.y LTS
    -2       Linux Stable Branch
    -3       Linux Mainline Branch
+   -4       Update Boot Binaries
+
    -u       Update Fetch
    -s       Not working? Setup Fetch
 
