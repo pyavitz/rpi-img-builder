@@ -176,13 +176,14 @@ echo Done.
 ### 2018 brcm firmware
 #wget -cq --show-progress https://community.cypress.com/servlet/JiveServlet/download/15932-1-39799/cypress-fmac-v4.14.52-2018_0928.zip
 ### 2020
+# https://community.cypress.com/gfawx74859/attachments/gfawx74859/resourcelibrary/966/1/cypress-fmac-v4.14.77-2020_0115.zip
 cypress_firmware(){
 echo
 echo Adding brcm firmware from cypress.
 sleep 1s
 mkdir cypress
 cd cypress
-wget -cq --show-progress https://community.cypress.com/servlet/JiveServlet/download/19000-1-51721/cypress-fmac-v4.14.77-2020_0115.zip
+wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/cypress-fmac-v4.14.77-2020_0115.zip
 unzip -qq cypress-fmac-v4.14.77-2020_0115.zip
 tar -xf cypress-firmware-v4.14.77-2020_0115.tar.gz
 #rm -f firmware/*pcie*
