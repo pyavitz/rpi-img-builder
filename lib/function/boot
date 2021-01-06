@@ -298,6 +298,7 @@ EOF
 
 rpi4_bootbins(){
 mkdir -p firmware/boot
+rm -f firmware/boot/*
 echo
 wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/fixup4.dat
 if ls firmware/boot/fixup4.dat > /dev/null 2>&1
@@ -362,6 +363,7 @@ fi
 
 rpi_bootbins(){
 mkdir -p firmware/boot
+rm -f firmware/boot/*
 echo
 wget -cq -P firmware/boot https://github.com/raspberrypi/firmware/raw/master/boot/bootcode.bin
 if ls firmware/boot/bootcode.bin > /dev/null 2>&1
