@@ -219,7 +219,7 @@ BRANDING="Raspberry Pi"		# Set ASCII text banner
 For headless use: ssh user@ipaddress
 ```
 
-#### Using deb-eeprom [usb_storage.quirks](https://github.com/pyavitz/rpi-img-builder/issues/17)
+#### Using deb-eeprom ([usb_storage.quirks](https://github.com/pyavitz/rpi-img-builder/issues/17))
 
 ```sh
 Raspberry Pi 4B EEPROM Helper Script
