@@ -259,15 +259,7 @@ if `grep -Fx 'DISTRO_VERSION="beowulf"' "/root/userdata.txt" >/dev/null;`
 fi
 
 ###  Raspi userland
-if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
-	then armv8_userland
-fi
-if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
-	then armv8_userland
-fi
-if `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null;`
-	then arm_userland
-fi
+rpi_userland
 
 ### Adding eeprom
 if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`

@@ -94,7 +94,7 @@ rm -fdr eeprom
 echo Done.
 }
 
-armv8_userland(){
+rpi_userland(){
 echo
 echo Adding raspi userland.
 rm -f /etc/profile
@@ -109,29 +109,15 @@ mv -f userland-remove-hi-pi.patch /root/userland/
 cd userland
 patch -p1 < userland-remove-hi-pi.patch
 rm -f userland-remove-hi-pi.patch
-./buildme --aarch64
-cd ~
-rm -f -d -R userland
-ldconfig
-echo Done.
-}
-
-arm_userland(){
-echo
-echo Adding raspi userland.
-rm -f /etc/profile
-mv -f profile /etc/profile
-mv rpi-vc.conf /etc/ld.so.conf.d/rpi-vc.conf
-chown root:root /etc/profile
-chown root:root /etc/ld.so.conf.d/rpi-vc.conf
-sleep 1s
-mkdir -p /opt
-git clone https://github.com/raspberrypi/userland.git
-mv -f userland-remove-hi-pi.patch /root/userland/
-cd userland
-patch -p1 < userland-remove-hi-pi.patch
-rm -f userland-remove-hi-pi.patch
-./buildme
+if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
+	then ./buildme --aarch64 ;
+fi
+if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
+	then ./buildme --aarch64 ;
+fi
+if `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null;`
+	then ./buildme ;
+fi
 cd ~
 rm -f -d -R userland
 ldconfig
@@ -173,8 +159,6 @@ chown root:root /etc/modules
 echo Done.
 }
 
-### 2018 brcm firmware
-#wget -cq --show-progress https://community.cypress.com/servlet/JiveServlet/download/15932-1-39799/cypress-fmac-v4.14.52-2018_0928.zip
 ### 2020
 # https://community.cypress.com/gfawx74859/attachments/gfawx74859/resourcelibrary/966/1/cypress-fmac-v4.14.77-2020_0115.zip
 cypress_firmware(){

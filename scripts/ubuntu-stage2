@@ -236,7 +236,7 @@ if `grep -Fx 'DISTRO_VERSION="20.04.1"' "/root/userdata.txt" >/dev/null;`
 fi
 
 ###  Adding raspi userland
-armv8_userland
+rpi_userland
 
 ### Adding eeprom
 if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
