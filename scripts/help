@@ -1,6 +1,6 @@
 #!/bin/bash
 URL="https://github.com/pyavitz/rpi-img-builder/releases/download/linux/"
-VERSION="stable"
+VERSION="5.4.y"
 RED="\e[1;31m"
 HELP="\e[1;33m"
 FIN="\e[0m"
