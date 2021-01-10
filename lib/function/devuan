@@ -450,7 +450,7 @@ IMPORT{builtin}="path_id"
 
 ACTION!="add", GOTO="net_setup_link_end"
 
-IMPORT{builtin}="net_setup_link"
+# IMPORT{builtin}="net_setup_link"
 
 NAME=="", ENV{ID_NET_NAME}!="", NAME="eth0"
 
