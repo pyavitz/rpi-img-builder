@@ -50,7 +50,7 @@ create_cmdline(){
 source /etc/opt/root-pid.txt
 rm -f /boot/cmdline.txt
 tee /boot/cmdline.txt <<EOF
-console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=ext4 elevator=deadline fsck.repair=yes logo.nologo rootwait
+console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=ext4 elevator=deadline fsck.repair=yes logo.nologo net.ifnames=0 rootwait
 EOF
 rm -f /etc/opt/root-pid.txt
 }
