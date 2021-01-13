@@ -177,20 +177,6 @@ rm -fdr cypress
 echo Done.
 }
 
-ca_certificates(){
-echo
-echo Updating ca certificates.
-sleep 1s
-mkdir -p certificates
-cd certificates
-wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/ca-certificates_20200601.deb10u1_all.deb
-wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/ca-certificates-udeb_20200601.deb10u1_all.udeb
-dpkg -i *.deb *.udeb
-cd ~
-rm -fdr certificates
-echo Done.
-}
-
 zramswap_config(){
 sed -i 's/#ALLOCATION=256/ALLOCATION=1024/g' /etc/default/zramswap
 sed -i 's/#SIZE=256/SIZE=1024/g' /etc/default/zramswap

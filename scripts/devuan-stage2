@@ -249,9 +249,7 @@ if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
 fi
 
 ### Certificates
-if `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null;`
-	then ca_certificates
-fi
+update-ca-certificates -f
 
 ### Htop
 if `grep -Fx 'DISTRO_VERSION="beowulf"' "/root/userdata.txt" >/dev/null;`

@@ -627,7 +627,7 @@ fi
 bluez_stable(){
 BLUEZ_VERSION="5.55"
 echo
-echo Upgrading bluetooth.
+echo Updating bluetooth.
 sleep 1s
 wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/bluez-${BLUEZ_VERSION}-debian-arm64.tar.xz
 tar xf bluez-${BLUEZ_VERSION}-debian-arm64.tar.xz
@@ -646,7 +646,7 @@ echo Done.
 bluez_unstable(){
 BLUEZ_UNSTABLE_VERSION="5.55"
 echo
-echo Upgrading bluetooth.
+echo Updating bluetooth.
 sleep 1s
 wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/bluez-${BLUEZ_UNSTABLE_VERSION}-debian-unstable-arm64.tar.xz
 tar xf bluez-${BLUEZ_UNSTABLE_VERSION}-debian-unstable-arm64.tar.xz

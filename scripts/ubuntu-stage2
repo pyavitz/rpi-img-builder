@@ -230,6 +230,9 @@ if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
 	else cypress_firmware
 fi
 
+### Certificates
+update-ca-certificates -f
+
 ### Htop
 if `grep -Fx 'DISTRO_VERSION="20.04.1"' "/root/userdata.txt" >/dev/null;`
 	then htop_stable;
