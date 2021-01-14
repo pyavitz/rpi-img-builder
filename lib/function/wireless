@@ -9,21 +9,9 @@ fi
 echo_done
 }
 
-rtl8812au_arm(){
-case `grep -Fx "bcm2708" "../soc.txt" >/dev/null; echo $?` in
-  0)
-    sed -i 's/CONFIG_PLATFORM_I386_PC = y/CONFIG_PLATFORM_I386_PC = n/g' rtl8812au/Makefile
-    sed -i 's/CONFIG_PLATFORM_ARM_RPI = n/CONFIG_PLATFORM_ARM_RPI = y/g' rtl8812au/Makefile
-    ;;
-esac
-}
-
 rtl8812au(){
 rm -rf ${KERNEL}-${VERSION}/drivers/net/wireless/rtl8812au
 mkdir -p ${KERNEL}-${VERSION}/drivers/net/wireless/rtl8812au/
-if `grep -Fx "crosscompile=0" "../userdata.txt" >/dev/null;`
-	then rtl8812au_arm;
-fi
 cp -R rtl8812au/{core,hal,include,os_dep,platform} ${KERNEL}-${VERSION}/drivers/net/wireless/rtl8812au
 cp -R rtl8812au/Makefile ${KERNEL}-${VERSION}/drivers/net/wireless/rtl8812au/Makefile
 cp -R rtl8812au/Kconfig ${KERNEL}-${VERSION}/drivers/net/wireless/rtl8812au/Kconfig
