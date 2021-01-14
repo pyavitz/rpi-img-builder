@@ -61,7 +61,7 @@ Debian:		# 1 to select (buster/bullseye/testing/unstable/sid)
 Devuan:		# 1 to select (beowulf/testing/unstable/ceres)
 Ubuntu:		# 1 to select (20.04.1/20.10)
 
-Wireless
+Wireless (aarch64)
 rtl88XXau:      # 1 to add Realtek 8812AU/14AU/21AU wireless support
 rtl88XXbu:      # 1 to add Realtek 88X2BU wireless support
 rtl88XXcu:      # 1 to add Realtek 8811CU/21CU wireless support
@@ -85,7 +85,7 @@ Debian:		# 1 to select (buster/bullseye/testing/unstable/sid)
 Devuan:		# 1 to select (beowulf/testing/unstable/ceres)
 Ubuntu:		# 1 to select (20.04.1/20.10)
 
-Wireless
+Wireless (aarch64)
 rtl88XXau:      # 1 to add Realtek 8812AU/14AU/21AU wireless support
 rtl88XXbu:      # 1 to add Realtek 88X2BU wireless support
 rtl88XXcu:      # 1 to add Realtek 8811CU/21CU wireless support
