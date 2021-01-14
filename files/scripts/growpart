@@ -27,6 +27,8 @@ DISK=""
 PART=""
 PT_UPDATE=false
 DRY_RUN=0
+FLOCK_DISK_FD=""
+RESIZE_RESULT=""
 
 SFDISK_VERSION=""
 SFDISK_2_26="22600"
@@ -45,27 +47,30 @@ fail() {
 }
 
 nochange() {
+	RESIZE_RESULT="NOCHANGE"
 	echo "NOCHANGE:" "$@"
-	exit 1
+	return 1
 }
 
 changed() {
+	RESIZE_RESULT="CHANGED"
 	echo "CHANGED:" "$@"
-	exit 0
+	return 0
 }
 
 change() {
+	RESIZE_RESULT="CHANGE"
 	echo "CHANGE:" "$@"
-	exit 0
+	return 0
 }
 
 cleanup() {
 	if [ -n "${RESTORE_FUNC}" ]; then
 		error "***** WARNING: Resize failed, attempting to revert ******"
 		if ${RESTORE_FUNC} ; then
-			error "***** Appears to have gone OK ****"
+			error "***** Restore appears to have gone OK ****"
 		else
-			error "***** FAILED! ******"
+			error "***** Restore FAILED! ******"
 			if [ -n "${RESTORE_HUMAN}" -a -f "${RESTORE_HUMAN}" ]; then
 				error "**** original table looked like: ****"
 				cat "${RESTORE_HUMAN}" 1>&2
@@ -73,6 +78,7 @@ cleanup() {
 				error "We seem to have not saved the partition table!"
 			fi
 		fi
+		unlock_disk_and_settle $DISK
 	fi
 	[ -z "${TEMP_D}" -o ! -d "${TEMP_D}" ] || rm -Rf "${TEMP_D}"
 }
@@ -138,6 +144,45 @@ bad_Usage() {
 	exit 2
 }
 
+lock_disk() {
+	local disk="$1"
+	# flock the target disk to protect against udev actions while modifying.
+	# https://systemd.io/BLOCK_DEVICE_LOCKING/
+	[ "${DRY_RUN}" = 0 ] || return
+
+	# only lock block devices, files do not need a lock
+	[ -b "${disk}" ] || return
+
+	# The FD values are hard-coded per /bin/sh requirement for using exec
+	# to open paths with specific fd values; man (1) sh on "Redirections"
+	FLOCK_DISK_FD=9
+	debug 1 "FLOCK: try exec open fd 9, on failure exec exits this program"
+	exec 9<>$disk
+
+	# Do not use --nonblock or --timeout as udev may be already processing
+	# the disk and we must wait until it has released the disk to
+	# proceed.  Failure to obtain exclusive lock is fatal to growpart.
+	rq flock flock --exclusive $FLOCK_DISK_FD ||
+		fail "Error while obtaining exclusive lock on $DISK"
+	debug 1 "FLOCK: $disk: obtained exclusive lock"
+}
+
+unlock_disk_and_settle() {
+	# unlock_disk(disk, settle)
+	local disk="$1"
+	local settle=${2-"1"}
+	# release the lock on a disk if locked.  When a disk is locked,
+	# FLOCK_DISK_FD is set to the hard-coded value of 9.
+	# After unlocking run udevadm settle as the disk has likely been changed.
+	[ "${DRY_RUN}" = 0 ] || return
+	[ -n "${FLOCK_DISK_FD}" ] || return
+
+	debug 1 "FLOCK: ${disk}: releasing exclusive lock"
+	exec 9>&-
+	[ "${settle}" = 1 ] && udevadm settle
+	FLOCK_DISK_FD=""
+}
+
 sfdisk_restore_legacy() {
 	sfdisk --no-reread "${DISK}" -I "${MBR_BACKUP}"
 }
@@ -164,15 +209,26 @@ sfdisk_worked_but_blkrrpart_failed() {
 	# exit code found was just 1, but dont insist on that
 	#[ $ret -eq 1 ] || return 1
 	# Successfully wrote the new partition table
-	grep -qi "Success.* wrote.* new.* partition" "$output" &&
+	if grep -qi "Success.* wrote.* new.* partition" "$output"; then
 		grep -qi "BLKRRPART: Device or resource busy" "$output"
-	return
+		return
+	# The partition table has been altered.
+	elif grep -qi "The.* part.* table.* has.* been.* altered" "$output"; then
+		# Re-reading the partition table failed
+		grep -qi "Re-reading.* partition.* table.* failed" "$output"
+		return
+	fi
+	return $ret
 }
 
 get_sfdisk_version() {
 	# set SFDISK_VERSION to MAJOR*10000+MINOR*100+MICRO
 	local out oifs="$IFS" ver=""
 	[ -n "$SFDISK_VERSION" ] && return 0
+	[ -n "$SFDISK" ] || {
+		SFDISK_VERSION=0
+		return 0
+	}
 	# expected output: sfdisk from util-linux 2.25.2
 	out=$(sfdisk --version) ||
 		{ error "failed to get sfdisk version"; return 1; }
@@ -186,6 +242,37 @@ get_sfdisk_version() {
 		*) error "unexpected output in sfdisk --version [$out]"
 			return 1;;
 	esac
+}
+
+get_diskpart_path() {
+	# get_diskpart_path(disk, part_number)
+	# return the path to the partition device on disk
+	#
+	# Convert inputs disk and part into a path to a partition device path
+	# handle both block devices or files.
+	# e.g.  get_diskpart_path /dev/loop0 7 returns /dev/loop0p7
+	local disk="$1"
+	local part="$2"
+	local dpart=""
+
+	dpart="${disk}${part}" # disk and partition number
+	if [ -b "$disk" ]; then
+		if [ -b "${disk}p${part}" -a "${disk%[0-9]}" != "${disk}" ]; then
+			# for block devices that end in a number (/dev/nbd0)
+			# the partition is "<name>p<partition_number>" (/dev/nbd0p1)
+			dpart="${disk}p${part}"
+		elif [ "${disk#/dev/loop[0-9]}" != "${disk}" ]; then
+			# for /dev/loop devices, sfdisk output will be <name>p<number>
+			# format also, even though there is not a device there.
+			dpart="${disk}p${part}"
+		fi
+	else
+		case "$disk" in
+			# sfdisk for files ending in digit to <disk>p<num>.
+			*[0-9]) dpart="${disk}p${part}";;
+		esac
+	fi
+	_RET="$dpart"
 }
 
 resize_sfdisk() {
@@ -231,14 +318,12 @@ resize_sfdisk() {
 		# --list first line output:
 		# Disk /dev/vda: 20 GiB, 21474836480 bytes, 41943040 sectors
 		local _x
-		read _x _x _x _x disk_size _x sector_num _x  < "$tmp"
+		read _x _x _x _x disk_size _x sector_num _x < "$tmp"
 		sector_size=$((disk_size/$sector_num))
 		restore_func=sfdisk_restore
 	fi
 
 	debug 1 "$sector_num sectors of $sector_size. total size=${disk_size} bytes"
-	[ $(($disk_size/512)) -gt $mbr_max_512 ] &&
-		debug 1 "WARN: disk is larger than 2TB. additional space will go unused."
 
 	rqe sfd_dump sfdisk --unit=S --dump "${DISK}" >"${dump_out}" ||
 		fail "failed to dump sfdisk info for ${DISK}"
@@ -247,7 +332,7 @@ resize_sfdisk() {
 	{
 		echo "## sfdisk --unit=S --dump ${DISK}"
 		cat "${dump_out}"
-	}  >"$humanpt"
+	} >"$humanpt"
 
 	[ $? -eq 0 ] || fail "failed to save sfdisk -d output"
 	RESTORE_HUMAN="$humanpt"
@@ -258,16 +343,8 @@ resize_sfdisk() {
 		>"${dump_mod}" ||
 		fail "sed failed on dump output"
 
-	dpart="${DISK}${PART}" # disk and partition number
-	if [ -b "${DISK}p${PART}" -a "${DISK%[0-9]}" != "${DISK}" ]; then
-		# for block devices that end in a number (/dev/nbd0)
-		# the partition is "<name>p<partition_number>" (/dev/nbd0p1)
-		dpart="${DISK}p${PART}"
-	elif [ "${DISK#/dev/loop[0-9]}" != "${DISK}" ]; then
-		# for /dev/loop devices, sfdisk output will be <name>p<number>
-		# format also, even though there is not a device there.
-		dpart="${DISK}p${PART}"
-	fi
+	get_diskpart_path $DISK $PART
+	dpart="$_RET"
 
 	pt_start=$(awk '$1 == pt { print $4 }' "pt=${dpart}" <"${dump_mod}") &&
 		pt_size=$(awk '$1 == pt { print $6 }' "pt=${dpart}" <"${dump_mod}") &&
@@ -275,23 +352,27 @@ resize_sfdisk() {
 		pt_end=$((${pt_size}+${pt_start})) ||
 		fail "failed to get start and end for ${dpart} in ${DISK}"
 
-	# find the minimal starting location that is >= pt_end 
+	# find the minimal starting location that is >= pt_end
 	max_end=$(awk '$3 == "start" { if($4 >= pt_end && $4 < min)
 		{ min = $4 } } END { printf("%s\n",min); }' \
 		min=${sector_num} pt_end=${pt_end} "${dump_mod}") &&
 		[ -n "${max_end}" ] ||
 		fail "failed to get max_end for partition ${PART}"
 
-	mbr_max_sectors=$((mbr_max_512*$((sector_size/512))))
-	if [ "$max_end" -gt "$mbr_max_sectors" ]; then
-		max_end=$mbr_max_sectors
-	fi
-
 	if [ "$format" = "gpt" ]; then
 		# sfdisk respects 'last-lba' in input, and complains about
 		# partitions that go past that.  without it, it does the right thing.
 		sed -i '/^last-lba:/d' "$dump_out" ||
 			fail "failed to remove last-lba from output"
+	fi
+	if [ "$format" = "dos" ]; then
+		mbr_max_sectors=$((mbr_max_512*$((sector_size/512))))
+		if [ "$max_end" -gt "$mbr_max_sectors" ]; then
+			max_end=$mbr_max_sectors
+		fi
+		[ $(($disk_size/512)) -gt $mbr_max_512 ] &&
+			debug 0 "WARNING: MBR/dos partitioned disk is larger than 2TB." \
+				"Additional space will go unused."
 	fi
 
 	local gpt_second_size="33"
@@ -305,20 +386,26 @@ resize_sfdisk() {
 
 	debug 1 "max_end=${max_end} tot=${sector_num} pt_end=${pt_end}" \
 		"pt_start=${pt_start} pt_size=${pt_size}"
-	[ $((${pt_end})) -eq ${max_end} ] &&
+	[ $((${pt_end})) -eq ${max_end} ] && {
 		nochange "partition ${PART} is size ${pt_size}. it cannot be grown"
-	[ $((${pt_end}+(${FUDGE}/$sector_size))) -gt ${max_end} ] &&
+		return
+	}
+	[ $((${pt_end}+(${FUDGE}/$sector_size))) -gt ${max_end} ] && {
 		nochange "partition ${PART} could only be grown by" \
-		"$((${max_end}-${pt_end})) [fudge=$((${FUDGE}/$sector_size))]"
+			"$((${max_end}-${pt_end})) [fudge=$((${FUDGE}/$sector_size))]"
+		return
+	}
 
 	# now, change the size for this partition in ${dump_out} to be the
 	# new size
 	new_size=$((${max_end}-${pt_start}))
-	sed "\|^\s*${dpart} |s/${pt_size},/${new_size},/" "${dump_out}" \
+	sed "\|^\s*${dpart} |s/\(.*\)${pt_size},/\1${new_size},/" "${dump_out}" \
 		>"${new_out}" ||
 		fail "failed to change size in output"
 
-	change_info="partition=${PART} start=${pt_start} old: size=${pt_size} end=${pt_end} new: size=${new_size},end=${max_end}"
+	change_info="partition=${PART} start=${pt_start}"
+	change_info="${change_info} old: size=${pt_size} end=${pt_end}"
+	change_info="${change_info} new: size=${new_size} end=${max_end}"
 	if [ ${DRY_RUN} -ne 0 ]; then
 		echo "CHANGE: ${change_info}"
 		{
@@ -337,7 +424,10 @@ resize_sfdisk() {
 	[ $ret -eq 0 ] || RESTORE_FUNC="${restore_func}"
 
 	if [ $ret -eq 0 ]; then
-		:
+		debug 1 "resize of ${DISK} returned 0."
+		if [ $VERBOSITY -gt 2 ]; then
+			sed 's,^,| ,' "${change_out}" 1>&2
+		fi
 	elif $PT_UPDATE &&
 		sfdisk_worked_but_blkrrpart_failed "$ret" "${change_out}"; then
 		# if the command failed, but it looks like only because
@@ -355,6 +445,7 @@ resize_sfdisk() {
 	RESTORE_FUNC=""
 
 	changed "${change_info}"
+	return
 
 	# dump_out looks something like:
 	## partition table of /tmp/out.img
@@ -385,7 +476,7 @@ resize_sgdisk() {
 
 	local pt_start pt_end pt_size last pt_max code guid name new_size
 	local old new change_info sector_size
-	
+
 	# Dump the original partition information and details to disk. This is
 	# used in case something goes wrong and human interaction is required
 	# to revert any changes.
@@ -393,7 +484,16 @@ resize_sgdisk() {
 		fail "${dev}: failed to dump original sgdisk info"
 	RESTORE_HUMAN="${pt_info}"
 
-	sector_size=$(awk '$0 ~ /^Logical sector size:.*bytes/ { print $4 }' \
+	# support reading old format (<1.0.2)
+	#   Logical sector size: <VAL> bytes
+	# and newer format >= 1.0.2
+	#   Sector size (logical): <VAL> bytes
+	#   Sector size (logical/physical): <VAL>/<PVAL> bytes
+	sector_size=$(awk '
+		$0 ~ /^Logical sector size:.*bytes/ { print $4; exit(0); }
+		$0 ~ /^Sector size \(logical\):/ { print $4; exit(0); }
+		$0 ~ /^Sector size \(logical\/physical\):/ {
+		    sub(/\/.*/, "", $4); print $4; exit(0); }' \
 		"$pt_info") && [ -n "$sector_size" ] || {
 		sector_size=512
 		error "WARN: did not find sector size, assuming 512"
@@ -424,6 +524,8 @@ resize_sgdisk() {
 	pt_end=$(awk '$1 == '"${PART}"' { print $3 }' "${pt_data}") &&
 		[ -n "${pt_end}" ] ||
 		fail "${dev}: failed to get end sector"
+	# sgdisk start and end are inclusive.  start 2048 length 10 ends at 2057.
+	pt_end=$((pt_end+1))
 	pt_size="$((${pt_end} - ${pt_start}))"
 
 	# Get the last usable sector
@@ -431,7 +533,7 @@ resize_sgdisk() {
 		"${pt_pretend}") && [ -n "${last}" ] ||
 		fail "${dev}: failed to get last usable sector"
 
-	# Find the minimal start sector that is >= pt_end 
+	# Find the minimal start sector that is >= pt_end
 	pt_max=$(awk '{ if ($2 >= pt_end && $2 < min) { min = $2 } } END \
 		{ print min }' min="${last}" pt_end="${pt_end}" \
 		"${pt_data}") && [ -n "${pt_max}" ] ||
@@ -441,11 +543,15 @@ resize_sgdisk() {
 		"pt_size=${pt_size} pt_max=${pt_max} last=${last}"
 
 	# Check if the partition can be grown
-	[ "${pt_end}" -eq "${pt_max}" ] &&
+	[ "${pt_end}" -eq "${pt_max}" ] && {
 		nochange "${dev}: size=${pt_size}, it cannot be grown"
-	[ "$((${pt_end} + ${FUDGE}/${sector_size}))" -gt "${pt_max}" ] &&
+		return
+	}
+	[ "$((${pt_end} + ${FUDGE}/${sector_size}))" -gt "${pt_max}" ] && {
 		nochange "${dev}: could only be grown by" \
-		"$((${pt_max} - ${pt_end})) [fudge=$((${FUDGE}/$sector_size))]"
+			"$((${pt_max} - ${pt_end})) [fudge=$((${FUDGE}/$sector_size))]"
+		return
+	}
 
 	# The partition can be grown if we made it here. Get some more info
 	# about it so we can do it properly.
@@ -463,10 +569,10 @@ resize_sgdisk() {
 
 	# Calculate the new size of the partition
 	new_size=$((${pt_max} - ${pt_start}))
-	old="old: size=${pt_size},end=${pt_end}"
-	new="new: size=${new_size},end=${pt_max}"
-	change_info="${dev}: start=${pt_start} ${old} ${new}"
-	
+	change_info="partition=${PART} start=${pt_start}"
+	change_info="${change_info} old: size=${pt_size} end=${pt_end}"
+	change_info="${change_info} new: size=${new_size} end=${pt_max}"
+
 	# Backup the current partition table, we're about to modify it
 	rq sgd_backup $wouldrun sgdisk "--backup=${GPT_BACKUP}" "${DISK}" ||
 		fail "${dev}: failed to backup the partition table"
@@ -480,7 +586,7 @@ resize_sgdisk() {
 	#  - set the partition GUID
 	#  - set the partition name
 	rq sgdisk_mod $wouldrun sgdisk --move-second-header "--delete=${PART}" \
-		"--new=${PART}:${pt_start}:${pt_max}" \
+		"--new=${PART}:${pt_start}:$((pt_max-1))" \
 		"--typecode=${PART}:${code}" \
 		"--partition-guid=${PART}:${guid}" \
 		"--change-name=${PART}:${name}" "${DISK}" &&
@@ -490,20 +596,27 @@ resize_sgdisk() {
 	}
 
 	# Dry run
-	[ "${DRY_RUN}" -ne 0 ] && change "${change_info}"
+	[ "${DRY_RUN}" -ne 0 ] && {
+		change "${change_info}"
+		return
+	}
 
 	changed "${change_info}"
+	return
 }
 
 kver_to_num() {
-	local kver="$1" maj="" min="" mic="0"
-	kver=${kver%%-*}
-	maj=${kver%%.*}
-	min=${kver#${maj}.}
-	min=${min%%.*}
-	mic=${kver#${maj}.${min}.}
-	[ "$kver" = "$mic" ] && mic=0
-	_RET=$(($maj*1000*1000+$min*1000+$mic))
+	local kver="$1" maj min mic
+
+	# Canonicalize the kernel version
+	kver=${kver%%[!0-9.]*}.0.0
+
+	maj=${kver%%[!0-9]*}
+	kver=${kver#*.}
+	min=${kver%%[!0-9]*}
+	kver=${kver#*.}
+	mic=${kver%%[!0-9]*}
+	_RET=$((maj*1000*1000+min*1000+mic))
 }
 
 kver_cmp() {
@@ -512,7 +625,7 @@ kver_cmp() {
 	n1="$_RET"
 	kver_to_num "$3"
 	n2="$_RET"
-	[ $n1 $op $n2 ]
+	test $n1 $op $n2
 }
 
 rq() {
@@ -532,7 +645,7 @@ rq() {
 	done
 	cmd=${cmd# }
 
-	debug 2 "$rlabel[$label][$_capture]" "$cmd"
+	debug 2 "${rlabel}[$label][$_capture]" "$cmd"
 	[ "$rlabel" = "would-run" ] && return 0
 
 	if [ "${_capture}" = "erronly" ]; then
@@ -544,7 +657,7 @@ rq() {
 	fi
 	if [ $ret -ne 0 ]; then
 		error "failed [$label:$ret]" "$@"
- 		cat "$efile" 1>&2
+		cat "$efile" 1>&2
 	fi
 	return $ret
 }
@@ -559,7 +672,7 @@ verify_ptupdate() {
 
 	# we can always satisfy 'off'
 	if [ "$input" = "off" ]; then
- 		_RET="false";
+		_RET="false";
 		return 0;
 	fi
 
@@ -655,7 +768,20 @@ get_table_format() {
 		return
 	fi
 	_RET="dos"
-	if [ ${SFDISK_VERSION} -lt ${SFDISK_2_26} ] &&
+	if [ -z "$SFDISK" ]; then
+		out=$(LANG=C sgdisk --print "$disk") || {
+			error "Could not determine partition table format of $disk" \
+				"with 'sgdisk --print $disk'"
+			return 1
+		}
+		# looking for a message like:
+		# Found invalid GPT and valid MBR; converting MBR to GPT format
+		case "$out" in
+			*\ valid\ MBR\ *) _RET="dos";;
+			*) _RET="gpt";;
+		esac
+		return
+	elif [ ${SFDISK_VERSION} -lt ${SFDISK_2_26} ] &&
 		out=$(sfdisk --id --force "$disk" 1 2>/dev/null); then
 		if [ "$out" = "ee" ]; then
 			_RET="gpt"
@@ -679,10 +805,14 @@ get_resizer() {
 		sgdisk) _RET="resize_sgdisk_$format"; return;;
 		sfdisk) _RET="resize_sfdisk_$format"; return;;
 		auto) :;;
-		*) error "unexpected input: '$user'";;
+		*) error "unexpected value '$user' for growpart resizer"; return 1;;
 	esac
 
 	if [ "$format" = "dos" ]; then
+		[ -n "$SFDISK" ] || {
+			error "sfdisk is required for resizing dos/MBR partition table."
+			return 1
+		}
 		_RET="resize_sfdisk_dos"
 		return 0
 	fi
@@ -696,6 +826,39 @@ get_resizer() {
 		error "no tools available to resize disk with '$format'"
 		return 1
 	fi
+	return 0
+}
+
+maybe_lvm_resize() {
+	local disk="$1" part="$2" partpath="" ret="" out="" wouldrun=""
+	[ "$DRY_RUN" -ne 0 ] && wouldrun="would-run"
+
+	has_cmd lvm || {
+		debug 2 "No lvm command, cannot attempt lvm resize of disk '$disk' part '$part'"
+		return 0
+	}
+	get_diskpart_path "$1" "$2" || {
+		error "could not determine partition path for disk '$DISK' part '$part'"
+		return 1
+	}
+	partpath="$_RET"
+
+	# can't use rq or rqe here because of "not an lvm" exit code 5.
+	set -- lvm pvs --nolocking --readonly -o pvname "$partpath"
+	debug 2 "executing: $*"
+	out=$("$@" 2>&1)
+	ret=$?
+	case "$ret" in
+		5) debug 1 "$partpath is not an lvm pv"; return 0;;
+		0) :;;
+		*) error "failed to execute [$ret] '$*'"
+			error "$out"
+			return 1;;
+	esac
+	rq lvm_resize $wouldrun lvm pvresize "$partpath" || {
+		error "Failed to resize lvm pv $partpath"
+		return 1
+	}
 	return 0
 }
 
@@ -752,10 +915,27 @@ done
 [ -n "${DISK}" ] || bad_Usage "must supply disk and partition-number"
 [ -n "${PART}" ] || bad_Usage "must supply partition-number"
 
-has_cmd "sfdisk" || fail "sfdisk not found"
+[ -e "${DISK}" ] || fail "${DISK}: does not exist"
+
+# cache the has_cmd return value.
+has_cmd sfdisk && SFDISK=sfdisk || SFDISK=""
+has_cmd sgdisk && SGDISK=sgdisk || SGDISK=""
+
+[ -n "$SGDISK" -o -n "$SFDISK" ] ||
+	fail "Did not have sfdisk or sgdisk in PATH."
+
 get_sfdisk_version || fail
 
-[ -e "${DISK}" ] || fail "${DISK}: does not exist"
+# If $DISK is a symlink, resolve it.
+# This avoids problems due to varying partition device name formats
+# (e.g. "1" for /dev/sda vs "-part1" for /dev/disk/by-id/name)
+if [ -L "${DISK}" ]; then
+	has_cmd readlink ||
+		fail "${DISK} is a symlink, but 'readlink' command not available."
+	real_disk=$(readlink -f "${DISK}") || fail "unable to resolve ${DISK}"
+	debug 1 "${DISK} resolved to ${real_disk}"
+	DISK=${real_disk}
+fi
 
 [ "${PART#*[!0-9]}" = "${PART}" ] || fail "partition-number must be a number"
 
@@ -771,10 +951,20 @@ trap cleanup 0 # EXIT - some shells may not like 'EXIT' but are ok with 0
 get_table_format "$DISK" || fail
 format=$_RET
 get_resizer "$format" "$resizer" ||
-	fail "failed to get a resizer for id '$id'"
+	fail "failed to get a resizer for format '$format'"
 resizer=$_RET
 
+lock_disk $DISK
 debug 1 "resizing $PART on $DISK using $resizer"
 "$resizer"
+ret=$?
+
+unlock_disk_and_settle $DISK
+
+if [ "$RESIZE_RESULT" = "CHANGED" -o "$RESIZE_RESULT" = "CHANGE" ]; then
+	maybe_lvm_resize "$DISK" "$PART" || fail "lvm resize failed."
+fi
+
+exit $ret
 
 # vi: ts=4 noexpandtab
