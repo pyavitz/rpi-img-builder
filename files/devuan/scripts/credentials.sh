@@ -69,11 +69,13 @@ esac
 }
 
 hostname_branding(){
-if `grep -Fx "CHANGE=y" "/boot/credentials.txt" >/dev/null;`
-	then change_hostname && change_branding;
-	else : > /dev/null 2>&1;
-fi
-service hostname.sh --full-restart
+case `grep -Fx "CHANGE=y" "/boot/credentials.txt" >/dev/null; echo $?` in
+  0)
+    change_hostname
+    change_branding
+    service hostname.sh --full-restart
+    ;;
+esac
 }
 
 remove_wifi () {
