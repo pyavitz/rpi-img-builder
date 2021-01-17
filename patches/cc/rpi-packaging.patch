@@ -1,6 +1,6 @@
 diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
---- a/scripts/package/builddeb	2020-06-10 05:54:19.000000000 -0400
-+++ b/scripts/package/builddeb	2020-06-10 08:56:13.240213745 -0400
+--- a/scripts/package/builddeb	2021-01-14 20:59:46.605224000 -0500
++++ b/scripts/package/builddeb	2021-01-17 10:49:27.795516388 -0500
 @@ -47,12 +47,13 @@
  }
  
@@ -25,7 +25,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  fi
  cp "$($MAKE -s -f $srctree/Makefile image_name)" "$tmpdir/$installed_image_path"
  
-@@ -139,6 +141,14 @@
+@@ -139,6 +141,16 @@
  	mv $libc_headers_dir/usr/include/asm $libc_headers_dir/usr/include/$host_arch/
  fi
  
@@ -35,12 +35,14 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
 +cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2708-rpi-zero.dtb" "$tmpdir/boot/bcm2708-rpi-zero.dtb"
 +cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2708-rpi-b.dtb" "$tmpdir/boot/bcm2708-rpi-b.dtb"
 +cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2708-rpi-b-plus.dtb" "$tmpdir/boot/bcm2708-rpi-b-plus.dtb"
++cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2709-rpi-2-b.dtb" "$tmpdir/boot/bcm2709-rpi-2-b.dtb"
++cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2710-rpi-2-b.dtb" "$tmpdir/boot/bcm2710-rpi-2-b.dtb"
 +cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/overlays/" "$tmpdir/boot/"
 +
  # Install the maintainer scripts
  # Note: hook scripts under /etc/kernel are also executed by official Debian
  # kernel packages, as well as kernel packages built using make-kpkg.
-@@ -164,6 +174,40 @@
+@@ -164,6 +176,40 @@
  	chmod 755 "$tmpdir/DEBIAN/$script"
  done
  
@@ -81,7 +83,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  # Build kernel header package
  (cd $srctree; find . -name Makefile\* -o -name Kconfig\* -o -name \*.pl) > "$objtree/debian/hdrsrcfiles"
  (cd $srctree; find arch/*/include include scripts -type f -o -type l) >> "$objtree/debian/hdrsrcfiles"
-@@ -183,6 +227,37 @@
+@@ -183,6 +229,37 @@
  (cd $objtree; cp $KCONFIG_CONFIG $destdir/.config) # copy .config manually to be where it's expected to be
  ln -sf "/usr/src/linux-headers-$version" "$kernel_headers_dir/lib/modules/$version/build"
  rm -f "$objtree/debian/hdrsrcfiles" "$objtree/debian/hdrobjfiles"
@@ -120,8 +122,8 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  if [ "$ARCH" != "um" ]; then
  	create_package "$kernel_headers_packagename" "$kernel_headers_dir"
 diff -Naur a/scripts/package/mkdebian b/scripts/package/mkdebian
---- a/scripts/package/mkdebian	2020-06-10 05:54:19.000000000 -0400
-+++ b/scripts/package/mkdebian	2020-06-10 08:55:31.537376906 -0400
+--- a/scripts/package/mkdebian	2021-01-14 20:59:46.606224000 -0500
++++ b/scripts/package/mkdebian	2021-01-17 10:46:54.759748911 -0500
 @@ -94,8 +94,8 @@
  	packageversion=$version-$revision
  fi

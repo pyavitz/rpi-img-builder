@@ -1,6 +1,6 @@
 diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
---- a/scripts/package/builddeb	2020-06-10 05:54:19.000000000 -0400
-+++ b/scripts/package/builddeb	2020-06-10 08:51:31.434295716 -0400
+--- a/scripts/package/builddeb	2021-01-14 20:59:46.605224000 -0500
++++ b/scripts/package/builddeb	2021-01-17 10:56:56.649272253 -0500
 @@ -47,12 +47,13 @@
  }
  
@@ -25,19 +25,20 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  fi
  cp "$($MAKE -s -f $srctree/Makefile image_name)" "$tmpdir/$installed_image_path"
  
-@@ -139,6 +141,11 @@
+@@ -139,6 +141,12 @@
  	mv $libc_headers_dir/usr/include/asm $libc_headers_dir/usr/include/$host_arch/
  fi
  
 +# install dtb and overlays
 +mkdir -p "$tmpdir/boot/overlays"
 +cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2711-rpi-4-b.dtb" "$tmpdir/boot/bcm2711-rpi-4-b.dtb"
++cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2711-rpi-400.dtb" "$tmpdir/boot/bcm2711-rpi-400.dtb"
 +cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/overlays/" "$tmpdir/boot/"
 +
  # Install the maintainer scripts
  # Note: hook scripts under /etc/kernel are also executed by official Debian
  # kernel packages, as well as kernel packages built using make-kpkg.
-@@ -164,6 +171,36 @@
+@@ -164,6 +172,36 @@
  	chmod 755 "$tmpdir/DEBIAN/$script"
  done
  
@@ -74,7 +75,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  # Build kernel header package
  (cd $srctree; find . -name Makefile\* -o -name Kconfig\* -o -name \*.pl) > "$objtree/debian/hdrsrcfiles"
  (cd $srctree; find arch/*/include include scripts -type f -o -type l) >> "$objtree/debian/hdrsrcfiles"
-@@ -183,6 +220,37 @@
+@@ -183,6 +221,37 @@
  (cd $objtree; cp $KCONFIG_CONFIG $destdir/.config) # copy .config manually to be where it's expected to be
  ln -sf "/usr/src/linux-headers-$version" "$kernel_headers_dir/lib/modules/$version/build"
  rm -f "$objtree/debian/hdrsrcfiles" "$objtree/debian/hdrobjfiles"
@@ -113,8 +114,8 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  if [ "$ARCH" != "um" ]; then
  	create_package "$kernel_headers_packagename" "$kernel_headers_dir"
 diff -Naur a/scripts/package/mkdebian b/scripts/package/mkdebian
---- a/scripts/package/mkdebian	2020-06-10 05:54:19.000000000 -0400
-+++ b/scripts/package/mkdebian	2020-06-10 08:49:28.898746987 -0400
+--- a/scripts/package/mkdebian	2021-01-14 20:59:46.606224000 -0500
++++ b/scripts/package/mkdebian	2021-01-17 10:55:47.740033682 -0500
 @@ -94,8 +94,8 @@
  	packageversion=$version-$revision
  fi
