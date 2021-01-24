@@ -346,9 +346,6 @@ echo Done.
 }
 
 bluez_choose(){
-if `grep -Fx 'DISTRO_VERSION="20.04"' "/root/userdata.txt" >/dev/null;`
-	then bluez_stable;
-fi
 if `grep -Fx 'DISTRO_VERSION="20.04.1"' "/root/userdata.txt" >/dev/null;`
 	then bluez_stable;
 fi
