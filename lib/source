@@ -73,13 +73,3 @@ EEPROM_VERSION="11.5"
 
 # motd
 BRAND="Raspberry Pi"
-
-# extra
-module_sig(){
-echo CONFIG_MODULE_SIG=y >> arch/arm64/configs/bcm2711_defconfig
-echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm64/configs/bcm2711_defconfig
-echo CONFIG_MODULE_SIG=y >> arch/arm64/configs/bcmrpi3_defconfig
-echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm64/configs/bcmrpi3_defconfig
-echo CONFIG_MODULE_SIG=y >> arch/arm/configs/bcmrpi_defconfig
-echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm/configs/bcmrpi_defconfig
-}

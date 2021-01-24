@@ -9,7 +9,7 @@ WHT="\e[1;37m"
 FIN="\e[0m"
 source userdata.txt > /dev/null 2>&1;
 source lib/source
-source lib/function/rootfs
+source lib/function/boot
 
 devuan_rootfs (){
 DEVUAN_STABLE=devuan-${DISTRO_VERSION}-rootfs-armel.tar.xz
