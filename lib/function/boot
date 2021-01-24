@@ -1,3 +1,74 @@
+partition(){
+truncate -s 1100MB "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
+fdisk "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" <<EOF
+o
+n
+p
+1
+2048
+a
+t
+b
+2148436
+
+p
+w
+
+EOF
+IMAGE_LOOP_DEV="$(losetup --show -f ${IMAGE_FOLDER}${IMAGE_FILE_NAME})"
+IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p1"
+partprobe "${IMAGE_LOOP_DEV}"
+mkfs.ext4 -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}"
+mkdir -p p1
+mount "${IMAGE_LOOP_DEV_ROOTFS}" p1
+sync
+umount p1
+mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p1
+}
+
+partitions(){
+fdisk "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" <<EOF
+o
+n
+p
+1
+2048
+524287
+a
+c
+t
+b
+n
+p
+2
+524288
+
+p
+w
+
+EOF
+IMAGE_LOOP_DEV="$(losetup --show -f ${IMAGE_FOLDER}${IMAGE_FILE_NAME})"
+IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
+IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
+partprobe "${IMAGE_LOOP_DEV}"
+mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
+mkfs.ext4 -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}"
+mkdir -p p1 p2
+mount "${IMAGE_LOOP_DEV_BOOT}" p1
+mount "${IMAGE_LOOP_DEV_ROOTFS}" p2
+sync
+umount p2
+mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2
+}
+
+create_fstab(){
+tee p2/etc/fstab <<EOF
+UUID=${BOOT_UUID}	/boot		vfat    defaults 0 2
+UUID=${ROOT_UUID}	/		ext4	defaults,noatime,nodiratime,commit=600,errors=remount-ro 0 1
+tmpfs	/tmp		tmpfs	defaults,nosuid 0 0
+EOF
+}
+
 partition_uuid(){
 BOOT_UUID=$(blkid -o export -- "${IMAGE_LOOP_DEV_BOOT}" | sed -ne 's/^UUID=//p')
 ROOT_UUID=$(blkid -o export -- "${IMAGE_LOOP_DEV_ROOTFS}" | sed -ne 's/^UUID=//p')
