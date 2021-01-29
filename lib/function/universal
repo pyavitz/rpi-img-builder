@@ -186,7 +186,7 @@ rm -fdR bluez-firmware
 }
 
 brcm_firmware(){
-WRPT="rpt10"
+WRPT="rpt11"
 wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/f/firmware-nonfree/firmware-brcm80211_20190114-1+${WRPT}_all.deb
 dpkg -i firmware-brcm80211_20190114-1+${WRPT}_all.deb
 rm -f firmware-brcm80211_20190114-1+${WRPT}_all.deb
