@@ -49,8 +49,8 @@ DEVUAN2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
 	ntp ifupdown-extra avahi-utils distro-info-data lsb-release"
 
 # ubuntu
-UBUNTUIMGSIZE="2050MB"
-UBUNTUIMGSIZE_UNSTABLE="2175MB"
+UBUNTUIMGSIZE="2000MB"
+UBUNTUIMGSIZE_UNSTABLE="2125MB"
 
 # stage2
 UBUNTU1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \

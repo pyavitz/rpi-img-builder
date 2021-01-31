@@ -104,7 +104,7 @@ sleep 1s
 apt -y clean
 apt -y autoclean
 apt update
-apt install -y ${UBUNTU2} ${FIRMWARE}
+apt install -y ${UBUNTU2}
 
 #### Adding firmware
 echo
