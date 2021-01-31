@@ -33,9 +33,9 @@ DEBIAN2="cpu hwinfo haveged resolvconf git build-essential net-tools ifplugd \
 	avahi-utils distro-info-data lsb-release"
 
 # devuan
-DEVUANIMGSIZE="2050MB"
-DEVUANIMGSIZE_TESTING="2800MB"
-DEVUANIMGSIZE_UNSTABLE="2800MB"
+DEVUANIMGSIZE="2100MB"
+DEVUANIMGSIZE_TESTING="2850MB"
+DEVUANIMGSIZE_UNSTABLE="2850MB"
 
 DEVUAN1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	e2fsprogs fonty-rg patch curl wget apt-transport-https dirmngr \
@@ -49,8 +49,8 @@ DEVUAN2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
 	ntp ifupdown-extra avahi-utils distro-info-data lsb-release"
 
 # ubuntu
-UBUNTUIMGSIZE="2000MB"
-UBUNTUIMGSIZE_UNSTABLE="2125MB"
+UBUNTUIMGSIZE="2050MB"
+UBUNTUIMGSIZE_UNSTABLE="2175MB"
 
 # stage2
 UBUNTU1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
