@@ -104,7 +104,7 @@ sleep 1s
 apt -y clean
 apt -y autoclean
 apt update
-apt install -y ${DEVUAN2}
+apt install -y ${DEVUAN2} ${FIRMWARE}
 
 #### Adding firmware
 echo
