@@ -35,6 +35,7 @@ else
     echo "$UNMINIMIZE does not exist."
 fi
 
+apt_preferences
 apt install -y ${UBUNTU1} fdisk
 
 #### Scripts

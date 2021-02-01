@@ -41,6 +41,17 @@ xz -zev --threads=${CORES} ${DEVICE_SOC}-ubuntu-${DISTRO_VERSION}-${INSTALLED_KE
 }
 
 # STAGE 2
+apt_preferences(){
+echo
+echo Blacking listing packages.
+tee /etc/apt/preferences <<EOF
+Package: rpi-eeprom linux-firmware-raspi2 pi-bluetooth
+Pin: release o=Ubuntu
+Pin-Priority: 1
+EOF
+echo Done.
+}
+
 # USER CONFIG
 bcm2710_user(){
 echo -n 'bcm2710' > /etc/hostname
