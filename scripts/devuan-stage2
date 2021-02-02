@@ -249,12 +249,8 @@ if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
 fi
 
 ### Certificates
+echo
 update-ca-certificates -f
-
-### Htop
-if `grep -Fx 'DISTRO_VERSION="beowulf"' "/root/userdata.txt" >/dev/null;`
-	then htop_stable;
-fi
 
 ###  Raspi userland
 rpi_userland

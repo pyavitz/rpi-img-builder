@@ -36,6 +36,7 @@ else
 fi
 
 apt_preferences
+echo
 apt install -y ${UBUNTU1} fdisk
 
 #### Scripts
@@ -232,12 +233,8 @@ if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
 fi
 
 ### Certificates
+echo
 update-ca-certificates -f
-
-### Htop
-if `grep -Fx 'DISTRO_VERSION="20.04.1"' "/root/userdata.txt" >/dev/null;`
-	then htop_stable;
-fi
 
 ###  Adding raspi userland
 rpi_userland

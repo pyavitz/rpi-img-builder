@@ -365,21 +365,6 @@ if `grep -Fx 'DISTRO_VERSION="20.10"' "/root/userdata.txt" >/dev/null;`
 fi
 }
 
-htop_stable(){
-echo
-echo Installing htop with cpufreq and thermal support.
-sleep 1s
-git clone https://github.com/leeadama/htop.git
-cd htop
-./autogen.sh
-./configure --prefix=/usr
-make
-make install
-cd ~
-rm -fdr htop
-echo Done.
-}
-
 led_switches(){
 echo
 echo Creating power led switch.
