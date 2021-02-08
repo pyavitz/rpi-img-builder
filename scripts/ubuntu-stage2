@@ -205,6 +205,16 @@ dpkg-buildpackage -us -uc
 cd ~
 dpkg -i raspberrypi-sys-mods*.deb
 rm -fdR raspberrypi-sys-mods*
+echo Removing vscode repo...
+if ls /etc/apt/sources.list.d/vscode.list > /dev/null 2>&1
+	then rm -f /etc/apt/sources.list.d/vscode.list;
+fi
+if ls /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null 2>&1
+	then rm -f /etc/apt/trusted.gpg.d/microsoft.gpg;
+fi
+if ls /etc/apt/preferences.d/3rd_parties.pref > /dev/null 2>&1
+	then rm -f /etc/apt/preferences.d/3rd_parties.pref;
+fi
 echo Done.
 
 ### Bluez firmware.

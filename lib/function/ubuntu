@@ -45,7 +45,7 @@ apt_preferences(){
 echo
 echo Blacking listing packages.
 tee /etc/apt/preferences <<EOF
-Package: rpi-eeprom linux-firmware-raspi2 pi-bluetooth
+Package: rpi-eeprom linux-firmware-raspi2 pi-bluetooth raspberrypi-sys-mods
 Pin: release o=Ubuntu
 Pin-Priority: 1
 EOF
