@@ -3,7 +3,7 @@
 RED="\e[0;31m"
 FIN="\e[0m"
 DISTRO_VERSION="buster"
-VERSION="5.4.y"
+VERSION="5.10.y"
 menuconfig="0"
 crosscompile="1"
 debian="1"
