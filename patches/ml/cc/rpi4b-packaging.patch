@@ -1,6 +1,6 @@
 diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
---- a/scripts/package/builddeb	2020-06-10 05:54:19.000000000 -0400
-+++ b/scripts/package/builddeb	2020-06-10 08:51:31.434295716 -0400
+--- a/scripts/package/builddeb	2021-02-08 08:08:02.567604000 -0500
++++ b/scripts/package/builddeb	2021-02-11 18:36:45.362395657 -0500
 @@ -47,12 +47,13 @@
  }
  
@@ -74,13 +74,17 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  # Build kernel header package
  (cd $srctree; find . -name Makefile\* -o -name Kconfig\* -o -name \*.pl) > "$objtree/debian/hdrsrcfiles"
  (cd $srctree; find arch/*/include include scripts -type f -o -type l) >> "$objtree/debian/hdrsrcfiles"
-@@ -183,6 +220,37 @@
+@@ -183,6 +220,41 @@
  (cd $objtree; cp $KCONFIG_CONFIG $destdir/.config) # copy .config manually to be where it's expected to be
  ln -sf "/usr/src/linux-headers-$version" "$kernel_headers_dir/lib/modules/$version/build"
  rm -f "$objtree/debian/hdrsrcfiles" "$objtree/debian/hdrobjfiles"
 +cp headers-byteshift.patch $destdir/
-+(cd $destdir; make M=scripts clean) && (cd $destdir; patch -p1 < headers-byteshift.patch)
-+rm -f $destdir/headers-byteshift.patch
++(cd $destdir; make M=scripts clean)
++(cd $destdir; patch -p1 < headers-byteshift.patch) && rm -f $destdir/headers-byteshift.patch
++if ls $destdir/scripts/module.lds > /dev/null 2>&1;
++	then echo "module.lds found.";
++	else install -m 0644 $srctree/scripts/module.lds $destdir/scripts/ > /dev/null 2>&1;
++fi
 +
 +	# make scripts
 +	mkdir -p $kernel_headers_dir/DEBIAN
@@ -113,8 +117,8 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  if [ "$ARCH" != "um" ]; then
  	create_package "$kernel_headers_packagename" "$kernel_headers_dir"
 diff -Naur a/scripts/package/mkdebian b/scripts/package/mkdebian
---- a/scripts/package/mkdebian	2020-06-10 05:54:19.000000000 -0400
-+++ b/scripts/package/mkdebian	2020-06-10 08:49:28.898746987 -0400
+--- a/scripts/package/mkdebian	2021-02-08 08:08:02.567604000 -0500
++++ b/scripts/package/mkdebian	2021-02-11 18:35:34.049307323 -0500
 @@ -94,8 +94,8 @@
  	packageversion=$version-$revision
  fi
