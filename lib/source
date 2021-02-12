@@ -23,7 +23,7 @@ DEBIANIMGSIZE_UNSTABLE="2725MB"
 
 DEBIAN1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	e2fsprogs fonty-rg patch curl wget apt-transport-https dirmngr \
-	cmake rsync psmisc parted pv zip unzip aria2 libell0 btrfs-tools"
+	cmake rsync psmisc parted pv zip unzip aria2 libell0 btrfs-progs"
 
 DEBIAN2="cpu hwinfo haveged resolvconf git build-essential net-tools ifplugd \
 	fuse wpasupplicant wireless-tools usbutils alsa-utils gettext \
@@ -39,7 +39,7 @@ DEVUANIMGSIZE_UNSTABLE="2850MB"
 
 DEVUAN1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	e2fsprogs fonty-rg patch curl wget apt-transport-https dirmngr \
-	cmake rsync psmisc parted pv zip unzip aria2 libell0 btrfs-tools"
+	cmake rsync psmisc parted pv zip unzip aria2 libell0 btrfs-progs"
 
 DEVUAN2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
 	fuse wpasupplicant wireless-tools usbutils alsa-utils gettext \
