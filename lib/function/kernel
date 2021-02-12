@@ -17,7 +17,7 @@ sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export I
 
 choose_initrd(){
 if `grep -Fx "fstype=ext4" "../../userdata.txt" >/dev/null;`
-	then noinitrd; else echo -e "${YLW}Initrd enabled${FIN}.";
+	then noinitrd; else echo -e "${GRN}Initrd enabled${FIN}.";
 fi
 }
 
