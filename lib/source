@@ -17,9 +17,9 @@ MLKERNEL="linux"
 # do not edit above this line
 
 # debian
-DEBIANIMGSIZE="2100MB"
-DEBIANIMGSIZE_TESTING="2825MB"
-DEBIANIMGSIZE_UNSTABLE="2825MB"
+DEBIANIMGSIZE="2050MB"
+DEBIANIMGSIZE_TESTING="2725MB"
+DEBIANIMGSIZE_UNSTABLE="2725MB"
 
 DEBIAN1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	e2fsprogs fonty-rg patch curl wget apt-transport-https dirmngr \
@@ -33,9 +33,9 @@ DEBIAN2="cpu hwinfo haveged resolvconf git build-essential net-tools ifplugd \
 	avahi-utils distro-info-data lsb-release liblzo2-2"
 
 # devuan
-DEVUANIMGSIZE="2200MB"
-DEVUANIMGSIZE_TESTING="2950MB"
-DEVUANIMGSIZE_UNSTABLE="2950MB"
+DEVUANIMGSIZE="2100MB"
+DEVUANIMGSIZE_TESTING="2850MB"
+DEVUANIMGSIZE_UNSTABLE="2850MB"
 
 DEVUAN1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	e2fsprogs fonty-rg patch curl wget apt-transport-https dirmngr \
@@ -49,13 +49,13 @@ DEVUAN2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
 	ntp ifupdown-extra avahi-utils distro-info-data lsb-release liblzo2-2"
 
 # ubuntu
-UBUNTUIMGSIZE="2100MB"
+UBUNTUIMGSIZE="2000MB"
 UBUNTUIMGSIZE_UNSTABLE="2125MB"
 
 # stage2
 UBUNTU1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	e2fsprogs fonty-rg patch curl wget apt-transport-https dirmngr \
-	cmake rsync psmisc parted pv zip unzip aria2 btrfs-tools"
+	cmake rsync psmisc parted pv zip unzip aria2 btrfs-progs"
 
 UBUNTU2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
 	fuse wpasupplicant wireless-tools usbutils alsa-utils gettext \
