@@ -58,6 +58,7 @@ echo custom_defconfig=0 >> tmp0
 echo MYCONFIG='"'nameofyour_defconfig'"' >> tmp0
 echo userscripts=0 >> tmp0
 echo verbose=0 >> tmp0
+echo fstype=ext4 >> tmp0
 echo admin=1 >> tmp0
 echo '"' >> tmp2
 echo >> tmp2
@@ -70,8 +71,8 @@ rm -f tmp0 tmp1 tmp2
 sed -i '1i### LINUX KERNEL' userdata.txt
 sed -i '5i### DISTRIBUTIONS' userdata.txt
 sed -i '10i### WIRELESS' userdata.txt
-sed -i '14i### CUSTOM' userdata.txt
-sed -i '19i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '15i### CUSTOM' userdata.txt
+sed -i '20i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # clear screen
 clear

@@ -3,6 +3,7 @@ source /root/debian.txt
 source /root/universal.txt
 source /root/source.txt
 source /root/userdata.txt
+URL="https://raw.githubusercontent.com/pyavitz/scripts/master/"
 
 set -o errexit
 set -o pipefail
@@ -48,22 +49,28 @@ mv -f sysinfo /usr/local/bin/
 mv -f smon /usr/local/bin/
 case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
   0)
-	wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/scripts/master/write2usb
+	wget -cq --show-progress ${URL}write2usb
 	mv -f write2usb /usr/local/bin/
-	wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/scripts/master/deb-eeprom
+	wget -cq --show-progress ${URL}deb-eeprom
 	mv -f deb-eeprom /usr/local/bin/
     ;;
 esac
 mv -f growpart /usr/bin/
 mv -f credentials /usr/local/bin/
-wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/scripts/master/swh
+wget -cq --show-progress ${URL}swh
 mv -f swh /usr/local/bin/
-wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/scripts/master/fetch
-mv -f fetch /usr/local/bin/
-wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/scripts/master/governor
+if `grep -Fx "fstype=btrfs" "/root/userdata.txt" >/dev/null;`
+	then : ;
+	else wget -cq --show-progress ${URL}fetch && mv -f fetch /usr/local/bin/
+fi
+wget -cq --show-progress ${URL}governor
 mv -f governor /usr/local/bin/
 if `grep -Fx "userscripts=1" "/root/userdata.txt" >/dev/null;`
 	then uscripts_stage2;
+fi
+if `grep -Fx "fstype=btrfs" "/root/userdata.txt" >/dev/null;`
+	then initrd_stage2;
+	else rm -f /root/99-initrd;
 fi
 # Service
 mv -f firstboot.init /etc/init.d/firstboot

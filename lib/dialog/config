@@ -65,6 +65,7 @@ echo custom_defconfig=0 >> tmp0
 echo MYCONFIG='"'nameofyour_defconfig'"' >> tmp0
 echo userscripts=0 >> tmp0
 echo verbose=0 >> tmp0
+echo fstype=ext4 >> tmp0
 echo rpiuser=1 >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
@@ -79,8 +80,8 @@ rm -f tmp0 tmp1 tmp2
 sed -i '3i### LINUX KERNEL' userdata.txt
 sed -i '7i### DISTRIBUTIONS' userdata.txt
 sed -i '12i### WIRELESS' userdata.txt
-sed -i '16i### CUSTOM' userdata.txt
-sed -i '21i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '17i### CUSTOM' userdata.txt
+sed -i '22i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # clear screen
 clear

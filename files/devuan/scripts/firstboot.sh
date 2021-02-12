@@ -3,19 +3,34 @@
 grow_mmcblk(){
 bash growpart /dev/mmcblk0 2 > /dev/null 2>&1
 sleep 1s
-resize2fs /dev/mmcblk0p2 > /dev/null 2>&1
+if blkid | grep ext4 > /dev/null 2>&1;
+	then resize2fs /dev/mmcblk0p2 > /dev/null 2>&1
+fi
+if blkid | grep btrfs > /dev/null 2>&1;
+	then btrfs filesystem resize max / > /dev/null 2>&1
+fi
 }
 
 grow_mmcblk1(){
 bash growpart /dev/mmcblk1 2 > /dev/null 2>&1
 sleep 1s
-resize2fs /dev/mmcblk1p2 > /dev/null 2>&1
+if blkid | grep ext4 > /dev/null 2>&1;
+	then resize2fs /dev/mmcblk1p2 > /dev/null 2>&1
+fi
+if blkid | grep btrfs > /dev/null 2>&1;
+	then btrfs filesystem resize max / > /dev/null 2>&1
+fi
 }
 
 grow_sda(){
 bash growpart /dev/sda 2 > /dev/null 2>&1
 sleep 1s
-resize2fs /dev/sda2 > /dev/null 2>&1
+if blkid | grep ext4 > /dev/null 2>&1;
+	then resize2fs /dev/sda2 > /dev/null 2>&1
+fi
+if blkid | grep btrfs > /dev/null 2>&1;
+	then btrfs filesystem resize max / > /dev/null 2>&1
+fi
 }
 
 chk_mmcblk(){
@@ -47,6 +62,24 @@ rm -f root1 root2 root3
 }
 
 create_cmdline(){
+if blkid | grep ext4 > /dev/null 2>&1;
+	then cmdline_ext4 > /dev/null 2>&1
+fi
+if blkid | grep btrfs > /dev/null 2>&1;
+	then cmdline_btrfs > /dev/null 2>&1
+fi
+}
+
+cmdline_btrfs(){
+source /etc/opt/root-pid.txt
+rm -f /boot/cmdline.txt
+tee /boot/cmdline.txt <<EOF
+console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=btrfs rootflags=subvol=@ elevator=deadline fsck.repair=yes logo.nologo net.ifnames=0 rootwait
+EOF
+rm -f /etc/opt/root-pid.txt
+}
+
+cmdline_ext4(){
 source /etc/opt/root-pid.txt
 rm -f /boot/cmdline.txt
 tee /boot/cmdline.txt <<EOF

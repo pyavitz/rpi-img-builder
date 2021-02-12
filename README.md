@@ -95,6 +95,14 @@ rtl88XXcu:      # 1 to add Realtek 8811CU/21CU wireless support
 If interested in building a Raspberry Pi 4B image that uses mainline u-boot and linux
 use our other [builder](https://github.com/pyavitz/debian-image-builder).
 
+#### Filesystems
+
+```sh
+nano userdata.txt
+# supported: ext4 and btrfs
+fstype=ext4
+```
+
 #### User defconfig
 
 ```sh

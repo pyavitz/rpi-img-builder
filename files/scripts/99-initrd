@@ -1,0 +1,7 @@
+#!/bin/sh
+
+initrd="/boot/initrd.gz"
+
+echo "Creating initrd.gz:"
+rm -f /boot/initrd.gz
+cp -f /boot/initrd.img-* ${initrd}
