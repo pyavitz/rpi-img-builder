@@ -23,14 +23,14 @@ DEBIANIMGSIZE_UNSTABLE="2725MB"
 
 DEBIAN1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	e2fsprogs fonty-rg patch curl wget apt-transport-https dirmngr \
-	cmake rsync psmisc parted pv zip unzip aria2 libell0"
+	cmake rsync psmisc parted pv zip unzip aria2 libell0 btrfs-progs"
 
 DEBIAN2="cpu hwinfo haveged resolvconf git build-essential net-tools ifplugd \
 	fuse wpasupplicant wireless-tools usbutils alsa-utils gettext \
 	bison flex mc nano figlet toilet dialog python3 python3-setuptools \
 	openssh-client openssh-server ntfs-3g bc zram-tools libncursesw5-dev \
 	libssl-dev autopoint autoconf automake pkg-config libtool fake-hwclock \
-	avahi-utils distro-info-data lsb-release"
+	avahi-utils distro-info-data lsb-release liblzo2-2"
 
 # devuan
 DEVUANIMGSIZE="2100MB"
@@ -39,14 +39,14 @@ DEVUANIMGSIZE_UNSTABLE="2850MB"
 
 DEVUAN1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	e2fsprogs fonty-rg patch curl wget apt-transport-https dirmngr \
-	cmake rsync psmisc parted pv zip unzip aria2 libell0"
+	cmake rsync psmisc parted pv zip unzip aria2 libell0 btrfs-progs"
 
 DEVUAN2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
 	fuse wpasupplicant wireless-tools usbutils alsa-utils gettext \
 	bison flex mc nano figlet toilet dialog python3 python3-setuptools \
 	openssh-client openssh-server ntfs-3g bc zram-tools libncursesw5-dev \
 	libssl-dev autopoint autoconf automake pkg-config libtool fake-hwclock \
-	ntp ifupdown-extra avahi-utils distro-info-data lsb-release"
+	ntp ifupdown-extra avahi-utils distro-info-data lsb-release liblzo2-2"
 
 # ubuntu
 UBUNTUIMGSIZE="2000MB"
@@ -55,14 +55,14 @@ UBUNTUIMGSIZE_UNSTABLE="2125MB"
 # stage2
 UBUNTU1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	e2fsprogs fonty-rg patch curl wget apt-transport-https dirmngr \
-	cmake rsync psmisc parted pv zip unzip aria2"
+	cmake rsync psmisc parted pv zip unzip aria2 btrfs-progs"
 
 UBUNTU2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
 	fuse wpasupplicant wireless-tools usbutils alsa-utils gettext \
 	bison flex mc nano figlet toilet dialog python3 python3-setuptools \
 	openssh-client openssh-server ntfs-3g bc zram-tools libncursesw5-dev \
 	libssl-dev autopoint autoconf automake pkg-config libtool fake-hwclock \
-	network-manager avahi-utils distro-info-data lsb-release"
+	network-manager avahi-utils distro-info-data lsb-release liblzo2-2"
 
 # firmware
 FIRMWARE="firmware-linux-nonfree firmware-linux firmware-misc-nonfree \

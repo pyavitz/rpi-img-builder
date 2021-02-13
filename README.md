@@ -14,7 +14,7 @@ In order to install the required dependencies, run the following command:
 sudo apt install build-essential bison bc git dialog patch dosfstools zip unzip qemu debootstrap \
                  qemu-user-static rsync kmod cpio flex libssl-dev libncurses5-dev parted fakeroot \
                  swig aria2 pv toilet figlet crossbuild-essential-arm64 crossbuild-essential-armel \
-                 distro-info-data lsb-release xz-utils curl
+                 distro-info-data lsb-release xz-utils curl btrfs-progs
 ```
 
 This has been tested on an AMD64/x86_64 system running on [Debian Buster](https://www.debian.org/releases/buster/debian-installer/).
@@ -62,6 +62,10 @@ Debian:		# 1 to select (buster/bullseye/testing/unstable/sid)
 Devuan:		# 1 to select (beowulf/testing/unstable/ceres)
 Ubuntu:		# 1 to select (20.04.1/20.10)
 
+Filesystem
+ext4:		# 1 to select (default)
+btrfs:		# 1 to select (fetch and make helper not supported)
+
 Wireless        (aarch64)
 rtl88XXau:      # 1 to add Realtek 8812AU/14AU/21AU wireless support
 rtl88XXbu:      # 1 to add Realtek 88X2BU wireless support
@@ -85,6 +89,10 @@ Release:	# Supported: buster, beowulf and 20.04.1
 Debian:		# 1 to select (buster/bullseye/testing/unstable/sid)
 Devuan:		# 1 to select (beowulf/testing/unstable/ceres)
 Ubuntu:		# 1 to select (20.04.1/20.10)
+
+Filesystem
+ext4:		# 1 to select (default)
+btrfs:		# 1 to select (fetch not supported)
 
 Wireless        (aarch64)
 rtl88XXau:      # 1 to add Realtek 8812AU/14AU/21AU wireless support

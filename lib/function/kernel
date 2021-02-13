@@ -10,6 +10,20 @@ if ls ${KERNEL}-${VERSION} > /dev/null 2>&1;
 fi
 }
 
+noinitrd(){
+sed -i 's/export INITRD=$want_initrd/export INITRD=No/g' scripts/package/builddeb
+sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
+}
+
+choose_initrd(){
+if `grep -Fx "ext4=1" "../../userdata.txt" >/dev/null;`
+	then noinitrd && echo -e "${GRN}Initrd disabled${FIN}. (ext4)";
+fi
+if `grep -Fx "btrfs=1" "../../userdata.txt" >/dev/null;`
+	then echo -e "${GRN}Initrd enabled${FIN}. (btrfs)";
+fi
+}
+
 download (){
 echo
 echo_kernel
@@ -152,8 +166,7 @@ ccpatch (){
 	then patch -p1 < ../${CC}/rpi-packaging.patch;
     fi
     cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch
-    sed -i 's/export INITRD=$want_initrd/export INITRD=No/g' scripts/package/builddeb
-    sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
+    choose_initrd
     echo_done
     echo
 }
@@ -177,8 +190,7 @@ ncpatch (){
     if `grep -Fx "bcm2708" "../../soc.txt" >/dev/null;`
 	then patch -p1 < ../${NC}/rpi-packaging.patch;
     fi
-    sed -i 's/export INITRD=$want_initrd/export INITRD=No/g' scripts/package/builddeb
-    sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
+    choose_initrd
     echo_done
     echo
 }

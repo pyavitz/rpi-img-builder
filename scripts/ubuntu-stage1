@@ -82,6 +82,7 @@ if ls p1/config.txt > /dev/null 2>&1
 	then echo && echo -n "config.txt " && sleep 1s && echo_nok;
 	else echo && echo -n "config.txt " && sleep 1s && echo_fail && exit;
 fi
+initrd_stage1
 ### Fetching boot bits
 if `grep -Fx "bcm2711" "soc.txt" >/dev/null;`
 	then rpi4_bootbins;
@@ -132,7 +133,7 @@ cp files/ubuntu/scripts/* p2/root
 cp files/misc/* p2/root
 cp files/scripts/* p2/root
 cp files/users/* p2/root
-cp firmware/fw-0a5c_21e8.hcd p2/root
+cp firmware/{fw-0a5c_21e8.hcd,UPDATE.mem} p2/root
 if `grep -Fx "userscripts=1" "userdata.txt" >/dev/null;`
 	then uscripts_stage1;
 fi
@@ -159,7 +160,7 @@ fi
 rm p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
 
 ### Finish
-e4defrag -c p2
+defrag_p2
 
 umount p2
 umount p1

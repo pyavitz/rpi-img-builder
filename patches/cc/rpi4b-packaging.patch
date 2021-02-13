@@ -65,7 +65,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
 +        else echo "Missing vmlinuz file." &>/dev/null;
 +fi
 +
-+if ls /boot/kernel* > /dev/null 2>&1; then rm -f /boot/kernel*;
++if ls /boot/kernel* > /dev/null 2>&1; then rm -f /boot/kernel* /boot/initrd.img*;
 +        else echo "Installing new kernel." &>/dev/null;
 +fi
 +exit 0

@@ -78,6 +78,20 @@ download_stable(){
     export ARCH=arm64
 }
 
+noinitrd(){
+sed -i 's/export INITRD=$want_initrd/export INITRD=No/g' scripts/package/builddeb
+sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
+}
+
+choose_initrd(){
+if `grep -Fx "ext4=1" "../../userdata.txt" >/dev/null;`
+	then noinitrd && echo -e "${YLW}Initrd disabled${FIN}. (ext4)";
+fi
+if `grep -Fx "btrfs=1" "../../userdata.txt" >/dev/null;`
+	then echo -e "${GRN}Initrd enabled${FIN}. (btrfs)";
+fi
+}
+
 userpatches (){
 if
 ls ../${UP}/*.patch > /dev/null 2>&1;
@@ -106,7 +120,7 @@ patching(){
 	else : ;
     fi
     cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch
-    sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
+    choose_initrd
     echo_done
     echo
 }

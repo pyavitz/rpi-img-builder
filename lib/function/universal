@@ -191,3 +191,41 @@ wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/f/firm
 dpkg -i firmware-brcm80211_20190114-1+${WRPT}_all.deb
 rm -f firmware-brcm80211_20190114-1+${WRPT}_all.deb
 }
+
+initrd_stage1(){
+if `grep -Fx "btrfs=1" "userdata.txt" >/dev/null;`
+	then sed -i 's/#initramfs initrd.gz/initramfs initrd.gz/g' p1/config.txt;
+fi
+}
+
+initrd_stage2(){
+cd ~
+echo
+echo Adding initrd script.
+mkdir -p /etc/initramfs/post-update.d/
+mv -f 99-initrd /etc/initramfs/post-update.d/
+chmod +x /etc/initramfs/post-update.d/99-initrd
+chown root:root /etc/initramfs/post-update.d/99-initrd
+}
+
+defrag_p2(){
+if `grep -Fx "ext4=1" "userdata.txt" >/dev/null;`
+	then e4defrag -c p2;
+fi
+if `grep -Fx "btrfs=1" "userdata.txt" >/dev/null;`
+	then btrfs filesystem defragment -f -r p2;
+fi
+}
+
+extra_firmware(){
+echo
+echo Adding extra firmware.
+sleep 1s
+mv fw-0a5c_21e8.hcd /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd
+cp /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd /lib/firmware/brcm/BCM20702A1-0a5c-21e8.hcd
+chown root:root /lib/firmware/brcm/BCM20702A1-0a5c-21e8.hcd
+chown root:root /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd
+install -Dm644 UPDATE.mem /lib/firmware/renesas_usb_fw.mem
+rm -f UPDATE.mem
+echo Done.
+}

@@ -116,14 +116,15 @@ ccompile:
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
 	aria2 pv toilet figlet crossbuild-essential-arm64 crossbuild-essential-armel \
-	distro-info-data lsb-release xz-utils curl
+	distro-info-data lsb-release xz-utils curl btrfs-progs
 
 ncompile:
 	# Install native dependencies:
 	sudo apt install build-essential bison bc git dialog patch \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
-	aria2 pv toilet figlet distro-info-data lsb-release xz-utils curl
+	aria2 pv toilet figlet distro-info-data lsb-release xz-utils curl \
+	btrfs-progs
 
 # Raspberry Pi 4 | aarch64
 kernel:
