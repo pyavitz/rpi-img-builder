@@ -62,7 +62,7 @@ case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
 esac
 mv -f growpart /usr/bin/
 mv -f credentials /usr/local/bin/
-if `grep -Fx "fstype=btrfs" "/root/userdata.txt" >/dev/null;`
+if `grep -Fx "btrfs=1" "/root/userdata.txt" >/dev/null;`
 	then : ;
 	else wget -cq --show-progress ${URL}fetch && mv -f fetch /usr/local/bin/
 fi
@@ -71,7 +71,7 @@ mv -f governor /usr/local/bin/
 if `grep -Fx "userscripts=1" "/root/userdata.txt" >/dev/null;`
 	then uscripts_stage2;
 fi
-if `grep -Fx "fstype=btrfs" "/root/userdata.txt" >/dev/null;`
+if `grep -Fx "btrfs=1" "/root/userdata.txt" >/dev/null;`
 	then initrd_stage2;
 	else rm -f /root/99-initrd;
 fi

@@ -193,7 +193,7 @@ rm -f firmware-brcm80211_20190114-1+${WRPT}_all.deb
 }
 
 initrd_stage1(){
-if `grep -Fx "fstype=btrfs" "userdata.txt" >/dev/null;`
+if `grep -Fx "btrfs=1" "userdata.txt" >/dev/null;`
 	then sed -i 's/#initramfs initrd.gz/initramfs initrd.gz/g' p1/config.txt;
 fi
 }
@@ -209,8 +209,10 @@ chown root:root /etc/initramfs/post-update.d/99-initrd
 }
 
 defrag_p2(){
-if `grep -Fx "fstype=btrfs" "userdata.txt" >/dev/null;`
+if `grep -Fx "ext4=1" "userdata.txt" >/dev/null;`
+	then e4defrag -c p2;
+fi
+if `grep -Fx "btrfs=1" "userdata.txt" >/dev/null;`
 	then btrfs filesystem defragment -f -r p2;
-	else e4defrag -c p2;
 fi
 }

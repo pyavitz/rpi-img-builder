@@ -9,6 +9,8 @@ crosscompile="1"
 debian="1"
 devuan="0"
 ubuntu="0"
+ext4="1"
+btrfs="0"
 rtl88XXau="0"
 rtl88X2bu="0"
 rtl88XXcu="0"
@@ -21,7 +23,7 @@ VALUES=$(dialog --ok-label "Submit" --no-cancel \
 	  --backtitle "Raspberry Pi Image Builder | Administrator" \
 	  --title "Config Menu" \
 	  --form "Choose:" \
-22 40 15 \
+26 40 19 \
 	"Linux kernel"	1 1	""	 		1 14 0 0 \
         "Branch:"   	2 1     "$VERSION"        	2 9 7 0 \
 	"Menuconfig:"	3 1	"$menuconfig"  		3 13 2 0 \
@@ -33,10 +35,14 @@ VALUES=$(dialog --ok-label "Submit" --no-cancel \
 	"Devuan:"	9 1	"$devuan" 		9 9 2 0 \
 	"Ubuntu:"	10 1	"$ubuntu"	 	10 9 2 0 \
 	""		11 1	""	 		11 14 0 0 \
-	"Wireless"	12 1	""	 		12 14 0 0 \
-	"rtl88XXau:"	13 1	"$rtl88XXau"	 	13 12 2 0 \
-	"rtl88X2bu:"	14 1	"$rtl88X2bu"	 	14 12 2 0 \
-	"rtl88XXcu:"	15 1	"$rtl88XXcu"	 	15 12 2 0 \
+	"Filesystem"	12 1	""	 		12 14 0 0 \
+	"ext4:"		13 1	"$ext4"		 	13 8 2 0 \
+	"btrfs:"	14 1	"$btrfs"	 	14 8 2 0 \
+	""		15 1	""	 		15 14 0 0 \
+	"Wireless"	16 1	""	 		16 14 0 0 \
+	"rtl88XXau:"	17 1	"$rtl88XXau"	 	17 12 2 0 \
+	"rtl88X2bu:"	18 1	"$rtl88X2bu"	 	18 12 2 0 \
+	"rtl88XXcu:"	19 1	"$rtl88XXcu"	 	19 12 2 0 \
 2>&1 1>&3)
 
 # close fd
@@ -51,6 +57,8 @@ echo DISTRO_VERSION='"' >> tmp0
 echo debian= >> tmp0
 echo devuan= >> tmp0
 echo ubuntu= >> tmp0
+echo ext4= >> tmp0
+echo btrfs= >> tmp0
 echo rtl8812au= >> tmp0
 echo rtl88x2bu= >> tmp0
 echo rtl8811cu= >> tmp0
@@ -58,7 +66,6 @@ echo custom_defconfig=0 >> tmp0
 echo MYCONFIG='"'nameofyour_defconfig'"' >> tmp0
 echo userscripts=0 >> tmp0
 echo verbose=0 >> tmp0
-echo fstype=ext4 >> tmp0
 echo admin=1 >> tmp0
 echo '"' >> tmp2
 echo >> tmp2
@@ -70,9 +77,10 @@ rm -f tmp0 tmp1 tmp2
 # categories
 sed -i '1i### LINUX KERNEL' userdata.txt
 sed -i '5i### DISTRIBUTIONS' userdata.txt
-sed -i '10i### WIRELESS' userdata.txt
-sed -i '15i### CUSTOM' userdata.txt
-sed -i '20i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '10i### FILESYSTEM' userdata.txt
+sed -i '13i### WIRELESS' userdata.txt
+sed -i '17i### CUSTOM' userdata.txt
+sed -i '22i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # clear screen
 clear
