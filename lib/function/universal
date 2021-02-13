@@ -225,7 +225,7 @@ mv fw-0a5c_21e8.hcd /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd
 cp /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd /lib/firmware/brcm/BCM20702A1-0a5c-21e8.hcd
 chown root:root /lib/firmware/brcm/BCM20702A1-0a5c-21e8.hcd
 chown root:root /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd
-install -Dm644 UPDATE.mem /usr/lib/firmware/renesas_usb_fw.mem
+install -Dm644 UPDATE.mem /lib/firmware/renesas_usb_fw.mem
 rm -f UPDATE.mem
 echo Done.
 }
