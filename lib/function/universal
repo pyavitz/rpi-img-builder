@@ -216,3 +216,16 @@ if `grep -Fx "btrfs=1" "userdata.txt" >/dev/null;`
 	then btrfs filesystem defragment -f -r p2;
 fi
 }
+
+extra_firmware(){
+echo
+echo Adding extra firmware.
+sleep 1s
+mv fw-0a5c_21e8.hcd /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd
+cp /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd /lib/firmware/brcm/BCM20702A1-0a5c-21e8.hcd
+chown root:root /lib/firmware/brcm/BCM20702A1-0a5c-21e8.hcd
+chown root:root /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd
+install -Dm644 UPDATE.mem /usr/lib/firmware/renesas_usb_fw.mem
+rm -f UPDATE.mem
+echo Done.
+}
