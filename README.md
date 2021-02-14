@@ -23,7 +23,7 @@ Alternatively, you can run the command `make ccompile` in this directory.
 
 ## Docker
 
-To build using [Docker](https://www.docker.com/), follow the instructions on the [Wiki](https://wiki.arm-image-builder.xyz/Docker) or use the other [builder](https://github.com/pyavitz/arm-img-builder).
+To build using [Docker](https://www.docker.com/), follow the install [instructions](https://docs.docker.com/engine/install/) and use our other [builder](https://github.com/pyavitz/arm-img-builder).
 
 ---
 
@@ -236,7 +236,7 @@ Usage: deb-eeprom -opt
 
    -v       Edit version variable
    -U       Upgrade eeprom package
-   -w       Setup and install usb boot
+   -w       Setup and install usb boot (ext4 only)
    -u       Update script
 
 Note:
