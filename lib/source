@@ -50,7 +50,7 @@ DEVUAN2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
 
 # ubuntu
 UBUNTUIMGSIZE="1850MB"
-UBUNTUIMGSIZE_UNSTABLE="1975MB"
+UBUNTUIMGSIZE_UNSTABLE="1850MB"
 
 # stage2
 UBUNTU1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
