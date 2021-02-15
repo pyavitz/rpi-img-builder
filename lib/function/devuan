@@ -750,3 +750,20 @@ if `grep -Fx 'DISTRO_VERSION="ceres"' "/root/userdata.txt" >/dev/null;`
 	then bluez_unstable;
 fi
 }
+
+enable_services(){
+chmod +x /etc/init.d/governor
+chmod +x /etc/init.d/firstboot
+chmod +x /etc/init.d/pwrledoff
+chmod +x /etc/init.d/actledoff
+chmod +x /etc/init.d/bthelper
+chmod +x /etc/init.d/zramswap
+chmod +x /etc/init.d/network
+chmod +x /etc/init.d/credentials
+update-rc.d -f networking remove
+update-rc.d firstboot defaults 2
+update-rc.d governor defaults 2
+update-rc.d bthelper defaults 2
+update-rc.d zramswap defaults 2
+update-rc.d credentials defaults 2
+}

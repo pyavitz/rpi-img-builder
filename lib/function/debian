@@ -709,3 +709,17 @@ ExecStart=/usr/local/sbin/actled &>/dev/null
 WantedBy=multi-user.target
 EOF
 }
+
+enable_services(){
+systemctl enable rc-local
+systemctl enable ifplugd
+systemctl enable resolvconf
+systemctl enable haveged
+systemctl enable zramswap
+systemctl enable bluetooth
+update-rc.d firstboot defaults 2
+systemctl enable firstboot
+systemctl enable credentials
+systemctl enable governor
+systemctl enable serial-getty@ttyUSB0.service
+}

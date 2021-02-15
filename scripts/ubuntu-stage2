@@ -38,6 +38,12 @@ fi
 
 apt_preferences
 echo
+if `grep -Fx "ext4=1" "/root/userdata.txt" >/dev/null;`
+	then apt install -y e2fsprogs;
+fi
+if `grep -Fx "btrfs=1" "/root/userdata.txt" >/dev/null;`
+	then apt install -y btrfs-progs;
+fi
 apt install -y ${UBUNTU1} fdisk
 
 #### Scripts
@@ -254,18 +260,25 @@ if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
 	then bcm2711_eeprom ;
 fi
 
-#### Checking for changes
+####
 echo
 echo Checking for changes.
 apt update
 apt upgrade -y
 apt -y clean
 apt -y autoclean
+echo
+echo Purging locales-all.
+apt purge -y locales-all
+localedef -c -f UTF-8 -i en_US en_US.UTF-8
+dpkg-reconfigure locales
 echo Done.
 
 #### Kernel
 echo
 echo Installing kernel.
+apt -y clean
+apt -y autoclean
 sleep 1s
 cd ~
 dpkg -i *.deb
@@ -410,16 +423,7 @@ echo Done.
 echo
 echo Enabling Services
 sleep 1s
-systemctl enable rc-local
-systemctl enable ifplugd
-systemctl enable haveged
-systemctl enable zramswap
-systemctl enable bluetooth
-update-rc.d firstboot defaults 2
-systemctl enable firstboot
-systemctl enable credentials
-systemctl enable governor
-systemctl enable serial-getty@ttyUSB0.service
+enable_services > /dev/null 2>&1
 echo Done.
 
 ###### Finish

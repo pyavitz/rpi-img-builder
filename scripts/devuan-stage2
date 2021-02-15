@@ -28,6 +28,12 @@ ln -snf /usr/share/zoneinfo/America/New_York /etc/localtime
 echo -n 'America/New_York' > /etc/timezone
 apt upgrade -y
 apt dist-upgrade -y
+if `grep -Fx "ext4=1" "/root/userdata.txt" >/dev/null;`
+	then apt install -y e2fsprogs;
+fi
+if `grep -Fx "btrfs=1" "/root/userdata.txt" >/dev/null;`
+	then apt install -y btrfs-progs;
+fi
 apt install -y ${DEVUAN1}
 
 #### Scripts
@@ -270,6 +276,20 @@ if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
 	then bcm2711_eeprom
 fi
 
+####
+echo
+echo Checking for changes.
+apt update
+apt upgrade -y
+apt -y clean
+apt -y autoclean
+echo
+echo Purging locales-all.
+apt purge -y locales-all
+localedef -c -f UTF-8 -i en_US en_US.UTF-8
+dpkg-reconfigure locales
+echo Done.
+
 #### Kernel
 echo
 echo Installing kernel.
@@ -308,15 +328,6 @@ if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
 	then eeprom_choose
 fi
 
-#### Checking for changes
-echo
-echo Checking for changes.
-apt update
-apt upgrade -y
-apt -y clean
-apt -y autoclean
-echo Done.
-
 ### Clean misc files
 rm -f *.patch
 rm -f *led*
@@ -335,20 +346,7 @@ echo 'SUBSYSTEM=="vc-mem",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vch
 # Load services
 echo
 echo Adding services
-chmod +x /etc/init.d/governor
-chmod +x /etc/init.d/firstboot
-chmod +x /etc/init.d/pwrledoff
-chmod +x /etc/init.d/actledoff
-chmod +x /etc/init.d/bthelper
-chmod +x /etc/init.d/zramswap
-chmod +x /etc/init.d/network
-chmod +x /etc/init.d/credentials
-update-rc.d -f networking remove
-update-rc.d firstboot defaults 2
-update-rc.d governor defaults 2
-update-rc.d bthelper defaults 2
-update-rc.d zramswap defaults 2
-update-rc.d credentials defaults 2
+enable_services > /dev/null 2>&1
 echo Done.
 
 ###### Finish

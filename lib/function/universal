@@ -167,7 +167,7 @@ echo
 }
 
 bluez_firmware(){
-BRPT="rpt7"
+BRPT="rpt8"
 echo Building bluez firmware package.
 sleep 1s
 mkdir -p bluez-firmware
