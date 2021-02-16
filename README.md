@@ -248,7 +248,7 @@ Upon install please run 'deb-eeprom -u' before using this script.
 Fetch, Linux kernel installer for the Raspberry Pi Image Builder
 Usage: fetch -opt
 
-   -1       Linux 5.4.y LTS
+   -1       Linux 5.10.y LTS
    -2       Linux Stable Branch
    -3       Linux Mainline Branch
    -4       Update Boot Binaries
