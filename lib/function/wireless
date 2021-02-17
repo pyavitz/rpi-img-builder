@@ -103,7 +103,8 @@ echo_done
 rtl88x2bu(){
 rm -rf ${KERNEL}-${VERSION}/drivers/net/wireless/rtl88x2bu
 mkdir -p ${KERNEL}-${VERSION}/drivers/net/wireless/rtl88x2bu/
-cp -R rtl88x2bu/{core,hal,include,os_dep,platform,halmac.mk,rtl8822b.mk} \
+#cp -R rtl88x2bu/{core,hal,include,os_dep,platform,halmac.mk,rtl8822b.mk} \
+cp -R rtl88x2bu/{core,hal,include,os_dep,platform,rtl8822b.mk} \
 ${KERNEL}-${VERSION}/drivers/net/wireless/rtl88x2bu
 cp -f rtl88x2bu/Makefile ${KERNEL}-${VERSION}/drivers/net/wireless/rtl88x2bu/Makefile
 cp -f rtl88x2bu/Kconfig ${KERNEL}-${VERSION}/drivers/net/wireless/rtl88x2bu/Kconfig
