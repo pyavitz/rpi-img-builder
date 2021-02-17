@@ -256,7 +256,7 @@ Usage: fetch -opt
    -u       Update Fetch
    -s       Not working? Setup Fetch
 
-fetch -h will list available options and kernel revisions
+fetch -u will list available options and kernel revisions
 ```
 #### Simple wifi helper (Debian / Devuan)
 ```sh
