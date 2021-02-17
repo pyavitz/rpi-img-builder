@@ -250,7 +250,7 @@ echo
 echo -e "${RED}Downloading rtl88X2bu wifi module${FIN}."
 if ls rtl88x2bu > /dev/null 2>&1;
 	then echo -e "${YLW}rtl88X2bu found${FIN}.";
-	else git clone https://github.com/pyavitz/rtl88x2bu.git rtl88x2bu ;
+	else git clone https://github.com/EntropicEffect/rtl8822bu.git rtl88x2bu ;
 fi
 echo_done
 }
