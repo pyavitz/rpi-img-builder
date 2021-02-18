@@ -58,12 +58,6 @@ if touch -c /dev/sda 2>/dev/null; then grow_sda;
         else echo "" &>/dev/null;
 fi
 
-### Renew SSH keys
-sleep 1s
-/bin/rm -v /etc/ssh/ssh_host_* > /dev/null 2>&1
-dpkg-reconfigure openssh-server > /dev/null 2>&1
-systemctl restart ssh > /dev/null 2>&1
-
 ### Fsck boot partition
 umount /boot
 sleep 1s
