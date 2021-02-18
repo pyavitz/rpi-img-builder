@@ -6,7 +6,7 @@
 # Required-Stop:
 # Default-Start: 2
 # Default-Stop:
-# Short-Description: Expands the root partition and clears ssh keys
+# Short-Description: Expands the root partition
 # Description:
 ### END INIT INFO
 

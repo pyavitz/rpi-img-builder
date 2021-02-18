@@ -206,6 +206,8 @@ defrag_p2
 umount p2
 umount p1
 
+ext4_resize
+
 losetup -d "${IMAGE_LOOP_DEV}"
 mv "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" "${IMAGE_FILE_NAME}"
 if [ $RAM -ne 0 ]; then

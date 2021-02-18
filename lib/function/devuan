@@ -135,8 +135,9 @@ adduser ${user} netdev
 adduser ${user} bluetooth
 adduser ${user} input
 adduser ${user} tty
-if `grep -Fx 'DISTRO_VERSION="beowulf"' "/root/userdata.txt" >/dev/null;`
-	then addgroup --gid 125 kvm
+if `grep "kvm" "/etc/group" >/dev/null;`
+	then :
+	else addgroup --gid 125 kvm
 fi
 
 echo
@@ -203,8 +204,9 @@ fi
 groupadd spi
 groupadd i2c
 groupadd gpio
-if `grep -Fx 'DISTRO_VERSION="beowulf"' "/root/userdata.txt" >/dev/null;`
-	then addgroup --gid 125 kvm
+if `grep "kvm" "/etc/group" >/dev/null;`
+	then :
+	else addgroup --gid 125 kvm
 fi
 
 echo
@@ -761,7 +763,7 @@ chmod +x /etc/init.d/zramswap
 chmod +x /etc/init.d/network
 chmod +x /etc/init.d/credentials
 update-rc.d -f networking remove
-update-rc.d firstboot defaults 2
+update-rc.d firstboot defaults S
 update-rc.d governor defaults 2
 update-rc.d bthelper defaults 2
 update-rc.d zramswap defaults 2

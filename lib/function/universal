@@ -229,3 +229,67 @@ install -Dm644 UPDATE.mem /lib/firmware/renesas_usb_fw.mem
 rm -f UPDATE.mem
 echo Done.
 }
+
+firstboot_service(){
+echo
+echo Creating first boot.
+sleep 1s
+tee /etc/systemd/system/firstboot.service <<EOF
+[Unit]
+Description=First Boot
+After=systemd-remount-fs.service
+Before=credentials.service
+ConditionPathExists=/usr/local/sbin/firstboot
+
+[Service]
+ExecStart=/etc/init.d/firstboot start > /dev/null 2>&1
+Type=oneshot
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target
+EOF
+}
+
+credentials_service(){
+echo
+echo Creating wifi credentials.
+sleep 1s
+tee /etc/systemd/system/credentials.service <<EOF
+[Unit]
+Description=Credentials
+After=firstboot.service network.target
+Before=rc-local.service
+ConditionPathExists=/usr/local/bin/credentials
+[Service]
+ExecStart=/usr/local/bin/credentials > /dev/null 2>&1
+Type=oneshot
+RemainAfterExit=yes
+[Install]
+WantedBy=multi-user.target
+EOF
+}
+
+governor_service(){
+echo
+echo Creating governor service.
+sleep 1s
+tee /etc/systemd/system/governor.service <<EOF
+[Unit]
+Description=Set Governor
+ConditionPathExists=/usr/local/bin/governor
+
+[Service]
+ExecStart=/usr/local/bin/governor -r &>/dev/null
+Type=oneshot
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+EOF
+}
+
+ext4_resize(){
+e2fsck -f "${IMAGE_LOOP_DEV_ROOTFS}"
+resize2fs -M "${IMAGE_LOOP_DEV_ROOTFS}"
+}

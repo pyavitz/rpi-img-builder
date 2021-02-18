@@ -321,63 +321,14 @@ echo 'SUBSYSTEM=="vc-mem",GROUP="video",MODE="0777"' >> /etc/udev/rules.d/10-vch
 #### Led switches
 led_switches
 
-#### Create first boot
-echo
-echo Creating first boot.
-sleep 1s
-tee /etc/systemd/system/firstboot.service <<EOF
-[Unit]
-Description=First Boot
-After=network.target
-Before=rc-local.service
-ConditionPathExists=/usr/local/sbin/firstboot
+#### First boot service
+firstboot_service
 
-[Service]
-ExecStart=/etc/init.d/firstboot start > /dev/null 2>&1
-Type=oneshot
-RemainAfterExit=no
+#### Credentials service
+credentials_service
 
-[Install]
-WantedBy=multi-user.target
-EOF
-
-#### Credentials
-echo
-echo Creating wifi credentials.
-sleep 1s
-tee /etc/systemd/system/credentials.service <<EOF
-[Unit]
-Description=Credentials
-After=network.target
-Before=firstboot.service
-ConditionPathExists=/usr/local/bin/credentials
-
-[Service]
-ExecStart=/usr/local/bin/credentials > /dev/null 2>&1
-Type=oneshot
-RemainAfterExit=no
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-####
-echo
-echo Creating governor service.
-sleep 1s
-tee /etc/systemd/system/governor.service <<EOF
-[Unit]
-Description=Set Governor
-ConditionPathExists=/usr/local/bin/governor
-
-[Service]
-ExecStart=/usr/local/bin/governor -r &>/dev/null
-Type=oneshot
-RemainAfterExit=yes
-
-[Install]
-WantedBy=multi-user.target
-EOF
+#### Governor service
+governor_service
 
 #### Create RC.LOCAL
 echo

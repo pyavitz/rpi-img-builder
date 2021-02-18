@@ -1,16 +1,16 @@
 #! /bin/sh
 ### BEGIN INIT INFO
 # Provides: firstboot
-# Required-Start:
+# Required-Start: checkfs checkroot-bootclean mountall $local_fs
 # Required-Stop:
-# Default-Start: 2
+# Default-Start: S
 # Default-Stop:
-# Short-Description: Expands the root partition and clears ssh keys
+# Short-Description: Expands the root partition
 # Description:
 ### END INIT INFO
 
 # chmod +x /etc/init.d/firstboot
-# update-rc.d firstboot defaults 2
+# update-rc.d firstboot defaults S
 
 . /lib/lsb/init-functions
 
