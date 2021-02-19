@@ -343,6 +343,10 @@ echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' > /etc/udev/rules.d/10-vchiq
 echo 'SUBSYSTEM=="vcio",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
 echo 'SUBSYSTEM=="vc-mem",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
 
+if `grep -Fx "btrfs=1" "/root/userdata.txt" >/dev/null;`
+	then btrfs_udevrule;
+fi
+
 # Load services
 echo
 echo Adding services

@@ -769,3 +769,9 @@ update-rc.d bthelper defaults 2
 update-rc.d zramswap defaults 2
 update-rc.d credentials defaults 2
 }
+
+btrfs_udevrule(){
+echo Fixing btrfs udev rule.
+sed -i 's/${exec_prefix}//g' /lib/udev/rules.d/64-btrfs.rules
+echo Done.
+}
