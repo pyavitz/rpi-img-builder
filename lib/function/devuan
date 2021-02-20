@@ -762,10 +762,8 @@ chmod +x /etc/init.d/bthelper
 chmod +x /etc/init.d/zramswap
 chmod +x /etc/init.d/network
 chmod +x /etc/init.d/credentials
+update-rc.d -f hwclock.sh remove
 update-rc.d -f networking remove
-if `grep -Fx "btrfs=1" "/root/userdata.txt" >/dev/null;`
-	then update-rc.d -f hwclock.sh remove;
-fi
 update-rc.d firstboot defaults S
 update-rc.d governor defaults 2
 update-rc.d bthelper defaults 2
