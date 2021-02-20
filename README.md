@@ -192,7 +192,7 @@ NETMASK=" "			# Your Netmask
 GATEWAY=" "			# Your Gateway
 NAMESERVERS=" "			# Your preferred dns
 
-CHANGE=n			# Set to y to enable
+CHANGE=y			# Set to n to disable
 HOSTNAME="raspberrypi"		# Set the system's host name
 BRANDING="Raspberry Pi"		# Set ASCII text banner
 
@@ -221,7 +221,7 @@ IPADDR=" "			# Static ip address
 GATEWAY=" "			# Your Gateway
 DNS=""				# Your preferred dns
 
-CHANGE=n			# Set to y to enable
+CHANGE=y			# Set to n to disable
 HOSTNAME="raspberrypi"		# Set the system's host name
 BRANDING="Raspberry Pi"		# Set ASCII text banner
 
