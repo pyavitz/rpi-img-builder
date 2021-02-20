@@ -132,6 +132,10 @@ mount /boot
 sleep 1s
 fix_cmdline
 
+if dmesg | grep Raspberry\ Pi\ 2 > /dev/null 2>&1;
+	then update-rc.d -f bthelper remove;
+fi
+
 ### Clean up
 rm -f /var/cache/debconf/*
 rm -f /usr/local/sbin/firstboot
