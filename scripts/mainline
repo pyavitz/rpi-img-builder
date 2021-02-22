@@ -20,7 +20,7 @@ done
 
 if [ -f "$UD" ]; then
     echo ""
-    echo -e "${YLW}$UD file found${FIN}."
+    :;
 else 
     userdata
 fi
@@ -41,6 +41,8 @@ case `grep -Fx "rpiuser=1" "userdata.txt" >/dev/null; echo $?` in
     ;;
 esac
 
+# prep
+validation
 source_dir
 mainline_clean
 

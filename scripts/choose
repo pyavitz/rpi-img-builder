@@ -1,5 +1,7 @@
 #!/bin/bash
 source userdata.txt > /dev/null 2>&1;
+source lib/function/echoes
+source lib/source
 UD=userdata.txt
 
 userdata () {
@@ -17,10 +19,13 @@ done
 
 if [ -f "$UD" ]; then
     echo ""
-    echo "$UD file found." > /dev/null 2>&1
+    :;
 else 
     userdata
 fi
+
+validation
+
 if `grep -Fx "debian=1" "userdata.txt" >/dev/null;`
 	then make debianos;
 fi

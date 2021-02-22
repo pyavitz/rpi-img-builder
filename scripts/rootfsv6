@@ -10,6 +10,29 @@ FIN="\e[0m"
 source userdata.txt > /dev/null 2>&1;
 source lib/source
 source lib/function/boot
+UD=userdata.txt
+
+userdata () {
+echo ""
+echo "Please create a userdata.txt file"
+while [ true ] ; do
+read -t 10 -n 1
+if [ $? = 0 ] ; then
+exit ;
+else
+echo "run make config"
+fi
+done
+}
+
+if [ -f "$UD" ]; then
+    echo ""
+    :;
+else 
+    userdata
+fi
+
+validation
 
 devuan_rootfs (){
 DEVUAN_STABLE=devuan-${DISTRO_VERSION}-rootfs-armel.tar.xz

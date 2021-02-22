@@ -22,10 +22,11 @@ done
 
 if [ -f "$UD" ]; then
     echo ""
-    echo "$UD file found." > /dev/null 2>&1;
+    :;
 else 
     userdata
 fi
+
 if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
 	then set -eux -o pipefail;
 	else set -eu -o pipefail;

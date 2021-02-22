@@ -67,6 +67,7 @@ echo MYCONFIG='"'nameofyour_defconfig'"' >> tmp0
 echo userscripts=0 >> tmp0
 echo verbose=0 >> tmp0
 echo admin=1 >> tmp0
+echo builder=3.5 >> tmp0
 echo '"' >> tmp2
 echo >> tmp2
 echo >> tmp2
