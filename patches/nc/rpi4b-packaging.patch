@@ -1,6 +1,6 @@
 diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
---- a/scripts/package/builddeb	2021-01-14 20:59:46.605224000 -0500
-+++ b/scripts/package/builddeb	2021-01-17 10:59:52.916971764 -0500
+--- a/scripts/package/builddeb	2021-02-08 08:08:02.567604000 -0500
++++ b/scripts/package/builddeb	2021-02-23 11:28:09.596991750 -0500
 @@ -47,12 +47,13 @@
  }
  
@@ -17,15 +17,19 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  libc_headers_packagename=linux-libc-dev
  dbg_packagename=$packagename-dbg
  
-@@ -92,6 +93,7 @@
+@@ -92,6 +93,11 @@
  else
  	cp System.map "$tmpdir/boot/System.map-$version"
  	cp $KCONFIG_CONFIG "$tmpdir/boot/config-$version"
 +	cp arch/arm64/boot/Image "$tmpdir/boot/kernel8.img"
++	install -m 0644 binaries/fixup4*.dat "$tmpdir/boot"
++	install -m 0644 binaries/start4*.elf "$tmpdir/boot"
++	cp binaries/LICENCE.broadcom "$tmpdir/boot"
++	cp binaries/COPYING.linux "$tmpdir/boot"
  fi
  cp "$($MAKE -s -f $srctree/Makefile image_name)" "$tmpdir/$installed_image_path"
  
-@@ -139,6 +141,12 @@
+@@ -139,6 +145,12 @@
  	mv $libc_headers_dir/usr/include/asm $libc_headers_dir/usr/include/$host_arch/
  fi
  
@@ -38,13 +42,13 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  # Install the maintainer scripts
  # Note: hook scripts under /etc/kernel are also executed by official Debian
  # kernel packages, as well as kernel packages built using make-kpkg.
-@@ -164,6 +172,36 @@
+@@ -164,6 +176,41 @@
  	chmod 755 "$tmpdir/DEBIAN/$script"
  done
  
 +       # remove kernel
 +        cat > $tmpdir/DEBIAN/preinst <<EOT
-+#!/bin/sh
++#!/bin/bash
 +# purge kernel script
 +
 +set -e
@@ -65,6 +69,11 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
 +        else echo "Missing vmlinuz file." &>/dev/null;
 +fi
 +
++if ls /boot/{fixup4*.dat,start4*.elf} > /dev/null 2>&1;
++	then rm -f /boot/{fixup4*.dat,start4*.elf,LICENCE.broadcom,COPYING.linux};
++	else echo "Missing boot binaries." &>/dev/null;
++fi
++
 +if ls /boot/kernel* > /dev/null 2>&1; then rm -f /boot/kernel* /boot/initrd.img*;
 +        else echo "Installing new kernel." &>/dev/null;
 +fi
@@ -75,7 +84,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  # Build kernel header package
  (cd $srctree; find . -name Makefile\* -o -name Kconfig\* -o -name \*.pl) > "$objtree/debian/hdrsrcfiles"
  (cd $srctree; find arch/*/include include scripts -type f -o -type l) >> "$objtree/debian/hdrsrcfiles"
-@@ -184,6 +222,19 @@
+@@ -184,6 +231,19 @@
  ln -sf "/usr/src/linux-headers-$version" "$kernel_headers_dir/lib/modules/$version/build"
  rm -f "$objtree/debian/hdrsrcfiles" "$objtree/debian/hdrobjfiles"
  
@@ -96,8 +105,8 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  	create_package "$kernel_headers_packagename" "$kernel_headers_dir"
  	create_package "$libc_headers_packagename" "$libc_headers_dir"
 diff -Naur a/scripts/package/mkdebian b/scripts/package/mkdebian
---- a/scripts/package/mkdebian	2021-01-14 20:59:46.606224000 -0500
-+++ b/scripts/package/mkdebian	2021-01-17 10:58:59.638774247 -0500
+--- a/scripts/package/mkdebian	2021-02-08 08:08:02.567604000 -0500
++++ b/scripts/package/mkdebian	2021-02-23 11:23:03.061758110 -0500
 @@ -94,8 +94,8 @@
  	packageversion=$version-$revision
  fi

@@ -10,6 +10,30 @@ if ls ${MLKERNEL}-${VERSION} > /dev/null 2>&1;
 fi
 }
 
+rpi4_binaries(){
+BINURL="https://github.com/raspberrypi/firmware/raw/master/boot/"
+mkdir -p binaries
+rm -f binaries/*
+cd binaries
+echo
+echo_bins
+aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}fixup4.dat
+aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}fixup4cd.dat
+aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}fixup4db.dat
+aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}fixup4x.dat
+aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}start4.elf
+aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}start4cd.elf
+aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}start4db.elf
+aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}start4x.elf
+aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}LICENCE.broadcom
+aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}COPYING.linux
+cd ..
+if ls binaries/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf} > /dev/null 2>&1
+	then echo_bdone;
+	else echo_fail && exit;
+fi
+}
+
 download_mainline(){
     echo
     echo_mainline
@@ -41,6 +65,7 @@ download_mainline(){
 	then rtl8811cu;
     fi
     cd ${MLKERNEL}-${VERSION}
+    rpi4_binaries
     export ARCH=arm64
 }
 
@@ -75,6 +100,7 @@ download_stable(){
 	then rtl8811cu;
     fi
     cd ${MLKERNEL}-${VERSION}
+    rpi4_binaries
     export ARCH=arm64
 }
 
