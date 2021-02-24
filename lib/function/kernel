@@ -15,15 +15,6 @@ sed -i 's/export INITRD=$want_initrd/export INITRD=No/g' scripts/package/buildde
 sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
 }
 
-choose_initrd(){
-if `grep -Fx "ext4=1" "../../userdata.txt" >/dev/null;`
-	then noinitrd && echo -e "${GRN}Initrd disabled${FIN}. (ext4)";
-fi
-if `grep -Fx "btrfs=1" "../../userdata.txt" >/dev/null;`
-	then echo -e "${GRN}Initrd enabled${FIN}. (btrfs)";
-fi
-}
-
 rpi4_binaries(){
 BINURL="https://github.com/raspberrypi/firmware/raw/master/boot/"
 mkdir -p binaries
@@ -80,15 +71,6 @@ if ls ${KERNEL}-${VERSION}.tar.gz > /dev/null 2>&1;
 	then echo -e "${YLW}${KERNEL}-${VERSION}.tar.gz found${FIN}.";
 	else aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false https://github.com/raspberrypi/linux/archive/rpi-${VERSION}.tar.gz && echo_bdone;
 fi
-if `grep -Fx "rtl8812au=1" "../userdata.txt" >/dev/null;`
-	then rtl8812au_download;
-fi
-if `grep -Fx "rtl88x2bu=1" "../userdata.txt" >/dev/null;`
-	then rtl88x2bu_download;
-fi
-if `grep -Fx "rtl8811cu=1" "../userdata.txt" >/dev/null;`
-	then rtl8811cu_download;
-fi
 }
 
 extract(){
@@ -101,15 +83,6 @@ echo -e -n "${FIN}"
 
 # armv6l
 armv6_setup(){
-if `grep -Fx "rtl8812au=1" "../userdata.txt" >/dev/null;`
-	then rtl8812au;
-fi
-if `grep -Fx "rtl88x2bu=1" "../userdata.txt" >/dev/null;`
-	then rtl88x2bu;
-fi
-if `grep -Fx "rtl8811cu=1" "../userdata.txt" >/dev/null;`
-	then rtl8811cu;
-fi
 cd ${KERNEL}-${VERSION}
 export ARCH=arm
 KERNEL=kernel
@@ -145,15 +118,6 @@ armv6_ncompile(){
 
 # aarch64
 armv8_setup(){
-if `grep -Fx "rtl8812au=1" "../userdata.txt" >/dev/null;`
-	then rtl8812au;
-fi
-if `grep -Fx "rtl88x2bu=1" "../userdata.txt" >/dev/null;`
-	then rtl88x2bu;
-fi
-if `grep -Fx "rtl8811cu=1" "../userdata.txt" >/dev/null;`
-	then rtl8811cu;
-fi
 cd ${KERNEL}-${VERSION}
 export ARCH=arm64
 #make clean
@@ -215,7 +179,6 @@ ccpatch(){
 	then patch -p1 < ../${CC}/rpi-packaging.patch;
     fi
     cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch
-    choose_initrd
     echo_done
     echo
 }
@@ -239,7 +202,6 @@ ncpatch(){
     if `grep -Fx "bcm2708" "../../soc.txt" >/dev/null;`
 	then patch -p1 < ../${NC}/rpi-packaging.patch;
     fi
-    choose_initrd
     echo_done
     echo
 }
@@ -256,9 +218,6 @@ echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm/configs/bcmrp
 rpi4_fconfig(){
     echo -e "${RED}Making bcm2711 defconfig${FIN}."
     module_sig
-    rtl8812au_module
-    rtl88x2bu_module
-    rtl8811cu_module
     make ARCH=arm64 bcm2711_defconfig &> /dev/null
     echo_done
 }
@@ -266,9 +225,6 @@ rpi4_fconfig(){
 rpi3_fconfig(){
     echo -e "${RED}Making bcmrpi3 defconfig${FIN}."
     module_sig
-    rtl8812au_module
-    rtl88x2bu_module
-    rtl8811cu_module
     make ARCH=arm64 bcmrpi3_defconfig &> /dev/null
     echo_done
 }
@@ -276,9 +232,6 @@ rpi3_fconfig(){
 rpi_fconfig(){
     echo -e "${RED}Making bcmrpi defconfig${FIN}."
     module_sig
-    rtl8812au_module
-    rtl88x2bu_module
-    rtl8811cu_module
     make KBUILD_DEBARCH=armel ARCH=arm bcmrpi_defconfig &> /dev/null
     echo_done
 }

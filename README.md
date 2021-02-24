@@ -65,11 +65,6 @@ Ubuntu:		# 1 to select (20.04.1/20.10)
 Filesystem
 ext4:		# 1 to select (default)
 btrfs:		# 1 to select (fetch and make helper not supported)
-
-Wireless        (aarch64)
-rtl88XXau:      # 1 to add Realtek 8812AU/14AU/21AU wireless support
-rtl88XXbu:      # 1 to add Realtek 88X2BU wireless support
-rtl88XXcu:      # 1 to add Realtek 8811CU/21CU wireless support
 ```
 
 #### Mainline Config Menu (RPi4B ONLY)
@@ -93,12 +88,8 @@ Ubuntu:		# 1 to select (20.04.1/20.10)
 Filesystem
 ext4:		# 1 to select (default)
 btrfs:		# 1 to select (fetch not supported)
-
-Wireless        (aarch64)
-rtl88XXau:      # 1 to add Realtek 8812AU/14AU/21AU wireless support
-rtl88XXbu:      # 1 to add Realtek 88X2BU wireless support
-rtl88XXcu:      # 1 to add Realtek 8811CU/21CU wireless support
 ```
+
 ### Furthermore
 If interested in building a Raspberry Pi 4B image that uses mainline u-boot and linux
 use our other [builder](https://github.com/pyavitz/debian-image-builder).
@@ -236,7 +227,7 @@ Usage: deb-eeprom -opt
 
    -v       Edit version variable
    -U       Upgrade eeprom package
-   -w       Setup and install usb boot (ext4 only)
+   -w       Setup and install usb boot
    -u       Update script
 
 Note:

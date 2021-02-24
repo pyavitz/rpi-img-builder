@@ -2,11 +2,10 @@
 source lib/source
 source lib/function/kernel
 source lib/function/echoes
-source lib/function/wireless
 source userdata.txt
 UD=userdata.txt
 
-userdata () {
+userdata(){
 echo ""
 echo -e "You have ${RED}not${FIN} created a ${RED}userdata.txt${FIN} file."
 while [ true ] ; do

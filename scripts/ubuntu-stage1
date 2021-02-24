@@ -7,7 +7,7 @@ source lib/source
 source userdata.txt > /dev/null 2>&1;
 UD=userdata.txt
 
-userdata () {
+userdata(){
 echo ""
 echo "Please create a userdata.txt file"
 while [ true ] ; do
@@ -83,7 +83,6 @@ if ls p1/config.txt > /dev/null 2>&1
 	then echo && echo -n "config.txt  " && sleep 1s && echo_nok;
 	else echo && echo -n "config.txt  " && sleep 1s && echo_fail && exit;
 fi
-initrd_stage1
 
 ### rootfs
 aarch64_rootfs

@@ -136,7 +136,7 @@ bcm2711_config(){
 tee p1/config.txt <<EOF
 arm_64bit=1
 kernel=kernel8.img
-#initramfs initrd.gz
+initramfs initrd.gz
 
 # For more options and information see
 # http://rpf.io/configtxt
@@ -234,7 +234,7 @@ bcm2710_config(){
 tee p1/config.txt <<EOF
 arm_64bit=1
 kernel=kernel8.img
-#initramfs initrd.gz
+initramfs initrd.gz
 
 # For more options and information see
 # http://rpf.io/configtxt
@@ -326,7 +326,7 @@ EOF
 bcm2708_config(){
 tee p1/config.txt <<EOF
 kernel=kernel.img
-#initramfs initrd.gz
+initramfs initrd.gz
 
 # For more options and information see
 # http://rpf.io/configtxt
