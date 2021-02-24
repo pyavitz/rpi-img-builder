@@ -64,7 +64,7 @@ Ubuntu:		# 1 to select (20.04.1/20.10)
 
 Filesystem
 ext4:		# 1 to select (default)
-btrfs:		# 1 to select (fetch and make helper not supported)
+btrfs:		# 1 to select
 ```
 
 #### Mainline Config Menu (RPi4B ONLY)
@@ -87,7 +87,7 @@ Ubuntu:		# 1 to select (20.04.1/20.10)
 
 Filesystem
 ext4:		# 1 to select (default)
-btrfs:		# 1 to select (fetch not supported)
+btrfs:		# 1 to select
 ```
 
 ### Furthermore
