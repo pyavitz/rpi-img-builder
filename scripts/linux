@@ -2,11 +2,10 @@
 source lib/source
 source lib/function/kernel
 source lib/function/echoes
-source lib/function/wireless
 source userdata.txt
 UD=userdata.txt
 
-userdata () {
+userdata(){
 echo ""
 echo -e "You have ${RED}not${FIN} created a ${RED}userdata.txt${FIN} file."
 while [ true ] ; do
@@ -55,13 +54,13 @@ extract
 
 ### Setup
 if `grep -Fx "bcm2711" "../soc.txt" >/dev/null;`
-	then armv8_setup;
+	then armv8_setup && rpi4_binaries;
 fi
 if `grep -Fx "bcm2710" "../soc.txt" >/dev/null;`
-	then armv8_setup;
+	then armv8_setup && rpi_binaries;
 fi
 if `grep -Fx "bcm2708" "../soc.txt" >/dev/null;`
-	then armv6_setup;
+	then armv6_setup && rpi_binaries;
 fi
 
 

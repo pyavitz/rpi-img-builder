@@ -55,10 +55,8 @@ mv -f growpart /usr/bin/
 mv -f credentials.sh /usr/local/bin/credentials
 wget -cq --show-progress ${URL}swh
 mv -f swh /usr/local/bin/
-if `grep -Fx "btrfs=1" "/root/userdata.txt" >/dev/null;`
-	then : ;
-	else wget -cq --show-progress ${URL}fetch && mv -f fetch /usr/local/bin/
-fi
+wget -cq --show-progress ${URL}fetch
+mv -f fetch /usr/local/bin/
 wget -cq --show-progress ${URL}governor
 mv -f governor /usr/local/bin/
 case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
@@ -72,10 +70,7 @@ esac
 if `grep -Fx "userscripts=1" "/root/userdata.txt" >/dev/null;`
 	then uscripts_stage2;
 fi
-if `grep -Fx "btrfs=1" "/root/userdata.txt" >/dev/null;`
-	then initrd_stage2;
-	else rm -f /root/99-initrd;
-fi
+initrd_script
 # Inits
 mv -f firstboot /etc/init.d/
 mv -f pwrledoff /etc/init.d/

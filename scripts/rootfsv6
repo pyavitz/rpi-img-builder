@@ -12,7 +12,7 @@ source lib/source
 source lib/function/boot
 UD=userdata.txt
 
-userdata () {
+userdata(){
 echo ""
 echo "Please create a userdata.txt file"
 while [ true ] ; do
@@ -34,7 +34,7 @@ fi
 
 validation
 
-devuan_rootfs (){
+devuan_rootfs(){
 DEVUAN_STABLE=devuan-${DISTRO_VERSION}-rootfs-armel.tar.xz
 DEVUAN_TESTING=devuan-${DISTRO_VERSION}-rootfs-armel.tar.xz
 if ls $DEVUAN_STABLE > /dev/null 2>&1; then exit; 

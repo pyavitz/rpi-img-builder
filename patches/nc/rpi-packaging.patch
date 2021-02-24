@@ -1,6 +1,6 @@
 diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
---- a/scripts/package/builddeb	2021-01-14 20:59:46.605224000 -0500
-+++ b/scripts/package/builddeb	2021-01-17 11:01:45.659398427 -0500
+--- a/scripts/package/builddeb	2021-02-08 08:08:02.567604000 -0500
++++ b/scripts/package/builddeb	2021-02-23 11:21:06.938515932 -0500
 @@ -47,12 +47,13 @@
  }
  
@@ -17,15 +17,20 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  libc_headers_packagename=linux-libc-dev
  dbg_packagename=$packagename-dbg
  
-@@ -92,6 +93,7 @@
+@@ -92,6 +93,12 @@
  else
  	cp System.map "$tmpdir/boot/System.map-$version"
  	cp $KCONFIG_CONFIG "$tmpdir/boot/config-$version"
 +	cp arch/arm/boot/zImage "$tmpdir/boot/kernel.img"
++	install -m 0644 binaries/bootcode.bin "$tmpdir/boot"
++	install -m 0644 binaries/fixup*.dat "$tmpdir/boot"
++	install -m 0644 binaries/start*.elf "$tmpdir/boot"
++	cp binaries/LICENCE.broadcom "$tmpdir/boot"
++	cp binaries/COPYING.linux "$tmpdir/boot"
  fi
  cp "$($MAKE -s -f $srctree/Makefile image_name)" "$tmpdir/$installed_image_path"
  
-@@ -139,6 +141,16 @@
+@@ -139,6 +146,15 @@
  	mv $libc_headers_dir/usr/include/asm $libc_headers_dir/usr/include/$host_arch/
  fi
  
@@ -35,46 +40,50 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
 +cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2708-rpi-zero.dtb" "$tmpdir/boot/bcm2708-rpi-zero.dtb"
 +cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2708-rpi-b.dtb" "$tmpdir/boot/bcm2708-rpi-b.dtb"
 +cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2708-rpi-b-plus.dtb" "$tmpdir/boot/bcm2708-rpi-b-plus.dtb"
-+#cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2709-rpi-2-b.dtb" "$tmpdir/boot/bcm2709-rpi-2-b.dtb"
-+#cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2710-rpi-2-b.dtb" "$tmpdir/boot/bcm2710-rpi-2-b.dtb"
++#
 +cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/overlays/" "$tmpdir/boot/"
 +
  # Install the maintainer scripts
  # Note: hook scripts under /etc/kernel are also executed by official Debian
  # kernel packages, as well as kernel packages built using make-kpkg.
-@@ -164,6 +176,40 @@
+@@ -164,6 +180,45 @@
  	chmod 755 "$tmpdir/DEBIAN/$script"
  done
  
 +       # remove kernel
 +        cat > $tmpdir/DEBIAN/preinst <<EOT
-+#!/bin/sh
++#!/bin/bash
 +# purge kernel script
 +
 +set -e
 +
 +if touch -c /boot/overlays > /dev/null 2>&1; then rm -fdr /boot/overlays;
-+        else echo "Missing overlays directory." &>/dev/null;
++        else echo "Missing overlays directory.";
 +fi
 +
 +if ls /boot/*.dtb > /dev/null 2>&1; then rm -fr /boot/*.dtb;
-+        else echo "Missing dtb files." &>/dev/null;
++        else echo "Missing dtb files.";
 +fi
 +
 +if ls /boot/System.map-* > /dev/null 2>&1; then rm -f /boot/System.map-*;
-+        else echo "Missing System.map file." &>/dev/null;
++        else echo "Missing System.map file.";
 +fi
 +
 +if ls /boot/config-* > /dev/null 2>&1; then rm -f /boot/config-*;
-+        else echo "Missing config file." &>/dev/null;
++        else echo "Missing config file.";
 +fi
 +
 +if ls /boot/vmlinuz-* > /dev/null 2>&1; then rm -f /boot/vmlinuz-*;
-+        else echo "Missing vmlinuz file." &>/dev/null;
++        else echo "Missing vmlinuz file.";
++fi
++
++if ls /boot/{bootcode.bin,fixup*.dat,start*.elf} > /dev/null 2>&1;
++	then rm -f /boot/{bootcode.bin,fixup*.dat,start*.elf,LICENCE.broadcom,COPYING.linux};
++	else echo "Missing boot binaries.";
 +fi
 +
 +if ls /boot/kernel* > /dev/null 2>&1; then rm -f /boot/kernel* /boot/initrd.img*;
-+        else echo "Installing new kernel." &>/dev/null;
++        else echo "Installing new kernel.";
 +fi
 +exit 0
 +EOT
@@ -83,7 +92,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  # Build kernel header package
  (cd $srctree; find . -name Makefile\* -o -name Kconfig\* -o -name \*.pl) > "$objtree/debian/hdrsrcfiles"
  (cd $srctree; find arch/*/include include scripts -type f -o -type l) >> "$objtree/debian/hdrsrcfiles"
-@@ -184,6 +230,19 @@
+@@ -184,6 +239,19 @@
  ln -sf "/usr/src/linux-headers-$version" "$kernel_headers_dir/lib/modules/$version/build"
  rm -f "$objtree/debian/hdrsrcfiles" "$objtree/debian/hdrobjfiles"
  
@@ -104,8 +113,8 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  	create_package "$kernel_headers_packagename" "$kernel_headers_dir"
  	create_package "$libc_headers_packagename" "$libc_headers_dir"
 diff -Naur a/scripts/package/mkdebian b/scripts/package/mkdebian
---- a/scripts/package/mkdebian	2021-01-14 20:59:46.606224000 -0500
-+++ b/scripts/package/mkdebian	2021-01-17 11:00:48.717165151 -0500
+--- a/scripts/package/mkdebian	2021-02-08 08:08:02.567604000 -0500
++++ b/scripts/package/mkdebian	2021-02-23 11:18:51.342521166 -0500
 @@ -94,8 +94,8 @@
  	packageversion=$version-$revision
  fi

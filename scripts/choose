@@ -4,7 +4,7 @@ source lib/function/echoes
 source lib/source
 UD=userdata.txt
 
-userdata () {
+userdata(){
 echo ""
 echo "Please create a userdata.txt file"
 while [ true ] ; do

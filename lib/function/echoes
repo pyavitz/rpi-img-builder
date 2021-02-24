@@ -51,6 +51,10 @@ echo_kernel(){
 echo -e "${RED}Downloading kernel${FIN}."
 }
 
+echo_bins(){
+echo -e "${RED}Downloading binaries${FIN}."
+}
+
 echo_stable(){
 echo -e "${RED}Downloading stable linux${FIN}."
 }

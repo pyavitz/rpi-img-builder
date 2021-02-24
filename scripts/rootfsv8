@@ -12,7 +12,7 @@ source lib/source
 source lib/function/boot
 UD=userdata.txt
 
-userdata () {
+userdata(){
 echo ""
 echo "Please create a userdata.txt file"
 while [ true ] ; do
@@ -34,7 +34,7 @@ fi
 
 validation
 
-devuan_rootfs (){
+devuan_rootfs(){
 DEVUAN_RELEASE=devuan-${DISTRO_VERSION}-rootfs-aarch64.tar.xz
 if ls $DEVUAN_RELEASE > /dev/null 2>&1; then exit; 
 	else : ;
@@ -42,7 +42,7 @@ fi
 wget -cq --show-progress https://github.com/pyavitz/rootfs-tarballs/releases/download/rootfs/devuan-${DISTRO_VERSION}-rootfs-aarch64.tar.xz
 }
 
-ubuntu_rootfs (){
+ubuntu_rootfs(){
 UBUNTU_RELEASE=ubuntu-base-${DISTRO_VERSION}-base-aarch64.tar.gz
 if ls $UBUNTU_RELEASE > /dev/null 2>&1; then exit; 
 	else : ;
