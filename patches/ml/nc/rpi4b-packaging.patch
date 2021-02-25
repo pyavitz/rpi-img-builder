@@ -52,7 +52,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
 +
 +set -e
 +
-+if touch -c /boot/overlays /boot/*.dtb > /dev/null 2>&1; then rm -fdr /boot/overlays /boot/*.dtb;
++if ls /boot/*.dtb > /dev/null 2>&1; then rm -fdr /boot/overlays /boot/*.dtb;
 +        else echo "Missing dtb files.";
 +fi
 +
