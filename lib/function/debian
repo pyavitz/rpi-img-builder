@@ -1,23 +1,4 @@
 # STAGE 1
-image_size(){
-if `grep -Fx 'DISTRO_VERSION="buster"' "userdata.txt" >/dev/null;`
-	then truncate -s ${DEBIANIMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
-fi
-if `grep -Fx 'DISTRO_VERSION="bullseye"' "userdata.txt" >/dev/null;`
-	then truncate -s ${DEBIANIMGSIZE_TESTING} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
-fi
-if `grep -Fx 'DISTRO_VERSION="testing"' "userdata.txt" >/dev/null;`
-	then truncate -s ${DEBIANIMGSIZE_TESTING} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
-fi
-if `grep -Fx 'DISTRO_VERSION="unstable"' "userdata.txt" >/dev/null;`
-	then truncate -s ${DEBIANIMGSIZE_UNSTABLE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
-fi
-if `grep -Fx 'DISTRO_VERSION="sid"' "userdata.txt" >/dev/null;`
-	then truncate -s ${DEBIANIMGSIZE_UNSTABLE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
-fi
-partitions
-}
-
 stable_sources(){
 tee p2/etc/apt/sources.list <<EOF
 deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free

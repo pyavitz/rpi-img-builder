@@ -116,7 +116,7 @@ ccompile:
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
 	aria2 pv toilet figlet crossbuild-essential-arm64 crossbuild-essential-armel \
-	distro-info-data lsb-release xz-utils curl btrfs-progs
+	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs kpartx
 
 ncompile:
 	# Install native dependencies:
@@ -124,7 +124,7 @@ ncompile:
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
 	aria2 pv toilet figlet distro-info-data lsb-release xz-utils curl \
-	btrfs-progs
+	e2fsprogs btrfs-progs kpartx
 
 # Raspberry Pi 4 | aarch64
 kernel:

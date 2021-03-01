@@ -26,6 +26,11 @@ umount p1
 mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p1
 }
 
+image_size(){
+truncate -s ${IMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
+partitions
+}
+
 partitions(){
 fdisk "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" <<EOF
 o

@@ -15,6 +15,10 @@ echo_compress(){
 echo -e "${RED}Compressing image${FIN}."
 }
 
+echo_shrink(){
+echo -e "${RED}Shrinking image${FIN}."
+}
+
 echo_ccpatch(){
 echo -e "${RED}Applying cc packaging patch${FIN}."
 }
