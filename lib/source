@@ -25,7 +25,7 @@ fi
 # do not edit above this line
 
 EXT4="2200MB"
-BTRFS="1500MB"
+BTRFS="1600MB"
 
 # debian
 DEBIAN1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
