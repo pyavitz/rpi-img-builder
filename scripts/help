@@ -14,6 +14,9 @@ echo
 echo -e "${RED}Extracting and setting up directory${FIN}."
 tar xf rpi-${VERSION}.tar.xz
 rm -f rpi-${VERSION}.tar.xz
+if ls output/bcm2708 > /dev/null 2>&1
+	then sudo rm -fdr output/bcm2708;
+fi
 mkdir -p output
 mv rpi-${VERSION} output/bcm2708
 echo -e "${RED}Ready${FIN}."
@@ -28,6 +31,9 @@ echo
 echo -e "${RED}Extracting and setting up directory${FIN}."
 tar xf rpi3-${VERSION}.tar.xz
 rm -f rpi3-${VERSION}.tar.xz
+if ls output/bcm2710 > /dev/null 2>&1
+	then sudo rm -fdr output/bcm2710;
+fi
 mkdir -p output
 mv rpi3-${VERSION} output/bcm2710
 echo -e "${RED}Ready${FIN}."
@@ -42,6 +48,9 @@ echo
 echo -e "${RED}Extracting and setting up directory${FIN}."
 tar xf rpi4-${VERSION}.tar.xz
 rm -f rpi4-${VERSION}.tar.xz
+if ls output/bcm2711 > /dev/null 2>&1
+	then sudo rm -fdr output/bcm2711;
+fi
 mkdir -p output
 mv rpi4-${VERSION} output/bcm2711
 echo -e "${RED}Ready${FIN}."
