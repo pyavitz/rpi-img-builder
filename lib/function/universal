@@ -252,13 +252,13 @@ echo_done
 shrink(){
 chmod +x scripts/shrink
 if `grep -Fx "debian=1" "userdata.txt" >/dev/null;`
-	then scripts/shrink ${DEVICE_SOC}-debian-${DISTRO_VERSION}-${IMAGE_DATE}.img;
+	then scripts/shrink -s ${DEVICE_SOC}-debian-${DISTRO_VERSION}-${IMAGE_DATE}.img;
 fi
 if `grep -Fx "devuan=1" "userdata.txt" >/dev/null;`
-	then scripts/shrink ${DEVICE_SOC}-devuan-${DISTRO_VERSION}-${IMAGE_DATE}.img;
+	then scripts/shrink -s ${DEVICE_SOC}-devuan-${DISTRO_VERSION}-${IMAGE_DATE}.img;
 fi
 if `grep -Fx "ubuntu=1" "userdata.txt" >/dev/null;`
-	then scripts/shrink ${DEVICE_SOC}-ubuntu-${DISTRO_VERSION}-${IMAGE_DATE}.img;
+	then scripts/shrink -s ${DEVICE_SOC}-ubuntu-${DISTRO_VERSION}-${IMAGE_DATE}.img;
 fi
 fix_cmdline
 }
