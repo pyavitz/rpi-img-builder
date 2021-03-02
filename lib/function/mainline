@@ -141,3 +141,9 @@ native_compile(){
     echo 'y' | make -j${CORES} ARCH=arm64 bindeb-pkg
     rm -f ../*libc*.deb
 }
+
+bcm2711_check(){
+if ls ${OUT4}/*.deb > /dev/null 2>&1
+	then mkdir -p ${OUT4}/tmp && mv -f ${OUT4}/*.deb ${OUT4}/tmp;
+fi
+}

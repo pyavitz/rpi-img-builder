@@ -302,3 +302,21 @@ case `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null; echo $?` in
     ;;
 esac
 }
+
+bcm2711_check(){
+if ls ${OUT4}/*.deb > /dev/null 2>&1
+	then mkdir -p ${OUT4}/tmp && mv -f ${OUT4}/*.deb ${OUT4}/tmp;
+fi
+}
+
+bcm2710_check(){
+if ls ${OUT3}/*.deb > /dev/null 2>&1
+	then mkdir -p ${OUT3}/tmp && mv -f ${OUT3}/*.deb ${OUT3}/tmp;
+fi
+}
+
+bcm2708_check(){
+if ls ${OUT}/*.deb > /dev/null 2>&1
+	then mkdir -p ${OUT}/tmp && mv -f ${OUT}/*.deb ${OUT}/tmp;
+fi
+}

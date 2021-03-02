@@ -235,6 +235,13 @@ fi
 }
 
 # Shrink
+ext4_shrink(){
+if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
+	then shrink;
+	else start_shrink;
+fi
+}
+
 start_shrink(){
 echo
 echo_shrink

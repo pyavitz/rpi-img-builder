@@ -24,7 +24,8 @@ fi
 }
 # do not edit above this line
 
-IMGSIZE="2200MB"
+EXT4="2200MB"
+BTRFS="1500MB"
 
 # debian
 DEBIAN1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \

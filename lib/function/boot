@@ -27,7 +27,12 @@ mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p1
 }
 
 image_size(){
-truncate -s ${IMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
+if `grep -Fx "ext4=1" "userdata.txt" >/dev/null;`
+	then truncate -s ${EXT4} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+fi
+if `grep -Fx "btrfs=1" "userdata.txt" >/dev/null;`
+	then truncate -s ${BTRFS} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+fi
 partitions
 }
 

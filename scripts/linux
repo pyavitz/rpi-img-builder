@@ -112,12 +112,12 @@ rm -f linux-libc-dev*.deb
 rm -f *.buildinfo
 rm -f *.changes
 if `grep -Fx "bcm2711" "../soc.txt" >/dev/null;`
-	then mkdir -p ${OUT4} && mv -f *.deb ${OUT4}/;
+	then bcm2711_check && mkdir -p ${OUT4} && mv -f *.deb ${OUT4}/;
 fi
 if `grep -Fx "bcm2710" "../soc.txt" >/dev/null;`
-	then mkdir -p ${OUT3} && mv -f *.deb ${OUT3}/;
+	then bcm2710_check && mkdir -p ${OUT3} && mv -f *.deb ${OUT3}/;
 fi
 if `grep -Fx "bcm2708" "../soc.txt" >/dev/null;`
-	then mkdir -p ${OUT} && mv -f *.deb ${OUT}/;
+	then bcm2708_check && mkdir -p ${OUT} && mv -f *.deb ${OUT}/;
 fi
 echo_done
