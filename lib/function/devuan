@@ -1,20 +1,4 @@
 # STAGE 1
-image_size(){
-if `grep -Fx 'DISTRO_VERSION="beowulf"' "userdata.txt" >/dev/null;`
-	then truncate -s ${DEVUANIMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
-fi
-if `grep -Fx 'DISTRO_VERSION="testing"' "userdata.txt" >/dev/null;`
-	then truncate -s ${DEVUANIMGSIZE_TESTING} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
-fi
-if `grep -Fx 'DISTRO_VERSION="ceres"' "userdata.txt" >/dev/null;`
-	then truncate -s ${DEVUANIMGSIZE_UNSTABLE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
-fi
-if `grep -Fx 'DISTRO_VERSION="unstable"' "userdata.txt" >/dev/null;`
-	then truncate -s ${DEVUANIMGSIZE_UNSTABLE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
-fi
-partitions
-}
-
 stable_sources(){
 tee p2/etc/apt/sources.list <<EOF
 deb http://deb.devuan.org/merged ${DISTRO_VERSION} main contrib non-free

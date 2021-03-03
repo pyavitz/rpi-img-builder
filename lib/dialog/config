@@ -63,7 +63,7 @@ echo MYCONFIG='"'nameofyour_defconfig'"' >> tmp0
 echo userscripts=0 >> tmp0
 echo verbose=0 >> tmp0
 echo rpiuser=1 >> tmp0
-echo builder=3.6 >> tmp0
+echo builder=3.7 >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
 echo '"' >> tmp2

@@ -234,6 +234,78 @@ if `grep -Fx "btrfs=1" "userdata.txt" >/dev/null;`
 fi
 }
 
+# Shrink
+ext4_shrink(){
+if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
+	then shrink;
+	else start_shrink;
+fi
+}
+
+start_shrink(){
+echo
+echo_shrink
+shrink > /dev/null 2>&1
+echo_done
+}
+
+shrink(){
+chmod +x scripts/shrink
+if `grep -Fx "debian=1" "userdata.txt" >/dev/null;`
+	then scripts/shrink -s ${DEVICE_SOC}-debian-${DISTRO_VERSION}-${IMAGE_DATE}.img;
+fi
+if `grep -Fx "devuan=1" "userdata.txt" >/dev/null;`
+	then scripts/shrink -s ${DEVICE_SOC}-devuan-${DISTRO_VERSION}-${IMAGE_DATE}.img;
+fi
+if `grep -Fx "ubuntu=1" "userdata.txt" >/dev/null;`
+	then scripts/shrink -s ${DEVICE_SOC}-ubuntu-${DISTRO_VERSION}-${IMAGE_DATE}.img;
+fi
+fix_cmdline
+}
+
+fix_cmdline(){
+echo 'LOOP1="/dev/mapper/' > kpart1
+echo 'LOOP2="/dev/mapper/' >> kpart1
+if `grep -Fx "debian=1" "userdata.txt" >/dev/null;`
+	then IMAGE_FILE="${DEVICE_SOC}-debian-${DISTRO_VERSION}-${IMAGE_DATE}.img";
+fi
+if `grep -Fx "devuan=1" "userdata.txt" >/dev/null;`
+	then IMAGE_FILE="${DEVICE_SOC}-devuan-${DISTRO_VERSION}-${IMAGE_DATE}.img";
+fi
+if `grep -Fx "ubuntu=1" "userdata.txt" >/dev/null;`
+	then IMAGE_FILE="${DEVICE_SOC}-ubuntu-${DISTRO_VERSION}-${IMAGE_DATE}.img";
+fi
+kpartx="$(kpartx -av $IMAGE_FILE)"
+echo "$kpartx"
+grep -o 'loop.p.' <<<"$kpartx" > kpart2
+echo '"' > kpart3
+echo '"' >> kpart3
+paste -d '\0' kpart1 kpart2 kpart3 > kpart.txt
+rm -f {kpart1,kpart2,kpart3}
+source kpart.txt
+BOOT="${LOOP1}"
+mkdir -p p1
+sleep 1s
+mount "${BOOT}" p1
+rm -f p1/cmdline.txt
+new_partuuid
+cmdline
+sleep 1s
+umount p1
+rm -fdr p1
+kpartx -d ${IMAGE_FILE}
+rm -f kpart.txt
+}
+
+new_partuuid(){
+rm -f part-uuid.txt
+ROOTFS="${LOOP2}"
+ROOT_PARTUUID=$(blkid -o export -- ${ROOTFS} | sed -ne 's/^PARTUUID=//p')
+echo ROOT_PARTUUID='"'$ROOT_PARTUUID'"' > part-uuid.txt
+
+source part-uuid.txt
+}
+
 # Systemd services
 firstboot_service(){
 echo

@@ -16,7 +16,7 @@ KERNEL="linux-rpi"
 MLKERNEL="linux"
 
 validation(){
-if grep -q "builder=3.6" userdata.txt; then
+if grep -q "builder=3.7" userdata.txt; then
     :;
 else
     echo -e "${YLW}Userdata file is old${FIN}! ${YLW}Please create a new one${FIN}." && exit;
@@ -24,11 +24,10 @@ fi
 }
 # do not edit above this line
 
-# debian
-DEBIANIMGSIZE="1850MB"
-DEBIANIMGSIZE_TESTING="2000MB"
-DEBIANIMGSIZE_UNSTABLE="2000MB"
+EXT4="2200MB"
+BTRFS="1600MB"
 
+# debian
 DEBIAN1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	fonty-rg patch curl wget apt-transport-https dirmngr cmake rsync \
 	psmisc parted pv zip unzip aria2 libell0"
@@ -41,10 +40,6 @@ DEBIAN2="cpu hwinfo haveged resolvconf git build-essential net-tools ifplugd \
 	avahi-utils distro-info-data lsb-release liblzo2-2"
 
 # devuan
-DEVUANIMGSIZE="1950MB"
-DEVUANIMGSIZE_TESTING="2100MB"
-DEVUANIMGSIZE_UNSTABLE="2100MB"
-
 DEVUAN1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	fonty-rg patch curl wget apt-transport-https dirmngr cmake rsync \
 	psmisc parted pv zip unzip aria2 libell0"
@@ -57,10 +52,6 @@ DEVUAN2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
 	ntp ifupdown-extra avahi-utils distro-info-data lsb-release liblzo2-2"
 
 # ubuntu
-UBUNTUIMGSIZE="1850MB"
-UBUNTUIMGSIZE_UNSTABLE="1850MB"
-
-# stage2
 UBUNTU1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	fonty-rg patch curl wget apt-transport-https dirmngr cmake rsync \
 	psmisc parted pv zip unzip aria2"
