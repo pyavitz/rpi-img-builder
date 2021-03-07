@@ -17,6 +17,20 @@ qemu_arm_remove(){
 rm p2/usr/bin/qemu-arm-static
 }
 
+# Stage 2
+set_locales(){
+apt install -y locales
+export LANGUAGE=en_US.UTF-8
+export LANG=en_US.UTF-8
+export LC_ALL=C.UTF-8
+locale-gen en_US.UTF-8
+}
+
+set_timezone(){
+ln -snf /usr/share/zoneinfo/America/New_York /etc/localtime
+echo -n 'America/New_York' > /etc/timezone
+}
+
 # EEPROM
 bcm2711_eeprom(){
 echo
