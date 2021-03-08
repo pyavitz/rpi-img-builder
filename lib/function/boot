@@ -226,15 +226,19 @@ dtparam=audio=on
 # enable uart
 enable_uart=0
 
-# Disable wifi and bluetooth
+# disable wifi and bluetooth
 #dtoverlay=disable-wifi
 #dtoverlay=disable-bt
 
-# Remove test rainbow
+# remove test rainbow
 disable_splash=1
+
+# disables the warning overlays
+#avoid_warnings=1
 
 [pi4]
 # enable DRM VC4 V3D driver on top of the dispmanx display stack
+#dtoverlay=vc4-kms-v3d
 dtoverlay=vc4-fkms-v3d
 max_framebuffers=2
 EOF
@@ -324,12 +328,15 @@ dtparam=audio=on
 # enable uart
 enable_uart=0
 
-# Disable wifi and bluetooth
+# disable wifi and bluetooth
 #dtoverlay=pi3-disable-wifi
 #dtoverlay=pi3-disable-bt
 
-# Remove test rainbow
+# remove test rainbow
 disable_splash=1
+
+# disables the warning overlays
+#avoid_warnings=1
 EOF
 }
 
@@ -416,11 +423,14 @@ dtparam=audio=on
 # enable uart
 enable_uart=0
 
-# Disable wifi and bluetooth
+# disable wifi and bluetooth
 #dtoverlay=disable-wifi
 #dtoverlay=disable-bt
 
-# Remove test rainbow
+# remove test rainbow
 disable_splash=1
+
+# disables the warning overlays
+#avoid_warnings=1
 EOF
 }
