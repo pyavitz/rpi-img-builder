@@ -124,7 +124,7 @@ ncompile:
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
 	aria2 pv toilet figlet distro-info-data lsb-release xz-utils curl \
-	e2fsprogs btrfs-progs kpartx
+	e2fsprogs btrfs-progs kpartx gcc-8 gcc-9 gcc-10
 
 # Raspberry Pi 4 | aarch64
 kernel:
