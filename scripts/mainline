@@ -1,5 +1,6 @@
 #!/bin/bash
 source userdata.txt
+source lib/function/gcc
 source lib/function/mainline
 source lib/function/echoes
 source lib/source
@@ -43,6 +44,7 @@ esac
 
 # prep
 validation
+gcc_version
 source_dir
 mainline_clean
 

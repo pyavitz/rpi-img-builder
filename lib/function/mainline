@@ -106,39 +106,48 @@ patching(){
 }
 
 cconfig(){
-    echo_cconfig
-    cp -f ../${DEF}/${MYCONFIG} arch/arm64/configs/
-    make ARCH=arm64 ${MYCONFIG}
-    echo_done
+echo_cconfig
+cp -f ../${DEF}/${MYCONFIG} arch/arm64/configs/
+if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
+	then make ARCH=arm64 CC=${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- ${MYCONFIG};
+	else make ARCH=arm64 CC=${NATIVE} ${MYCONFIG};
+fi
+echo_done
 }
 
 rpi_config(){
-    echo_fconfig
-    cp -f ../${DEF}/bcm2711_defconfig arch/arm64/configs/
-    echo CONFIG_MODULE_SIG=y >> arch/arm64/configs/bcm2711_defconfig
-    echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm64/configs/bcm2711_defconfig
-    make ARCH=arm64 bcm2711_defconfig &> /dev/null
+echo_fconfig
+cp -f ../${DEF}/bcm2711_defconfig arch/arm64/configs/
+echo CONFIG_MODULE_SIG=y >> arch/arm64/configs/bcm2711_defconfig
+echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm64/configs/bcm2711_defconfig
+if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
+	then make ARCH=arm64 CC=${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- bcm2711_defconfig &> /dev/null;
+	else make ARCH=arm64 CC=${NATIVE} bcm2711_defconfig &> /dev/null;
+fi
     echo_done
 }
 
 menu_config(){
-    echo
-    echo_menuconfig
-    sleep 1s
-    make menuconfig
+echo
+echo_menuconfig
+sleep 1s
+if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
+	then make ARCH=arm64 CC=${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- menuconfig;
+	else make ARCH=arm64 CC=${NATIVE} menuconfig;
+fi
 }
 
 cross_compile(){
     echo -e "-- ${GRN}CC${FIN}"
     echo_build
-    echo 'y' | make -j${CORES} ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
+    echo 'y' | make -j${CORES} ARCH=arm64 CC=${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
     rm -f ../*libc*.deb
 }
 
 native_compile(){
     echo -e "-- ${GRN}NC${FIN}"
     echo_build
-    echo 'y' | make -j${CORES} ARCH=arm64 bindeb-pkg
+    echo 'y' | make -j${CORES} CC=${NATIVE} ARCH=arm64 bindeb-pkg
     rm -f ../*libc*.deb
 }
 

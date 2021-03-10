@@ -1,0 +1,93 @@
+gcc_version(){
+# debian
+case `grep -Fx 'DISTRO_VERSION="buster"' "userdata.txt" >/dev/null; echo $?` in
+  0)
+    echo NATIVE='"'/usr/bin/gcc-8'"' > gcc.txt
+    echo ARMV6_CROSS='"'/usr/bin/arm-linux-gnueabi-gcc-8'"' >> gcc.txt
+    echo ARM64_CROSS='"'/usr/bin/aarch64-linux-gnu-gcc-8'"' >> gcc.txt
+    source gcc.txt
+    ;;
+esac
+case `grep -Fx 'DISTRO_VERSION="bullseye"' "userdata.txt" >/dev/null; echo $?` in
+  0)
+    echo NATIVE='"'/usr/bin/gcc-10'"' > gcc.txt
+    echo ARMV6_CROSS='"'/usr/bin/arm-linux-gnueabi-gcc-10'"' >> gcc.txt
+    echo ARM64_CROSS='"'/usr/bin/aarch64-linux-gnu-gcc-10'"' >> gcc.txt
+    source gcc.txt
+    ;;
+esac
+case `grep -Fx 'DISTRO_VERSION="testing"' "userdata.txt" >/dev/null; echo $?` in
+  0)
+    echo NATIVE='"'/usr/bin/gcc-10'"' > gcc.txt
+    echo ARMV6_CROSS='"'/usr/bin/arm-linux-gnueabi-gcc-10'"' >> gcc.txt
+    echo ARM64_CROSS='"'/usr/bin/aarch64-linux-gnu-gcc-10'"' >> gcc.txt
+    source gcc.txt
+    ;;
+esac
+case `grep -Fx 'DISTRO_VERSION="unstable"' "userdata.txt" >/dev/null; echo $?` in
+  0)
+    echo NATIVE='"'/usr/bin/gcc-10'"' > gcc.txt
+    echo ARMV6_CROSS='"'/usr/bin/arm-linux-gnueabi-gcc-10'"' >> gcc.txt
+    echo ARM64_CROSS='"'/usr/bin/aarch64-linux-gnu-gcc-10'"' >> gcc.txt
+    source gcc.txt
+    ;;
+esac
+case `grep -Fx 'DISTRO_VERSION="sid"' "userdata.txt" >/dev/null; echo $?` in
+  0)
+    echo NATIVE='"'/usr/bin/gcc-10'"' > gcc.txt
+    echo ARMV6_CROSS='"'/usr/bin/arm-linux-gnueabi-gcc-10'"' >> gcc.txt
+    echo ARM64_CROSS='"'/usr/bin/aarch64-linux-gnu-gcc-10'"' >> gcc.txt
+    source gcc.txt
+    ;;
+esac
+
+# devuan
+case `grep -Fx 'DISTRO_VERSION="beowulf"' "userdata.txt" >/dev/null; echo $?` in
+  0)
+    echo NATIVE='"'/usr/bin/gcc-8'"' > gcc.txt
+    echo ARMV6_CROSS='"'/usr/bin/arm-linux-gnueabi-gcc-8'"' >> gcc.txt
+    echo ARM64_CROSS='"'/usr/bin/aarch64-linux-gnu-gcc-8'"' >> gcc.txt
+    source gcc.txt
+    ;;
+esac
+case `grep -Fx 'DISTRO_VERSION="testing"' "userdata.txt" >/dev/null; echo $?` in
+  0)
+    echo NATIVE='"'/usr/bin/gcc-10'"' > gcc.txt
+    echo ARMV6_CROSS='"'/usr/bin/arm-linux-gnueabi-gcc-10'"' >> gcc.txt
+    echo ARM64_CROSS='"'/usr/bin/aarch64-linux-gnu-gcc-10'"' >> gcc.txt
+    source gcc.txt
+    ;;
+esac
+case `grep -Fx 'DISTRO_VERSION="unstable"' "userdata.txt" >/dev/null; echo $?` in
+  0)
+    echo NATIVE='"'/usr/bin/gcc-10'"' > gcc.txt
+    echo ARMV6_CROSS='"'/usr/bin/arm-linux-gnueabi-gcc-10'"' >> gcc.txt
+    echo ARM64_CROSS='"'/usr/bin/aarch64-linux-gnu-gcc-10'"' >> gcc.txt
+    source gcc.txt
+    ;;
+esac
+case `grep -Fx 'DISTRO_VERSION="ceres"' "userdata.txt" >/dev/null; echo $?` in
+  0)
+    echo NATIVE='"'/usr/bin/gcc-10'"' > gcc.txt
+    echo ARMV6_CROSS='"'/usr/bin/arm-linux-gnueabi-gcc-10'"' >> gcc.txt
+    echo ARM64_CROSS='"'/usr/bin/aarch64-linux-gnu-gcc-10'"' >> gcc.txt
+    source gcc.txt
+    ;;
+esac
+
+# ubuntu
+case `grep -Fx 'DISTRO_VERSION="20.04.1"' "userdata.txt" >/dev/null; echo $?` in
+  0)
+    echo NATIVE='"'/usr/bin/gcc-9'"' > gcc.txt
+    echo ARM64_CROSS='"'/usr/bin/aarch64-linux-gnu-gcc-9'"' >> gcc.txt
+    source gcc.txt
+    ;;
+esac
+case `grep -Fx 'DISTRO_VERSION="20.10"' "userdata.txt" >/dev/null; echo $?` in
+  0)
+    echo NATIVE='"'/usr/bin/gcc-10'"' > gcc.txt
+    echo ARM64_CROSS='"'/usr/bin/aarch64-linux-gnu-gcc-10'"' >> gcc.txt
+    source gcc.txt
+    ;;
+esac
+}

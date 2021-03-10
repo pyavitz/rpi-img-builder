@@ -11,13 +11,17 @@
 In order to install the required dependencies, run the following command:
 
 ```
-sudo apt install build-essential bison bc git dialog patch dosfstools zip unzip qemu debootstrap \
-                 qemu-user-static rsync kmod cpio flex libssl-dev libncurses5-dev parted fakeroot \
-                 swig aria2 pv toilet figlet distro-info-data lsb-release xz-utils curl e2fsprogs \
-                 btrfs-progs kpartx crossbuild-essential-arm64 crossbuild-essential-armel
+sudo apt install \
+	build-essential bison bc git dialog patch dosfstools zip unzip qemu debootstrap \
+	qemu-user-static rsync kmod cpio flex libssl-dev libncurses5-dev parted fakeroot \
+	swig aria2 pv toilet figlet distro-info-data lsb-release xz-utils curl e2fsprogs \
+	btrfs-progs kpartx crossbuild-essential-arm64 crossbuild-essential-armel gcc-8 \
+	gcc-8-arm-linux-gnueabi gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-9 \
+	gcc-8-aarch64-linux-gnu gcc-9-aarch64-linux-gnu gcc-10-aarch64-linux-gnu gcc-10 \
+	debian-archive-keyring debian-keyring
 ```
 
-This has been tested on an AMD64/x86_64 system running on [Debian Buster](https://www.debian.org/releases/buster/debian-installer/).
+This has been tested on an AMD64/x86_64 system running on [Ubuntu Focal](https://releases.ubuntu.com/20.04/).
 
 Alternatively, you can run the command `make ccompile` in this directory.
 

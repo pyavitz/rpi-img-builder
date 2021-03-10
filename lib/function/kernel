@@ -15,6 +15,15 @@ sed -i 's/export INITRD=$want_initrd/export INITRD=No/g' scripts/package/buildde
 sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
 }
 
+userpatches(){
+if
+ls ../${UP}/*.patch > /dev/null 2>&1;
+then echo -e "${GRN}Applying user patches${FIN}." &&
+for i in ../${UP}/*.patch; do patch -p1 < $i; done ;
+else echo -e "${YLW}No user patches found${FIN}." 
+fi
+}
+
 rpi4_binaries(){
 BINURL="https://github.com/raspberrypi/firmware/raw/master/boot/"
 mkdir -p binaries
@@ -91,29 +100,35 @@ KERNEL=kernel
 }
 
 armv6_cconfig(){
-    echo_cconfig
-    cp -f ../${DEF}/${MYCONFIG} arch/arm/configs/
-    make KBUILD_DEBARCH=armel ARCH=arm ${MYCONFIG}
-    echo_done
+echo_cconfig
+cp -f ../${DEF}/${MYCONFIG} arch/arm/configs/
+if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
+	then make KBUILD_DEBARCH=armel ARCH=arm CC=${ARMV6_CROSS} CROSS_COMPILE=arm-linux-gnueabi- ${MYCONFIG};
+	else make KBUILD_DEBARCH=armel ARCH=arm CC=${NATIVE} ${MYCONFIG};
+fi
+echo_done
 }
 
 armv6_menuconfig(){
-    echo
-    echo_menuconfig
-    sleep 1s
-    make KBUILD_DEBARCH=armel ARCH=arm menuconfig
+echo
+echo_menuconfig
+sleep 1s
+if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
+	then make KBUILD_DEBARCH=armel ARCH=arm CC=${ARMV6_CROSS} CROSS_COMPILE=arm-linux-gnueabi- menuconfig;
+	else make KBUILD_DEBARCH=armel ARCH=arm CC=${NATIVE} menuconfig;
+fi
 }
 
 armv6_ccompile(){
-    echo -e "-- ${GRN}CC${FIN}"
-    echo_build
-    echo 'y' | make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- bindeb-pkg
+echo -e "-- ${GRN}CC${FIN}"
+echo_build
+echo 'y' | make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm CC=${ARMV6_CROSS} CROSS_COMPILE=arm-linux-gnueabi- bindeb-pkg
 }
 
 armv6_ncompile(){
-    echo -e "-- ${GRN}NC${FIN}"
-    echo_build
-    echo 'y' | make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm bindeb-pkg
+echo -e "-- ${GRN}NC${FIN}"
+echo_build
+echo 'y' | make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm CC=${NATIVE} bindeb-pkg
 }
 
 # aarch64
@@ -124,39 +139,36 @@ export ARCH=arm64
 #make mrproper
 }
 
-userpatches(){
-if
-ls ../${UP}/*.patch > /dev/null 2>&1;
-then echo -e "${GRN}Applying user patches${FIN}." &&
-for i in ../${UP}/*.patch; do patch -p1 < $i; done ;
-else echo -e "${YLW}No user patches found${FIN}." 
-fi
-}
-
 armv8_cconfig(){
-    echo_cconfig
-    cp -f ../${DEF}/${MYCONFIG} arch/arm64/configs/
-    make ARCH=arm64 ${MYCONFIG}
-    echo_done
+echo_cconfig
+cp -f ../${DEF}/${MYCONFIG} arch/arm64/configs/
+if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
+	then make ARCH=arm64 CC=${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- ${MYCONFIG};
+	else make ARCH=arm64 CC=${NATIVE} ${MYCONFIG};
+fi
+echo_done
 }
 
 armv8_menuconfig(){
-    echo
-    echo_menuconfig
-    sleep 1s
-    make menuconfig
+echo
+echo_menuconfig
+sleep 1s
+if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
+	then make ARCH=arm64 CC=${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- menuconfig;
+	else make ARCH=arm64 CC=${NATIVE} menuconfig;
+fi
 }
 
 armv8_ccompile(){
-    echo -e "-- ${GRN}CC${FIN}"
-    echo_build
-    echo 'y' | make -j${CORES} ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
+echo -e "-- ${GRN}CC${FIN}"
+echo_build
+echo 'y' | make -j${CORES} ARCH=arm64 CC=${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
 }
 
 armv8_ncompile(){
-    echo -e "-- ${GRN}NC${FIN}"
-    echo_build
-    echo 'y' | make -j${CORES} ARCH=arm64 bindeb-pkg
+echo -e "-- ${GRN}NC${FIN}"
+echo_build
+echo 'y' | make -j${CORES} ARCH=arm64 CC=${NATIVE} bindeb-pkg
 }
 
 ccpatch(){
@@ -216,24 +228,33 @@ echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm/configs/bcmrp
 }
 
 rpi4_fconfig(){
-    echo -e "${RED}Making bcm2711 defconfig${FIN}."
-    module_sig
-    make ARCH=arm64 bcm2711_defconfig &> /dev/null
-    echo_done
+echo -e "${RED}Making bcm2711 defconfig${FIN}."
+module_sig
+if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
+	then make ARCH=arm64 CC=${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- bcm2711_defconfig &> /dev/null;
+	else make ARCH=arm64 CC=${NATIVE} bcm2711_defconfig &> /dev/null;
+fi
+echo_done
 }
 
 rpi3_fconfig(){
-    echo -e "${RED}Making bcmrpi3 defconfig${FIN}."
-    module_sig
-    make ARCH=arm64 bcmrpi3_defconfig &> /dev/null
-    echo_done
+echo -e "${RED}Making bcmrpi3 defconfig${FIN}."
+module_sig
+if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
+	then make ARCH=arm64 CC=${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- bcmrpi3_defconfig &> /dev/null;
+	else make ARCH=arm64 CC=${NATIVE} bcmrpi3_defconfig &> /dev/null;
+fi
+echo_done
 }
 
 rpi_fconfig(){
-    echo -e "${RED}Making bcmrpi defconfig${FIN}."
-    module_sig
-    make KBUILD_DEBARCH=armel ARCH=arm bcmrpi_defconfig &> /dev/null
-    echo_done
+echo -e "${RED}Making bcmrpi defconfig${FIN}."
+module_sig
+if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
+	then make KBUILD_DEBARCH=armel ARCH=arm CC=${ARMV6_CROSS} CROSS_COMPILE=arm-linux-gnueabi- bcmrpi_defconfig &> /dev/null;
+	else make KBUILD_DEBARCH=armel ARCH=arm CC=${NATIVE} bcmrpi_defconfig &> /dev/null;
+fi
+echo_done
 }
 
 choose_rpi4_defconfig(){
