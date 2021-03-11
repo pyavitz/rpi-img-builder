@@ -18,7 +18,7 @@ sudo apt install \
 	btrfs-progs kpartx crossbuild-essential-arm64 crossbuild-essential-armel gcc-8 \
 	gcc-8-arm-linux-gnueabi gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-9 \
 	gcc-8-aarch64-linux-gnu gcc-9-aarch64-linux-gnu gcc-10-aarch64-linux-gnu gcc-10 \
-	debian-archive-keyring debian-keyring
+	debian-archive-keyring debian-keyring make
 ```
 
 This has been tested on an AMD64/x86_64 system running on [Ubuntu Focal](https://releases.ubuntu.com/20.04/).
@@ -56,15 +56,15 @@ Username:       # Your username
 Password:       # Your password
 
 Linux kernel
-Branch:         # Supported: 5.4.y and above
+Branch:         # Supported: 5.10.y and above
 Menuconfig:     # 1 to run kernel menuconfig
 Crosscompile:   # 1 to cross compile | 0 to native compile
 
 Distributions
-Release:	# Supported: buster, beowulf and 20.04.1
+Release:	# Supported: buster, beowulf and 20.04.2
 Debian:		# 1 to select (buster/bullseye/testing/unstable/sid)
 Devuan:		# 1 to select (beowulf/testing/unstable/ceres)
-Ubuntu:		# 1 to select (20.04.1/20.10)
+Ubuntu:		# 1 to select (20.04.1/20.04.2/20.10)
 
 Filesystem
 ext4:		# 1 to select (default)
@@ -84,10 +84,10 @@ Menuconfig:     # 1 to run kernel menuconfig
 Crosscompile:   # 1 to cross compile | 0 to native compile
 
 Distributions
-Release:	# Supported: buster, beowulf and 20.04.1
+Release:	# Supported: buster, beowulf and 20.04.2
 Debian:		# 1 to select (buster/bullseye/testing/unstable/sid)
 Devuan:		# 1 to select (beowulf/testing/unstable/ceres)
-Ubuntu:		# 1 to select (20.04.1/20.10)
+Ubuntu:		# 1 to select (20.04.1/20.04.2/20.10)
 
 Filesystem
 ext4:		# 1 to select (default)
