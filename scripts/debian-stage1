@@ -88,7 +88,7 @@ if ls p1/config.txt > /dev/null 2>&1
 	then echo && echo -n "config.txt  " && sleep 1s && echo_nok;
 	else echo && echo -n "config.txt  " && sleep 1s && echo_fail && exit;
 fi
-
+bcm2708_initrd
 ### extract rootfs
 if `grep -Fx "bcm2711" "soc.txt" >/dev/null;`
 	then aarch64_rootfs;

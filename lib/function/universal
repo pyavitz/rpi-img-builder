@@ -17,6 +17,16 @@ qemu_arm_remove(){
 rm p2/usr/bin/qemu-arm-static
 }
 
+bcm2708_initrd(){
+case `grep -Fx "bcm2708" "soc.txt" >/dev/null; echo $?` in
+  0)
+if `grep -Fx "ext4=1" "userdata.txt" >/dev/null;`
+	then sed -i 's/initramfs initrd.gz/#initramfs initrd.gz/g' p1/config.txt;
+fi
+    ;;
+esac
+}
+
 # Stage 2
 set_locales(){
 apt install -y locales
