@@ -54,7 +54,7 @@ help:
 	@echo "\e[1;37m             **************************"
 	@echo "\e[1;37mUsage:\e[0m "
 	@echo
-	@echo "  make ccompile          Install all dependencies"
+	@echo "  make ccompile          Install cross dependencies"
 	@echo "  make ncompile          Install native dependencies"
 	@echo "  make config            Create user data file"
 	@echo "  make menu              User menu interface"
