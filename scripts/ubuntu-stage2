@@ -229,7 +229,7 @@ bluez_firmware
 echo Done.
 
 ### Pi Bluetooth
-if `grep -Fx 'DISTRO_VERSION="20.10"' "/root/userdata.txt" >/dev/null;`
+if `grep -Fx 'DISTRO_VERSION="groovy"' "/root/userdata.txt" >/dev/null;`
 	then pi_bluetooth && apt-mark hold pi-bluetooth;
 	else pi_bluetooth;
 fi
