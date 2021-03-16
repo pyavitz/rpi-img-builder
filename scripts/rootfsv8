@@ -9,7 +9,7 @@ WHT="\e[1;37m"
 FIN="\e[0m"
 source userdata.txt > /dev/null 2>&1;
 source lib/source
-source lib/function/boot
+source lib/function/rootfs
 UD=userdata.txt
 
 userdata(){
@@ -30,32 +30,8 @@ if [ -f "$UD" ]; then
 else 
     userdata
 fi
-
+check_keyring
 validation
-
-devuan_rootfs(){
-DEVUAN_RELEASE=devuan-${DISTRO_VERSION}-rootfs-aarch64.tar.xz
-if ls $DEVUAN_RELEASE > /dev/null 2>&1; then exit; 
-	else : ;
-fi
-wget -cq --show-progress https://github.com/pyavitz/rootfs-tarballs/releases/download/rootfs/devuan-${DISTRO_VERSION}-rootfs-aarch64.tar.xz
-}
-
-ubuntu_rootfs(){
-UBUNTU_RELEASE=ubuntu-base-${DISTRO_VERSION}-base-aarch64.tar.gz
-if ls $UBUNTU_RELEASE > /dev/null 2>&1; then exit; 
-	else : ;
-fi
-wget -cq --show-progress http://cdimage.ubuntu.com/ubuntu-base/releases/${DISTRO_VERSION}/release/ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.gz
-mv -f ubuntu-base-${DISTRO_VERSION}-base-arm64.tar.gz ubuntu-base-${DISTRO_VERSION}-base-aarch64.tar.gz
-}
-
-if `grep -Fx "devuan=1" "userdata.txt" > /dev/null 2>&1;`
-	then devuan_rootfs && exit;
-fi
-if `grep -Fx "ubuntu=1" "userdata.txt" > /dev/null 2>&1;`
-	then ubuntu_rootfs && exit;
-fi
 if `grep -Fx "verbose=1" "userdata.txt" > /dev/null 2>&1;`
 	then set -eux -o pipefail;
 	else set -eu -o pipefail;
@@ -63,14 +39,31 @@ fi
 RAM=0
 PROXY=""
 IMAGE_FOLDER="img/"
-IMAGE_VERSION="rootfs-aarch64"
-FILE=debian-${DISTRO_VERSION}-${IMAGE_VERSION}.tar.xz
-if ls $FILE > /dev/null 2>&1; then exit; 
-	else echo && echo -e "${GRN}Starting debootstrap${FIN} ...";
+ROOTFS_ARCH="rootfs-aarch64"
+DEBIAN=debian-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
+DEVUAN=devuan-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
+UBUNTU=ubuntu-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
+if ls $DEBIAN > /dev/null 2>&1;
+	then ls $DEBIAN && exit;
 fi
+if ls $DEVUAN > /dev/null 2>&1;
+	then ls $DEVUAN && exit;
+fi
+if ls $UBUNTU > /dev/null 2>&1;
+	then ls $UBUNTU && exit;
+fi
+echo -e "${GRN}Starting debootstrap${FIN} ..."
 echo -e -n ${RED}
 IMAGE_FILE_SUFFIX="$(date +%F)"
-IMAGE_FILE_NAME="debian-${DISTRO_VERSION}-${IMAGE_VERSION}.img"
+if `grep -Fx "debian=1" "userdata.txt" > /dev/null 2>&1;`
+	then IMAGE_FILE_NAME="debian-${DISTRO_VERSION}-${ROOTFS_ARCH}.img";
+fi
+if `grep -Fx "devuan=1" "userdata.txt" > /dev/null 2>&1;`
+	then IMAGE_FILE_NAME="devuan-${DISTRO_VERSION}-${ROOTFS_ARCH}.img";
+fi
+if `grep -Fx "ubuntu=1" "userdata.txt" > /dev/null 2>&1;`
+	then IMAGE_FILE_NAME="ubuntu-${DISTRO_VERSION}-${ROOTFS_ARCH}.img";
+fi
 if [ $RAM -ne 0 ]; then
 	IMAGE_FOLDER="ram/"
 fi
@@ -86,12 +79,14 @@ mkdir -p p1/etc/apt/apt.conf.d p1/etc/dpkg/dpkg.cfg.d
 echo "force-unsafe-io" > "p1/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
 mkdir -p p1/usr/bin
 cp $(which "qemu-aarch64-static") p1/usr/bin
-if [ -n "$PROXY" ] ; then
-    http_proxy="$PROXY" debootstrap --arch arm64 --foreign ${DISTRO_VERSION} p1
-    http_proxy="$PROXY" chroot p1 /debootstrap/debootstrap --second-stage
-else
-    debootstrap --arch arm64 --foreign ${DISTRO_VERSION} p1
-    chroot p1 /debootstrap/debootstrap --second-stage
+if `grep -Fx "debian=1" "userdata.txt" > /dev/null 2>&1;`
+	then debian_arm64;
+fi
+if `grep -Fx "devuan=1" "userdata.txt" > /dev/null 2>&1;`
+	then devuan_arm64;
+fi
+if `grep -Fx "ubuntu=1" "userdata.txt" > /dev/null 2>&1;`
+	then ubuntu_arm64;
 fi
 if [ -n "$PROXY" ] ; then
 	tee "p1/etc/apt/apt.conf.d/30proxy" <<EOF
@@ -116,8 +111,15 @@ echo
 echo -e "${BRED}Archiving root filesystem${FIN} ..."
 cd p1
 echo -e -n ${WHT}
-#tar cfJ ../debian-${DISTRO_VERSION}-${IMAGE_VERSION}.tar.xz *
-XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - * | (pv -terb > ../debian-${DISTRO_VERSION}-${IMAGE_VERSION}.tar.xz)
+if `grep -Fx "debian=1" "../userdata.txt" > /dev/null 2>&1;`
+	then XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - * | (pv -terb > ../$DEBIAN);
+fi
+if `grep -Fx "devuan=1" "../userdata.txt" > /dev/null 2>&1;`
+	then XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - * | (pv -terb > ../$DEVUAN);
+fi
+if `grep -Fx "ubuntu=1" "../userdata.txt" > /dev/null 2>&1;`
+	then XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - * | (pv -terb > ../$UBUNTU);
+fi
 echo -e -n ${FIN}
 cd ..
 
@@ -130,5 +132,7 @@ if [ $RAM -ne 0 ]; then
 fi
 rmdir "${IMAGE_FOLDER}"
 rmdir p1
-rm -f debian-${DISTRO_VERSION}-${IMAGE_VERSION}.img
+rm -f debian-${DISTRO_VERSION}-${ROOTFS_ARCH}.img > /dev/null 2>&1
+rm -f devuan-${DISTRO_VERSION}-${ROOTFS_ARCH}.img > /dev/null 2>&1
+rm -f ubuntu-${DISTRO_VERSION}-${ROOTFS_ARCH}.img > /dev/null 2>&1
 clear

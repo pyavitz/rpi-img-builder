@@ -94,6 +94,11 @@ mkdir -p p2/usr/bin
 cp $(which "qemu-aarch64-static") p2/usr/bin
 
 if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
+	then distro_release;
+	else distro_release > /dev/null 2>&1;
+fi
+
+if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
 	then create_fstab;
 	else create_fstab > /dev/null 2>&1;
 fi

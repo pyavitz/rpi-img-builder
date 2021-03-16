@@ -1,31 +1,3 @@
-partition(){
-truncate -s 1100MB "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
-fdisk "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" <<EOF
-o
-n
-p
-1
-2048
-a
-t
-b
-2148436
-
-p
-w
-
-EOF
-IMAGE_LOOP_DEV="$(losetup --show -f ${IMAGE_FOLDER}${IMAGE_FILE_NAME})"
-IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p1"
-partprobe "${IMAGE_LOOP_DEV}"
-mkfs.ext4 -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}"
-mkdir -p p1
-mount "${IMAGE_LOOP_DEV_ROOTFS}" p1
-sync
-umount p1
-mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p1
-}
-
 image_size(){
 if `grep -Fx "ext4=1" "userdata.txt" >/dev/null;`
 	then truncate -s ${EXT4} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";

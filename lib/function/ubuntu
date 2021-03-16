@@ -1,10 +1,65 @@
 # STAGE 1
+focal_sources(){
+rm -f p2/etc/apt/sources.list
+tee p2/etc/apt/sources.list <<EOF
+deb http://ports.ubuntu.com/ubuntu-ports/ focal main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ focal-updates main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ focal universe
+deb http://ports.ubuntu.com/ubuntu-ports/ focal-updates universe
+deb http://ports.ubuntu.com/ubuntu-ports/ focal multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ focal-updates multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ focal-backports main restricted universe multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ focal-security main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ focal-security universe
+deb http://ports.ubuntu.com/ubuntu-ports/ focal-security multiverse
+
+## Uncomment the following two lines to add software from Canonical's
+## 'partner' repository.
+## This software is not part of Ubuntu, but is offered by Canonical and the
+## respective vendors as a service to Ubuntu users.
+# deb http://archive.canonical.com/ubuntu focal partner
+# deb-src http://archive.canonical.com/ubuntu focal partner
+EOF
+}
+
+groovy_sources(){
+rm -f p2/etc/apt/sources.list
+tee p2/etc/apt/sources.list <<EOF
+deb http://ports.ubuntu.com/ubuntu-ports/ groovy main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ groovy-updates main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ groovy universe
+deb http://ports.ubuntu.com/ubuntu-ports/ groovy-updates universe
+deb http://ports.ubuntu.com/ubuntu-ports/ groovy multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ groovy-updates multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ groovy-backports main restricted universe multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ groovy-security main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ groovy-security universe
+deb http://ports.ubuntu.com/ubuntu-ports/ groovy-security multiverse
+
+## Uncomment the following two lines to add software from Canonical's
+## 'partner' repository.
+## This software is not part of Ubuntu, but is offered by Canonical and the
+## respective vendors as a service to Ubuntu users.
+# deb http://archive.canonical.com/ubuntu groovy partner
+# deb-src http://archive.canonical.com/ubuntu groovy partner
+EOF
+}
+
+distro_release(){
+if `grep -Fx 'DISTRO_VERSION="focal"' "userdata.txt" >/dev/null;`
+	then focal_sources;
+fi
+if `grep -Fx 'DISTRO_VERSION="groovy"' "userdata.txt" >/dev/null;`
+	then groovy_sources;
+fi
+}
+
 aarch64_extract(){
-tar -xf ubuntu-base-${DISTRO_VERSION}-base-aarch64.tar.gz -C p2/
+tar -xf ubuntu-${DISTRO_VERSION}-rootfs-aarch64.tar.xz -C p2/
 }
 
 aarch64_rootfs(){
-if ls ubuntu-base-${DISTRO_VERSION}-base-aarch64.tar.gz > /dev/null 2>&1
+if ls ubuntu-${DISTRO_VERSION}-rootfs-aarch64.tar.xz > /dev/null 2>&1
 	then echo && echo -n "Extracting rootfs " && aarch64_extract && echo_bdone;
 	else echo && echo -e "${YLW}Missing rootfs tarball${FIN}!" && exit;
 fi
