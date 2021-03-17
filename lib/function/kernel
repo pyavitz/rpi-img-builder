@@ -15,6 +15,18 @@ sed -i 's/export INITRD=$want_initrd/export INITRD=No/g' scripts/package/buildde
 sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
 }
 
+rpi0+1(){
+sed -i 's/packageversion=$version-$revision/packageversion=$version-$revision~rpi0+1/g' scripts/package/mkdebian
+}
+
+rpi2+3(){
+sed -i 's/packageversion=$version-$revision/packageversion=$version-$revision~rpi2+3/g' scripts/package/mkdebian
+}
+
+rpi4(){
+sed -i 's/packageversion=$version-$revision/packageversion=$version-$revision~rpi4/g' scripts/package/mkdebian
+}
+
 userpatches(){
 if
 ls ../${UP}/*.patch > /dev/null 2>&1;
@@ -182,13 +194,13 @@ ccpatch(){
     chmod +x scripts/package/builddeb
     chmod +x scripts/package/mkdebian
     if `grep -Fx "bcm2711" "../../soc.txt" >/dev/null;`
-	then patch -p1 < ../${CC}/rpi4b-packaging.patch;
+	then patch -p1 < ../${CC}/rpi4b-packaging.patch && rpi4;
     fi
     if `grep -Fx "bcm2710" "../../soc.txt" >/dev/null;`
-	then patch -p1 < ../${CC}/rpi3b-packaging.patch;
+	then patch -p1 < ../${CC}/rpi3b-packaging.patch && rpi2+3;
     fi
     if `grep -Fx "bcm2708" "../../soc.txt" >/dev/null;`
-	then patch -p1 < ../${CC}/rpi-packaging.patch;
+	then patch -p1 < ../${CC}/rpi-packaging.patch && rpi0+1;
     fi
     cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch
     echo_done
@@ -206,13 +218,13 @@ ncpatch(){
     chmod +x scripts/package/builddeb
     chmod +x scripts/package/mkdebian
     if `grep -Fx "bcm2711" "../../soc.txt" >/dev/null;`
-	then patch -p1 < ../${NC}/rpi4b-packaging.patch;
+	then patch -p1 < ../${NC}/rpi4b-packaging.patch && rpi4;
     fi
     if `grep -Fx "bcm2710" "../../soc.txt" >/dev/null;`
-	then patch -p1 < ../${NC}/rpi3b-packaging.patch;
+	then patch -p1 < ../${NC}/rpi3b-packaging.patch && rpi2+3;
     fi
     if `grep -Fx "bcm2708" "../../soc.txt" >/dev/null;`
-	then patch -p1 < ../${NC}/rpi-packaging.patch;
+	then patch -p1 < ../${NC}/rpi-packaging.patch && rpi0+1;
     fi
     echo_done
     echo

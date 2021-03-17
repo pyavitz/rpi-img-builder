@@ -40,7 +40,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
 +cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2708-rpi-zero.dtb" "$tmpdir/boot/bcm2708-rpi-zero.dtb"
 +cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2708-rpi-b.dtb" "$tmpdir/boot/bcm2708-rpi-b.dtb"
 +cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2708-rpi-b-plus.dtb" "$tmpdir/boot/bcm2708-rpi-b-plus.dtb"
-+#
++cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2708-rpi-b-rev1.dtb" "$tmpdir/boot/bcm2708-rpi-b-rev1.dtb"
 +cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/overlays/" "$tmpdir/boot/"
 +
  # Install the maintainer scripts
