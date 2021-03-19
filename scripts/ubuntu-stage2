@@ -229,9 +229,14 @@ bluez_firmware
 echo Done.
 
 ### Pi Bluetooth
+if `grep -Fx 'DISTRO_VERSION="focal"' "/root/userdata.txt" >/dev/null;`
+	then pi_bluetooth;
+fi
 if `grep -Fx 'DISTRO_VERSION="groovy"' "/root/userdata.txt" >/dev/null;`
 	then pi_bluetooth && apt-mark hold pi-bluetooth;
-	else pi_bluetooth;
+fi
+if `grep -Fx 'DISTRO_VERSION="hirsute"' "/root/userdata.txt" >/dev/null;`
+	then pi_bluetooth && apt-mark hold pi-bluetooth;
 fi
 
 ### Updating bluez

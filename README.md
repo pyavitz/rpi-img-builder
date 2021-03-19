@@ -64,7 +64,7 @@ Distributions
 Release:	# Supported: buster, beowulf and focal
 Debian:		# 1 to select (buster/bullseye/testing/unstable/sid)
 Devuan:		# 1 to select (beowulf/testing/unstable/ceres)
-Ubuntu:		# 1 to select (focal/groovy)
+Ubuntu:		# 1 to select (focal/groovy/hirsute)
 
 Filesystem
 ext4:		# 1 to select (default)
@@ -87,7 +87,7 @@ Distributions
 Release:	# Supported: buster, beowulf and focal
 Debian:		# 1 to select (buster/bullseye/testing/unstable/sid)
 Devuan:		# 1 to select (beowulf/testing/unstable/ceres)
-Ubuntu:		# 1 to select (focal/groovy)
+Ubuntu:		# 1 to select (focal/groovy/hirsute)
 
 Filesystem
 ext4:		# 1 to select (default)

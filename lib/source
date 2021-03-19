@@ -68,7 +68,7 @@ FIRMWARE="firmware-linux-nonfree firmware-linux firmware-misc-nonfree \
           firmware-realtek firmware-ralink"
 
 # https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/
-EEPROM_VERSION="11.10"
+EEPROM_VERSION="11.11"
 
 # motd
 BRAND="Raspberry Pi"

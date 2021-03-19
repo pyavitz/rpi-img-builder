@@ -45,12 +45,38 @@ deb http://ports.ubuntu.com/ubuntu-ports/ groovy-security multiverse
 EOF
 }
 
+hirsute_sources(){
+rm -f p2/etc/apt/sources.list
+tee p2/etc/apt/sources.list <<EOF
+deb http://ports.ubuntu.com/ubuntu-ports/ hirsute main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ hirsute-updates main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ hirsute universe
+deb http://ports.ubuntu.com/ubuntu-ports/ hirsute-updates universe
+deb http://ports.ubuntu.com/ubuntu-ports/ hirsute multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ hirsute-updates multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ hirsute-backports main restricted universe multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ hirsute-security main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ hirsute-security universe
+deb http://ports.ubuntu.com/ubuntu-ports/ hirsute-security multiverse
+
+## Uncomment the following two lines to add software from Canonical's
+## 'partner' repository.
+## This software is not part of Ubuntu, but is offered by Canonical and the
+## respective vendors as a service to Ubuntu users.
+# deb http://archive.canonical.com/ubuntu hirsute partner
+# deb-src http://archive.canonical.com/ubuntu hirsute partner
+EOF
+}
+
 distro_release(){
 if `grep -Fx 'DISTRO_VERSION="focal"' "userdata.txt" >/dev/null;`
 	then focal_sources;
 fi
 if `grep -Fx 'DISTRO_VERSION="groovy"' "userdata.txt" >/dev/null;`
 	then groovy_sources;
+fi
+if `grep -Fx 'DISTRO_VERSION="hirsute"' "userdata.txt" >/dev/null;`
+	then hirsute_sources;
 fi
 }
 
