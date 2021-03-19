@@ -435,6 +435,14 @@ if `grep -Fx 'DISTRO_VERSION="groovy"' "/root/userdata.txt" >/dev/null;`
 fi
 }
 
+linux_firmware(){
+wget -cq --show-progress http://archive.ubuntu.com/ubuntu/pool/main/l/linux-firmware/linux-firmware_1.195.tar.xz
+pv linux-firmware_1.195.tar.xz | tar -xJ linux-firmware
+rm -f linux-firmware_1.195.tar.xz
+rsync -ah linux-firmware/* /lib/firmware/
+rm -fdr linux-firmware
+}
+
 led_switches(){
 echo
 echo Creating power led switch.

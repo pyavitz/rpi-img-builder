@@ -44,7 +44,7 @@ fi
 if `grep -Fx "btrfs=1" "/root/userdata.txt" >/dev/null;`
 	then apt install -y btrfs-progs;
 fi
-apt install -y ${UBUNTU1} fdisk
+apt install -y ${UBUNTU1}
 
 #### Scripts
 echo
@@ -129,6 +129,7 @@ if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
 	then bcm_sdio_3-b-plus
 fi
 cd ~
+linux_firmware
 echo Done.
 
 #### Extra firmware
@@ -260,18 +261,11 @@ if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
 	then bcm2711_eeprom ;
 fi
 
-####
-echo
-echo Checking for changes.
-apt update
-apt upgrade -y
-apt -y clean
-apt -y autoclean
-echo Done.
-
 #### Kernel
 echo
 echo Installing kernel.
+apt update
+apt upgrade -y
 apt -y clean
 apt -y autoclean
 sleep 1s

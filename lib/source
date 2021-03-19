@@ -54,7 +54,7 @@ DEVUAN2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
 # ubuntu
 UBUNTU1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	fonty-rg patch curl wget apt-transport-https dirmngr cmake rsync \
-	psmisc parted pv zip unzip aria2"
+	psmisc parted pv zip unzip aria2 fdisk"
 
 UBUNTU2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
 	fuse wpasupplicant wireless-tools usbutils alsa-utils gettext \
