@@ -271,18 +271,11 @@ if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
 	then bcm2711_eeprom
 fi
 
-####
-echo
-echo Checking for changes.
-apt update
-apt upgrade -y
-apt -y clean
-apt -y autoclean
-echo Done.
-
 #### Kernel
 echo
 echo Installing kernel.
+apt update
+apt upgrade -y
 apt -y clean
 apt -y autoclean
 sleep 1s

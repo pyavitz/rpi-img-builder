@@ -61,7 +61,7 @@ help:
 	@echo "  make cleanup           Clean up image errors"
 	@echo "  make purge             Remove source directory"
 	@echo "  make purge-all         Remove source and output directory"
-	@echo "  make commands          List legacy commands"
+	@echo "  make commands          List all commands"
 	@echo
 	@echo "For details consult the \e[1;37mREADME.md\e[0m"
 	@echo
