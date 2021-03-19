@@ -128,8 +128,8 @@ fi
 if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
 	then bcm_sdio_3-b-plus
 fi
+linux_firmware
 cd ~
-#linux_firmware
 echo Done.
 
 #### Extra firmware

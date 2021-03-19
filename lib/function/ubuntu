@@ -436,11 +436,11 @@ fi
 }
 
 linux_firmware(){
-wget -cq --show-progress http://archive.ubuntu.com/ubuntu/pool/main/l/linux-firmware/linux-firmware_1.195.tar.xz
-pv linux-firmware_1.195.tar.xz | tar -xJ linux-firmware
-rm -f linux-firmware_1.195.tar.xz
-rsync -ah linux-firmware/* /lib/firmware/
-rm -fdr linux-firmware
+mkdir -p /lib/firmware/rtl_nic
+cd /lib/firmware/rtl_nic
+wget -cq --show-progress https://kernel.googlesource.com/pub/scm/linux/kernel/git/firmware/linux-firmware.git/+archive/refs/heads/master/rtl_nic.tar.gz
+tar xf rtl_nic.tar.gz
+rm -f rtl_nic.tar.gz
 }
 
 led_switches(){
