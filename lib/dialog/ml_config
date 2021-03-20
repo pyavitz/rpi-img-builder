@@ -3,10 +3,11 @@
 BRED="\e[1;31m"
 RED="\e[0;31m"
 FIN="\e[0m"
-user="pi"
-passwd="board"
+user=""
+passwd=""
+rootpasswd="0"
 DISTRO_VERSION="buster"
-VERSION="5.10.22"
+VERSION="5.10.25"
 mainline="0"
 menuconfig="0"
 crosscompile="1"
@@ -15,6 +16,8 @@ devuan="0"
 ubuntu="0"
 ext4="1"
 btrfs="0"
+custom_defconfig="0"
+MYCONFIG=""
 
 # open fd
 exec 3>&1
@@ -23,26 +26,30 @@ exec 3>&1
 VALUES=$(dialog --ok-label "Submit" --no-cancel \
 	  --backtitle "Create a Mainline user data file" \
 	  --title "Config Menu" \
-	  --form "Choose:" \
-25 40 18 \
+	  --form "Choose:" 0 36 0 \
 	"Username:"	1 1	"$user" 		1 11 14 0 \
 	"Password:"	2 1	"$passwd"  		2 11 14 0 \
-	""		3 1	""	 		3 14 0 0 \
-	"Linux kernel"	4 1	""	 		4 14 0 0 \
-        "Branch:"   	5 1     "$VERSION"        	5 9 10 0 \
-        "Mainline:"	6 1     "$mainline"             6 11 2 0 \
-	"Menuconfig:"	7 1	"$menuconfig"  		7 13 2 0 \
-	"Crosscompile:" 8 1	"$crosscompile" 	8 15 2 0 \
-	""		9 1	""	 		9 14 0 0 \
-	"Distributions"	10 1	""	 		10 14 0 0 \
-	"Release:"	11 1	"$DISTRO_VERSION"  	11 10 15 0 \
-	"Debian:"	12 1	"$debian" 		12 9 2 0 \
-	"Devuan:"	13 1	"$devuan" 		13 9 2 0 \
-	"Ubuntu:"	14 1	"$ubuntu"	 	14 9 2 0 \
-	""		15 1	""	 		15 14 0 0 \
-	"Filesystem"	16 1	""	 		16 14 0 0 \
-	"ext4:"		17 1	"$ext4"		 	17 8 2 0 \
-	"btrfs:"	18 1	"$btrfs"	 	18 8 2 0 \
+	"Enable root:"	3 1	"$rootpasswd"  		3 14 2 0 \
+	""		4 1	""	 		4 14 0 0 \
+	"Linux kernel"	5 1	""	 		5 14 0 0 \
+        "Branch:"   	6 1     "$VERSION"        	6 9 10 0 \
+        "Mainline:"	7 1     "$mainline"             7 11 2 0 \
+	"Menuconfig:"	8 1	"$menuconfig"  		8 13 2 0 \
+	"Crosscompile:" 9 1	"$crosscompile" 	9 15 2 0 \
+	""		10 1	""	 		10 14 0 0 \
+	"Distributions"	11 1	""	 		11 14 0 0 \
+	"Release:"	12 1	"$DISTRO_VERSION"  	12 10 15 0 \
+	"Debian:"	13 1	"$debian" 		13 9 2 0 \
+	"Devuan:"	14 1	"$devuan" 		14 9 2 0 \
+	"Ubuntu:"	15 1	"$ubuntu"	 	15 9 2 0 \
+	""		16 1	""	 		16 14 0 0 \
+	"Filesystem"	17 1	""	 		17 14 0 0 \
+	"ext4:"		18 1	"$ext4"		 	18 8 2 0 \
+	"btrfs:"	19 1	"$btrfs"	 	19 8 2 0 \
+	""		20 1	""	 		20 14 0 0 \
+	"Customize"	21 1	""	 		21 14 0 0 \
+	"Defconfig:"	22 1	"$custom_defconfig" 	22 12 2 0 \
+	"Name:"		23 1	"$MYCONFIG"	  	23 7 20 0 \
 2>&1 1>&3)
 
 # close fd
@@ -52,6 +59,7 @@ exec 3>&-
 echo "$VALUES" > tmp1
 echo user='"' > tmp0
 echo passwd='"' >> tmp0
+echo rootpasswd= >> tmp0
 echo VERSION='"' >> tmp0
 echo mainline= >> tmp0
 echo menuconfig= >> tmp0
@@ -62,28 +70,36 @@ echo devuan= >> tmp0
 echo ubuntu= >> tmp0
 echo ext4= >> tmp0
 echo btrfs= >> tmp0
-echo custom_defconfig=0 >> tmp0
-echo MYCONFIG='"'nameofyour_defconfig'"' >> tmp0
+echo custom_defconfig= >> tmp0
+echo MYCONFIG='"' >> tmp0
 echo userscripts=0 >> tmp0
 echo verbose=0 >> tmp0
 echo devuser=1 >> tmp0
-echo builder=3.7 >> tmp0
+echo builder=3.8 >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
+echo >> tmp2
+echo '"' >> tmp2
+echo >> tmp2
+echo >> tmp2
+echo >> tmp2
 echo '"' >> tmp2
 echo >> tmp2
 echo >> tmp2
 echo >> tmp2
-echo '"' >> tmp2
+echo >> tmp2
+echo >> tmp2
+echo >> tmp2
+echo _defconfig'"' >> tmp2
 paste -d '\0' tmp0 tmp1 tmp2  > userdata.txt
 rm -f tmp0 tmp1 tmp2
 
 # categories
-sed -i '3i### LINUX KERNEL' userdata.txt
-sed -i '8i### DISTRIBUTIONS' userdata.txt
-sed -i '13i### FILESYSTEM' userdata.txt
-sed -i '16i### CUSTOM' userdata.txt
-sed -i '20i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '4i### LINUX KERNEL' userdata.txt
+sed -i '9i### DISTRIBUTIONS' userdata.txt
+sed -i '14i### FILESYSTEM' userdata.txt
+sed -i '17i### CUSTOM' userdata.txt
+sed -i '22i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # clear screen
 clear

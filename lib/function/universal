@@ -41,6 +41,10 @@ ln -snf /usr/share/zoneinfo/America/New_York /etc/localtime
 echo -n 'America/New_York' > /etc/timezone
 }
 
+root_password(){
+echo "root:toor" | chpasswd
+}
+
 # EEPROM
 bcm2711_eeprom(){
 echo

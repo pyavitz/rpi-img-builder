@@ -11,6 +11,8 @@ devuan="0"
 ubuntu="0"
 ext4="1"
 btrfs="0"
+custom_defconfig="0"
+MYCONFIG=""
 
 # open fd
 exec 3>&1
@@ -20,7 +22,7 @@ VALUES=$(dialog --ok-label "Submit" --no-cancel \
 	  --backtitle "Raspberry Pi Image Builder | Administrator" \
 	  --title "Config Menu" \
 	  --form "Choose:" \
-21 40 14 \
+0 36 0 \
 	"Linux kernel"	1 1	""	 		1 14 0 0 \
         "Branch:"   	2 1     "$VERSION"        	2 9 7 0 \
 	"Menuconfig:"	3 1	"$menuconfig"  		3 13 2 0 \
@@ -35,6 +37,10 @@ VALUES=$(dialog --ok-label "Submit" --no-cancel \
 	"Filesystem"	12 1	""	 		12 14 0 0 \
 	"ext4:"		13 1	"$ext4"		 	13 8 2 0 \
 	"btrfs:"	14 1	"$btrfs"	 	14 8 2 0 \
+	""		15 1	""	 		15 14 0 0 \
+	"Customize"	16 1	""	 		16 14 0 0 \
+	"Defconfig:"	17 1	"$custom_defconfig" 	17 12 2 0 \
+	"Name:"		18 1	"$MYCONFIG"	  	18 7 20 0 \
 2>&1 1>&3)
 
 # close fd
@@ -51,16 +57,23 @@ echo devuan= >> tmp0
 echo ubuntu= >> tmp0
 echo ext4= >> tmp0
 echo btrfs= >> tmp0
-echo custom_defconfig=0 >> tmp0
-echo MYCONFIG='"'nameofyour_defconfig'"' >> tmp0
+echo custom_defconfig= >> tmp0
+echo MYCONFIG='"' >> tmp0
 echo userscripts=0 >> tmp0
 echo verbose=0 >> tmp0
 echo admin=1 >> tmp0
-echo builder=3.7 >> tmp0
+echo builder=3.8 >> tmp0
 echo '"' >> tmp2
 echo >> tmp2
 echo >> tmp2
 echo '"' >> tmp2
+echo >> tmp2
+echo >> tmp2
+echo >> tmp2
+echo >> tmp2
+echo >> tmp2
+echo >> tmp2
+echo _defconfig'"' >> tmp2
 paste -d '\0' tmp0 tmp1 tmp2  > userdata.txt
 rm -f tmp0 tmp1 tmp2
 
@@ -69,7 +82,7 @@ sed -i '1i### LINUX KERNEL' userdata.txt
 sed -i '5i### DISTRIBUTIONS' userdata.txt
 sed -i '10i### FILESYSTEM' userdata.txt
 sed -i '13i### CUSTOM' userdata.txt
-sed -i '17i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '18i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # clear screen
 clear

@@ -297,6 +297,9 @@ case `grep -Fx "admin=1" "/root/userdata.txt" >/dev/null; echo $?` in
     ;;
   1)
 	user_config
+	if `grep -Fx "rootpasswd=1" "/root/userdata.txt" >/dev/null;`
+		then root_password;
+	fi
     ;;
 esac
 
