@@ -103,12 +103,16 @@ if ls /boot/credentials.txt > /dev/null 2>&1; then connect_wifi;
         else remove_wifi > /dev/null 2>&1;
 fi
 
-### Renew SSH keys
+### Renew ssh keys and machine-id
 sleep 1s
 echo -e "\e[0;31mCreating new ssh keys\e[0m ..."
 /bin/rm -v /etc/ssh/ssh_host_* > /dev/null 2>&1
 dpkg-reconfigure openssh-server
 service ssh restart
+rm -f /etc/machine-id
+rm -f /var/lib/dbus/machine-id
+dbus-uuidgen --ensure=/etc/machine-id
+dbus-uuidgen --ensure
 
 ### Clean
 update-rc.d -f credentials remove
