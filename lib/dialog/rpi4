@@ -46,7 +46,7 @@ while true; do
       ;;
     1 )
       make all
-      dialog --prgbox "Results:" "ls rpi-4*.img *aarch64* $OUTPUT/" 30 70
+      dialog --prgbox "Results:" "ls rpi-4*.img* *aarch64* $OUTPUT/" 30 70
       exit 0
       ;;
     2 )
@@ -59,7 +59,7 @@ while true; do
       ;;
     4 )
       make image
-      dialog --prgbox "Results:" "ls rpi-4*.img" 30 70
+      dialog --prgbox "Results:" "ls rpi-4*.img*" 30 70
       ;;
   esac
 done
