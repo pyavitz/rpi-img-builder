@@ -1,7 +1,7 @@
 #!/bin/bash
 umount p2/proc p2/sys p2/dev p2/run > /dev/null 2>&1
 umount -l p1 p2 > /dev/null 2>&1
-rm -fr p1 p2 img > /dev/null 2>&1
-rm -f part-uuid.txt soc.txt kernel.txt > /dev/null 2>&1
+rm -fdr p1 p2 img sysroot > /dev/null 2>&1
+rm -f part-uuid.txt soc.txt kernel.txt kpart* > /dev/null 2>&1
 losetup -d /dev/loop* > /dev/null 2>&1
 echo Done.

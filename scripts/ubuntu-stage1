@@ -45,7 +45,7 @@ if `grep -Fx "bcm2710" "soc.txt" >/dev/null;`
 	then DEVICE_SOC="rpi-3" ;
 fi
 IMAGE_DATE="$(date +%F)"
-IMAGE_FILE_NAME="${DEVICE_SOC}-ubuntu-${DISTRO_VERSION}-${IMAGE_DATE}.img"
+IMAGE_FILE_NAME="${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img"
 if [ $RAM -ne 0 ]; then
 	IMAGE_FOLDER="ram/"
 fi

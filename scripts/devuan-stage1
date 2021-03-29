@@ -48,7 +48,7 @@ if `grep -Fx "bcm2708" "soc.txt" >/dev/null;`
 	then DEVICE_SOC="rpi";
 fi
 IMAGE_DATE="$(date +%F)"
-IMAGE_FILE_NAME="${DEVICE_SOC}-devuan-${DISTRO_VERSION}-${IMAGE_DATE}.img"
+IMAGE_FILE_NAME="${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img"
 if [ $RAM -ne 0 ]; then
 	IMAGE_FOLDER="ram/"
 fi

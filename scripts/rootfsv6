@@ -30,98 +30,45 @@ if [ -f "$UD" ]; then
 else 
     userdata
 fi
-if `grep -Fx "ubuntu=1" "userdata.txt" > /dev/null 2>&1;`
+if `grep -Fx 'DISTRO="ubuntu"' "userdata.txt" >/dev/null;`
 	then echo -e "${YLW}Ubuntu is not supported${FIN}." && exit;
 fi
-check_keyring
+if `grep -Fx 'DISTRO="devuan"' "userdata.txt" >/dev/null;`
+	then check_keyring;
+fi
+echo
 validation
 if `grep -Fx "verbose=1" "userdata.txt" > /dev/null 2>&1;`
 	then set -eux -o pipefail;
 	else set -eu -o pipefail;
 fi
-RAM=0
-PROXY=""
-IMAGE_FOLDER="img/"
+ROOT="sysroot"
 ROOTFS_ARCH="rootfs-armel"
-DEBIAN=debian-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
-DEVUAN=devuan-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
-if ls $DEBIAN > /dev/null 2>&1;
-	then ls $DEBIAN && exit;
-fi
-if ls $DEVUAN > /dev/null 2>&1;
-	then ls $DEVUAN && exit;
+RELEASE=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
+if ls $RELEASE > /dev/null 2>&1;
+	then ls $RELEASE && exit;
 fi
 echo -e "${GRN}Starting debootstrap${FIN} ..."
 echo -e -n ${RED}
-IMAGE_FILE_SUFFIX="$(date +%F)"
-if `grep -Fx "debian=1" "userdata.txt" > /dev/null 2>&1;`
-	then IMAGE_FILE_NAME="debian-${DISTRO_VERSION}-${ROOTFS_ARCH}.img";
-fi
-if `grep -Fx "devuan=1" "userdata.txt" > /dev/null 2>&1;`
-	then IMAGE_FILE_NAME="devuan-${DISTRO_VERSION}-${ROOTFS_ARCH}.img";
-fi
-if [ $RAM -ne 0 ]; then
-	IMAGE_FOLDER="ram/"
-fi
-mkdir -p "$IMAGE_FOLDER"
-if [ $RAM -ne 0 ]; then
-	mount -t tmpfs -o size=1G tmpfs $IMAGE_FOLDER
-fi
-if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
-	then partition;
-	else partition > /dev/null 2>&1;
-fi
-mkdir -p p1/etc/apt/apt.conf.d p1/etc/dpkg/dpkg.cfg.d
-echo "force-unsafe-io" > "p1/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
-mkdir -p p1/usr/bin
-cp $(which "qemu-arm-static") p1/usr/bin
-if `grep -Fx "debian=1" "userdata.txt" > /dev/null 2>&1;`
-	then debian_armv6;
-fi
-if `grep -Fx "devuan=1" "userdata.txt" > /dev/null 2>&1;`
-	then devuan_armv6;
-fi
-if [ -n "$PROXY" ] ; then
-	tee "p1/etc/apt/apt.conf.d/30proxy" <<EOF
-Acquire::http::proxy "http://127.0.0.1:3142";
-EOF
-fi
 
-rm p1/usr/bin/qemu-arm-static
-
-if [ -n "$PROXY" ] ; then
-	rm p1/etc/apt/apt.conf.d/30proxy
+# start debootstrap
+mkdir -p ${ROOT}/usr/bin
+cp $(which "qemu-arm-static") ${ROOT}/usr/bin
+if `grep -Fx 'DISTRO="devuan"' "userdata.txt" >/dev/null;`
+	then armv6_devuan;
+	else armv6_debootstrap
 fi
-rm p1/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
+rm -f ${ROOT}/usr/bin/qemu-arm-static
+rm -f ${ROOT}/var/cache/debconf/*
 
-### Finish
-echo
-echo -e -n ${FIN}
-echo -e -n ${GRY}
-e4defrag -c p1
-echo -e -n ${FIN}
+# finish
 echo
 echo -e "${BRED}Archiving root filesystem${FIN} ..."
-cd p1
+cd ${ROOT}
 echo -e -n ${WHT}
-if `grep -Fx "debian=1" "../userdata.txt" > /dev/null 2>&1;`
-	then XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - * | (pv -terb > ../$DEBIAN);
-fi
-if `grep -Fx "devuan=1" "../userdata.txt" > /dev/null 2>&1;`
-	then XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - * | (pv -terb > ../$DEVUAN);
-fi
+XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - * | (pv -terb > ../$RELEASE)
 echo -e -n ${FIN}
 cd ..
 
-umount p1
-
-losetup -d "${IMAGE_LOOP_DEV}"
-mv "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" "${IMAGE_FILE_NAME}"
-if [ $RAM -ne 0 ]; then
-	umount "${IMAGE_FOLDER}"
-fi
-rmdir "${IMAGE_FOLDER}"
-rmdir p1
-rm -f debian-${DISTRO_VERSION}-${ROOTFS_ARCH}.img > /dev/null 2>&1
-rm -f devuan-${DISTRO_VERSION}-${ROOTFS_ARCH}.img > /dev/null 2>&1
+rm -fdr ${ROOT}
 clear

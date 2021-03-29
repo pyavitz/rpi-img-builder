@@ -1,8 +1,8 @@
 # menu
 MENU=./lib/dialog/menu
 CONF=./lib/dialog/config
-MLCONF=./lib/dialog/ml_config
-ADMIN=./lib/dialog/admin_config
+MLCONF=./lib/dialog/mlconfig
+ADMIN=./lib/dialog/admin
 DIALOGRC=$(shell cp -f lib/dialogrc ~/.dialogrc)
 
 # rootfs
@@ -58,7 +58,7 @@ help:
 	@echo "  make ncompile          Install native dependencies"
 	@echo "  make config            Create user data file"
 	@echo "  make menu              User menu interface"
-	@echo "  make cleanup           Clean up image errors"
+	@echo "  make cleanup           Clean up rootfs and image errors"
 	@echo "  make purge             Remove source directory"
 	@echo "  make purge-all         Remove source and output directory"
 	@echo "  make commands          List more commands"
@@ -106,7 +106,7 @@ commands:
 	@echo
 	@echo "  make dialogrc		  Set builder theme"
 	@echo "  make check		  Shows latest revision of selected branch"
-	@echo "  make helper		  Reduce the time it takes to create a new image"
+	@echo "  make helper		  Download a binary Linux package"
 	@echo
 
 # aarch64
@@ -119,7 +119,7 @@ ccompile:
 	distro-info-data crossbuild-essential-arm64 crossbuild-essential-armel \
 	gcc-8-arm-linux-gnueabi gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi \
 	gcc-8-aarch64-linux-gnu gcc-9-aarch64-linux-gnu gcc-10-aarch64-linux-gnu \
-	gcc-8 gcc-9 gcc-10 debian-archive-keyring debian-keyring make
+	gcc-8 gcc-9 gcc-10 debian-archive-keyring debian-keyring make libelf-dev
 
 ncompile:
 	# Install native dependencies:
@@ -128,7 +128,7 @@ ncompile:
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
 	aria2 pv toilet figlet distro-info-data lsb-release xz-utils curl \
 	e2fsprogs btrfs-progs kpartx gcc-8 gcc-9 gcc-10 debian-archive-keyring \
-	debian-keyring make
+	debian-keyring make libelf-dev
 
 # Raspberry Pi 4 | aarch64
 kernel:

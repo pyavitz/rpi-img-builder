@@ -81,11 +81,11 @@ fi
 }
 
 aarch64_extract(){
-tar -xf ubuntu-${DISTRO_VERSION}-rootfs-aarch64.tar.xz -C p2/
+tar -xf ${DISTRO}-${DISTRO_VERSION}-rootfs-aarch64.tar.xz -C p2/
 }
 
 aarch64_rootfs(){
-if ls ubuntu-${DISTRO_VERSION}-rootfs-aarch64.tar.xz > /dev/null 2>&1
+if ls ${DISTRO}-${DISTRO_VERSION}-rootfs-aarch64.tar.xz > /dev/null 2>&1
 	then echo && echo -n "Extracting rootfs " && aarch64_extract && echo_bdone;
 	else echo && echo -e "${YLW}Missing rootfs tarball${FIN}!" && exit;
 fi
@@ -99,23 +99,12 @@ https://github.com/RPi-Distro/firmware-nonfree/archive/master.tar.gz
 mv -f firmware-nonfree-master.tar.gz firmware/
 }
 
-rename_image(){
-source kernel.txt
-mv -f ${DEVICE_SOC}-ubuntu-${DISTRO_VERSION}-${IMAGE_DATE}.img ${DEVICE_SOC}-ubuntu-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${IMAGE_DATE}.img
-}
-
-compress_image(){
-source kernel.txt
-mv -f ${DEVICE_SOC}-ubuntu-${DISTRO_VERSION}-${IMAGE_DATE}.img ${DEVICE_SOC}-ubuntu-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${IMAGE_DATE}.img
-xz -zev --threads=${CORES} ${DEVICE_SOC}-ubuntu-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${IMAGE_DATE}.img
-}
-
 # STAGE 2
 apt_preferences(){
 echo
 echo Blacking listing packages.
 tee /etc/apt/preferences <<EOF
-Package: rpi-eeprom linux-firmware-raspi2 pi-bluetooth raspberrypi-sys-mods
+Package: rpi-eeprom linux-firmware linux-firmware-raspi2 pi-bluetooth raspberrypi-sys-mods
 Pin: release o=Ubuntu
 Pin-Priority: 1
 EOF

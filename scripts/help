@@ -80,11 +80,10 @@ while getopts "1234h" OPTION; do
                         ;;
                 h)                       
                         echo -e "${RED}Helper, downloads a binary Linux package${FIN}."
-                        echo -e "${RED}Make sure to run 'make config' before 'make image'${FIN}."
                         echo ""
-                        echo -e "   make 2708        Raspberry Pi 0/w/b/+"
-                        echo -e "   make 2710        Raspberry Pi 3a/b/+"
-                        echo -e "   make 2711        Raspberry Pi 4b"
+                        echo -e "   make 2708        Raspberry Pi 0/1/W/B/+"
+                        echo -e "   make 2710        Raspberry Pi 2/3/A/B/+"
+                        echo -e "   make 2711        Raspberry Pi 4B"
                         echo ""
                         exit 0
                         ;;

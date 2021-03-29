@@ -1,31 +1,3 @@
-partition(){
-truncate -s 1100MB "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
-fdisk "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" <<EOF
-o
-n
-p
-1
-2048
-a
-t
-b
-2148436
-
-p
-w
-
-EOF
-IMAGE_LOOP_DEV="$(losetup --show -f ${IMAGE_FOLDER}${IMAGE_FILE_NAME})"
-IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p1"
-partprobe "${IMAGE_LOOP_DEV}"
-mkfs.ext4 -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}"
-mkdir -p p1
-mount "${IMAGE_LOOP_DEV_ROOTFS}" p1
-sync
-umount p1
-mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p1
-}
-
 check_keyring(){
 URL="https://pkgmaster.devuan.org/devuan/pool/main/d/devuan-keyring/"
 FILE="devuan-keyring_2017.10.03_all.deb"
@@ -33,59 +5,28 @@ if ls /usr/share/keyrings/{devuan-archive-keyring.gpg,devuan-keyring.gpg} > /dev
 	then : ;
 	else wget -cq --show-progress $URL$FILE && sudo dpkg -i $FILE && rm -f $FILE;
 fi
-echo
 }
 
 # aarch64
-debian_arm64(){
-if [ -n "$PROXY" ] ; then
-    http_proxy="$PROXY" debootstrap --arch arm64 --foreign ${DISTRO_VERSION} p1
-    http_proxy="$PROXY" chroot p1 /debootstrap/debootstrap --second-stage
-else
-    debootstrap --arch arm64 --foreign ${DISTRO_VERSION} p1
-    chroot p1 /debootstrap/debootstrap --second-stage
-fi
+arm64_debootstrap(){
+debootstrap --arch arm64 --foreign ${DISTRO_VERSION} ${ROOT}
+chroot ${ROOT} /debootstrap/debootstrap --second-stage
 }
 
-devuan_arm64(){
+arm64_devuan(){
 KEY="/usr/share/keyrings/devuan-archive-keyring.gpg"
-if [ -n "$PROXY" ] ; then
-    http_proxy="$PROXY" debootstrap --arch arm64 --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VERSION} p1 http://pkgmaster.devuan.org/merged
-    http_proxy="$PROXY" chroot p1 /debootstrap/debootstrap --second-stage
-else
-    debootstrap --arch arm64 --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VERSION} p1 http://pkgmaster.devuan.org/merged
-    chroot p1 /debootstrap/debootstrap --second-stage
-fi
-}
-
-ubuntu_arm64(){
-if [ -n "$PROXY" ] ; then
-    http_proxy="$PROXY" debootstrap --arch arm64 --foreign ${DISTRO_VERSION} p1
-    http_proxy="$PROXY" chroot p1 /debootstrap/debootstrap --second-stage
-else
-    debootstrap --arch arm64 --foreign ${DISTRO_VERSION} p1
-    chroot p1 /debootstrap/debootstrap --second-stage
-fi
+debootstrap --arch arm64 --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VERSION} ${ROOT} http://pkgmaster.devuan.org/merged
+chroot ${ROOT} /debootstrap/debootstrap --second-stage
 }
 
 # armv6
-debian_armv6(){
-if [ -n "$PROXY" ] ; then
-    http_proxy="$PROXY" debootstrap --arch armel --foreign ${DISTRO_VERSION} p1
-    http_proxy="$PROXY" chroot p1 /debootstrap/debootstrap --second-stage
-else
-    debootstrap --arch armel --foreign ${DISTRO_VERSION} p1
-    chroot p1 /debootstrap/debootstrap --second-stage
-fi
+armv6_debootstrap(){
+debootstrap --arch armel --foreign ${DISTRO_VERSION} ${ROOT}
+chroot ${ROOT} /debootstrap/debootstrap --second-stage
 }
 
-devuan_armv6(){
+armv6_devuan(){
 KEY="/usr/share/keyrings/devuan-archive-keyring.gpg"
-if [ -n "$PROXY" ] ; then
-    http_proxy="$PROXY" debootstrap --arch armel --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VERSION} p1 http://pkgmaster.devuan.org/merged
-    http_proxy="$PROXY" chroot p1 /debootstrap/debootstrap --second-stage
-else
-    debootstrap --arch armel --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VERSION} p1 http://pkgmaster.devuan.org/merged
-    chroot p1 /debootstrap/debootstrap --second-stage
-fi
+debootstrap --arch armel --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VERSION} ${ROOT} http://pkgmaster.devuan.org/merged
+chroot ${ROOT} /debootstrap/debootstrap --second-stage
 }

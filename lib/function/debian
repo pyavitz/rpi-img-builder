@@ -1,5 +1,6 @@
 # STAGE 1
 stable_sources(){
+rm -f p2/etc/apt/sources.list
 tee p2/etc/apt/sources.list <<EOF
 deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free
 deb http://deb.debian.org/debian ${DISTRO_VERSION}-updates main contrib non-free
@@ -9,6 +10,7 @@ EOF
 }
 
 unstable_sources(){
+rm -f p2/etc/apt/sources.list
 tee p2/etc/apt/sources.list <<EOF
 deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free
 EOF
@@ -33,15 +35,15 @@ fi
 }
 
 aarch64_extract(){
-tar -xf debian-${DISTRO_VERSION}-rootfs-aarch64.tar.xz -C p2/
+tar -xf ${DISTRO}-${DISTRO_VERSION}-rootfs-aarch64.tar.xz -C p2/
 }
 
 armel_extract(){
-tar -xf debian-${DISTRO_VERSION}-rootfs-armel.tar.xz -C p2/
+tar -xf ${DISTRO}-${DISTRO_VERSION}-rootfs-armel.tar.xz -C p2/
 }
 
 aarch64_rootfs(){
-if ls debian-${DISTRO_VERSION}-rootfs-aarch64.tar.xz > /dev/null 2>&1
+if ls ${DISTRO}-${DISTRO_VERSION}-rootfs-aarch64.tar.xz > /dev/null 2>&1
 	then echo && echo -n "Extracting rootfs " && aarch64_extract && echo_bdone;
 	else echo && echo -e "${YLW}Missing rootfs tarball${FIN}!" && exit;
 fi
@@ -49,7 +51,7 @@ echo
 }
 
 armel_rootfs(){
-if ls debian-${DISTRO_VERSION}-rootfs-armel.tar.xz > /dev/null 2>&1
+if ls ${DISTRO}-${DISTRO_VERSION}-rootfs-armel.tar.xz > /dev/null 2>&1
 	then echo && echo -n "Extracting rootfs " && armel_extract && echo_bdone;
 	else echo && echo -e "${YLW}Missing rootfs tarball${FIN}!" && exit;
 fi
@@ -61,17 +63,6 @@ aria2c -c --download-result=hide --console-log-level=error \
 --disable-ipv6=true --summary-interval=0 --show-files=false \
 https://github.com/RPi-Distro/firmware-nonfree/archive/master.tar.gz
 mv -f firmware-nonfree-master.tar.gz firmware/
-}
-
-rename_image(){
-source kernel.txt
-mv -f ${DEVICE_SOC}-debian-${DISTRO_VERSION}-${IMAGE_DATE}.img ${DEVICE_SOC}-debian-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${IMAGE_DATE}.img
-}
-
-compress_image(){
-source kernel.txt
-mv -f ${DEVICE_SOC}-debian-${DISTRO_VERSION}-${IMAGE_DATE}.img ${DEVICE_SOC}-debian-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${IMAGE_DATE}.img
-xz -zev --threads=${CORES} ${DEVICE_SOC}-debian-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${IMAGE_DATE}.img
 }
 
 # STAGE 2

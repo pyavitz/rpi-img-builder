@@ -16,7 +16,7 @@ KERNEL="linux-rpi"
 MLKERNEL="linux"
 
 validation(){
-if grep -q "builder=3.8" userdata.txt; then
+if grep -q "builder=3.9" userdata.txt; then
     :;
 else
     echo -e "${YLW}Userdata file is old${FIN}! ${YLW}Please create a new one${FIN}." && exit;

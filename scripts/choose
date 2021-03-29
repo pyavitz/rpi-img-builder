@@ -26,12 +26,12 @@ fi
 
 validation
 
-if `grep -Fx "debian=1" "userdata.txt" >/dev/null;`
+if `grep -Fx 'DISTRO="debian"' "userdata.txt" >/dev/null;`
 	then make debianos;
 fi
-if `grep -Fx "devuan=1" "userdata.txt" >/dev/null;`
+if `grep -Fx 'DISTRO="devuan"' "userdata.txt" >/dev/null;`
 	then make devuanos;
 fi
-if `grep -Fx "ubuntu=1" "userdata.txt" >/dev/null;`
+if `grep -Fx 'DISTRO="ubuntu"' "userdata.txt" >/dev/null;`
 	then make ubuntuos;
 fi

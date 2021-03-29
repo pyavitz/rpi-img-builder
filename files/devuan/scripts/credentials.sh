@@ -20,7 +20,7 @@ sed -i "s/Raspberry Pi/${BRANDING}/g" /etc/update-motd.d/15-brand
 sed -i "s/Musicbox/${BRANDING}/g" /etc/update-motd.d/15-brand
 }
 
-dhcp () {
+dhcp(){
 sed -i "s/wlan_address 10.0.0.10/#address 10.0.0.10/g" /etc/opt/interfaces
 sed -i "s/wlan_netmask 255.255.255.0/#netmask 255.255.255.0/g" /etc/opt/interfaces
 sed -i "s/wlan_gateway 10.0.0.1/#gateway 10.0.0.1/g" /etc/opt/interfaces
@@ -38,7 +38,7 @@ update-rc.d network defaults S
 service network start
 }
 
-static () {
+static(){
 sed -i "s/iface wlan0 inet dhcp/iface wlan0 inet static/g" /etc/opt/interfaces
 sed -i "s/wlan_address 10.0.0.10/address ${IPADDR}/g" /etc/opt/interfaces
 sed -i "s/wlan_netmask 255.255.255.0/netmask ${NETMASK}/g" /etc/opt/interfaces
@@ -57,7 +57,7 @@ update-rc.d network defaults S
 service network start
 }
 
-connect_wifi () {
+connect_wifi(){
 case `grep -Fx "MANUAL=y" "/boot/credentials.txt" >/dev/null; echo $?` in
   0)
     static
@@ -78,7 +78,7 @@ case `grep -Fx "CHANGE=y" "/boot/credentials.txt" >/dev/null; echo $?` in
 esac
 }
 
-remove_wifi () {
+remove_wifi(){
 update-rc.d -f credentials remove
 sed -i 's/# Default-Start:/# Default-Start: S/g' /etc/init.d/network
 sed -i 's/# Default-Stop:/# Default-Stop: 0 6/g' /etc/init.d/network
