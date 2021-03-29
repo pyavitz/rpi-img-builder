@@ -65,7 +65,7 @@ Distribution
 Distro:		# Supported: debian, devuan and ubuntu
 Release:	# Debian: buster, bullseye, testing, unstable and sid
 		# Devuan: beowulf, testing, unstable and ceres
-		# Ubuntu: focal, groovy, and hirsute
+		# Ubuntu: focal, groovy and hirsute
 
 Filesystem
 ext4:		# 1 to select (default)
@@ -93,7 +93,7 @@ Distribution
 Distro:		# Supported: debian, devuan and ubuntu
 Release:	# Debian: buster, bullseye, testing, unstable and sid
 		# Devuan: beowulf, testing, unstable and ceres
-		# Ubuntu: focal, groovy, and hirsute
+		# Ubuntu: focal, groovy and hirsute
 
 Filesystem
 ext4:		# 1 to select (default)
