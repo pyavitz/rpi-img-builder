@@ -15,8 +15,6 @@ sed -i "s/musicbox/${HOSTNAME}/g" /etc/hosts
 
 change_branding(){
 sed -i "s/Raspberry Pi/${BRANDING}/g" /etc/update-motd.d/15-brand
-sed -i "s/Raspberry Pi/${BRANDING}/g" /etc/update-motd.d/15-brand
-sed -i "s/Raspberry Pi/${BRANDING}/g" /etc/update-motd.d/15-brand
 sed -i "s/Musicbox/${BRANDING}/g" /etc/update-motd.d/15-brand
 }
 
