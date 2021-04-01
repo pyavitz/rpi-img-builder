@@ -473,4 +473,7 @@ systemctl enable firstboot
 systemctl enable credentials
 systemctl enable governor
 systemctl enable serial-getty@ttyUSB0.service
+if ls /etc/systemd/system/multi-user.target.wants/ondemand.service
+	then systemctl disable ondemand;
+fi
 }
