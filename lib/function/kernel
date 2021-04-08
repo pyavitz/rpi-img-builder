@@ -134,13 +134,13 @@ fi
 armv6_ccompile(){
 echo -e "-- ${GRN}CC${FIN}"
 echo_build
-echo 'y' | make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm CC=${ARMV6_CROSS} CROSS_COMPILE=arm-linux-gnueabi- bindeb-pkg
+echo 'y' | make -j${CORES} KBUILD_DEBARCH=armel KBUILD_BUILD_HOST=${KBHOST} ARCH=arm CC=${ARMV6_CROSS} CROSS_COMPILE=arm-linux-gnueabi- bindeb-pkg
 }
 
 armv6_ncompile(){
 echo -e "-- ${GRN}NC${FIN}"
 echo_build
-echo 'y' | make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm CC=${NATIVE} bindeb-pkg
+echo 'y' | make -j${CORES} KBUILD_DEBARCH=armel KBUILD_BUILD_HOST=${KBHOST} ARCH=arm CC=${NATIVE} bindeb-pkg
 }
 
 # aarch64
@@ -174,13 +174,13 @@ fi
 armv8_ccompile(){
 echo -e "-- ${GRN}CC${FIN}"
 echo_build
-echo 'y' | make -j${CORES} ARCH=arm64 CC=${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
+echo 'y' | make -j${CORES} KBUILD_BUILD_HOST=${KBHOST} ARCH=arm64 CC=${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
 }
 
 armv8_ncompile(){
 echo -e "-- ${GRN}NC${FIN}"
 echo_build
-echo 'y' | make -j${CORES} ARCH=arm64 CC=${NATIVE} bindeb-pkg
+echo 'y' | make -j${CORES} KBUILD_BUILD_HOST=${KBHOST} ARCH=arm64 CC=${NATIVE} bindeb-pkg
 }
 
 ccpatch(){

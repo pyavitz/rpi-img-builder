@@ -14,6 +14,7 @@ SRC="source"
 CORES=`nproc`
 KERNEL="linux-rpi"
 MLKERNEL="linux"
+KBHOST="rpi-img-builder"
 
 validation(){
 if grep -q "builder=3.9" userdata.txt; then
