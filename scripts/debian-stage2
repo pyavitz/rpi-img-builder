@@ -44,12 +44,7 @@ cd ~
 mkdir -p /usr/local/bin
 mkdir -p /usr/local/sbin
 # Scripts
-if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
-	then led_service
-fi
-if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
-	then led_service
-fi
+led_service
 mv -f run-setup /usr/local/bin/
 mv -f sysinfo /usr/local/bin/
 mv -f smon /usr/local/bin/
