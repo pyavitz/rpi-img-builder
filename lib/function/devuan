@@ -31,37 +31,6 @@ if `grep -Fx 'DISTRO_VERSION="unstable"' "userdata.txt" >/dev/null;`
 fi
 }
 
-aarch64_extract(){
-tar -xf ${DISTRO}-${DISTRO_VERSION}-rootfs-aarch64.tar.xz -C p2/
-}
-
-armel_extract(){
-tar -xf ${DISTRO}-${DISTRO_VERSION}-rootfs-armel.tar.xz -C p2/
-}
-
-aarch64_rootfs(){
-if ls ${DISTRO}-${DISTRO_VERSION}-rootfs-aarch64.tar.xz > /dev/null 2>&1
-	then echo && echo -n "Extracting rootfs " && aarch64_extract && echo_bdone;
-	else echo && echo -e "${YLW}Missing rootfs tarball${FIN}!" && exit;
-fi
-echo
-}
-
-armel_rootfs(){
-if ls ${DISTRO}-${DISTRO_VERSION}-rootfs-armel.tar.xz > /dev/null 2>&1
-	then echo && echo -n "Extracting rootfs " && armel_extract && echo_bdone;
-	else echo && echo -e "${YLW}Missing rootfs tarball${FIN}!" && exit;
-fi
-echo
-}
-
-rpi-firmware(){
-aria2c -c --download-result=hide --console-log-level=error \
---disable-ipv6=true --summary-interval=0 --show-files=false \
-https://github.com/RPi-Distro/firmware-nonfree/archive/master.tar.gz
-mv -f firmware-nonfree-master.tar.gz firmware/
-}
-
 # STAGE 2
 # USER CONFIG
 bcm2708_user(){

@@ -27,6 +27,30 @@ fi
 esac
 }
 
+aarch64_extract(){
+tar -xf ${DISTRO}-${DISTRO_VERSION}-rootfs-aarch64.tar.xz -C p2/
+}
+
+armel_extract(){
+tar -xf ${DISTRO}-${DISTRO_VERSION}-rootfs-armel.tar.xz -C p2/
+}
+
+aarch64_rootfs(){
+if ls ${DISTRO}-${DISTRO_VERSION}-rootfs-aarch64.tar.xz > /dev/null 2>&1
+	then echo && echo -n "Extracting rootfs " && aarch64_extract && echo_bdone;
+	else echo && echo -e "${YLW}Missing rootfs tarball${FIN}!" && exit;
+fi
+echo
+}
+
+armel_rootfs(){
+if ls ${DISTRO}-${DISTRO_VERSION}-rootfs-armel.tar.xz > /dev/null 2>&1
+	then echo && echo -n "Extracting rootfs " && armel_extract && echo_bdone;
+	else echo && echo -e "${YLW}Missing rootfs tarball${FIN}!" && exit;
+fi
+echo
+}
+
 # Stage 2
 set_locales(){
 apt install -y locales
