@@ -4,13 +4,18 @@ DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-i
 VERSION="5.10.y"
 RED="\e[1;31m"
 HELP="\e[1;33m"
+GRN="\e[1;32m"
+PNK="\e[1;35m"
 FIN="\e[0m"
+
+echo_bdone(){
+echo -e "${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
+}
 
 rpi(){
 echo
 echo -e "${RED}Downloading${FIN} ..."
-${DOWNLOAD} ${URL}rpi-${VERSION}.tar.xz
-echo -e "${RED}Done${FIN}."
+${DOWNLOAD} ${URL}rpi-${VERSION}.tar.xz && echo_bdone
 echo
 echo -e "${RED}Extracting archive${FIN} ..."
 tar xf rpi-${VERSION}.tar.xz
@@ -26,8 +31,7 @@ echo -e "${RED}Done${FIN}."
 rpi3(){
 echo
 echo -e "${RED}Downloading${FIN} ..."
-${DOWNLOAD} ${URL}rpi3-${VERSION}.tar.xz
-echo -e "${RED}Done${FIN}."
+${DOWNLOAD} ${URL}rpi3-${VERSION}.tar.xz && echo_bdone
 echo
 echo -e "${RED}Extracting archive${FIN} ..."
 tar xf rpi3-${VERSION}.tar.xz
@@ -43,8 +47,7 @@ echo -e "${RED}Done${FIN}."
 rpi4(){
 echo
 echo -e "${RED}Downloading${FIN} ..."
-${DOWNLOAD} ${URL}rpi4-${VERSION}.tar.xz
-echo -e "${RED}Done${FIN}."
+${DOWNLOAD} ${URL}rpi4-${VERSION}.tar.xz && echo_bdone
 echo
 echo -e "${RED}Extracting archive${FIN} ..."
 tar xf rpi4-${VERSION}.tar.xz
