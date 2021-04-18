@@ -1,17 +1,18 @@
 #!/bin/bash
 URL="https://github.com/pyavitz/rpi-img-builder/releases/download/linux/"
+DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
 VERSION="5.10.y"
 RED="\e[1;31m"
 HELP="\e[1;33m"
 FIN="\e[0m"
 
-rpi () {
+rpi(){
 echo
 echo -e "${RED}Downloading${FIN} ..."
-wget -cq --show-progress ${URL}rpi-${VERSION}.tar.xz
+${DOWNLOAD} ${URL}rpi-${VERSION}.tar.xz
 echo -e "${RED}Done${FIN}."
 echo
-echo -e "${RED}Extracting and setting up directory${FIN}."
+echo -e "${RED}Extracting archive${FIN} ..."
 tar xf rpi-${VERSION}.tar.xz
 rm -f rpi-${VERSION}.tar.xz
 if ls output/bcm2708 > /dev/null 2>&1
@@ -19,16 +20,16 @@ if ls output/bcm2708 > /dev/null 2>&1
 fi
 mkdir -p output
 mv rpi-${VERSION} output/bcm2708
-echo -e "${RED}Ready${FIN}."
+echo -e "${RED}Done${FIN}."
 }
 
-rpi3 () {
+rpi3(){
 echo
 echo -e "${RED}Downloading${FIN} ..."
-wget -cq --show-progress ${URL}rpi3-${VERSION}.tar.xz
+${DOWNLOAD} ${URL}rpi3-${VERSION}.tar.xz
 echo -e "${RED}Done${FIN}."
 echo
-echo -e "${RED}Extracting and setting up directory${FIN}."
+echo -e "${RED}Extracting archive${FIN} ..."
 tar xf rpi3-${VERSION}.tar.xz
 rm -f rpi3-${VERSION}.tar.xz
 if ls output/bcm2710 > /dev/null 2>&1
@@ -36,16 +37,16 @@ if ls output/bcm2710 > /dev/null 2>&1
 fi
 mkdir -p output
 mv rpi3-${VERSION} output/bcm2710
-echo -e "${RED}Ready${FIN}."
+echo -e "${RED}Done${FIN}."
 }
 
-rpi4 () {
+rpi4(){
 echo
 echo -e "${RED}Downloading${FIN} ..."
-wget -cq --show-progress ${URL}rpi4-${VERSION}.tar.xz
+${DOWNLOAD} ${URL}rpi4-${VERSION}.tar.xz
 echo -e "${RED}Done${FIN}."
 echo
-echo -e "${RED}Extracting and setting up directory${FIN}."
+echo -e "${RED}Extracting archive${FIN} ..."
 tar xf rpi4-${VERSION}.tar.xz
 rm -f rpi4-${VERSION}.tar.xz
 if ls output/bcm2711 > /dev/null 2>&1
@@ -53,7 +54,7 @@ if ls output/bcm2711 > /dev/null 2>&1
 fi
 mkdir -p output
 mv rpi4-${VERSION} output/bcm2711
-echo -e "${RED}Ready${FIN}."
+echo -e "${RED}Done${FIN}."
 }
 
 if [ $# -eq 0 ]
