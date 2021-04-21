@@ -1,12 +1,7 @@
 diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
---- a/scripts/package/builddeb	2021-02-08 08:08:02.567604000 -0500
-+++ b/scripts/package/builddeb	2021-02-23 11:28:09.596991750 -0500
-@@ -47,12 +47,13 @@
- }
- 
- version=$KERNELRELEASE
-+kernel_date=`date +%F`
- tmpdir="$objtree/debian/tmp"
+--- a/scripts/package/builddeb	2021-04-21 09:37:19.075011000 -0400
++++ b/scripts/package/builddeb	2021-04-21 11:47:57.585669181 -0400
+@@ -51,8 +51,8 @@
  kernel_headers_dir="$objtree/debian/hdrtmp"
  libc_headers_dir="$objtree/debian/headertmp"
  dbg_dir="$objtree/debian/dbgtmp"
@@ -17,7 +12,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  libc_headers_packagename=linux-libc-dev
  dbg_packagename=$packagename-dbg
  
-@@ -92,6 +93,11 @@
+@@ -92,6 +92,11 @@
  else
  	cp System.map "$tmpdir/boot/System.map-$version"
  	cp $KCONFIG_CONFIG "$tmpdir/boot/config-$version"
@@ -29,7 +24,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  fi
  cp "$($MAKE -s -f $srctree/Makefile image_name)" "$tmpdir/$installed_image_path"
  
-@@ -139,6 +145,12 @@
+@@ -139,6 +144,12 @@
  	mv $libc_headers_dir/usr/include/asm $libc_headers_dir/usr/include/$host_arch/
  fi
  
@@ -42,40 +37,38 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  # Install the maintainer scripts
  # Note: hook scripts under /etc/kernel are also executed by official Debian
  # kernel packages, as well as kernel packages built using make-kpkg.
-@@ -164,6 +176,41 @@
+@@ -164,6 +175,39 @@
  	chmod 755 "$tmpdir/DEBIAN/$script"
  done
  
-+       # remove kernel
 +        cat > $tmpdir/DEBIAN/preinst <<EOT
 +#!/bin/bash
 +# purge kernel script
 +
 +set -e
 +
-+if touch -c /boot/overlays /boot/*.dtb > /dev/null 2>&1; then rm -fdr /boot/overlays /boot/*.dtb;
-+        else echo "Missing dtb files.";
++if touch -c /boot/overlays /boot/*.dtb > /dev/null 2>&1;
++	then rm -fdr /boot/overlays /boot/*.dtb;
 +fi
 +
-+if ls /boot/System.map-* > /dev/null 2>&1; then rm -f /boot/System.map-*;
-+        else echo "Missing System.map file.";
++if ls /boot/System.map-* > /dev/null 2>&1;
++	then rm -f /boot/System.map-*;
 +fi
 +
-+if ls /boot/config-* > /dev/null 2>&1; then rm -f /boot/config-*;
-+        else echo "Missing config file.";
++if ls /boot/config-* > /dev/null 2>&1;
++	then rm -f /boot/config-*;
 +fi
 +
-+if ls /boot/vmlinuz-* > /dev/null 2>&1; then rm -f /boot/vmlinuz-*;
-+        else echo "Missing vmlinuz file.";
++if ls /boot/vmlinuz-* > /dev/null 2>&1;
++	then rm -f /boot/vmlinuz-*;
 +fi
 +
 +if ls /boot/{fixup4*.dat,start4*.elf} > /dev/null 2>&1;
 +	then rm -f /boot/{fixup4*.dat,start4*.elf,LICENCE.broadcom,COPYING.linux};
-+	else echo "Missing boot binaries.";
 +fi
 +
 +if ls /boot/kernel* > /dev/null 2>&1; then rm -f /boot/kernel* /boot/initrd.img*;
-+        else echo "Installing new kernel.";
++	else echo "Installing new kernel ...";
 +fi
 +exit 0
 +EOT
@@ -84,13 +77,11 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  # Build kernel header package
  (cd $srctree; find . -name Makefile\* -o -name Kconfig\* -o -name \*.pl) > "$objtree/debian/hdrsrcfiles"
  (cd $srctree; find arch/*/include include scripts -type f -o -type l) >> "$objtree/debian/hdrsrcfiles"
-@@ -184,6 +231,19 @@
+@@ -184,6 +228,17 @@
  ln -sf "/usr/src/linux-headers-$version" "$kernel_headers_dir/lib/modules/$version/build"
  rm -f "$objtree/debian/hdrsrcfiles" "$objtree/debian/hdrobjfiles"
  
 +        mkdir -p $kernel_headers_dir/DEBIAN
-+
-+       # remove old linux headers 
 +        cat > $kernel_headers_dir/DEBIAN/preinst <<EOT
 +#!/bin/sh
 +# remove old linux headers
@@ -105,8 +96,8 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  	create_package "$kernel_headers_packagename" "$kernel_headers_dir"
  	create_package "$libc_headers_packagename" "$libc_headers_dir"
 diff -Naur a/scripts/package/mkdebian b/scripts/package/mkdebian
---- a/scripts/package/mkdebian	2021-02-08 08:08:02.567604000 -0500
-+++ b/scripts/package/mkdebian	2021-02-23 11:23:03.061758110 -0500
+--- a/scripts/package/mkdebian	2021-04-21 09:37:19.076011000 -0400
++++ b/scripts/package/mkdebian	2021-04-21 11:46:04.083647160 -0400
 @@ -94,8 +94,8 @@
  	packageversion=$version-$revision
  fi
