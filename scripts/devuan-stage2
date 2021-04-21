@@ -112,6 +112,7 @@ sleep 1s
 apt -y clean
 apt -y autoclean
 apt update
+apt install -y openssh-client openssh-server --no-install-recommends
 apt install -y ${DEVUAN2} ${FIRMWARE}
 
 #### Adding firmware
