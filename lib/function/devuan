@@ -210,19 +210,6 @@ case `grep -Fx "admin=1" "/root/userdata.txt" >/dev/null; echo $?` in
 esac
 }
 
-bcm_sdio_zero-w(){
-wget -cq --show-progress https://raw.githubusercontent.com/openwrt/cypress-nvram/master/brcmfmac43430-sdio.raspberrypi%2Cmodel-zero-w.txt
-}
-
-bcm_sdio_3-b-plus(){
-wget -cq --show-progress https://raw.githubusercontent.com/openwrt/cypress-nvram/master/brcmfmac43455-sdio.raspberrypi%2C3-model-b-plus.txt
-wget -cq --show-progress https://raw.githubusercontent.com/RPi-Distro/firmware-nonfree/master/brcm/brcmfmac43430-sdio.raspberrypi-rpi.txt
-}
-
-bcm_sdio_4-b(){
-wget -cq --show-progress https://raw.githubusercontent.com/openwrt/cypress-nvram/master/brcmfmac43455-sdio.raspberrypi%2C4-model-b.txt
-}
-
 led_service(){
 echo
 echo Creating actled switch.
