@@ -28,8 +28,8 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  	mv $libc_headers_dir/usr/include/asm $libc_headers_dir/usr/include/$host_arch/
  fi
  
-+# install dtb and overlays
-+#mkdir -p "$tmpdir/boot/overlays"
++# install dtb
++mkdir -p "$tmpdir/boot"
 +cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2711-rpi-4-b.dtb" "$tmpdir/boot/bcm2711-rpi-4-b.dtb"
 +#
 +
