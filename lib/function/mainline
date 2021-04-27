@@ -1,3 +1,5 @@
+DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
+
 source_dir (){
 mkdir -p ${SRC}
 cp -f soc.txt ${SRC}/
@@ -17,16 +19,16 @@ rm -f binaries/*
 cd binaries
 echo
 echo_bins
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}fixup4.dat
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}fixup4cd.dat
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}fixup4db.dat
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}fixup4x.dat
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}start4.elf
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}start4cd.elf
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}start4db.elf
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}start4x.elf
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}LICENCE.broadcom
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}COPYING.linux
+${DOWNLOAD} ${BINURL}fixup4.dat
+${DOWNLOAD} ${BINURL}fixup4cd.dat
+${DOWNLOAD} ${BINURL}fixup4db.dat
+${DOWNLOAD} ${BINURL}fixup4x.dat
+${DOWNLOAD} ${BINURL}start4.elf
+${DOWNLOAD} ${BINURL}start4cd.elf
+${DOWNLOAD} ${BINURL}start4db.elf
+${DOWNLOAD} ${BINURL}start4x.elf
+${DOWNLOAD} ${BINURL}LICENCE.broadcom
+${DOWNLOAD} ${BINURL}COPYING.linux
 cd ..
 if ls binaries/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf} > /dev/null 2>&1
 	then echo_bdone;
@@ -35,37 +37,39 @@ fi
 }
 
 download_mainline(){
-    echo
-    echo_mainline
-    if ls ${MLKERNEL}-${VERSION}.tar.gz > /dev/null 2>&1;
+MLURL="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/"
+echo
+echo_mainline
+if ls ${MLKERNEL}-${VERSION}.tar.gz > /dev/null 2>&1;
 	then echo -e "${YLW}${MLKERNEL}-${VERSION}.tar.gz found${FIN}.";
-	else aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/${MLKERNEL}-${VERSION}.tar.gz && echo_bdone;
-    fi
-    echo
-    echo_extract
-    echo -e -n "${WHT}"
-    pv ${MLKERNEL}-${VERSION}.tar.gz | tar -xzf - -C .
-    echo -e -n "${FIN}"
-    cd ${MLKERNEL}-${VERSION}
-    rpi4_binaries
-    export ARCH=arm64
+	else ${DOWNLOAD} ${MLURL}${MLKERNEL}-${VERSION}.tar.gz && echo_bdone;
+fi
+echo
+echo_extract
+echo -e -n "${WHT}"
+pv ${MLKERNEL}-${VERSION}.tar.gz | tar -xzf - -C .
+echo -e -n "${FIN}"
+cd ${MLKERNEL}-${VERSION}
+rpi4_binaries
+export ARCH=arm64
 }
 
 download_stable(){
-    echo
-    echo_stable
-    if ls ${MLKERNEL}-${VERSION}.tar.xz > /dev/null 2>&1;
+STBURL="https://cdn.kernel.org/pub/linux/kernel/v5.x/"
+echo
+echo_stable
+if ls ${MLKERNEL}-${VERSION}.tar.xz > /dev/null 2>&1;
 	then echo -e "${YLW}${MLKERNEL}-${VERSION}.tar.xz found${FIN}.";
-	else aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false https://cdn.kernel.org/pub/linux/kernel/v5.x/${MLKERNEL}-${VERSION}.tar.xz && echo_bdone;
-    fi
-    echo
-    echo_extract
-    echo -e -n "${WHT}"
-    pv ${MLKERNEL}-${VERSION}.tar.xz | tar -xJ ${MLKERNEL}-${VERSION}
-    echo -e -n "${FIN}"
-    cd ${MLKERNEL}-${VERSION}
-    rpi4_binaries
-    export ARCH=arm64
+	else ${DOWNLOAD} ${STBURL}${MLKERNEL}-${VERSION}.tar.xz && echo_bdone;
+fi
+echo
+echo_extract
+echo -e -n "${WHT}"
+pv ${MLKERNEL}-${VERSION}.tar.xz | tar -xJ ${MLKERNEL}-${VERSION}
+echo -e -n "${FIN}"
+cd ${MLKERNEL}-${VERSION}
+rpi4_binaries
+export ARCH=arm64
 }
 
 noinitrd(){

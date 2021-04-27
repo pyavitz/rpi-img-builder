@@ -48,7 +48,7 @@ source_dir
 mainline_clean
 
 ### Download kernel
-case `grep -Fx "mainline=1" "../userdata.txt" >/dev/null; echo $?` in
+case `grep -Fx "rc=1" "../userdata.txt" >/dev/null; echo $?` in
   0)
     download_mainline
     ;;

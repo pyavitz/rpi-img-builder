@@ -7,7 +7,7 @@ user=""
 passwd=""
 rootpasswd="0"
 VERSION="5.10.31"
-mainline="0"
+rc="0"
 menuconfig="0"
 crosscompile="1"
 DISTRO="debian"
@@ -31,7 +31,7 @@ VALUES=$(dialog --ok-label "Submit" --no-cancel \
 	""		4 1	""	 		4 14 0 0 \
 	"Linux kernel"	5 1	""	 		5 14 0 0 \
         "Branch:"   	6 1     "$VERSION"        	6 9 10 0 \
-        "Mainline:"	7 1     "$mainline"             7 11 2 0 \
+        "RC:"		7 1     "$rc"			7 5 2 0 \
 	"Menuconfig:"	8 1	"$menuconfig"  		8 13 2 0 \
 	"Crosscompile:" 9 1	"$crosscompile" 	9 15 2 0 \
 	""		10 1	""	 		10 14 0 0 \
@@ -57,7 +57,7 @@ echo user='"' > tmp0
 echo passwd='"' >> tmp0
 echo rootpasswd= >> tmp0
 echo VERSION='"' >> tmp0
-echo mainline= >> tmp0
+echo rc= >> tmp0
 echo menuconfig= >> tmp0
 echo crosscompile= >> tmp0
 echo DISTRO='"' >> tmp0

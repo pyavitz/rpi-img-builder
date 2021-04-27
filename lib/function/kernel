@@ -1,3 +1,5 @@
+DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
+
 source_dir(){
 mkdir -p ${SRC}
 cp -f soc.txt ${SRC}/
@@ -43,16 +45,16 @@ rm -f binaries/*
 cd binaries
 echo
 echo_bins
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}fixup4.dat
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}fixup4cd.dat
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}fixup4db.dat
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}fixup4x.dat
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}start4.elf
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}start4cd.elf
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}start4db.elf
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}start4x.elf
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}LICENCE.broadcom
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}COPYING.linux
+${DOWNLOAD} ${BINURL}fixup4.dat
+${DOWNLOAD} ${BINURL}fixup4cd.dat
+${DOWNLOAD} ${BINURL}fixup4db.dat
+${DOWNLOAD} ${BINURL}fixup4x.dat
+${DOWNLOAD} ${BINURL}start4.elf
+${DOWNLOAD} ${BINURL}start4cd.elf
+${DOWNLOAD} ${BINURL}start4db.elf
+${DOWNLOAD} ${BINURL}start4x.elf
+${DOWNLOAD} ${BINURL}LICENCE.broadcom
+${DOWNLOAD} ${BINURL}COPYING.linux
 cd ..
 if ls binaries/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf} > /dev/null 2>&1
 	then echo_bdone;
@@ -67,17 +69,17 @@ rm -f binaries/*
 cd binaries
 echo
 echo_bins
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}bootcode.bin
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}fixup.dat
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}fixup_cd.dat
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}fixup_db.dat
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}fixup_x.dat
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}start.elf
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}start_cd.elf
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}start_db.elf
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}start_x.elf
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}LICENCE.broadcom
-aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false ${BINURL}COPYING.linux
+${DOWNLOAD} ${BINURL}bootcode.bin
+${DOWNLOAD} ${BINURL}fixup.dat
+${DOWNLOAD} ${BINURL}fixup_cd.dat
+${DOWNLOAD} ${BINURL}fixup_db.dat
+${DOWNLOAD} ${BINURL}fixup_x.dat
+${DOWNLOAD} ${BINURL}start.elf
+${DOWNLOAD} ${BINURL}start_cd.elf
+${DOWNLOAD} ${BINURL}start_db.elf
+${DOWNLOAD} ${BINURL}start_x.elf
+${DOWNLOAD} ${BINURL}LICENCE.broadcom
+${DOWNLOAD} ${BINURL}COPYING.linux
 cd ..
 if ls binaries/{bootcode.bin,fixup.dat,fixup_cd.dat,fixup_db.dat,fixup_x.dat,start.elf,start_cd.elf,start_db.elf,start_x.elf} > /dev/null 2>&1
 	then echo_bdone;
@@ -86,11 +88,12 @@ fi
 }
 
 download(){
+RPIURL="https://github.com/raspberrypi/linux/archive/"
 echo
 echo_kernel
 if ls ${KERNEL}-${VERSION}.tar.gz > /dev/null 2>&1;
 	then echo -e "${YLW}${KERNEL}-${VERSION}.tar.gz found${FIN}.";
-	else aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false https://github.com/raspberrypi/linux/archive/rpi-${VERSION}.tar.gz && echo_bdone;
+	else ${DOWNLOAD} ${RPIURL}rpi-${VERSION}.tar.gz && echo_bdone;
 fi
 }
 

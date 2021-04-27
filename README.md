@@ -85,7 +85,7 @@ Enable root:	# 1 to enable (set root password to `toor`)
 
 Linux kernel
 Branch:         # Selected kernel branch
-Mainline:       # 1 for kernel x.y-rc above stable
+RC:             # 1 for kernel x.y-rc above stable
 Menuconfig:     # 1 to run kernel menuconfig
 Crosscompile:   # 1 to cross compile | 0 to native compile
 
