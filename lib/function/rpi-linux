@@ -110,8 +110,6 @@ armv6_setup(){
 cd ${KERNEL}-${VERSION}
 export ARCH=arm
 KERNEL=kernel
-#make clean
-#make mrproper
 }
 
 armv6_cconfig(){
@@ -150,8 +148,6 @@ echo 'y' | make -j${CORES} KBUILD_DEBARCH=armel KBUILD_BUILD_HOST=${KBHOST} ARCH
 armv8_setup(){
 cd ${KERNEL}-${VERSION}
 export ARCH=arm64
-#make clean
-#make mrproper
 }
 
 armv8_cconfig(){
@@ -187,50 +183,50 @@ echo 'y' | make -j${CORES} KBUILD_BUILD_HOST=${KBHOST} ARCH=arm64 CC=${NATIVE} b
 }
 
 ccpatch(){
-    echo
-    echo_ccpatch
-    userpatches
-    rm -f scripts/package/builddeb
-    rm -f scripts/package/mkdebian
-    cp -R ../${PAT}/builddeb scripts/package/
-    cp -R ../${PAT}/mkdebian scripts/package/
-    chmod +x scripts/package/builddeb
-    chmod +x scripts/package/mkdebian
-    if `grep -Fx "bcm2711" "../../soc.txt" >/dev/null;`
+echo
+echo_ccpatch
+userpatches
+rm -f scripts/package/builddeb
+rm -f scripts/package/mkdebian
+cp -R ../${PAT}/builddeb scripts/package/
+cp -R ../${PAT}/mkdebian scripts/package/
+chmod +x scripts/package/builddeb
+chmod +x scripts/package/mkdebian
+if `grep -Fx "bcm2711" "../../soc.txt" >/dev/null;`
 	then patch -p1 < ../${CC}/rpi4b-packaging.patch && rpi4;
-    fi
-    if `grep -Fx "bcm2710" "../../soc.txt" >/dev/null;`
+fi
+if `grep -Fx "bcm2710" "../../soc.txt" >/dev/null;`
 	then patch -p1 < ../${CC}/rpi3b-packaging.patch && rpi2+3;
-    fi
-    if `grep -Fx "bcm2708" "../../soc.txt" >/dev/null;`
+fi
+if `grep -Fx "bcm2708" "../../soc.txt" >/dev/null;`
 	then patch -p1 < ../${CC}/rpi-packaging.patch && rpi0+1;
-    fi
-    cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch
-    echo_done
-    echo
+fi
+cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch
+echo_done
+echo
 }
 
 ncpatch(){
-    echo
-    echo_ncpatch
-    userpatches
-    rm -f scripts/package/builddeb
-    rm -f scripts/package/mkdebian
-    cp -R ../${PAT}/builddeb scripts/package/
-    cp -R ../${PAT}/mkdebian scripts/package/
-    chmod +x scripts/package/builddeb
-    chmod +x scripts/package/mkdebian
-    if `grep -Fx "bcm2711" "../../soc.txt" >/dev/null;`
+echo
+echo_ncpatch
+userpatches
+rm -f scripts/package/builddeb
+rm -f scripts/package/mkdebian
+cp -R ../${PAT}/builddeb scripts/package/
+cp -R ../${PAT}/mkdebian scripts/package/
+chmod +x scripts/package/builddeb
+chmod +x scripts/package/mkdebian
+if `grep -Fx "bcm2711" "../../soc.txt" >/dev/null;`
 	then patch -p1 < ../${NC}/rpi4b-packaging.patch && rpi4;
-    fi
-    if `grep -Fx "bcm2710" "../../soc.txt" >/dev/null;`
+fi
+if `grep -Fx "bcm2710" "../../soc.txt" >/dev/null;`
 	then patch -p1 < ../${NC}/rpi3b-packaging.patch && rpi2+3;
-    fi
-    if `grep -Fx "bcm2708" "../../soc.txt" >/dev/null;`
+fi
+if `grep -Fx "bcm2708" "../../soc.txt" >/dev/null;`
 	then patch -p1 < ../${NC}/rpi-packaging.patch && rpi0+1;
-    fi
-    echo_done
-    echo
+fi
+echo_done
+echo
 }
 
 module_sig(){

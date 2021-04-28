@@ -16,7 +16,7 @@ while true; do
   exec 3>&1
   selection=$(dialog \
     --backtitle "Raspberry Pi Image Builder" \
-    --title "Raspberry Pi 3B/+" \
+    --title "Raspberry Pi 2/3/A/B/+" \
     --clear \
     --cancel-label "Exit" \
     --menu "Select:" $HEIGHT $WIDTH 4 \

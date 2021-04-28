@@ -1,12 +1,12 @@
 DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
 
-source_dir (){
+source_dir(){
 mkdir -p ${SRC}
 cp -f soc.txt ${SRC}/
 cd ${SRC}
 }
 
-mainline_clean (){
+mainline_clean(){
 if ls ${MLKERNEL}-${VERSION} > /dev/null 2>&1;
 	then echo "" && echo -e "${PNK}Cleaning${FIN} ..." && rm -fdr ${MLKERNEL}-${VERSION};
 fi
@@ -77,7 +77,7 @@ sed -i 's/export INITRD=$want_initrd/export INITRD=No/g' scripts/package/buildde
 sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
 }
 
-userpatches (){
+userpatches(){
 if
 ls ../${UP}/*.patch > /dev/null 2>&1;
 then echo -e "${GRN}Applying user patches${FIN}." &&
@@ -87,26 +87,26 @@ fi
 }
 
 patching(){
-    echo
-    echo_patch
-    userpatches
-    rm -f scripts/package/builddeb
-    rm -f scripts/package/mkdebian
-    cp -R ../${PAT}/builddeb scripts/package/
-    cp -R ../${PAT}/mkdebian scripts/package/
-    chmod +x scripts/package/builddeb
-    chmod +x scripts/package/mkdebian
-    if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
+echo
+echo_patch
+userpatches
+rm -f scripts/package/builddeb
+rm -f scripts/package/mkdebian
+cp -R ../${PAT}/builddeb scripts/package/
+cp -R ../${PAT}/mkdebian scripts/package/
+chmod +x scripts/package/builddeb
+chmod +x scripts/package/mkdebian
+if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
 	then for i in ../${MLCC}/*.patch; do patch -p1 < $i; done ;
 	else for i in ../${MLNC}/*.patch; do patch -p1 < $i; done ;
-    fi
-    if ls ../${ML}/*.patch > /dev/null 2>&1;
+fi
+if ls ../${ML}/*.patch > /dev/null 2>&1;
 	then for i in ../${ML}/*.patch; do patch -p1 < $i; done ;
 	else : ;
-    fi
-    cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch
-    echo_done
-    echo
+fi
+cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch
+echo_done
+echo
 }
 
 cconfig(){

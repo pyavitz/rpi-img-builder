@@ -13,10 +13,10 @@ ROOTFSV6=sudo ./scripts/rootfsv6
 
 # kernel
 SELECT=./scripts/select
-XLINUX=./scripts/linux
-LINUX=sudo ./scripts/linux
-XMAINLINE=./scripts/mainline
-MAINLINE=sudo ./scripts/mainline
+XLINUX=./scripts/rpi-linux
+LINUX=sudo ./scripts/rpi-linux
+XMAINLINE=./scripts/linux
+MAINLINE=sudo ./scripts/linux
 
 # stages
 DEB=./scripts/debian-stage1

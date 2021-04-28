@@ -77,7 +77,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
 +
 +if ls /boot/kernel* > /dev/null 2>&1;
 +	then rm -f /boot/kernel* /boot/initrd.img*;
-+        else echo "Installing new kernel ...";
++        else echo -e "\e[1;37mInstalling new kernel\e[0m ...";
 +fi
 +exit 0
 +EOT
