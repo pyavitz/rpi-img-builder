@@ -44,7 +44,9 @@ fi
 if `grep -Fx "btrfs=1" "/root/userdata.txt" >/dev/null;`
 	then apt install -y btrfs-progs;
 fi
-apt install -y ${UBUNTU1}
+apt install -y ${UBUNTU1} ${UBUNTU2}
+apt -y clean
+apt -y autoclean
 
 #### Scripts
 echo
@@ -107,34 +109,6 @@ chown root:root /etc/update-motd.d/15-brand
 chown root:root /etc/update-motd.d/20-sysinfo
 echo Done.
 
-#### Software
-echo
-echo Installing needed packages.
-sleep 1s
-apt -y clean
-apt -y autoclean
-apt update
-apt install -y ${UBUNTU2}
-
-#### Adding firmware
-echo
-echo Adding pi firmware.
-sleep 1s
-brcm_firmware
-cd /lib/firmware/brcm
-if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
-	then bcm_sdio_4-b
-fi
-if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
-	then bcm_sdio_3-b-plus
-fi
-linux_firmware
-cd ~
-echo Done.
-
-#### Extra firmware
-extra_firmware
-
 ####
 echo
 echo Bluetooth udev rule.
@@ -142,6 +116,9 @@ sleep 1s
 mkdir -p /lib/udev/rules.d/
 mv -f 99-com.rules /lib/udev/rules.d/99-com.rules
 echo Done.
+
+#### Extra firmware
+extra_firmware
 
 ### Network Setup
 if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
@@ -169,21 +146,10 @@ chown root:root /etc/motd
 chown root:root /etc/new.motd
 echo Done.
 
-#### Clean up packages
-echo
-echo Cleaning up.
-sleep 1s
-apt -y autoremove
-apt -y clean
-apt -y autoclean
-echo Done.
-
 ###
 echo
 echo Adding regdb.
 sleep 1s
-apt update
-apt install -y crda
 echo 'KERNEL=="regulatory*", ACTION=="change", SUBSYSTEM=="platform", RUN+="/sbin/crda"' > /etc/udev/rules.d/60-regdb.rules
 git clone https://kernel.googlesource.com/pub/scm/linux/kernel/git/sforshee/wireless-regdb
 echo
@@ -200,6 +166,7 @@ echo Done.
 echo
 echo Building raspi-sys-mods package.
 sleep 1s
+apt update
 apt install -y debhelper d-shlibs rfkill dosfstools psmisc
 git clone https://github.com/RPi-Distro/raspberrypi-sys-mods.git
 cd raspberrypi-sys-mods
@@ -219,39 +186,8 @@ if ls /etc/apt/preferences.d/3rd_parties.pref > /dev/null 2>&1
 fi
 echo Done.
 
-### Bluez firmware.
-echo
-echo Installing bluetooth.
-sleep 1s
-apt install -y bluetooth bluez bluez-tools
-echo Done.
-echo
-bluez_firmware
-echo Done.
-
 ### Pi Bluetooth
-if `grep -Fx 'DISTRO_VERSION="focal"' "/root/userdata.txt" >/dev/null;`
-	then pi_bluetooth;
-fi
-if `grep -Fx 'DISTRO_VERSION="groovy"' "/root/userdata.txt" >/dev/null;`
-	then pi_bluetooth && apt-mark hold pi-bluetooth;
-fi
-if `grep -Fx 'DISTRO_VERSION="hirsute"' "/root/userdata.txt" >/dev/null;`
-	then pi_bluetooth && apt-mark hold pi-bluetooth;
-fi
-
-### Updating bluez
-bluez_choose
-
-### Cypress wifi firmware
-if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
-	then : ;
-	else cypress_firmware
-fi
-
-### Certificates
-echo
-update-ca-certificates -f
+pi_bluetooth
 
 ###  Adding raspi userland
 rpi_userland
@@ -365,14 +301,14 @@ chmod +x /etc/rc.local
 echo Done.
 ### Enable services
 echo
-echo Enabling Services
+echo Enabling Services.
 sleep 1s
 enable_services > /dev/null 2>&1
 echo Done.
 
 ###### Finish
 echo
-echo Moving out of stage2 and creating image
+echo Moving out of stage2 and creating image.
 echo
 sleep 2s
 

@@ -69,27 +69,10 @@ root_password(){
 echo "root:toor" | chpasswd
 }
 
-bcm_sdio_zero-w(){
-wget -cq --show-progress https://raw.githubusercontent.com/openwrt/cypress-nvram/master/brcmfmac43430-sdio.raspberrypi%2Cmodel-zero-w.txt
-}
-
-bcm_sdio_3-b-plus(){
-wget -cq --show-progress https://raw.githubusercontent.com/openwrt/cypress-nvram/master/brcmfmac43430-sdio.raspberrypi%2C3-model-b.txt
-wget -cq --show-progress https://raw.githubusercontent.com/openwrt/cypress-nvram/master/brcmfmac43455-sdio.raspberrypi%2C3-model-b-plus.txt
-wget -cq --show-progress https://raw.githubusercontent.com/RPi-Distro/firmware-nonfree/master/brcm/brcmfmac43430-sdio.raspberrypi-rpi.txt
-}
-
-bcm_sdio_4-b(){
-wget -cq --show-progress https://raw.githubusercontent.com/openwrt/cypress-nvram/master/brcmfmac43455-sdio.raspberrypi%2C4-model-b.txt
-}
-
 # EEPROM
 bcm2711_eeprom(){
 echo
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-echo Checking for updates.
-apt update
-echo
 echo Installing rpi-eeprom.
 sleep 1s
 apt install help2man rsync pciutils -y
@@ -222,59 +205,26 @@ echo
 }
 
 # Firmware
-bluez_firmware(){
-BRPT="rpt8"
-echo Building bluez firmware package.
-sleep 1s
-mkdir -p bluez-firmware
-cd bluez-firmware
-wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/b/bluez-firmware/bluez-firmware_1.2.orig.tar.gz
-tar xf bluez-firmware_1.2.orig.tar.gz
-cd bluez-firmware-1.2
-wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/b/bluez-firmware/bluez-firmware_1.2-4+${BRPT}.debian.tar.xz
-tar xf bluez-firmware_1.2-4+${BRPT}.debian.tar.xz
-rm -f bluez-firmware_1.2-4+${BRPT}.debian.tar.xz
-dpkg-buildpackage -us -uc
-cd ..
-dpkg -i bluez-firmware_*.deb
-cd ~
-rm -fdR bluez-firmware
-}
-
-brcm_firmware(){
-WRPT="rpt11"
-wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/f/firmware-nonfree/firmware-brcm80211_20190114-1+${WRPT}_all.deb
-dpkg -i firmware-brcm80211_20190114-1+${WRPT}_all.deb
-rm -f firmware-brcm80211_20190114-1+${WRPT}_all.deb
-}
-
 extra_firmware(){
 echo
 echo Adding extra firmware.
 sleep 1s
+mkdir -p /lib/firmware/brcm
+mkdir -p /lib/firmware/updates
+git clone https://github.com/pyavitz/firmware.git /lib/firmware/updates/brcm
 mv fw-0a5c_21e8.hcd /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd
 cp /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd /lib/firmware/brcm/BCM20702A1-0a5c-21e8.hcd
 chown root:root /lib/firmware/brcm/BCM20702A1-0a5c-21e8.hcd
 chown root:root /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd
-install -Dm644 UPDATE.mem /lib/firmware/renesas_usb_fw.mem
+install -Dm644 UPDATE.mem /lib/firmware/updates/renesas_usb_fw.mem
 rm -f UPDATE.mem
-echo Done.
-}
-
-# https://community.cypress.com/gfawx74859/attachments/gfawx74859/resourcelibrary/966/1/cypress-fmac-v4.14.77-2020_0115.zip
-cypress_firmware(){
-echo
-echo Adding brcm firmware from cypress.
-sleep 1s
-mkdir cypress
-cd cypress
-wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/cypress-fmac-v4.14.77-2020_0115.zip
-unzip -qq cypress-fmac-v4.14.77-2020_0115.zip
-tar -xf cypress-firmware-v4.14.77-2020_0115.tar.gz
-#rm -f firmware/*pcie*
-cp -f firmware/* /lib/firmware/brcm/
+ln -sr /lib/firmware /etc/firmware
+mkdir -p /lib/firmware/updates/rtl_nic
+cd /lib/firmware/updates/rtl_nic
+wget -cq --show-progress https://kernel.googlesource.com/pub/scm/linux/kernel/git/firmware/linux-firmware.git/+archive/refs/heads/master/rtl_nic.tar.gz
+tar xf rtl_nic.tar.gz
+rm -f rtl_nic.tar.gz
 cd ~
-rm -fdr cypress
 echo Done.
 }
 

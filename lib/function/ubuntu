@@ -345,61 +345,6 @@ rm -fdR pi-bluetooth*
 echo Done.
 }
 
-bluez_stable(){
-BLUEZ_VERSION="5.55"
-echo
-echo Updating bluetooth.
-sleep 1s
-wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/bluez-${BLUEZ_VERSION}-ubuntu-arm64.tar.xz
-tar xf bluez-${BLUEZ_VERSION}-ubuntu-arm64.tar.xz
-rm -f bluez-${BLUEZ_VERSION}-ubuntu-arm64.tar.xz
-cd bluez-${BLUEZ_VERSION}-ubuntu-arm64
-rm -f *dbg_${BLUEZ_VERSION}*
-rm -f *cups_${BLUEZ_VERSION}*
-rm -f *source_${BLUEZ_VERSION}*
-dpkg -i *.deb
-cd ..
-rm -fdR bluez-${BLUEZ_VERSION}-ubuntu-arm64
-apt-mark hold bluez
-echo Done.
-}
-
-bluez_unstable(){
-BLUEZ_VERSION="5.55"
-echo
-echo Updating bluetooth.
-sleep 1s
-wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/bluez-${BLUEZ_VERSION}-ubuntu-unstable-arm64.tar.xz
-tar xf bluez-${BLUEZ_VERSION}-ubuntu-unstable-arm64.tar.xz
-rm -f bluez-${BLUEZ_VERSION}-ubuntu-unstable-arm64.tar.xz
-cd bluez-${BLUEZ_VERSION}-ubuntu-unstable-arm64
-rm -f *dbg_${BLUEZ_VERSION}*
-rm -f *cups_${BLUEZ_VERSION}*
-rm -f *source_${BLUEZ_VERSION}*
-dpkg -i *.deb
-cd ..
-rm -fdR bluez-${BLUEZ_VERSION}-ubuntu-unstable-arm64
-apt-mark hold bluez
-echo Done.
-}
-
-bluez_choose(){
-if `grep -Fx 'DISTRO_VERSION="focal"' "/root/userdata.txt" >/dev/null;`
-	then bluez_stable;
-fi
-if `grep -Fx 'DISTRO_VERSION="groovy"' "/root/userdata.txt" >/dev/null;`
-	then bluez_unstable;
-fi
-}
-
-linux_firmware(){
-mkdir -p /lib/firmware/rtl_nic
-cd /lib/firmware/rtl_nic
-wget -cq --show-progress https://kernel.googlesource.com/pub/scm/linux/kernel/git/firmware/linux-firmware.git/+archive/refs/heads/master/rtl_nic.tar.gz
-tar xf rtl_nic.tar.gz
-rm -f rtl_nic.tar.gz
-}
-
 led_switches(){
 echo
 echo Creating power led switch.
@@ -440,7 +385,7 @@ update-rc.d firstboot defaults 2
 systemctl enable firstboot
 systemctl enable credentials
 systemctl enable governor
-systemctl enable serial-getty@ttyUSB0.service
+#systemctl enable serial-getty@ttyUSB0.service
 if ls /etc/systemd/system/multi-user.target.wants/ondemand.service
 	then systemctl disable ondemand;
 fi

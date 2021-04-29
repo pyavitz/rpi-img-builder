@@ -65,7 +65,7 @@ Distribution
 Distro:		# Supported: debian, devuan and ubuntu
 Release:	# Debian: buster, bullseye, testing, unstable and sid
 		# Devuan: beowulf, testing, unstable and ceres
-		# Ubuntu: focal, groovy and hirsute
+		# Ubuntu: focal and hirsute
 
 Filesystem
 ext4:		# 1 to select (default)
@@ -93,7 +93,7 @@ Distribution
 Distro:		# Supported: debian, devuan and ubuntu
 Release:	# Debian: buster, bullseye, testing, unstable and sid
 		# Devuan: beowulf, testing, unstable and ceres
-		# Ubuntu: focal, groovy and hirsute
+		# Ubuntu: focal and hirsute
 
 Filesystem
 ext4:		# 1 to select (default)
@@ -256,6 +256,7 @@ Usage: fetch -opt
    -1       Linux 5.10.y LTS
    -2       Linux Stable Branch
    -b       Update Boot Binaries
+   -f       Update Wifi/BT Firmware
 
    -u       Update Fetch
    -s       Not working? Setup Fetch

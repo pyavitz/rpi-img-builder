@@ -356,62 +356,6 @@ EOF
 
 }
 
-bluez_stable(){
-BLUEZ_VERSION="5.55"
-echo
-echo Updating bluetooth.
-sleep 1s
-wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/bluez-${BLUEZ_VERSION}-debian-arm64.tar.xz
-tar xf bluez-${BLUEZ_VERSION}-debian-arm64.tar.xz
-rm -f bluez-${BLUEZ_VERSION}-debian-arm64.tar.xz
-cd bluez-${BLUEZ_VERSION}-debian-arm64
-rm -f *dbgsym_${BLUEZ_VERSION}*
-rm -f *cups_${BLUEZ_VERSION}*
-rm -f *source_${BLUEZ_VERSION}*
-dpkg -i *.deb
-cd ..
-rm -fdR bluez-${BLUEZ_VERSION}-debian-arm64
-apt-mark hold bluez
-echo Done.
-}
-
-bluez_unstable(){
-BLUEZ_UNSTABLE_VERSION="5.55"
-echo
-echo Updating bluetooth.
-sleep 1s
-wget -cq --show-progress https://github.com/pyavitz/binary/releases/download/060420/bluez-${BLUEZ_UNSTABLE_VERSION}-debian-unstable-arm64.tar.xz
-tar xf bluez-${BLUEZ_UNSTABLE_VERSION}-debian-unstable-arm64.tar.xz
-rm -f bluez-${BLUEZ_UNSTABLE_VERSION}-debian-unstable-arm64.tar.xz
-cd bluez-${BLUEZ_UNSTABLE_VERSION}-debian-unstable-arm64
-rm -f *dbgsym_${BLUEZ_UNSTABLE_VERSION}*
-rm -f *cups_${BLUEZ_UNSTABLE_VERSION}*
-rm -f *source_${BLUEZ_UNSTABLE_VERSION}*
-dpkg -i *.deb
-cd ..
-rm -fdR bluez-${BLUEZ_UNSTABLE_VERSION}-debian-unstable-arm64
-apt-mark hold bluez
-echo Done.
-}
-
-bluez_choose(){
-if `grep -Fx 'DISTRO_VERSION="buster"' "/root/userdata.txt" >/dev/null;`
-	then bluez_stable;
-fi
-if `grep -Fx 'DISTRO_VERSION="bullseye"' "/root/userdata.txt" >/dev/null;`
-	then bluez_unstable;
-fi
-if `grep -Fx 'DISTRO_VERSION="testing"' "/root/userdata.txt" >/dev/null;`
-	then bluez_unstable;
-fi
-if `grep -Fx 'DISTRO_VERSION="unstable"' "/root/userdata.txt" >/dev/null;`
-	then bluez_unstable;
-fi
-if `grep -Fx 'DISTRO_VERSION="sid"' "/root/userdata.txt" >/dev/null;`
-	then bluez_unstable;
-fi
-}
-
 led_switches(){
 echo
 echo Creating power led switch.
@@ -453,5 +397,5 @@ update-rc.d firstboot defaults 2
 systemctl enable firstboot
 systemctl enable credentials
 systemctl enable governor
-systemctl enable serial-getty@ttyUSB0.service
+#systemctl enable serial-getty@ttyUSB0.service
 }
