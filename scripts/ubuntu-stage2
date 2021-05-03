@@ -233,10 +233,6 @@ case `grep -Fx "admin=1" "/root/userdata.txt" >/dev/null; echo $?` in
     ;;
 esac
 
-if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
-	then eeprom_choose ;
-fi
-
 ### Clean misc files
 rm -f *.patch
 rm -f *led*

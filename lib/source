@@ -69,8 +69,5 @@ UBUNTU2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
 FIRMWARE="firmware-linux-nonfree firmware-linux firmware-misc-nonfree \
           firmware-realtek firmware-ralink"
 
-# https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/
-EEPROM_VERSION="12.1"
-
 # motd
 BRAND="Raspberry Pi"

@@ -177,39 +177,6 @@ chmod +x /usr/local/bin/whogoesthere
 chown -R root:root /usr/local/bin/whogoesthere
 }
 
-user_eeprom(){
-echo
-echo Adding user eeprom config.
-tee /home/${user}/.eeprom <<EOF
-# EEPROM CONFIG
-## https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/
-EEPROM_VERSION="${EEPROM_VERSION}"
-EOF
-chown ${user}:${user} /home/${user}/.eeprom
-}
-
-admin_eeprom(){
-echo
-echo Adding user eeprom config.
-tee /etc/opt/eeprom <<EOF
-# EEPROM CONFIG
-## https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/
-EEPROM_VERSION="${EEPROM_VERSION}"
-EOF
-chown root:root /etc/opt/eeprom
-}
-
-eeprom_choose(){
-case `grep -Fx "admin=1" "/root/userdata.txt" >/dev/null; echo $?` in
-  0)
-	admin_eeprom
-    ;;
-  1)
-	user_eeprom
-    ;;
-esac
-}
-
 led_service(){
 echo
 echo Creating actled switch.

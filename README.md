@@ -239,7 +239,6 @@ For headless use: ssh user@ipaddress
 Raspberry Pi 4B EEPROM Helper Script
 Usage: deb-eeprom -opt
 
-   -v       Edit version variable
    -U       Upgrade eeprom package
    -w       Setup and install usb boot
    -u       Update script

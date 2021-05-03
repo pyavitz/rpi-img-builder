@@ -70,7 +70,28 @@ echo "root:toor" | chpasswd
 }
 
 # EEPROM
+find_eeprom(){
+EEPROM_VERSION=$(curl --silent -L ${CHANGELOG} | awk '{if (NR==1) {print substr($2, 1, length($2)-3)}}' | sed 's/[()]//g')
+if [[ `wget -S --spider ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]];
+	then download_eeprom; else finding_eeprom;
+fi
+}
+
+finding_eeprom(){
+EEPROM_VERSION=$(curl --silent -L ${CHANGELOG} | awk '{if (NR==10) {print substr($2, 1, length($2)-3)}}' | sed 's/[()]//g')
+if [[ `wget -S --spider ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]];
+	then download_eeprom; else EEPROM_VERSION="12.3" && download_eeprom;
+fi
+}
+
+download_eeprom(){
+wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
+wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz
+}
+
 bcm2711_eeprom(){
+ERURL="https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/"
+CHANGELOG="https://raw.githubusercontent.com/raspberrypi/rpi-eeprom/debian/buster/debian/changelog"
 echo
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 echo Installing rpi-eeprom.
@@ -81,8 +102,7 @@ mkdir -p ~/eeprom
 mv -f rpi-eeprom-update.patch /root/eeprom/
 mv -f rpi-eeprom-control.patch /root/eeprom/
 cd ~/eeprom
-wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
-wget -cq --show-progress https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz
+find_eeprom
 tar xf rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz
 tar xf rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
 rm -f rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
