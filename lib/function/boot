@@ -104,13 +104,13 @@ fi
 
 cmdline_ext4(){
 tee p1/cmdline.txt <<EOF
-console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=ext4 elevator=deadline fsck.repair=yes logo.nologo net.ifnames=0 rootwait
+console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=ext4 elevator=deadline fsck.repair=yes logo.nologo net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm rootwait
 EOF
 }
 
 cmdline_btrfs(){
 tee p1/cmdline.txt <<EOF
-console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=btrfs rootflags=subvol=@ elevator=deadline fsck.repair=yes logo.nologo net.ifnames=0 rootwait
+console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=btrfs rootflags=subvol=@ elevator=deadline fsck.repair=yes logo.nologo net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm rootwait
 EOF
 }
 

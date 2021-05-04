@@ -74,7 +74,7 @@ cmdline_btrfs(){
 source /etc/opt/root-pid.txt
 rm -f /boot/cmdline.txt
 tee /boot/cmdline.txt <<EOF
-console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=btrfs rootflags=subvol=@ elevator=deadline fsck.repair=yes logo.nologo net.ifnames=0 rootwait
+console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=btrfs rootflags=subvol=@ elevator=deadline fsck.repair=yes logo.nologo net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm rootwait
 EOF
 rm -f /etc/opt/root-pid.txt
 }
@@ -83,7 +83,7 @@ cmdline_ext4(){
 source /etc/opt/root-pid.txt
 rm -f /boot/cmdline.txt
 tee /boot/cmdline.txt <<EOF
-console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=ext4 elevator=deadline fsck.repair=yes logo.nologo net.ifnames=0 rootwait
+console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=ext4 elevator=deadline fsck.repair=yes logo.nologo net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm rootwait
 EOF
 rm -f /etc/opt/root-pid.txt
 }
