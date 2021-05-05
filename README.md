@@ -240,7 +240,7 @@ Raspberry Pi 4B EEPROM Helper Script
 Usage: deb-eeprom -opt
 
    -U       Upgrade eeprom package
-   -w       Setup and install usb boot
+   -w       Transfer to USB	# FStypes: EXT4, BTRFS and F2FS
    -u       Update script
 
 Note:
