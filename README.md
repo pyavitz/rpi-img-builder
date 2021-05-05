@@ -240,7 +240,7 @@ Raspberry Pi 4B EEPROM Helper Script
 Usage: deb-eeprom -opt
 
    -U       Upgrade eeprom package
-   -w       Transfer to USB	# FStypes: EXT4, BTRFS and F2FS
+   -w       Transfer to USB	# Supported: EXT4, BTRFS and F2FS
    -u       Update script
 
 Note:
