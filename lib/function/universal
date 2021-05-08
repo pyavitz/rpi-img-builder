@@ -203,6 +203,12 @@ cat /usr/src/linux-headers*/include/config/kernel.release > /root/kernel2
 echo '"' > /root/kernel3
 paste -d '\0' kernel1 kernel2 kernel3  > /root/kernel.txt
 rm -f kernel1 kernel2 kernel3
+if `grep -Fx "ext4=1" "/root/userdata.txt" >/dev/null;`
+	then echo FSTYPE='"'ext4'"' >> /root/kernel.txt;
+fi
+if `grep -Fx "btrfs=1" "/root/userdata.txt" >/dev/null;`
+	then echo FSTYPE='"'btrfs'"' >> /root/kernel.txt;
+fi
 }
 
 # User scripts
@@ -389,11 +395,11 @@ source part-uuid.txt
 # Rename and compress
 rename_image(){
 source kernel.txt
-mv -f ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${IMAGE_DATE}.img
+mv -f ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${FSTYPE}-${IMAGE_DATE}.img
 }
 
 compress_image(){
 source kernel.txt
-mv -f ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${IMAGE_DATE}.img
-xz -zev --threads=${CORES} ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${IMAGE_DATE}.img
+mv -f ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${FSTYPE}-${IMAGE_DATE}.img
+xz -zev --threads=${CORES} ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${FSTYPE}-${IMAGE_DATE}.img
 }
