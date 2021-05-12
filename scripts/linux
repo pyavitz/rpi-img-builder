@@ -50,10 +50,14 @@ mainline_clean
 ### Download kernel
 case `grep -Fx "rc=1" "../userdata.txt" >/dev/null; echo $?` in
   0)
-    download_mainline
+if [[ `wget -S --spider ${MLURL}${MLKERNEL}-${VERSION}.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]];
+	then download_mainline; else echo && echo -e "${WHT}It appears the kernel you selected is not available${FIN}?" && exit;
+fi
     ;;
   1)
-    download_stable
+if [[ `wget -S --spider ${STBURL}${MLKERNEL}-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]];
+	then download_stable; else echo && echo -e "${WHT}It appears the kernel you selected is not available${FIN}?" && exit;
+fi
     ;;
 esac
 

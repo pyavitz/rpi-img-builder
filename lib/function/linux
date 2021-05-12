@@ -1,4 +1,6 @@
 DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
+STBURL="https://cdn.kernel.org/pub/linux/kernel/v5.x/"
+MLURL="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/"
 
 source_dir(){
 mkdir -p ${SRC}
@@ -37,7 +39,6 @@ fi
 }
 
 download_mainline(){
-MLURL="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/"
 echo
 echo_mainline
 if ls ${MLKERNEL}-${VERSION}.tar.gz > /dev/null 2>&1;
@@ -55,7 +56,6 @@ export ARCH=arm64
 }
 
 download_stable(){
-STBURL="https://cdn.kernel.org/pub/linux/kernel/v5.x/"
 echo
 echo_stable
 if ls ${MLKERNEL}-${VERSION}.tar.xz > /dev/null 2>&1;

@@ -1,9 +1,8 @@
 #!/bin/bash
 # depends: curl
-RED="\e[1;31m"
-FIN="\e[0m"
+source lib/function/echoes
 
-echo "Example: 5.9"
+echo "Example: 5.10"
 echo
 echo -e -n "${RED}Select branch: ${FIN}"
 read branch
@@ -15,4 +14,6 @@ curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch
 curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile | grep -m1 EXTRAVERSION
 }
 
-run_check
+if [[ `wget -S --spider https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile 2>&1 | grep 'HTTP/1.1 200 OK'` ]];
+	then run_check; else echo && echo -e "${WHT}It appears the branch you selected is not available${FIN}?" && exit;
+fi

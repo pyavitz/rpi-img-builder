@@ -48,7 +48,9 @@ source_dir
 clean_source
 
 ### Download kernel
-download
+if [[ `wget -S --spider https://raw.githubusercontent.com/raspberrypi/linux/rpi-${VERSION}/Makefile 2>&1 | grep 'HTTP/1.1 200 OK'` ]];
+	then download; else echo && echo -e "${WHT}It appears the branch you selected is not available${FIN}?" && exit;
+fi
 
 ### Extract
 extract
