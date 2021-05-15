@@ -256,6 +256,7 @@ Usage: fetch -opt
    -2       Linux Stable Branch
    -b       Update Boot Binaries
    -f       Update Wifi/BT Firmware
+   -U       Update Raspberry Pi Userland
 
    -u       Update Fetch
    -s       Not working? Setup Fetch
