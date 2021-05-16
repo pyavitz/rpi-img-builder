@@ -237,7 +237,7 @@ For headless use: ssh user@ipaddress
 
 ```sh
 Raspberry Pi 4B EEPROM Helper Script
-Usage: deb-eeprom -opt
+Usage: deb-eeprom -h
 
    -U       Upgrade eeprom package
    -w       Transfer to USB	# Supported: EXT4, BTRFS and F2FS
@@ -250,7 +250,7 @@ Upon install please run 'deb-eeprom -u' before using this script.
 #### Using fetch ([initrd support](https://github.com/pyavitz/rpi-img-builder/pull/26))
 ```sh
 Fetch, Linux kernel installer for the Raspberry Pi Image Builder
-Usage: fetch -opt
+Usage: fetch -h
 
    -1       Linux 5.10.y LTS
    -2       Linux Stable Branch
@@ -276,7 +276,7 @@ swh -h
 ```
 #### CPU frequency scaling
 ```sh
-Usage: governor -opt
+Usage: governor -h
 
    -c       Conservative
    -o       Ondemand
