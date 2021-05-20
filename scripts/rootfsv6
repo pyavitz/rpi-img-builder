@@ -45,9 +45,22 @@ fi
 ROOT="sysroot"
 ROOTFS_ARCH="rootfs-armel"
 RELEASE=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
+URL="https://github.com/pyavitz/rootfs-tarballs/releases/download/rootfs/"
+DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
+docker_check(){
+if grep "docker" /proc/1/cgroup > /dev/null 2>&1;
+	then echo -e "Docker detected ..." && ${DOWNLOAD} ${URL}$RELEASE && echo -e " Done." && exit;
+fi
+}
+find_rootfs(){
+if [[ `wget -S --spider ${URL}$RELEASE 2>&1 | grep 'HTTP/1.1 200 OK'` ]];
+	then docker_check; else echo -e "Are you kidding me? Check the userdata file." && exit;
+fi
+}
 if ls $RELEASE > /dev/null 2>&1;
 	then ls $RELEASE && exit;
 fi
+find_rootfs
 echo -e "${GRN}Starting debootstrap${FIN} ..."
 echo -e -n ${RED}
 
