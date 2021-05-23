@@ -1,6 +1,7 @@
 #!/bin/bash
 source lib/source
 source lib/function/gcc
+source lib/function/ccache
 source lib/function/rpi-linux
 source lib/function/echoes
 source userdata.txt
@@ -43,7 +44,17 @@ esac
 
 # prep
 validation
-gcc_version
+case `grep -Fx "ccache=1" "userdata.txt" >/dev/null; echo $?` in
+  0)
+	if ls /usr/bin/ccache > /dev/null 2>&1; then :; else sudo apt update && sudo apt install -y ccache && sleep 2s; fi
+	rm -f ccache.txt gcc.txt
+	ccache_version
+    ;;
+  1)
+	rm -f ccache.txt gcc.txt
+	gcc_version
+    ;;
+esac
 source_dir
 clean_source
 
