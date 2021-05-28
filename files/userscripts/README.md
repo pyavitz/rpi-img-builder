@@ -11,6 +11,8 @@ userscripts=0	# 1 to enable | 0 to disable
 ``` 
 
 ### Example
+This script is just an example of what one could do if someone so wished.
+
 ```sh
 #!/bin/bash
 # Prerequisite: Debian Bullseye
@@ -100,4 +102,3 @@ sudo sed -i "s/dtoverlay=vc4-fkms-v3d/#dtoverlay=vc4-fkms-v3d/g" /boot/config.tx
 echo
 echo -e "You may now reboot ..."
 ```
-This script is just an example what one could do if someone so wished.
