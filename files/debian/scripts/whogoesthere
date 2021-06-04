@@ -2,7 +2,7 @@
 source /boot/username.txt
 source /etc/opt/soc.txt
 
-bcm2711_user () {
+bcm2711_user(){
 adduser ${user} --gecos ${user^} --disabled-password
 echo "${user}:${passwd}" | chpasswd
 adduser ${user} sudo
@@ -20,7 +20,7 @@ adduser ${user} input
 adduser ${user} tty
 }
 
-bcm2710_user () {
+bcm2710_user(){
 adduser ${user} --gecos ${user^} --disabled-password
 echo "${user}:${passwd}" | chpasswd
 adduser ${user} sudo
@@ -38,7 +38,7 @@ adduser ${user} input
 adduser ${user} tty
 }
 
-bcm2708_user () {
+bcm2708_user(){
 adduser ${user} --gecos ${user^} --disabled-password
 echo "${user}:${passwd}" | chpasswd
 adduser ${user} sudo
@@ -56,30 +56,24 @@ adduser ${user} input
 adduser ${user} tty
 }
 
-user_skins () {
+user_skins(){
 mkdir -p /home/${user}/.config/mc
 mv -f /etc/opt/user-ini /home/${user}/.config/mc/ini
 mv -f /etc/opt/nanorc-user /home/${user}/.nanorc
 chown -R ${user}:${user} /home/${user}
 }
 
-create_sudoers () {
+create_sudoers(){
 rm -f /etc/sudoers.d/010_pi-nopasswd
 tee /etc/sudoers.d/010_${user}-nopasswd <<EOF
 ${user} ALL=(ALL) NOPASSWD: ALL
 EOF
 }
 
-rpi_eeprom () {
-mv -f /etc/opt/eeprom /home/${user}/.eeprom
-chown -R ${user}:${user} /home/${user}/.eeprom
-}
-
 case `grep -Fx "bcm2711" "/etc/opt/soc.txt" >/dev/null; echo $?` in
   0)
 	bcm2711_user
 	create_sudoers
-	rpi_eeprom
 	user_skins
     ;;
 esac
