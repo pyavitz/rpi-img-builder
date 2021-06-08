@@ -209,6 +209,9 @@ fi
 if `grep -Fx "btrfs=1" "/root/userdata.txt" >/dev/null;`
 	then echo FSTYPE='"'btrfs'"' >> /root/kernel.txt;
 fi
+if `grep -Fx "xfs=1" "/root/userdata.txt" >/dev/null;`
+	then echo FSTYPE='"'xfs'"' >> /root/kernel.txt;
+fi
 }
 
 # User scripts
@@ -333,6 +336,9 @@ if `grep -Fx "ext4=1" "userdata.txt" >/dev/null;`
 fi
 if `grep -Fx "btrfs=1" "userdata.txt" >/dev/null;`
 	then btrfs filesystem defragment -f -r p2;
+fi
+if `grep -Fx "xfs=1" "userdata.txt" >/dev/null;`
+	then xfs_fsr p2;
 fi
 }
 

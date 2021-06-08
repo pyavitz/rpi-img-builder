@@ -34,6 +34,9 @@ fi
 if `grep -Fx "btrfs=1" "/root/userdata.txt" >/dev/null;`
 	then apt install -y btrfs-progs;
 fi
+if `grep -Fx "xfs=1" "/root/userdata.txt" >/dev/null;`
+	then apt install -y xfsprogs;
+fi
 apt install -y openssh-client openssh-server --no-install-recommends
 apt install -y ${DEVUAN1} ${DEVUAN2} ${FIRMWARE}
 apt -y clean

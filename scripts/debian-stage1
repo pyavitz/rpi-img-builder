@@ -203,9 +203,7 @@ rmdir p1 p2
 
 if `grep -Fx "ext4=1" "userdata.txt" >/dev/null;`
 	then ext4_shrink;
-fi
-if `grep -Fx "btrfs=1" "userdata.txt" >/dev/null;`
-	then : ;
+	else :;
 fi
 
 if `grep -Fx "admin=1" "userdata.txt" >/dev/null;`

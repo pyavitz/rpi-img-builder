@@ -18,7 +18,7 @@ sudo apt install \
 	btrfs-progs kpartx crossbuild-essential-arm64 crossbuild-essential-armel gcc-8 \
 	gcc-8-arm-linux-gnueabi gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-9 \
 	gcc-8-aarch64-linux-gnu gcc-9-aarch64-linux-gnu gcc-10-aarch64-linux-gnu gcc-10 \
-	debian-archive-keyring debian-keyring make libelf-dev
+	debian-archive-keyring debian-keyring make libelf-dev xfsprogs
 ```
 
 This has been tested on an AMD64/x86_64 system running on [Ubuntu Focal](https://releases.ubuntu.com/20.04/).
@@ -71,6 +71,7 @@ Release:	# Debian: buster, bullseye, testing, unstable and sid
 Filesystem
 ext4:		# 1 to select (default)
 btrfs:		# 1 to select
+xfs:		# 1 to select
 
 Customize (user defconfig)
 Defconfig:	# 1 to enable
@@ -100,6 +101,7 @@ Release:	# Debian: buster, bullseye, testing, unstable and sid
 Filesystem
 ext4:		# 1 to select (default)
 btrfs:		# 1 to select
+xfs:		# 1 to select
 
 Customize (user defconfig)
 Defconfig:	# 1 to enable

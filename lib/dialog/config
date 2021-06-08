@@ -13,6 +13,7 @@ DISTRO="debian"
 DISTRO_VERSION="buster"
 ext4="1"
 btrfs="0"
+xfs="0"
 custom_defconfig="0"
 MYCONFIG=""
 
@@ -42,10 +43,11 @@ VALUES=$(dialog --ok-label "Submit" --no-cancel \
 	"Filesystem"	15 1	""	 		15 14 0 0 \
 	"ext4:"		16 1	"$ext4"		 	16 8 2 0 \
 	"btrfs:"	17 1	"$btrfs"	 	17 8 2 0 \
-	""		18 1	""	 		18 14 0 0 \
-	"Customize"	19 1	""	 		19 14 0 0 \
-	"Defconfig:"	20 1	"$custom_defconfig" 	20 12 2 0 \
-	"Name:"		21 1	"$MYCONFIG"	  	21 7 20 0 \
+	"xfs:"		18 1	"$xfs"		 	18 8 2 0 \
+	""		19 1	""	 		19 14 0 0 \
+	"Customize"	20 1	""	 		20 14 0 0 \
+	"Defconfig:"	21 1	"$custom_defconfig" 	21 12 2 0 \
+	"Name:"		22 1	"$MYCONFIG"	  	22 7 20 0 \
 2>&1 1>&3)
 
 # close fd
@@ -64,12 +66,13 @@ echo DISTRO='"' >> tmp0
 echo DISTRO_VERSION='"' >> tmp0
 echo ext4= >> tmp0
 echo btrfs= >> tmp0
+echo xfs= >> tmp0
 echo custom_defconfig= >> tmp0
 echo MYCONFIG='"' >> tmp0
 echo userscripts=0 >> tmp0
 echo verbose=0 >> tmp0
 echo rpiuser=1 >> tmp0
-echo builder=3.10 >> tmp0
+echo builder=3.11 >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
 echo >> tmp2
@@ -82,6 +85,7 @@ echo '"' >> tmp2
 echo >> tmp2
 echo >> tmp2
 echo >> tmp2
+echo >> tmp2
 echo _defconfig'"' >> tmp2
 paste -d '\0' tmp0 tmp1 tmp2  > userdata.txt
 rm -f tmp0 tmp1 tmp2
@@ -90,8 +94,8 @@ rm -f tmp0 tmp1 tmp2
 sed -i '4i### LINUX KERNEL' userdata.txt
 sed -i '9i### DISTRIBUTION' userdata.txt
 sed -i '12i### FILESYSTEM' userdata.txt
-sed -i '15i### CUSTOM' userdata.txt
-sed -i '20i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '16i### CUSTOM' userdata.txt
+sed -i '21i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # clear screen
 clear

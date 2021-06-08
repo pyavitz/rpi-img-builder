@@ -44,6 +44,9 @@ fi
 if `grep -Fx "btrfs=1" "/root/userdata.txt" >/dev/null;`
 	then apt install -y btrfs-progs;
 fi
+if `grep -Fx "xfs=1" "/root/userdata.txt" >/dev/null;`
+	then apt install -y xfsprogs;
+fi
 apt install -y ${UBUNTU1} ${UBUNTU2}
 apt -y clean
 apt -y autoclean

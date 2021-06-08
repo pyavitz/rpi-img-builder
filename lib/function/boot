@@ -5,6 +5,9 @@ fi
 if `grep -Fx "btrfs=1" "userdata.txt" >/dev/null;`
 	then truncate -s ${BTRFS} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
 fi
+if `grep -Fx "xfs=1" "userdata.txt" >/dev/null;`
+	then truncate -s ${XFS} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+fi
 partitions
 }
 
@@ -40,6 +43,9 @@ fi
 if `grep -Fx "btrfs=1" "userdata.txt" >/dev/null;`
 	then mkfs.btrfs -f -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}";
 fi
+if `grep -Fx "xfs=1" "userdata.txt" >/dev/null;`
+	then mkfs.xfs -f -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}";
+fi
 mkdir -p p1 p2
 mount "${IMAGE_LOOP_DEV_BOOT}" p1
 mount "${IMAGE_LOOP_DEV_ROOTFS}" p2
@@ -54,6 +60,9 @@ fi
 if `grep -Fx "btrfs=1" "userdata.txt" >/dev/null;`
 	then mount -o compress=lzo,noatime,subvol=@ "${IMAGE_LOOP_DEV_ROOTFS}" p2;
 fi
+if `grep -Fx "xfs=1" "userdata.txt" >/dev/null;`
+	then mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2;
+fi
 }
 
 create_fstab(){
@@ -62,6 +71,9 @@ if `grep -Fx "ext4=1" "userdata.txt" >/dev/null;`
 fi
 if `grep -Fx "btrfs=1" "userdata.txt" >/dev/null;`
 	then btrfs_fstab;
+fi
+if `grep -Fx "xfs=1" "userdata.txt" >/dev/null;`
+	then xfs_fstab;
 fi
 }
 
@@ -77,6 +89,14 @@ ext4_fstab(){
 tee p2/etc/fstab <<EOF
 UUID=${BOOT_UUID}	/boot		vfat    defaults 0 2
 UUID=${ROOT_UUID}	/		ext4	defaults,noatime,nodiratime,commit=600,errors=remount-ro 0 1
+tmpfs	/tmp		tmpfs	defaults,nosuid 0 0
+EOF
+}
+
+xfs_fstab(){
+tee p2/etc/fstab <<EOF
+UUID=${BOOT_UUID}	/boot		vfat    defaults 0 2
+UUID=${ROOT_UUID}	/		xfs	defaults,noatime 0 1
 tmpfs	/tmp		tmpfs	defaults,nosuid 0 0
 EOF
 }
@@ -100,6 +120,9 @@ fi
 if `grep -Fx "btrfs=1" "userdata.txt" >/dev/null;`
 	then cmdline_btrfs;
 fi
+if `grep -Fx "xfs=1" "userdata.txt" >/dev/null;`
+	then cmdline_xfs;
+fi
 }
 
 cmdline_ext4(){
@@ -111,6 +134,12 @@ EOF
 cmdline_btrfs(){
 tee p1/cmdline.txt <<EOF
 console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=btrfs rootflags=subvol=@ elevator=deadline fsck.repair=yes logo.nologo net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm rootwait
+EOF
+}
+
+cmdline_xfs(){
+tee p1/cmdline.txt <<EOF
+console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=xfs elevator=deadline fsck.repair=yes logo.nologo net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm rootwait
 EOF
 }
 

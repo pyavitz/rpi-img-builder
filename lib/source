@@ -17,7 +17,7 @@ MLKERNEL="linux"
 KBHOST="rpi-img-builder"
 
 validation(){
-if grep -q "builder=3.10" userdata.txt; then
+if grep -q "builder=3.11" userdata.txt; then
     :;
 else
     echo -e "${YLW}Userdata file is old${FIN}! ${YLW}Please create a new one${FIN}." && exit;
@@ -27,6 +27,7 @@ fi
 
 EXT4="2200MB"
 BTRFS="1600MB"
+XFS="1825MB"
 
 # debian
 DEBIAN1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
