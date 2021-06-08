@@ -42,6 +42,20 @@ if blkid | grep xfs > /dev/null 2>&1;
 fi
 }
 
+grow_nvme(){
+bash growpart /dev/nvme0n1 2 > /dev/null 2>&1
+sleep 1s
+if blkid | grep ext4 > /dev/null 2>&1;
+	then resize2fs /dev/nvme0n1p2 > /dev/null 2>&1
+fi
+if blkid | grep btrfs > /dev/null 2>&1;
+	then btrfs filesystem resize max / > /dev/null 2>&1
+fi
+if blkid | grep xfs > /dev/null 2>&1;
+	then xfs_growfs -d / > /dev/null 2>&1
+fi
+}
+
 chk_mmcblk(){
 bash fsck.fat -trawl /dev/mmcblk0p1 > /dev/null 2>&1
 }
@@ -54,16 +68,23 @@ chk_sda(){
 bash fsck.fat -trawl /dev/sda1 > /dev/null 2>&1
 }
 
+chk_nvme(){
+fsck.fat -trawl /dev/nvme0n1p1 > /dev/null 2>&1
+}
+
 partition_uuid(){
 echo 'ROOT_PARTUUID="' > root1
-if ls /dev/mmcblk0p2  > /dev/null 2>&1;
+if ls /dev/mmcblk0p2 > /dev/null 2>&1;
 	then blkid -o export -- "/dev/mmcblk0p2" | sed -ne 's/^PARTUUID=//p' > root2;
 fi
-if ls /dev/mmcblk1p2  > /dev/null 2>&1;
+if ls /dev/mmcblk1p2 > /dev/null 2>&1;
 	then blkid -o export -- "/dev/mmcblk1p2" | sed -ne 's/^PARTUUID=//p' > root2;
 fi
-if ls /dev/sda2  > /dev/null 2>&1;
+if ls /dev/sda2 > /dev/null 2>&1;
 	then blkid -o export -- "/dev/sda2" | sed -ne 's/^PARTUUID=//p' > root2;
+fi
+if ls /dev/nvme0n1p2 > /dev/null 2>&1;
+	then blkid -o export -- "/dev/nvme0n1p2" | sed -ne 's/^PARTUUID=//p' > root2;
 fi
 echo '"' > root3
 paste -d '\0' root1 root2 root3  > /etc/opt/root-pid.txt
@@ -132,6 +153,9 @@ fi
 if touch -c /dev/sda 2>/dev/null; then grow_sda;
         else : &>/dev/null;
 fi
+if touch -c /dev/nvme0 2>/dev/null; then grow_nvme;
+        else echo "" &>/dev/null;
+fi
 
 ### Fix boot partition
 echo -e "\e[0;31mRunning fsck on boot partition\e[0m ..."
@@ -147,6 +171,9 @@ fi
 
 if touch -c /dev/sda 2>/dev/null; then chk_sda;
         else : &>/dev/null;
+fi
+if touch -c /dev/nvme0 2>/dev/null; then chk_nvme;
+        else echo "" &>/dev/null;
 fi
 sleep 1s
 mount /boot
