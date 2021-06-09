@@ -154,7 +154,7 @@ if touch -c /dev/sda 2>/dev/null; then grow_sda;
         else : &>/dev/null;
 fi
 if touch -c /dev/nvme0 2>/dev/null; then grow_nvme;
-        else echo "" &>/dev/null;
+        else : &>/dev/null;
 fi
 
 ### Fix boot partition
@@ -173,7 +173,7 @@ if touch -c /dev/sda 2>/dev/null; then chk_sda;
         else : &>/dev/null;
 fi
 if touch -c /dev/nvme0 2>/dev/null; then chk_nvme;
-        else echo "" &>/dev/null;
+        else : &>/dev/null;
 fi
 sleep 1s
 mount /boot

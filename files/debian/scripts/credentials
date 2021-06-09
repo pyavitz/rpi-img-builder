@@ -6,16 +6,13 @@ change_hostname(){
 sed -i "s/bcm2711/${HOSTNAME}/g" /etc/hostname
 sed -i "s/bcm2710/${HOSTNAME}/g" /etc/hostname
 sed -i "s/bcm2708/${HOSTNAME}/g" /etc/hostname
-sed -i "s/musicbox/${HOSTNAME}/g" /etc/hostname
 sed -i "s/bcm2711/${HOSTNAME}/g" /etc/hosts
 sed -i "s/bcm2710/${HOSTNAME}/g" /etc/hosts
 sed -i "s/bcm2708/${HOSTNAME}/g" /etc/hosts
-sed -i "s/musicbox/${HOSTNAME}/g" /etc/hosts
 }
 
 change_branding(){
 sed -i "s/Raspberry Pi/${BRANDING}/g" /etc/update-motd.d/15-brand
-sed -i "s/Musicbox/${BRANDING}/g" /etc/update-motd.d/15-brand
 }
 
 dhcp(){

@@ -141,36 +141,36 @@ fi
 
 ### Grow Partition
 if touch -c /dev/mmcblk0 2>/dev/null; then grow_mmcblk;
-        else echo "" &>/dev/null;
+        else : &>/dev/null;
 fi
 
 if touch -c /dev/mmcblk1 2>/dev/null; then grow_mmcblk1;
-        else echo "" &>/dev/null;
+        else : &>/dev/null;
 fi
 
 if touch -c /dev/sda 2>/dev/null; then grow_sda;
-        else echo "" &>/dev/null;
+        else : &>/dev/null;
 fi
 if touch -c /dev/nvme0 2>/dev/null; then grow_nvme;
-        else echo "" &>/dev/null;
+        else : &>/dev/null;
 fi
 
 ### Fix boot partition
 umount /boot
 sleep 1s
 if touch -c /dev/mmcblk0 2>/dev/null; then chk_mmcblk;
-        else echo "" &>/dev/null;
+        else : &>/dev/null;
 fi
 
 if touch -c /dev/mmcblk1 2>/dev/null; then chk_mmcblk1;
-        else echo "" &>/dev/null;
+        else : &>/dev/null;
 fi
 
 if touch -c /dev/sda 2>/dev/null; then chk_sda;
-        else echo "" &>/dev/null;
+        else : &>/dev/null;
 fi
 if touch -c /dev/nvme0 2>/dev/null; then chk_nvme;
-        else echo "" &>/dev/null;
+        else : &>/dev/null;
 fi
 sleep 1s
 mount /boot
