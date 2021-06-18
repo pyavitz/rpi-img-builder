@@ -114,3 +114,4 @@ update-rc.d firstboot remove > /dev/null 2>&1
 rm -f /var/cache/debconf/*
 rm -f /boot/rename_to_credentials.txt > /dev/null 2>&1
 rm -f /usr/local/sbin/firstboot
+exit 0

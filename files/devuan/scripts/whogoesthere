@@ -94,3 +94,4 @@ esac
 
 rm -f /boot/username.txt
 rm -f /usr/local/bin/whogoesthere
+exit 0

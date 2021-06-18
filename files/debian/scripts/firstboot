@@ -182,3 +182,4 @@ systemctl disable firstboot > /dev/null 2>&1
 update-rc.d firstboot remove > /dev/null 2>&1
 rm -f /var/cache/debconf/*
 rm -f /usr/local/sbin/firstboot
+exit 0

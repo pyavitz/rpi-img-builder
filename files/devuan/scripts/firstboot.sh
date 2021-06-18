@@ -189,3 +189,4 @@ rm -f /var/cache/debconf/*
 rm -f /usr/local/sbin/firstboot
 update-rc.d firstboot remove
 rm /etc/init.d/firstboot
+exit 0

@@ -115,3 +115,4 @@ rm -f /usr/local/bin/credentials > /dev/null 2>&1
 rm -f /boot/credentials.txt > /dev/null 2>&1
 rm -f /etc/opt/interfaces.manual > /dev/null 2>&1
 rm -f /etc/opt/wpa_supplicant.manual > /dev/null 2>&1
+exit 0
