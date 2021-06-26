@@ -1,5 +1,4 @@
-#!/bin/sh
-
+#!/bin/bash
 ### BEGIN INIT INFO
 # Provides: firstboot
 # Required-Start:

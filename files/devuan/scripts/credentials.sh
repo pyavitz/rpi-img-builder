@@ -30,6 +30,7 @@ iw reg set ${COUNTRYCODE}
 sed -i 's/# Default-Start:/# Default-Start: S/g' /etc/init.d/network
 sed -i 's/# Default-Stop:/# Default-Stop: 0 6/g' /etc/init.d/network
 update-rc.d network defaults S
+sleep 1s
 service network start
 }
 
@@ -49,6 +50,7 @@ iw reg set ${COUNTRYCODE}
 sed -i 's/# Default-Start:/# Default-Start: S/g' /etc/init.d/network
 sed -i 's/# Default-Stop:/# Default-Stop: 0 6/g' /etc/init.d/network
 update-rc.d network defaults S
+sleep 1s
 service network start
 }
 
@@ -69,6 +71,7 @@ case `grep -Fx "CHANGE=y" "/boot/credentials.txt" >/dev/null; echo $?` in
     change_hostname
     change_branding
     service hostname.sh --full-restart
+    if service avahi-daemon status | grep is\ running > /dev/null 2>&1; then service avahi-daemon restart; else :; fi
     ;;
 esac
 }
@@ -84,6 +87,7 @@ rm -f /etc/opt/interfaces > /dev/null 2>&1
 rm -f /etc/opt/wpa_supplicant.conf > /dev/null 2>&1
 mv -f /etc/opt/interfaces.manual /etc/network/interfaces
 mv -f /etc/opt/wpa_supplicant.manual /etc/wpa_supplicant/wpa_supplicant.conf
+sleep 1s
 service network start
 }
 
@@ -100,7 +104,7 @@ fi
 
 ### Renew ssh keys and machine-id
 sleep 1s
-echo -e "\e[0;31mCreating new ssh keys\e[0m ..."
+echo -e " \e[0;31mCreating new ssh keys\e[0m ..."
 /bin/rm -v /etc/ssh/ssh_host_* > /dev/null 2>&1
 dpkg-reconfigure openssh-server
 service ssh restart

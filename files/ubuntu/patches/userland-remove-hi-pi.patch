@@ -1,5 +1,5 @@
---- userland-master/makefiles/cmake/vmcs.cmake.orig	2018-11-03 19:36:21.138948163 +0000
-+++ userland-master/makefiles/cmake/vmcs.cmake	2018-11-04 12:41:56.000000000 +0000
+--- a/makefiles/cmake/vmcs.cmake	2021-06-26 06:42:32.371574862 -0400
++++ b/makefiles/cmake/vmcs.cmake	2021-06-26 06:44:21.462480302 -0400
 @@ -59,8 +59,8 @@
  #        PERMISSIONS OWNER_WRITE WORLD_READ)
  
@@ -11,4 +11,3 @@
  
  # provide header files
  #install(DIRECTORY host_applications/linux/libs/bcm_host/include
-

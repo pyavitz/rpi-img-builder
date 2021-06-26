@@ -1,7 +1,7 @@
 #!/bin/bash
 ### Functions
 grow_mmcblk(){
-/bin/bash growpart /dev/mmcblk0 2 > /dev/null 2>&1
+bash growpart /dev/mmcblk0 2 > /dev/null 2>&1
 sleep 1s
 if blkid | grep ext4 > /dev/null 2>&1;
 	then resize2fs /dev/mmcblk0p2 > /dev/null 2>&1
@@ -15,7 +15,7 @@ fi
 }
 
 grow_mmcblk1(){
-/bin/bash growpart /dev/mmcblk1 2 > /dev/null 2>&1
+bash growpart /dev/mmcblk1 2 > /dev/null 2>&1
 sleep 1s
 if blkid | grep ext4 > /dev/null 2>&1;
 	then resize2fs /dev/mmcblk1p2 > /dev/null 2>&1
@@ -29,7 +29,7 @@ fi
 }
 
 grow_sda(){
-/bin/bash growpart /dev/sda 2 > /dev/null 2>&1
+bash growpart /dev/sda 2 > /dev/null 2>&1
 sleep 1s
 if blkid | grep ext4 > /dev/null 2>&1;
 	then resize2fs /dev/sda2 > /dev/null 2>&1
@@ -43,7 +43,7 @@ fi
 }
 
 grow_nvme(){
-/bin/bash growpart /dev/nvme0n1 2 > /dev/null 2>&1
+bash growpart /dev/nvme0n1 2 > /dev/null 2>&1
 sleep 1s
 if blkid | grep ext4 > /dev/null 2>&1;
 	then resize2fs /dev/nvme0n1p2 > /dev/null 2>&1
@@ -57,19 +57,19 @@ fi
 }
 
 chk_mmcblk(){
-/bin/bash fsck.fat -trawl /dev/mmcblk0p1 > /dev/null 2>&1
+bash fsck.fat -trawl /dev/mmcblk0p1 > /dev/null 2>&1
 }
 
 chk_mmcblk1(){
-/bin/bash fsck.fat -trawl /dev/mmcblk1p1 > /dev/null 2>&1
+bash fsck.fat -trawl /dev/mmcblk1p1 > /dev/null 2>&1
 }
 
 chk_sda(){
-/bin/bash fsck.fat -trawl /dev/sda1 > /dev/null 2>&1
+bash fsck.fat -trawl /dev/sda1 > /dev/null 2>&1
 }
 
 chk_nvme(){
-/bin/bash fsck.fat -trawl /dev/nvme0n1p1 > /dev/null 2>&1
+bash fsck.fat -trawl /dev/nvme0n1p1 > /dev/null 2>&1
 }
 
 partition_uuid(){
@@ -141,7 +141,7 @@ fi
 
 ### Grow Partition
 echo
-echo -e "\e[0;31mExpanding root filesystem\e[0m ..."
+echo -e " \e[0;31mExpanding root filesystem\e[0m ..."
 if touch -c /dev/mmcblk0 2>/dev/null; then grow_mmcblk;
         else : &>/dev/null;
 fi
@@ -158,7 +158,7 @@ if touch -c /dev/nvme0 2>/dev/null; then grow_nvme;
 fi
 
 ### Fix boot partition
-echo -e "\e[0;31mRunning fsck on boot partition\e[0m ..."
+echo -e " \e[0;31mRunning fsck on boot partition\e[0m ..."
 umount /boot
 sleep 1s
 if touch -c /dev/mmcblk0 2>/dev/null; then chk_mmcblk;

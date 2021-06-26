@@ -1,8 +1,8 @@
 #!/bin/bash
 source /boot/username.txt
-source /etc/opt/soc.txt
 
-bcm2711_user(){
+### FUNCTIONS
+create_user(){
 adduser ${user} --gecos ${user^} --disabled-password
 echo "${user}:${passwd}" | chpasswd
 adduser ${user} sudo
@@ -18,31 +18,6 @@ adduser ${user} netdev
 adduser ${user} bluetooth
 adduser ${user} input
 adduser ${user} tty
-}
-
-bcm2710_user(){
-adduser ${user} --gecos ${user^} --disabled-password
-echo "${user}:${passwd}" | chpasswd
-adduser ${user} sudo
-adduser ${user} audio
-adduser ${user} dialout
-adduser ${user} video
-adduser ${user} disk
-adduser ${user} spi
-adduser ${user} i2c
-adduser ${user} gpio
-adduser ${user} plugdev
-adduser ${user} netdev
-adduser ${user} bluetooth
-adduser ${user} input
-adduser ${user} tty
-}
-
-user_skins(){
-mkdir -p /home/${user}/.config/mc
-mv -f /etc/opt/user-ini /home/${user}/.config/mc/ini
-mv -f /etc/opt/nanorc-user /home/${user}/.nanorc
-chown -R ${user}:${user} /home/${user}
 }
 
 create_sudoers(){
@@ -52,21 +27,17 @@ ${user} ALL=(ALL) NOPASSWD: ALL
 EOF
 }
 
-case `grep -Fx "bcm2711" "/etc/opt/soc.txt" >/dev/null; echo $?` in
-  0)
-	bcm2711_user
-	create_sudoers
-	user_skins
-    ;;
-esac
-case `grep -Fx "bcm2710" "/etc/opt/soc.txt" >/dev/null; echo $?` in
-  0)
-	bcm2710_user
-	create_sudoers
-	user_skins
-    ;;
-esac
+user_skins(){
+mkdir -p /home/${user}/.config/mc
+mv -f /etc/opt/user-ini /home/${user}/.config/mc/ini
+mv -f /etc/opt/nanorc-user /home/${user}/.nanorc
+chown -R ${user}:${user} /home/${user}
+}
 
+### RUN
+create_user
+create_sudoers
+user_skins
 rm -f /boot/username.txt
 rm -f /usr/local/bin/whogoesthere
 exit 0

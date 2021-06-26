@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/bash
 ### BEGIN INIT INFO
 # Provides: firstboot
 # Required-Start: checkfs checkroot-bootclean mountall $local_fs
@@ -8,6 +8,8 @@
 # Short-Description: Expands the root partition
 # Description:
 ### END INIT INFO
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin
 
 # chmod +x /etc/init.d/firstboot
 # update-rc.d firstboot defaults S

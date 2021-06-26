@@ -6,6 +6,7 @@ RED="\e[1;31m"
 HELP="\e[1;33m"
 GRN="\e[1;32m"
 PNK="\e[1;35m"
+WHT="\e[1;37m"
 FIN="\e[0m"
 
 echo_bdone(){
@@ -18,13 +19,17 @@ echo -e "${RED}Downloading${FIN} ..."
 ${DOWNLOAD} ${URL}rpi-${VERSION}.tar.xz && echo_bdone
 echo
 echo -e "${RED}Extracting archive${FIN} ..."
-tar xf rpi-${VERSION}.tar.xz
+echo -e -n "${WHT}"
+pv rpi-${VERSION}.tar.xz | tar -xJ rpi-${VERSION}
+echo -e -n "${FIN}"
 rm -f rpi-${VERSION}.tar.xz
 if ls output/bcm2708 > /dev/null 2>&1
 	then sudo rm -fdr output/bcm2708;
 fi
 mkdir -p output
 mv rpi-${VERSION} output/bcm2708
+echo
+ls output/bcm2708/*.deb
 echo -e "${RED}Done${FIN}."
 }
 
@@ -34,13 +39,17 @@ echo -e "${RED}Downloading${FIN} ..."
 ${DOWNLOAD} ${URL}rpi3-${VERSION}.tar.xz && echo_bdone
 echo
 echo -e "${RED}Extracting archive${FIN} ..."
-tar xf rpi3-${VERSION}.tar.xz
+echo -e -n "${WHT}"
+pv rpi3-${VERSION}.tar.xz | tar -xJ rpi3-${VERSION}
+echo -e -n "${FIN}"
 rm -f rpi3-${VERSION}.tar.xz
 if ls output/bcm2710 > /dev/null 2>&1
 	then sudo rm -fdr output/bcm2710;
 fi
 mkdir -p output
 mv rpi3-${VERSION} output/bcm2710
+echo
+ls output/bcm2710/*.deb
 echo -e "${RED}Done${FIN}."
 }
 
@@ -50,13 +59,17 @@ echo -e "${RED}Downloading${FIN} ..."
 ${DOWNLOAD} ${URL}rpi4-${VERSION}.tar.xz && echo_bdone
 echo
 echo -e "${RED}Extracting archive${FIN} ..."
-tar xf rpi4-${VERSION}.tar.xz
+echo -e -n "${WHT}"
+pv rpi4-${VERSION}.tar.xz | tar -xJ rpi4-${VERSION}
+echo -e -n "${FIN}"
 rm -f rpi4-${VERSION}.tar.xz
 if ls output/bcm2711 > /dev/null 2>&1
 	then sudo rm -fdr output/bcm2711;
 fi
 mkdir -p output
 mv rpi4-${VERSION} output/bcm2711
+echo
+ls output/bcm2711/*.deb
 echo -e "${RED}Done${FIN}."
 }
 
