@@ -29,8 +29,9 @@ fi
 mkdir -p output
 mv rpi-${VERSION} output/bcm2708
 echo
+echo -e "${RED}Results${FIN}:"
 ls output/bcm2708/*.deb
-echo -e "${RED}Done${FIN}."
+echo
 }
 
 rpi3(){
@@ -49,8 +50,9 @@ fi
 mkdir -p output
 mv rpi3-${VERSION} output/bcm2710
 echo
+echo -e "${RED}Results${FIN}:"
 ls output/bcm2710/*.deb
-echo -e "${RED}Done${FIN}."
+echo
 }
 
 rpi4(){
@@ -69,8 +71,9 @@ fi
 mkdir -p output
 mv rpi4-${VERSION} output/bcm2711
 echo
+echo -e "${RED}Results${FIN}:"
 ls output/bcm2711/*.deb
-echo -e "${RED}Done${FIN}."
+echo
 }
 
 if [ $# -eq 0 ]
