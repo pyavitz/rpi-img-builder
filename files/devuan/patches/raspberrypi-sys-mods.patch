@@ -1,12 +1,12 @@
---- a/debian/control	2020-06-12 13:50:07.005489917 -0400
-+++ b/debian/control	2020-06-12 13:49:43.062442497 -0400
+--- a/debian/control	2021-07-10 08:18:37.352760542 -0400
++++ b/debian/control	2021-07-10 08:20:41.335787659 -0400
 @@ -10,8 +10,7 @@
  
  Package: raspberrypi-sys-mods
  Architecture: any
 -Depends: ${shlibs:Depends}, ${misc:Depends}, libcap2-bin, systemd (>= 230),
-- gettext-base
-+Depends: ${shlibs:Depends}, ${misc:Depends}, libcap2-bin, gettext-base
+- gettext-base, procps
++Depends: ${shlibs:Depends}, ${misc:Depends}, libcap2-bin, gettext-base, procps
+ Breaks: raspberrypi-ui-mods (<<1.20210706)
+ Replaces: raspberrypi-ui-mods (<<1.20210706)
  Recommends: rfkill, rpi-eeprom
- Description: System tweaks for the Raspberry Pi
-  Various modifications to improve the performance or user experience.
