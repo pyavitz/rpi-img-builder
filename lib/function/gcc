@@ -79,4 +79,11 @@ case `grep -Fx 'DISTRO_VERSION="hirsute"' "userdata.txt" >/dev/null; echo $?` in
     source gcc.txt
     ;;
 esac
+case `grep -Fx 'DISTRO_VERSION="impish"' "userdata.txt" >/dev/null; echo $?` in
+  0)
+    echo NATIVE='"'/usr/bin/gcc-10'"' > gcc.txt
+    echo ARM64_CROSS='"'/usr/bin/aarch64-linux-gnu-gcc-10'"' >> gcc.txt
+    source gcc.txt
+    ;;
+esac
 }

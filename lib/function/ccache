@@ -79,4 +79,11 @@ case `grep -Fx 'DISTRO_VERSION="hirsute"' "userdata.txt" >/dev/null; echo $?` in
     source ccache.txt
     ;;
 esac
+case `grep -Fx 'DISTRO_VERSION="impish"' "userdata.txt" >/dev/null; echo $?` in
+  0)
+    echo NATIVE='"'/usr/lib/ccache/gcc-10'"' > ccache.txt
+    echo ARM64_CROSS='"'/usr/lib/ccache/aarch64-linux-gnu-gcc-10'"' >> ccache.txt
+    source ccache.txt
+    ;;
+esac
 }

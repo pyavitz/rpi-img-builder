@@ -68,6 +68,29 @@ deb http://ports.ubuntu.com/ubuntu-ports/ hirsute-security multiverse
 EOF
 }
 
+impish_sources(){
+rm -f p1/etc/apt/sources.list
+tee p1/etc/apt/sources.list <<EOF
+deb http://ports.ubuntu.com/ubuntu-ports/ impish main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ impish-updates main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ impish universe
+deb http://ports.ubuntu.com/ubuntu-ports/ impish-updates universe
+deb http://ports.ubuntu.com/ubuntu-ports/ impish multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ impish-updates multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ impish-backports main restricted universe multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ impish-security main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ impish-security universe
+deb http://ports.ubuntu.com/ubuntu-ports/ impish-security multiverse
+
+## Uncomment the following two lines to add software from Canonical's
+## 'partner' repository.
+## This software is not part of Ubuntu, but is offered by Canonical and the
+## respective vendors as a service to Ubuntu users.
+# deb http://archive.canonical.com/ubuntu impish partner
+# deb-src http://archive.canonical.com/ubuntu impish partner
+EOF
+}
+
 distro_release(){
 if `grep -Fx 'DISTRO_VERSION="focal"' "userdata.txt" >/dev/null;`
 	then focal_sources;
@@ -77,6 +100,9 @@ if `grep -Fx 'DISTRO_VERSION="groovy"' "userdata.txt" >/dev/null;`
 fi
 if `grep -Fx 'DISTRO_VERSION="hirsute"' "userdata.txt" >/dev/null;`
 	then hirsute_sources;
+fi
+if `grep -Fx 'DISTRO_VERSION="impish"' "userdata.txt" >/dev/null;`
+	then impish_sources;
 fi
 }
 
