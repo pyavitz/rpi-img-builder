@@ -180,7 +180,7 @@ mount /boot
 sleep 1s
 fix_cmdline
 
-if dmesg | grep Raspberry\ Pi\ 2 > /dev/null 2>&1;
+if dmesg | grep -w "Raspberry\ Pi\ 2" > /dev/null 2>&1;
 	then update-rc.d -f bthelper remove;
 fi
 
