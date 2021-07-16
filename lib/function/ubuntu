@@ -69,8 +69,8 @@ EOF
 }
 
 impish_sources(){
-rm -f p1/etc/apt/sources.list
-tee p1/etc/apt/sources.list <<EOF
+rm -f p2/etc/apt/sources.list
+tee p2/etc/apt/sources.list <<EOF
 deb http://ports.ubuntu.com/ubuntu-ports/ impish main restricted
 deb http://ports.ubuntu.com/ubuntu-ports/ impish-updates main restricted
 deb http://ports.ubuntu.com/ubuntu-ports/ impish universe
