@@ -1,5 +1,5 @@
 #!/bin/bash
-URL="https://github.com/pyavitz/rpi-img-builder/releases/download/linux/"
+
 DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
 VERSION="5.10.y"
 RED="\e[1;31m"
@@ -8,12 +8,50 @@ GRN="\e[1;32m"
 PNK="\e[1;35m"
 WHT="\e[1;37m"
 FIN="\e[0m"
+source lib/source
+UD=userdata.txt
+
+userdata(){
+echo ""
+echo "Please create a userdata.txt file"
+while [ true ] ; do
+read -t 10 -n 1
+if [ $? = 0 ] ; then
+exit ;
+else
+echo "run make config"
+fi
+done
+}
+
+if [ -f "$UD" ]; then
+    :;
+else 
+    userdata
+fi
+
+validation
+
+distro(){
+if grep -w 'DISTRO_VERSION="buster"' "userdata.txt" > /dev/null 2>&1; then URL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-8/"; else :; fi
+if grep -w 'DISTRO_VERSION="beowulf"' "userdata.txt" > /dev/null 2>&1; then URL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-8/"; else :; fi
+if grep -w 'DISTRO_VERSION="bullseye"' "userdata.txt" > /dev/null 2>&1; then URL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"; else :; fi
+if grep -w 'DISTRO_VERSION="chimaera"' "userdata.txt" > /dev/null 2>&1; then URL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"; else :; fi
+if grep -w 'DISTRO_VERSION="focal"' "userdata.txt" > /dev/null 2>&1; then URL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"; else :; fi
+if grep -w 'DISTRO_VERSION="hirsute"' "userdata.txt" > /dev/null 2>&1; then URL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"; else :; fi
+if grep -w 'DISTRO_VERSION="impish"' "userdata.txt" > /dev/null 2>&1; then URL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"; else :; fi
+if grep -w 'DISTRO_VERSION="testing"' "userdata.txt" > /dev/null 2>&1; then URL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"; else :; fi
+if grep -w 'DISTRO_VERSION="unstable"' "userdata.txt" > /dev/null 2>&1; then URL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"; else :; fi
+if grep -w 'DISTRO_VERSION="sid"' "userdata.txt" > /dev/null 2>&1; then URL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"; else :; fi
+}
 
 echo_bdone(){
 echo -e "${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
 }
 
 rpi(){
+if grep -w 'DISTRO="ubuntu"' "userdata.txt" > /dev/null 2>&1; then echo && echo -e "${WHT}Ubuntu is not supported.${FIN}" && exit 0; fi
+distro
 echo
 echo -e "${RED}Downloading${FIN} ..."
 ${DOWNLOAD} ${URL}rpi-${VERSION}.tar.xz && echo_bdone
@@ -35,6 +73,7 @@ echo
 }
 
 rpi3(){
+distro
 echo
 echo -e "${RED}Downloading${FIN} ..."
 ${DOWNLOAD} ${URL}rpi3-${VERSION}.tar.xz && echo_bdone
@@ -56,6 +95,7 @@ echo
 }
 
 rpi4(){
+distro
 echo
 echo -e "${RED}Downloading${FIN} ..."
 ${DOWNLOAD} ${URL}rpi4-${VERSION}.tar.xz && echo_bdone
