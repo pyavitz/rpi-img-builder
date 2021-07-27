@@ -36,7 +36,7 @@ tar -xf ${DISTRO}-${DISTRO_VERSION}-rootfs-armel.tar.xz -C p2/
 }
 
 aarch64_rootfs(){
-if ls ${DISTRO}-${DISTRO_VERSION}-rootfs-aarch64.tar.xz > /dev/null 2>&1
+if [ -e ${DISTRO}-${DISTRO_VERSION}-rootfs-aarch64.tar.xz ];
 	then echo && echo -n "Extracting rootfs " && aarch64_extract && echo_bdone;
 	else echo && echo -e "${YLW}Missing rootfs tarball${FIN}!" && make cleanup && exit;
 fi
@@ -44,7 +44,7 @@ echo
 }
 
 armel_rootfs(){
-if ls ${DISTRO}-${DISTRO_VERSION}-rootfs-armel.tar.xz > /dev/null 2>&1
+if [ -e ${DISTRO}-${DISTRO_VERSION}-rootfs-armel.tar.xz ];
 	then echo && echo -n "Extracting rootfs " && armel_extract && echo_bdone;
 	else echo && echo -e "${YLW}Missing rootfs tarball${FIN}!" && make cleanup && exit;
 fi
@@ -285,6 +285,53 @@ mkdir -p /etc/initramfs/post-update.d/
 mv -f 99-initrd /etc/initramfs/post-update.d/
 chmod +x /etc/initramfs/post-update.d/99-initrd
 chown root:root /etc/initramfs/post-update.d/99-initrd
+}
+
+# LED scripts
+led_service(){
+echo
+echo Creating actled switch.
+tee /usr/local/sbin/actled <<EOF
+#!/bin/bash
+# activity led switch
+rpi_switch(){
+sh -c 'echo 0 > /sys/devices/platform/leds/leds/led0/brightness'
+}
+
+ml_switch(){
+sh -c 'echo 0 > /sys/devices/platform/leds/leds/ACT/brightness'
+}
+
+if [ -e /sys/devices/platform/leds/leds/led0/brightness ];
+	then rpi_switch;
+fi
+if [ -e /sys/devices/platform/leds/leds/ACT/brightness ];
+	then ml_switch;
+fi
+
+EOF
+
+echo
+echo Creating pwrled switch.
+tee /usr/local/sbin/pwrled <<EOF
+#!/bin/bash
+# power led switch
+rpi_switch(){
+sh -c 'echo 0 > /sys/devices/platform/leds/leds/led1/brightness'
+}
+
+ml_switch(){
+sh -c 'echo 0 > /sys/devices/platform/leds/leds/PWR/brightness'
+}
+
+if [ -e /sys/devices/platform/leds/leds/led1/brightness ];
+	then rpi_switch;
+fi
+if [ -e /sys/devices/platform/leds/leds/PWR/brightness ];
+	then ml_switch;
+fi
+
+EOF
 }
 
 # Systemd services

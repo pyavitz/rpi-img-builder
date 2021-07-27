@@ -70,7 +70,7 @@ fi
 echo && echo
 echo -e -n "${RED}Setting up boot directory${FIN}."
 cmdline > /dev/null 2>&1
-if ls p1/cmdline.txt > /dev/null 2>&1
+if [ -e p1/cmdline.txt ];
 	then echo && echo -n "cmdline.txt " && sleep 1s && echo_nok;
 	else echo && echo -n "cmdline.txt " && sleep 1s && echo_fail && exit;
 fi
@@ -84,7 +84,7 @@ fi
 if `grep -Fx "bcm2708" "soc.txt" >/dev/null;`
 	then bcm2708_config > /dev/null 2>&1;
 fi
-if ls p1/config.txt > /dev/null 2>&1
+if [ -e p1/config.txt ];
 	then echo && echo -n "config.txt  " && sleep 1s && echo_nok;
 	else echo && echo -n "config.txt  " && sleep 1s && echo_fail && exit;
 fi
