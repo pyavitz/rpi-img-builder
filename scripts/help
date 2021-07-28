@@ -32,7 +32,7 @@ fi
 
 validation
 
-distro(){
+os_release(){
 if grep -w 'DISTRO_VERSION="buster"' "userdata.txt" > /dev/null 2>&1; then URL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-8/"; else :; fi
 if grep -w 'DISTRO_VERSION="beowulf"' "userdata.txt" > /dev/null 2>&1; then URL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-8/"; else :; fi
 if grep -w 'DISTRO_VERSION="bullseye"' "userdata.txt" > /dev/null 2>&1; then URL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"; else :; fi
@@ -51,10 +51,12 @@ echo -e "${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
 
 rpi(){
 if grep -w 'DISTRO="ubuntu"' "userdata.txt" > /dev/null 2>&1; then echo && echo -e "${WHT}Ubuntu is not supported.${FIN}" && exit 0; fi
-distro
+os_release
 echo
 echo -e "${RED}Downloading${FIN} ..."
-${DOWNLOAD} ${URL}rpi-${VERSION}.tar.xz && echo_bdone
+if [[ `wget -S --spider ${URL}rpi-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then ${DOWNLOAD} ${URL}rpi-${VERSION}.tar.xz && echo_bdone;
+	else echo -e "${WHT}Something went wrong? Please report which Distribution and Release you are trying to download.${FIN}" && exit 1;
+fi
 echo
 echo -e "${RED}Extracting archive${FIN} ..."
 echo -e -n "${WHT}"
@@ -73,10 +75,12 @@ echo
 }
 
 rpi3(){
-distro
+os_release
 echo
 echo -e "${RED}Downloading${FIN} ..."
-${DOWNLOAD} ${URL}rpi3-${VERSION}.tar.xz && echo_bdone
+if [[ `wget -S --spider ${URL}rpi3-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then ${DOWNLOAD} ${URL}rpi3-${VERSION}.tar.xz && echo_bdone;
+	else echo -e "${WHT}Something went wrong? Please report which Distribution and Release you are trying to download.${FIN}" && exit 1;
+fi
 echo
 echo -e "${RED}Extracting archive${FIN} ..."
 echo -e -n "${WHT}"
@@ -95,10 +99,12 @@ echo
 }
 
 rpi4(){
-distro
+os_release
 echo
 echo -e "${RED}Downloading${FIN} ..."
-${DOWNLOAD} ${URL}rpi4-${VERSION}.tar.xz && echo_bdone
+if [[ `wget -S --spider ${URL}rpi4-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then ${DOWNLOAD} ${URL}rpi4-${VERSION}.tar.xz && echo_bdone;
+	else echo -e "${WHT}Something went wrong? Please report which Distribution and Release you are trying to download.${FIN}" && exit 1;
+fi
 echo
 echo -e "${RED}Extracting archive${FIN} ..."
 echo -e -n "${WHT}"
