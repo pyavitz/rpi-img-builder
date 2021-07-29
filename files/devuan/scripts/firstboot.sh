@@ -183,6 +183,9 @@ fix_cmdline
 if dmesg | grep -w "Raspberry\ Pi\ 2" > /dev/null 2>&1;
 	then update-rc.d -f bthelper remove;
 fi
+if dmesg | grep -w "Raspberry\ Pi\ Model\ B\ Rev\ 1" > /dev/null 2>&1;
+	then update-rc.d -f bthelper remove;
+fi
 if dmesg | grep -w "Raspberry\ Pi\ Model\ B\ Rev\ 2" > /dev/null 2>&1;
 	then update-rc.d -f bthelper remove;
 fi
