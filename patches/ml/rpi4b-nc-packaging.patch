@@ -31,7 +31,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
 +# install dtb
 +mkdir -p "$tmpdir/boot"
 +cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2711-rpi-4-b.dtb" "$tmpdir/boot/bcm2711-rpi-4-b.dtb"
-+if ls "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2711-rpi-400.dtb" > /dev/null 2>&1;
++if [ -e "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2711-rpi-400.dtb" ];
 +	then cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2711-rpi-400.dtb" "$tmpdir/boot/bcm2711-rpi-400.dtb"
 +fi
 +

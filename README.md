@@ -60,7 +60,11 @@ Linux kernel
 Branch:         # Supported: 5.10.y and above
 Menuconfig:     # 1 to run kernel menuconfig
 Crosscompile:   # 1 to cross compile | 0 to native compile
-Caching on:     # 1 to enable ccache
+
+Compiler        WARNING: Only one may be selected
+GCC:            # 1 to select (default)
+Ccache:         # 1 to select
+Clang:          # 1 to select
 
 Distribution
 Distro:		# Supported: debian, devuan and ubuntu
@@ -90,7 +94,11 @@ Branch:         # Selected kernel branch
 RC:             # 1 for kernel x.y-rc above stable
 Menuconfig:     # 1 to run kernel menuconfig
 Crosscompile:   # 1 to cross compile | 0 to native compile
-Caching on:     # 1 to enable ccache
+
+Compiler        WARNING: Only one may be selected
+GCC:            # 1 to select (default)
+Ccache:         # 1 to select
+Clang:          # 1 to select
 
 Distribution
 Distro:		# Supported: debian, devuan and ubuntu

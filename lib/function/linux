@@ -8,6 +8,29 @@ cp -f soc.txt ${SRC}/
 cd ${SRC}
 }
 
+compiler(){
+case `grep -Fx "gcc=1" "userdata.txt" >/dev/null; echo $?` in
+  0)
+	rm -f {gcc.txt,ccache.txt,clang.txt}
+	gcc_compiler
+    ;;
+esac
+case `grep -Fx "ccache=1" "userdata.txt" >/dev/null; echo $?` in
+  0)
+	if [ -e /usr/bin/ccache ]; then :; else sudo apt update && sudo apt install -y ccache && sleep 2s; fi
+	rm -f {gcc.txt,ccache.txt,clang.txt}
+	ccache_compiler
+    ;;
+esac
+case `grep -Fx "clang=1" "userdata.txt" >/dev/null; echo $?` in
+  0)
+	if [ -e /usr/bin/clang-12 ]; then :; else sudo apt update && sudo apt install -y clang clang-12 lld lld-12 llvm && sleep 2s; fi
+	rm -f {gcc.txt,ccache.txt,clang.txt}
+	clang_compiler
+    ;;
+esac
+}
+
 mainline_clean(){
 if ls ${MLKERNEL}-${VERSION} > /dev/null 2>&1;
 	then echo "" && echo -e "${PNK}Cleaning${FIN} ..." && rm -fdr ${MLKERNEL}-${VERSION};
@@ -112,8 +135,8 @@ cconfig(){
 echo_cconfig
 cp -f ../${DEF}/${MYCONFIG} arch/arm64/configs/
 if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
-	then make ARCH=arm64 CC=${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- ${MYCONFIG};
-	else make ARCH=arm64 CC=${NATIVE} ${MYCONFIG};
+	then make ARCH=arm64 ${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- ${MYCONFIG};
+	else make ARCH=arm64 ${NATIVE} ${MYCONFIG};
 fi
 echo_done
 }
@@ -124,8 +147,8 @@ cp -f ../${DEF}/bcm2711_defconfig arch/arm64/configs/
 echo CONFIG_MODULE_SIG=y >> arch/arm64/configs/bcm2711_defconfig
 echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm64/configs/bcm2711_defconfig
 if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
-	then make ARCH=arm64 CC=${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- bcm2711_defconfig &> /dev/null;
-	else make ARCH=arm64 CC=${NATIVE} bcm2711_defconfig &> /dev/null;
+	then make ARCH=arm64 ${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- bcm2711_defconfig &> /dev/null;
+	else make ARCH=arm64 ${NATIVE} bcm2711_defconfig &> /dev/null;
 fi
     echo_done
 }
@@ -135,22 +158,22 @@ echo
 echo_menuconfig
 sleep 1s
 if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
-	then make ARCH=arm64 CC=${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- menuconfig;
-	else make ARCH=arm64 CC=${NATIVE} menuconfig;
+	then make ARCH=arm64 ${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- menuconfig;
+	else make ARCH=arm64 ${NATIVE} menuconfig;
 fi
 }
 
 cross_compile(){
     echo -e "-- ${GRN}CC${FIN}"
     echo_build
-    echo 'y' | make -j${CORES} KBUILD_BUILD_HOST=${KBHOST} ARCH=arm64 CC=${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
+    echo 'y' | make -j${CORES} KBUILD_BUILD_HOST=${KBHOST} ARCH=arm64 ${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
     rm -f ../*libc*.deb
 }
 
 native_compile(){
     echo -e "-- ${GRN}NC${FIN}"
     echo_build
-    echo 'y' | make -j${CORES} KBUILD_BUILD_HOST=${KBHOST} CC=${NATIVE} ARCH=arm64 bindeb-pkg
+    echo 'y' | make -j${CORES} KBUILD_BUILD_HOST=${KBHOST} ${NATIVE} ARCH=arm64 bindeb-pkg
     rm -f ../*libc*.deb
 }
 

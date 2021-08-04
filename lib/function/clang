@@ -1,0 +1,7 @@
+# Clang 12
+clang_compiler(){
+echo NATIVE='"'LLVM=1'"' > clang.txt
+echo ARMV6_CROSS='"'LLVM=1'"' >> clang.txt
+echo ARM64_CROSS='"'LLVM=1'"' >> clang.txt
+source clang.txt
+}

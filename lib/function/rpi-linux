@@ -6,6 +6,29 @@ cp -f soc.txt ${SRC}/
 cd ${SRC}
 }
 
+compiler(){
+case `grep -Fx "gcc=1" "userdata.txt" >/dev/null; echo $?` in
+  0)
+	rm -f {gcc.txt,ccache.txt,clang.txt}
+	gcc_compiler
+    ;;
+esac
+case `grep -Fx "ccache=1" "userdata.txt" >/dev/null; echo $?` in
+  0)
+	if [ -e /usr/bin/ccache ]; then :; else sudo apt update && sudo apt install -y ccache && sleep 2s; fi
+	rm -f {gcc.txt,ccache.txt,clang.txt}
+	ccache_compiler
+    ;;
+esac
+case `grep -Fx "clang=1" "userdata.txt" >/dev/null; echo $?` in
+  0)
+	if [ -e /usr/bin/clang-12 ]; then :; else sudo apt update && sudo apt install -y clang clang-12 lld lld-12 llvm && sleep 2s; fi
+	rm -f {gcc.txt,ccache.txt,clang.txt}
+	clang_compiler
+    ;;
+esac
+}
+
 clean_source(){
 if ls ${KERNEL}-${VERSION} > /dev/null 2>&1;
 	then echo "" && echo -e "${PNK}Cleaning${FIN} ..." && rm -fdr ${KERNEL}-${VERSION};
@@ -116,8 +139,8 @@ armv6_cconfig(){
 echo_cconfig
 cp -f ../${DEF}/${MYCONFIG} arch/arm/configs/
 if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
-	then make KBUILD_DEBARCH=armel ARCH=arm CC=${ARMV6_CROSS} CROSS_COMPILE=arm-linux-gnueabi- ${MYCONFIG};
-	else make KBUILD_DEBARCH=armel ARCH=arm CC=${NATIVE} ${MYCONFIG};
+	then make KBUILD_DEBARCH=armel ARCH=arm ${ARMV6_CROSS} CROSS_COMPILE=arm-linux-gnueabi- ${MYCONFIG};
+	else make KBUILD_DEBARCH=armel ARCH=arm ${NATIVE} ${MYCONFIG};
 fi
 echo_done
 }
@@ -127,8 +150,8 @@ echo
 echo_menuconfig
 sleep 1s
 if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
-	then make KBUILD_DEBARCH=armel ARCH=arm CC=${ARMV6_CROSS} CROSS_COMPILE=arm-linux-gnueabi- menuconfig;
-	else make KBUILD_DEBARCH=armel ARCH=arm CC=${NATIVE} menuconfig;
+	then make KBUILD_DEBARCH=armel ARCH=arm ${ARMV6_CROSS} CROSS_COMPILE=arm-linux-gnueabi- menuconfig;
+	else make KBUILD_DEBARCH=armel ARCH=arm ${NATIVE} menuconfig;
 fi
 }
 
@@ -138,7 +161,7 @@ echo_build
 if `grep -Fx "admin=1" "../../userdata.txt" >/dev/null;`
 	then echo ${BUILD_VERSION} > .version;
 fi
-echo 'y' | make -j${CORES} KBUILD_DEBARCH=armel KBUILD_BUILD_HOST=${KBHOST} ARCH=arm CC=${ARMV6_CROSS} CROSS_COMPILE=arm-linux-gnueabi- bindeb-pkg
+echo 'y' | make -j${CORES} KBUILD_DEBARCH=armel KBUILD_BUILD_HOST=${KBHOST} ARCH=arm ${ARMV6_CROSS} CROSS_COMPILE=arm-linux-gnueabi- bindeb-pkg
 }
 
 armv6_ncompile(){
@@ -147,7 +170,7 @@ echo_build
 if `grep -Fx "admin=1" "../../userdata.txt" >/dev/null;`
 	then echo ${BUILD_VERSION} > .version;
 fi
-echo 'y' | make -j${CORES} KBUILD_DEBARCH=armel KBUILD_BUILD_HOST=${KBHOST} ARCH=arm CC=${NATIVE} bindeb-pkg
+echo 'y' | make -j${CORES} KBUILD_DEBARCH=armel KBUILD_BUILD_HOST=${KBHOST} ARCH=arm ${NATIVE} bindeb-pkg
 }
 
 # aarch64
@@ -160,8 +183,8 @@ armv8_cconfig(){
 echo_cconfig
 cp -f ../${DEF}/${MYCONFIG} arch/arm64/configs/
 if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
-	then make ARCH=arm64 CC=${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- ${MYCONFIG};
-	else make ARCH=arm64 CC=${NATIVE} ${MYCONFIG};
+	then make ARCH=arm64 ${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- ${MYCONFIG};
+	else make ARCH=arm64 ${NATIVE} ${MYCONFIG};
 fi
 echo_done
 }
@@ -171,8 +194,8 @@ echo
 echo_menuconfig
 sleep 1s
 if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
-	then make ARCH=arm64 CC=${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- menuconfig;
-	else make ARCH=arm64 CC=${NATIVE} menuconfig;
+	then make ARCH=arm64 ${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- menuconfig;
+	else make ARCH=arm64 ${NATIVE} menuconfig;
 fi
 }
 
@@ -182,7 +205,7 @@ echo_build
 if `grep -Fx "admin=1" "../../userdata.txt" >/dev/null;`
 	then echo ${BUILD_VERSION} > .version;
 fi
-echo 'y' | make -j${CORES} KBUILD_BUILD_HOST=${KBHOST} ARCH=arm64 CC=${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
+echo 'y' | make -j${CORES} KBUILD_BUILD_HOST=${KBHOST} ARCH=arm64 ${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
 }
 
 armv8_ncompile(){
@@ -191,7 +214,7 @@ echo_build
 if `grep -Fx "admin=1" "../../userdata.txt" >/dev/null;`
 	then echo ${BUILD_VERSION} > .version;
 fi
-echo 'y' | make -j${CORES} KBUILD_BUILD_HOST=${KBHOST} ARCH=arm64 CC=${NATIVE} bindeb-pkg
+echo 'y' | make -j${CORES} KBUILD_BUILD_HOST=${KBHOST} ARCH=arm64 ${NATIVE} bindeb-pkg
 }
 
 ccpatch(){
@@ -254,8 +277,8 @@ rpi4_fconfig(){
 echo -e "${RED}Making bcm2711 defconfig${FIN}."
 module_sig
 if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
-	then make ARCH=arm64 CC=${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- bcm2711_defconfig &> /dev/null;
-	else make ARCH=arm64 CC=${NATIVE} bcm2711_defconfig &> /dev/null;
+	then make ARCH=arm64 ${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- bcm2711_defconfig &> /dev/null;
+	else make ARCH=arm64 ${NATIVE} bcm2711_defconfig &> /dev/null;
 fi
 echo_done
 }
@@ -264,8 +287,8 @@ rpi3_fconfig(){
 echo -e "${RED}Making bcmrpi3 defconfig${FIN}."
 module_sig
 if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
-	then make ARCH=arm64 CC=${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- bcmrpi3_defconfig &> /dev/null;
-	else make ARCH=arm64 CC=${NATIVE} bcmrpi3_defconfig &> /dev/null;
+	then make ARCH=arm64 ${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- bcmrpi3_defconfig &> /dev/null;
+	else make ARCH=arm64 ${NATIVE} bcmrpi3_defconfig &> /dev/null;
 fi
 echo_done
 }
@@ -274,8 +297,8 @@ rpi_fconfig(){
 echo -e "${RED}Making bcmrpi defconfig${FIN}."
 module_sig
 if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
-	then make KBUILD_DEBARCH=armel ARCH=arm CC=${ARMV6_CROSS} CROSS_COMPILE=arm-linux-gnueabi- bcmrpi_defconfig &> /dev/null;
-	else make KBUILD_DEBARCH=armel ARCH=arm CC=${NATIVE} bcmrpi_defconfig &> /dev/null;
+	then make KBUILD_DEBARCH=armel ARCH=arm ${ARMV6_CROSS} CROSS_COMPILE=arm-linux-gnueabi- bcmrpi_defconfig &> /dev/null;
+	else make KBUILD_DEBARCH=armel ARCH=arm ${NATIVE} bcmrpi_defconfig &> /dev/null;
 fi
 echo_done
 }
