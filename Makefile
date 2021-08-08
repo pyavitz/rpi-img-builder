@@ -48,6 +48,10 @@ HELPER=sudo ./scripts/help
 XCHECK=./scripts/check
 CHECK=./scripts/check
 
+# dependencies
+CCOMPILE=./scripts/.ccompile
+NCOMPILE=./scripts/.ncompile
+
 help:
 	@echo
 	@echo "\e[1;31m             Raspberry Pi Image Builder\e[0m"
@@ -111,25 +115,14 @@ commands:
 
 # aarch64
 ccompile:
-	# Install all dependencies:
-	sudo apt install build-essential bison bc git dialog patch \
-	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
-	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig kpartx \
-	aria2 pv toilet figlet lsb-release xz-utils curl e2fsprogs btrfs-progs \
-	distro-info-data crossbuild-essential-arm64 crossbuild-essential-armel \
-	gcc-8-arm-linux-gnueabi gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi \
-	gcc-8-aarch64-linux-gnu gcc-9-aarch64-linux-gnu gcc-10-aarch64-linux-gnu \
-	gcc-8 gcc-9 gcc-10 debian-archive-keyring debian-keyring make libelf-dev \
-	xfsprogs
+	# Installing cross dependencies:
+	@chmod +x ${CCOMPILE}
+	@${CCOMPILE}
 
 ncompile:
-	# Install native dependencies:
-	sudo apt install build-essential bison bc git dialog patch \
-	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
-	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
-	aria2 pv toilet figlet distro-info-data lsb-release xz-utils curl \
-	e2fsprogs btrfs-progs kpartx gcc-8 gcc-9 gcc-10 debian-archive-keyring \
-	debian-keyring make libelf-dev xfsprogs
+	# Installing native dependencies:
+	@chmod +x ${NCOMPILE}
+	@${NCOMPILE}
 
 # Raspberry Pi 4 | aarch64
 kernel:

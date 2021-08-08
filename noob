@@ -1,0 +1,45 @@
+#!/bin/bash
+
+if [[ `dmesg | grep -w x86-64` ]]; then
+	if [ -e /usr/bin/make ]; then
+		sudo apt update
+		make ccompile;
+	else
+		sudo apt install -y make
+		make ccompile;
+	fi
+fi
+
+if [[ `dmesg | grep -w arm64` ]]; then
+	if [ -e /usr/bin/make ]; then
+		sudo apt update
+		make ncompile;
+	else
+		sudo apt install -y make
+		make ncompile;
+	fi
+fi
+
+if [[ `dmesg | grep -w armv7` ]]; then
+	if [ -e /usr/bin/make ]; then
+		sudo apt update
+		make ncompile;
+	else
+		sudo apt install -y make
+		make ncompile;
+	fi
+fi
+
+if [[ `dmesg | grep -w armv6` ]]; then
+	if [ -e /usr/bin/make ]; then
+		sudo apt update
+		make ncompile;
+	else
+		sudo apt install -y make
+		make ncompile;
+	fi
+fi
+
+make dialogrc > /dev/null 2>&1
+echo
+echo "Please review the README for options."
