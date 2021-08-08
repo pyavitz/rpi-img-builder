@@ -1,5 +1,8 @@
 #!/bin/bash
 
+WHT="\e[1;37m"
+FIN="\e[0m"
+
 cross-depends(){
 sudo apt install -y build-essential bison bc git dialog patch \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
@@ -11,5 +14,29 @@ sudo apt install -y build-essential bison bc git dialog patch \
 	gcc-8 gcc-9 gcc-10 debian-archive-keyring debian-keyring make libelf-dev \
 	xfsprogs
 }
+
+if [[ `sudo dmesg | grep -w arm64` ]]; then
+        echo ""
+        echo -e "${WHT}You are running native?${FIN}"
+        echo -e "${WHT}Please run:${FIN} make ncompile"
+        echo ""
+        exit;
+fi
+
+if [[ `sudo dmesg | grep -w armv7` ]]; then
+        echo ""
+        echo -e "${WHT}You are running native?${FIN}"
+        echo -e "${WHT}Please run:${FIN} make ncompile"
+        echo ""
+        exit;
+fi
+
+if [[ `sudo dmesg | grep -w armv7` ]]; then
+        echo ""
+        echo -e "${WHT}You are running native?${FIN}"
+        echo -e "${WHT}Please run:${FIN} make ncompile"
+        echo ""
+        exit;
+fi
 
 cross-depends
