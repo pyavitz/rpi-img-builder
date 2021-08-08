@@ -1,5 +1,78 @@
 #!/bin/bash
 
+RED="\e[1;31m"
+GRN="\e[1;32m"
+PNK="\e[1;35m"
+WHT="\e[1;37m"
+YLW="\e[1;33m"
+FIN="\e[0m"
+
+echo_nok(){
+echo -e -n "${PNK}[${FIN}${GRN}OK${FIN}${PNK}]${FIN}"
+}
+
+echo_focal(){
+echo -e -n "${PNK}[${FIN}${GRN}Ubuntu Focal${FIN}${PNK}]${FIN}"
+}
+
+echo_hirsute(){
+echo -e -n "${PNK}[${FIN}${GRN}Ubuntu Hirsute Hippo${FIN}${PNK}]${FIN}"
+}
+
+
+echo_fail(){
+echo -n -e "${PNK}[${FIN}${RED}failed${FIN}${PNK}]${FIN}"
+}
+
+ierror(){
+echo
+echo -e "${WHT}Please check your internet connection and try again${FIN}."
+}
+
+derror(){
+echo
+echo -e "${WHT}The OS you are running is not supported${FIN}."
+}
+
+internet_check(){
+echo -e -n "${WHT}Checking Internet Connection:${FIN} "
+if [[ `wget -S --spider https://github.com 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+	echo_nok
+	echo "";
+else
+	echo_fail
+	echo ""
+	ierror
+	exit 1;
+fi
+}
+
+distro_check(){
+echo -e -n "${WHT}Checking Host Machine:${FIN} "
+sleep 1s
+if [[ `grep -w "focal" "/etc/os-release"` ]]; then
+	echo_focal
+	echo ""
+else
+	if [[ `grep -w "hirsute" "/etc/os-release"` ]]; then
+		echo_hirsute
+		echo "";
+	else
+		echo_fail
+		echo ""
+		derror
+		exit 1;
+	fi
+fi
+}
+
+echo ""
+internet_check
+distro_check
+echo ""
+echo -e "${WHT}Starting install ...${FIN}"
+sleep 2s
+
 if [[ `sudo dmesg | grep -w x86-64` ]]; then
 	if [ -e /usr/bin/make ]; then
 		sudo apt update
