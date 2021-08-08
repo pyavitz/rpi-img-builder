@@ -23,7 +23,7 @@ sudo apt install \
 
 This has been tested on an AMD64/x86_64 and Arm64 system running Ubuntu [Focal](https://releases.ubuntu.com/20.04/) / [Hirsute](https://releases.ubuntu.com/21.04/).
 
-Alternatively, you can run the script `./noob` in this directory or follow the **instructions** below.
+Alternatively, you can run the script `./install` in this directory or follow the **instructions** below.
 
 ## Docker
 

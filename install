@@ -46,4 +46,4 @@ fi
 
 make dialogrc > /dev/null 2>&1
 echo
-echo "Please review the README for options."
+make
