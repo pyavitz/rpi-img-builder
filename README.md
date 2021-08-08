@@ -21,7 +21,7 @@ sudo apt install \
 	debian-archive-keyring debian-keyring make libelf-dev xfsprogs
 ```
 
-This has been tested on an AMD64/x86_64 system running on [Ubuntu Focal](https://releases.ubuntu.com/20.04/).
+This has been tested on an AMD64 x86_64 and Arm64 system running Ubuntu [Focal](https://releases.ubuntu.com/20.04/) / [Hirsute](https://releases.ubuntu.com/21.04/).
 
 Alternatively, you can run the command `make ccompile` in this directory.
 
