@@ -6,24 +6,12 @@
 * Raspberry Pi 0/W/B/+ | Debian and Devuan
 * [Raspberry Pi Hardware](https://www.raspberrypi.org/documentation/hardware/raspberrypi)
 
-## Dependencies
+## Dependencies for Ubuntu Focal / Hirsute Hippo
 
-In order to install the required dependencies, run the following command:
-
-```
-sudo apt install \
-	build-essential bison bc git dialog patch dosfstools zip unzip qemu debootstrap \
-	qemu-user-static rsync kmod cpio flex libssl-dev libncurses5-dev parted fakeroot \
-	swig aria2 pv toilet figlet distro-info-data lsb-release xz-utils curl e2fsprogs \
-	btrfs-progs kpartx crossbuild-essential-arm64 crossbuild-essential-armel gcc-8 \
-	gcc-8-arm-linux-gnueabi gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-9 \
-	gcc-8-aarch64-linux-gnu gcc-9-aarch64-linux-gnu gcc-10-aarch64-linux-gnu gcc-10 \
-	debian-archive-keyring debian-keyring make libelf-dev xfsprogs
-```
-
-This has been tested on an AMD64/x86_64 and Arm64 system running Ubuntu [Focal](https://releases.ubuntu.com/20.04/) / [Hirsute](https://releases.ubuntu.com/21.04/).
-
-Alternatively, you can run the script `./install` in this directory or follow the **instructions** below.
+Install options:
+* Run the `./install` script **(recommended)**
+* Run builder [make commands](https://github.com/pyavitz/rpi-img-builder#install-dependencies) (dependency: make)
+* Review [package list](https://raw.githubusercontent.com/pyavitz/rpi-img-builder/master/lib/.package.list) and install manually
 
 ## Docker
 
