@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ `dmesg | grep -w x86-64` ]]; then
+if [[ `sudo dmesg | grep -w x86-64` ]]; then
 	if [ -e /usr/bin/make ]; then
 		sudo apt update
 		make ccompile;
@@ -11,7 +11,7 @@ if [[ `dmesg | grep -w x86-64` ]]; then
 	fi
 fi
 
-if [[ `dmesg | grep -w arm64` ]]; then
+if [[ `sudo dmesg | grep -w arm64` ]]; then
 	if [ -e /usr/bin/make ]; then
 		sudo apt update
 		make ncompile;
@@ -22,7 +22,7 @@ if [[ `dmesg | grep -w arm64` ]]; then
 	fi
 fi
 
-if [[ `dmesg | grep -w armv7` ]]; then
+if [[ `sudo dmesg | grep -w armv7` ]]; then
 	if [ -e /usr/bin/make ]; then
 		sudo apt update
 		make ncompile;
@@ -33,7 +33,7 @@ if [[ `dmesg | grep -w armv7` ]]; then
 	fi
 fi
 
-if [[ `dmesg | grep -w armv6` ]]; then
+if [[ `sudo dmesg | grep -w armv6` ]]; then
 	if [ -e /usr/bin/make ]; then
 		sudo apt update
 		make ncompile;
