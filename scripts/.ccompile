@@ -31,7 +31,7 @@ if [[ `sudo dmesg | grep -w armv7` ]]; then
         exit;
 fi
 
-if [[ `sudo dmesg | grep -w armv7` ]]; then
+if [[ `sudo dmesg | grep -w armv6` ]]; then
         echo ""
         echo -e "${WHT}You are running native?${FIN}"
         echo -e "${WHT}Please run:${FIN} make ncompile"
