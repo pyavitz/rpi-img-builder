@@ -8,8 +8,8 @@
 
 ## Dependencies for Ubuntu Focal / Hirsute Hippo
 
-Install options:
-* Run the `./install` script **(recommended)**
+**Install options:**
+* Run the `./install` script ***(recommended)***
 * Run builder [make commands](https://github.com/pyavitz/rpi-img-builder#install-dependencies) (dependency: make)
 * Review [package list](https://raw.githubusercontent.com/pyavitz/rpi-img-builder/master/lib/.package.list) and install manually
 
