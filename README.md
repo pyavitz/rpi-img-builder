@@ -24,7 +24,8 @@ To build using [Docker](https://www.docker.com/), follow the install [instructio
 #### Install dependencies
 
 ```sh
-make ccompile	# Install cross dependencies
+make ccompile	# Install x86-64 cross dependencies
+make ccompile64	# Install Arm64 cross dependencies
 make ncompile	# Install native dependencies
 ```
 

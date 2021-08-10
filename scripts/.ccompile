@@ -3,40 +3,33 @@
 WHT="\e[1;37m"
 FIN="\e[0m"
 
-cross-depends(){
+ccompile(){
 sudo apt install -y build-essential bison bc git dialog patch \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig kpartx \
 	aria2 pv toilet figlet lsb-release xz-utils curl e2fsprogs btrfs-progs \
-	distro-info-data crossbuild-essential-arm64 crossbuild-essential-armel \
+	crossbuild-essential-arm64 crossbuild-essential-armhf crossbuild-essential-armel \
 	gcc-8-arm-linux-gnueabi gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi \
+	gcc-8-arm-linux-gnueabihf gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf \
 	gcc-8-aarch64-linux-gnu gcc-9-aarch64-linux-gnu gcc-10-aarch64-linux-gnu \
 	gcc-8 gcc-9 gcc-10 debian-archive-keyring debian-keyring make libelf-dev \
-	xfsprogs
+	distro-info-data xfsprogs
 }
 
 if [[ `sudo dmesg | grep -w arm64` ]]; then
         echo ""
-        echo -e "${WHT}You are running native?${FIN}"
-        echo -e "${WHT}Please run:${FIN} make ncompile"
-        echo ""
-        exit;
-fi
-
-if [[ `sudo dmesg | grep -w armv7` ]]; then
-        echo ""
-        echo -e "${WHT}You are running native?${FIN}"
-        echo -e "${WHT}Please run:${FIN} make ncompile"
+        echo -e "${WHT}Host Machine: Arm64${FIN}"
+        echo -e "${WHT}Please run:${FIN} make ncompile or make ccompile64"
         echo ""
         exit;
 fi
 
 if [[ `sudo dmesg | grep -w armv6` ]]; then
         echo ""
-        echo -e "${WHT}You are running native?${FIN}"
+        echo -e "${WHT}Host Machine: Armv6${FIN}"
         echo -e "${WHT}Please run:${FIN} make ncompile"
         echo ""
         exit;
 fi
 
-cross-depends
+ccompile

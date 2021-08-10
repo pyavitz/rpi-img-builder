@@ -50,6 +50,7 @@ CHECK=./scripts/check
 
 # dependencies
 CCOMPILE=./scripts/.ccompile
+CCOMPILE64=./scripts/.ccompile64
 NCOMPILE=./scripts/.ncompile
 
 help:
@@ -58,7 +59,8 @@ help:
 	@echo "\e[1;37m             **************************"
 	@echo "\e[1;37mUsage:\e[0m "
 	@echo
-	@echo "  make ccompile          Install cross dependencies"
+	@echo "  make ccompile          Install x86-64 cross dependencies"
+	@echo "  make ccompile64        Install Arm64 cross dependencies"
 	@echo "  make ncompile          Install native dependencies"
 	@echo "  make config            Create user data file"
 	@echo "  make menu              User menu interface"
@@ -118,6 +120,11 @@ ccompile:
 	# Installing cross dependencies:
 	@chmod +x ${CCOMPILE}
 	@${CCOMPILE}
+	
+ccompile64:
+	# Installing cross dependencies:
+	@chmod +x ${CCOMPILE64}
+	@${CCOMPILE64}
 
 ncompile:
 	# Installing native dependencies:

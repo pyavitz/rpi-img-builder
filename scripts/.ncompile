@@ -3,7 +3,7 @@
 WHT="\e[1;37m"
 FIN="\e[0m"
 
-native-depends(){
+ncompile(){
 sudo apt install -y build-essential bison bc git dialog patch \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
@@ -14,10 +14,10 @@ sudo apt install -y build-essential bison bc git dialog patch \
 
 if [[ `sudo dmesg | grep -w x86-64` ]]; then
 	echo ""
-	echo -e "${WHT}You are running cross?${FIN}"
+	echo -e "${WHT}Host Machine: x86-64${FIN}"
 	echo -e "${WHT}Please run:${FIN} make ccompile"
 	echo ""
 	exit;
 fi
 
-native-depends
+ncompile

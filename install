@@ -70,14 +70,16 @@ echo ""
 internet_check
 distro_check
 echo ""
-echo -e "${WHT}Starting install ...${FIN}"
-sleep 2s
 
 if [[ `sudo dmesg | grep -w x86-64` ]]; then
+	echo -e "${WHT}Starting install ...${FIN}"
+	sleep 2s
 	if [ -e /usr/bin/make ]; then
 		sudo apt update
 		make ccompile;
 	else
+		echo -e "${WHT}Starting install ...${FIN}"
+		sleep 2s
 		sudo apt update
 		sudo apt install -y make
 		make ccompile;
@@ -85,32 +87,64 @@ if [[ `sudo dmesg | grep -w x86-64` ]]; then
 fi
 
 if [[ `sudo dmesg | grep -w arm64` ]]; then
-	if [ -e /usr/bin/make ]; then
-		sudo apt update
-		make ncompile;
-	else
-		sudo apt update
-		sudo apt install -y make
-		make ncompile;
-	fi
-fi
-
-if [[ `sudo dmesg | grep -w armv7` ]]; then
-	if [ -e /usr/bin/make ]; then
-		sudo apt update
-		make ncompile;
-	else
-		sudo apt update
-		sudo apt install -y make
-		make ncompile;
-	fi
+echo -e -n "${WHT}"
+echo -e "Arm64 Detected! Select the dependencies you would like installed."
+options=("Cross Compiling" "Native Compiling" "Quit")
+select opt in "${options[@]}"
+do
+	case $opt in
+		"Cross Compiling")
+		if [ -e /usr/bin/make ]; then
+			echo ""
+			echo -e "${WHT}Starting install ...${FIN}"
+			sleep 2s
+			sudo apt update
+			make ccompile64;
+		else
+			echo ""
+			echo -e "${WHT}Starting install ...${FIN}"
+			sleep 2s
+			sudo apt update
+			sudo apt install -y make
+			make ccompile64;
+		fi
+			break
+			;;
+		"Native Compiling")
+		if [ -e /usr/bin/make ]; then
+			echo ""
+			echo -e "${WHT}Starting install ...${FIN}"
+			sleep 2s
+			sudo apt update
+			make ncompile;
+		else
+			echo ""
+			echo -e "${WHT}Starting install ...${FIN}"
+			sleep 2s
+			sudo apt update
+			sudo apt install -y make
+			make ncompile;
+		fi
+			break
+			;;
+		"Quit")
+			break
+			;;
+		*) echo "invalid option $REPLY";;
+	esac
+done
+echo -e -n "${FIN}"
 fi
 
 if [[ `sudo dmesg | grep -w armv6` ]]; then
 	if [ -e /usr/bin/make ]; then
+		echo -e "${WHT}Starting install ...${FIN}"
+		sleep 2s
 		sudo apt update
 		make ncompile;
 	else
+		echo -e "${WHT}Starting install ...${FIN}"
+		sleep 2s
 		sudo apt update
 		sudo apt install -y make
 		make ncompile;
