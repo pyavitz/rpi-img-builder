@@ -82,8 +82,11 @@ echo custom_defconfig= >> tmp0
 echo MYCONFIG='"' >> tmp0
 echo userscripts=0 >> tmp0
 echo verbose=0 >> tmp0
+echo CLANG_LLVM='"'LLVM=1 LLVM_IAS=1'"' >> tmp0
+echo lto_clang_thin=0 >> tmp0
+echo CFLAGS='"''"' >> tmp0
 echo devuser=1 >> tmp0
-echo builder=3.12 >> tmp0
+echo builder=3.13 >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
 echo >> tmp2
@@ -110,7 +113,9 @@ sed -i '9i### COMPILER' userdata.txt
 sed -i '13i### DISTRIBUTION' userdata.txt
 sed -i '16i### FILESYSTEM' userdata.txt
 sed -i '20i### CUSTOM' userdata.txt
-sed -i '25i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '25i### CLANG/LLVM' userdata.txt
+sed -i '28i### COMPILER TUNING' userdata.txt
+sed -i '30i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # clear screen
 clear

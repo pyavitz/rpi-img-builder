@@ -9,31 +9,42 @@ cd ${SRC}
 }
 
 compiler(){
-case `grep -Fx "gcc=1" "userdata.txt" >/dev/null; echo $?` in
-  0)
+if [[ `grep -w "gcc=1" "userdata.txt"` ]]; then
 	rm -f {gcc.txt,ccache.txt,clang.txt}
-	gcc_compiler
-    ;;
-esac
-case `grep -Fx "ccache=1" "userdata.txt" >/dev/null; echo $?` in
-  0)
-	if [ -e /usr/bin/ccache ]; then :; else sudo apt update && sudo apt install -y ccache && sleep 2s; fi
+	gcc_compiler;
+fi
+if [[ `grep -w "ccache=1" "userdata.txt"` ]]; then
+	if [ -e /usr/bin/ccache ]; then
 	rm -f {gcc.txt,ccache.txt,clang.txt}
-	ccache_compiler
-    ;;
-esac
-case `grep -Fx "clang=1" "userdata.txt" >/dev/null; echo $?` in
-  0)
-	if [ -e /usr/bin/clang-12 ]; then :; else sudo apt update && sudo apt install -y clang clang-12 lld lld-12 llvm && sleep 2s; fi
+	ccache_compiler;
+
+else
+	sudo apt update
+	sudo apt install -y ccache
+	sleep 1s
 	rm -f {gcc.txt,ccache.txt,clang.txt}
-	clang_compiler
-    ;;
-esac
+	ccache_compiler;
+	fi
+fi
+if [[ `grep -w "clang=1" "userdata.txt"` ]]; then
+	if [ -e /usr/bin/clang-12 ]; then
+	rm -f {gcc.txt,ccache.txt,clang.txt}
+	clang_compiler;
+else
+	sudo apt update
+	sudo apt install -y clang clang-12 lld lld-12 llvm
+	sleep 1s
+	rm -f {gcc.txt,ccache.txt,clang.txt}
+	clang_compiler;
+	fi
+fi
 }
 
 mainline_clean(){
-if ls ${MLKERNEL}-${VERSION} > /dev/null 2>&1;
-	then echo "" && echo -e "${PNK}Cleaning${FIN} ..." && rm -fdr ${MLKERNEL}-${VERSION};
+if [ -e ${MLKERNEL}-${VERSION} ]; then
+	echo ""
+	echo -e "${PNK}Cleaning${FIN} ..."
+	rm -fdr ${MLKERNEL}-${VERSION};
 fi
 }
 
@@ -64,9 +75,10 @@ fi
 download_mainline(){
 echo
 echo_mainline
-if ls ${MLKERNEL}-${VERSION}.tar.gz > /dev/null 2>&1;
-	then echo -e "${YLW}${MLKERNEL}-${VERSION}.tar.gz found${FIN}.";
-	else ${DOWNLOAD} ${MLURL}${MLKERNEL}-${VERSION}.tar.gz && echo_bdone;
+if [ -e ${MLKERNEL}-${VERSION}.tar.gz ]; then
+	echo -e "${YLW}${MLKERNEL}-${VERSION}.tar.gz found${FIN}.";
+else
+	${DOWNLOAD} ${MLURL}${MLKERNEL}-${VERSION}.tar.gz && echo_bdone;
 fi
 echo
 echo_extract
@@ -81,9 +93,10 @@ export ARCH=arm64
 download_stable(){
 echo
 echo_stable
-if ls ${MLKERNEL}-${VERSION}.tar.xz > /dev/null 2>&1;
-	then echo -e "${YLW}${MLKERNEL}-${VERSION}.tar.xz found${FIN}.";
-	else ${DOWNLOAD} ${STBURL}${MLKERNEL}-${VERSION}.tar.xz && echo_bdone;
+if [ -e ${MLKERNEL}-${VERSION}.tar.xz ]; then
+	echo -e "${YLW}${MLKERNEL}-${VERSION}.tar.xz found${FIN}.";
+else
+	${DOWNLOAD} ${STBURL}${MLKERNEL}-${VERSION}.tar.xz && echo_bdone;
 fi
 echo
 echo_extract
@@ -119,13 +132,14 @@ cp -R ../${PAT}/builddeb scripts/package/
 cp -R ../${PAT}/mkdebian scripts/package/
 chmod +x scripts/package/builddeb
 chmod +x scripts/package/mkdebian
-if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
-	then patch -p1 < ../${ML}/rpi4b-cc-packaging.patch;
-	else patch -p1 < ../${ML}/rpi4b-nc-packaging.patch;
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+	patch -p1 < ../${ML}/rpi4b-cc-packaging.patch;
+else
+	patch -p1 < ../${ML}/rpi4b-nc-packaging.patch;
 fi
-if ls ../${ML}/misc/*.patch > /dev/null 2>&1;
-	then for i in ../${ML}/misc/*.patch; do patch -p1 < $i; done;
-fi	
+if ls ../${ML}/misc/*.patch > /dev/null 2>&1; then
+	for i in ../${ML}/misc/*.patch; do patch -p1 < $i; done;
+fi
 cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch;
 echo_done
 echo
@@ -134,9 +148,10 @@ echo
 cconfig(){
 echo_cconfig
 cp -f ../${DEF}/${MYCONFIG} arch/arm64/configs/
-if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
-	then make ARCH=arm64 ${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- ${MYCONFIG};
-	else make ARCH=arm64 ${NATIVE} ${MYCONFIG};
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+	make -j${CORES} ARCH=arm64 ${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- ${MYCONFIG};
+else
+	make -j${CORES} ARCH=arm64 ${NATIVE} ${MYCONFIG};
 fi
 echo_done
 }
@@ -146,20 +161,25 @@ echo_fconfig
 cp -f ../${DEF}/bcm2711_defconfig arch/arm64/configs/
 echo CONFIG_MODULE_SIG=y >> arch/arm64/configs/bcm2711_defconfig
 echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm64/configs/bcm2711_defconfig
-if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
-	then make ARCH=arm64 ${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- bcm2711_defconfig &> /dev/null;
-	else make ARCH=arm64 ${NATIVE} bcm2711_defconfig &> /dev/null;
+if [[ `grep -w "lto_clang_thin=1" "../../userdata.txt"` ]]; then
+	echo CONFIG_LTO_CLANG_THIN=y >> arch/arm64/configs/bcm2711_defconfig;
 fi
-    echo_done
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+	make -j${CORES} ARCH=arm64 ${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- bcm2711_defconfig;
+else
+	make -j${CORES} ARCH=arm64 ${NATIVE} bcm2711_defconfig;
+fi
+echo_done
 }
 
 menu_config(){
 echo
 echo_menuconfig
 sleep 1s
-if `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null;`
-	then make ARCH=arm64 ${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- menuconfig;
-	else make ARCH=arm64 ${NATIVE} menuconfig;
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+	make -j${CORES} ARCH=arm64 ${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- menuconfig;
+else
+	make -j${CORES} ARCH=arm64 ${NATIVE} menuconfig;
 fi
 }
 
@@ -178,7 +198,8 @@ native_compile(){
 }
 
 bcm2711_check(){
-if ls ${OUT4}/*.deb > /dev/null 2>&1
-	then mkdir -p ${OUT4}/tmp && mv -f ${OUT4}/*.deb ${OUT4}/tmp;
+if ls ${OUT4}/*.deb > /dev/null 2>&1; then
+	mkdir -p ${OUT4}/tmp
+	mv -f ${OUT4}/*.deb ${OUT4}/tmp;
 fi
 }

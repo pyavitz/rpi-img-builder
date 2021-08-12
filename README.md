@@ -109,6 +109,22 @@ Name:		# Name of _defconfig (Must be placed in defconfig dir.)
 If interested in building a Raspberry Pi 4B image that uses mainline u-boot and linux
 use our other [builder](https://github.com/pyavitz/debian-image-builder).
 
+#### Clang/LLVM
+
+```sh
+nano userdata.txt
+### CLANG/LLVM
+CLANG_LLVM="LLVM=1 LLVM_IAS=1"
+lto_clang_thin=0	# 1 to enable (Arm64 only)
+### COMPILER TUNING
+CFLAGS=""
+```
+Tuning examples: [#34](https://github.com/pyavitz/rpi-img-builder/issues/34)
+```sh
+Arm64: CFLAGS="-march=armv8-a+fp+simd"
+Armv6: CFLAGS="-march=armv6 -mfloat-abi=hard -mfpu=vfp"
+```
+
 #### User defconfig
 
 ```sh
@@ -123,7 +139,7 @@ in the userdata.txt file.
 Patches "-p1" placed in patches/userpatches are applied during
 compilation. This works for both Foundation and Mainline kernels.
 ```
-[CacULE CPU scheduler](https://github.com/hamadmarri/cacule-cpu-scheduler) (Issue: [#30](https://github.com/pyavitz/rpi-img-builder/issues/30))
+[CacULE CPU scheduler](https://github.com/hamadmarri/cacule-cpu-scheduler) [#30](https://github.com/pyavitz/rpi-img-builder/issues/30)
 ```sh
 The CacULE CPU scheduler is a CFS patchset that is based on interactivity score mechanism.
 The interactivity score is inspired by the ULE scheduler (FreeBSD scheduler). The goal of

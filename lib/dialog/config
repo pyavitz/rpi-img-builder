@@ -79,8 +79,11 @@ echo custom_defconfig= >> tmp0
 echo MYCONFIG='"' >> tmp0
 echo userscripts=0 >> tmp0
 echo verbose=0 >> tmp0
+echo CLANG_LLVM='"'LLVM=1 LLVM_IAS=1'"' >> tmp0
+echo lto_clang_thin=0 >> tmp0
+echo CFLAGS='"''"' >> tmp0
 echo rpiuser=1 >> tmp0
-echo builder=3.12 >> tmp0
+echo builder=3.13 >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
 echo >> tmp2
@@ -106,7 +109,9 @@ sed -i '8i### COMPILER' userdata.txt
 sed -i '12i### DISTRIBUTION' userdata.txt
 sed -i '15i### FILESYSTEM' userdata.txt
 sed -i '19i### CUSTOM' userdata.txt
-sed -i '24i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '24i### CLANG/LLVM' userdata.txt
+sed -i '27i### COMPILER TUNING' userdata.txt
+sed -i '29i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # clear screen
 clear
