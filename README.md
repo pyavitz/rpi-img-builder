@@ -109,17 +109,21 @@ Name:		# Name of _defconfig (Must be placed in defconfig dir.)
 If interested in building a Raspberry Pi 4B image that uses mainline u-boot and linux
 use our other [builder](https://github.com/pyavitz/debian-image-builder).
 
-#### Clang/LLVM
+#### Compiler options
 
 ```sh
 nano userdata.txt
-### CLANG/LLVM
-CLANG_LLVM="LLVM=1 LLVM_IAS=1"
-lto_clang_thin=0	# 1 to enable (Arm64 only)
 ### COMPILER TUNING
 CFLAGS=""
 ```
-Tuning examples: [#34](https://github.com/pyavitz/rpi-img-builder/issues/34)
+GCC examples: [fm4dd](https://gist.github.com/fm4dd/c663217935dc17f0fc73c9c81b0aa845) / [valvers](https://www.valvers.com/open-software/raspberry-pi/bare-metal-programming-in-c-part-1)
+
+```sh
+### CLANG/LLVM
+CLANG_LLVM="LLVM=1 LLVM_IAS=1"
+lto_clang_thin=0	# 1 to enable (Arm64 only)
+```
+Clang examples: [#34](https://github.com/pyavitz/rpi-img-builder/issues/34)
 ```sh
 Arm64: CFLAGS="-march=armv8-a+fp+simd"
 Armv6: CFLAGS="-march=armv6 -mfloat-abi=hard -mfpu=vfp"
