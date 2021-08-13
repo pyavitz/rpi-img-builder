@@ -58,71 +58,77 @@ fi
 extract
 
 ### Setup
-if `grep -Fx "bcm2711" "../soc.txt" >/dev/null;`
-	then armv8_setup && rpi4_binaries;
+if [[ `grep -w "bcm2711" "../soc.txt"` ]]; then
+	armv8_setup
+	rpi4_binaries;
 fi
-if `grep -Fx "bcm2710" "../soc.txt" >/dev/null;`
-	then armv8_setup && rpi_binaries;
+if [[ `grep -w "bcm2710" "../soc.txt"` ]]; then
+	armv8_setup
+	rpi_binaries;
 fi
-if `grep -Fx "bcm2708" "../soc.txt" >/dev/null;`
-	then armv6_setup && rpi_binaries;
+if [[ `grep -w "bcm2708" "../soc.txt"` ]]; then
+	armv6_setup
+	rpi_binaries;
 fi
 
 
 ### Patching
-case `grep -Fx "crosscompile=1" "../../userdata.txt" >/dev/null; echo $?` in
-  0)
-    ccpatch
-    ;;
-  1)
-    ncpatch
-    ;;
-esac
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+	ccpatch;
+else
+	ncpatch;
+fi
 
 ### Defconfig
-if `grep -Fx "bcm2711" "../../soc.txt" >/dev/null;`
-	then choose_rpi4_defconfig;
+if [[ `grep -w "bcm2711" "../../soc.txt"` ]]; then
+	choose_rpi4_defconfig;
 fi
-if `grep -Fx "bcm2710" "../../soc.txt" >/dev/null;`
-	then choose_rpi3_defconfig;
+if [[ `grep -w "bcm2710" "../../soc.txt"` ]]; then
+	choose_rpi3_defconfig;
 fi
-if `grep -Fx "bcm2708" "../../soc.txt" >/dev/null;`
-	then choose_rpi_defconfig;
+if [[ `grep -w "bcm2708" "../../soc.txt"` ]]; then
+	choose_rpi_defconfig;
 fi
 
 ### Menuconfig
-if `grep -Fx "bcm2711" "../../soc.txt" >/dev/null;`
-	then choose_v8_menuconfig;
+if [[ `grep -w "bcm2711" "../../soc.txt"` ]]; then
+	choose_v8_menuconfig;
 fi
-if `grep -Fx "bcm2710" "../../soc.txt" >/dev/null;`
-	then choose_v8_menuconfig;
+if [[ `grep -w "bcm2710" "../../soc.txt"` ]]; then
+	choose_v8_menuconfig;
 fi
-if `grep -Fx "bcm2708" "../../soc.txt" >/dev/null;`
-	then choose_v6_menuconfig;
+if [[ `grep -w "bcm2708" "../../soc.txt"` ]]; then
+	choose_v6_menuconfig;
 fi
 
 ### Build deb
-if `grep -Fx "bcm2711" "../../soc.txt" >/dev/null;`
-	then choose_v8_compile;
+if [[ `grep -w "bcm2711" "../../soc.txt"` ]]; then
+	choose_v8_compile;
 fi
-if `grep -Fx "bcm2710" "../../soc.txt" >/dev/null;`
-	then choose_v8_compile;
+if [[ `grep -w "bcm2710" "../../soc.txt"` ]]; then
+	choose_v8_compile;
 fi
-if `grep -Fx "bcm2708" "../../soc.txt" >/dev/null;`
-	then choose_v6_compile;
+if [[ `grep -w "bcm2708" "../../soc.txt"` ]]; then
+	choose_v6_compile;
 fi
 echo
 cd ..
 rm -f linux-libc-dev*.deb
 rm -f *.buildinfo
 rm -f *.changes
-if `grep -Fx "bcm2711" "../soc.txt" >/dev/null;`
-	then bcm2711_check && mkdir -p ${OUT4} && mv -f *.deb ${OUT4}/;
+if [[ `grep -w "bcm2711" "../soc.txt"` ]]; then
+	bcm2711_check
+	mkdir -p ${OUT4}
+	mv -f *.deb ${OUT4}/;
 fi
-if `grep -Fx "bcm2710" "../soc.txt" >/dev/null;`
-	then bcm2710_check && mkdir -p ${OUT3} && mv -f *.deb ${OUT3}/;
+if [[ `grep -w "bcm2710" "../soc.txt"` ]]; then
+	bcm2710_check
+	mkdir -p ${OUT3}
+	mv -f *.deb ${OUT3}/;
 fi
-if `grep -Fx "bcm2708" "../soc.txt" >/dev/null;`
-	then bcm2708_check && mkdir -p ${OUT} && mv -f *.deb ${OUT}/;
+if [[ `grep -w "bcm2708" "../soc.txt"` ]]; then
+	bcm2708_check
+	mkdir -p ${OUT}
+	mv -f *.deb ${OUT}/;
 fi
 echo_done

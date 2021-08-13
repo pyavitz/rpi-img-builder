@@ -78,7 +78,8 @@ echo_mainline
 if [ -e ${MLKERNEL}-${VERSION}.tar.gz ]; then
 	echo -e "${YLW}${MLKERNEL}-${VERSION}.tar.gz found${FIN}.";
 else
-	${DOWNLOAD} ${MLURL}${MLKERNEL}-${VERSION}.tar.gz && echo_bdone;
+	${DOWNLOAD} ${MLURL}${MLKERNEL}-${VERSION}.tar.gz
+	echo_bdone;
 fi
 echo
 echo_extract
@@ -96,7 +97,8 @@ echo_stable
 if [ -e ${MLKERNEL}-${VERSION}.tar.xz ]; then
 	echo -e "${YLW}${MLKERNEL}-${VERSION}.tar.xz found${FIN}.";
 else
-	${DOWNLOAD} ${STBURL}${MLKERNEL}-${VERSION}.tar.xz && echo_bdone;
+	${DOWNLOAD} ${STBURL}${MLKERNEL}-${VERSION}.tar.xz
+	echo_bdone;
 fi
 echo
 echo_extract
