@@ -315,6 +315,27 @@ Usage: governor -h
 A service runs 'governor -r' during boot.
 ```
 
+#### Turn off leds (Debian / Ubuntu}
+```
+activity led
+sudo systemctl enable actledoff
+sudo systemctl start actledoff
+
+power led
+sudo systemctl enable pwrledoff
+sudo systemctl start pwrledoff
+```
+
+#### Turn off leds (Devuan)
+```
+activity led
+sudo update-rc.d actledoff defaults 2
+sudo service actledoff start
+
+power led
+sudo update-rc.d pwrledoff defaults 2
+sudo service pwrledoff start
+```
 ---
 
 ### Support
