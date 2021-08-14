@@ -1,7 +1,7 @@
 # Clang 12
 clang_compiler(){
-echo NATIVE='"'${CLANG_LLVM}'"' CFLAGS='"'${CFLAGS}'"' > clang.txt
-echo ARMV6_CROSS='"'CC=/usr/bin/clang-12'"' CFLAGS='"'${CFLAGS}'"' >> clang.txt
-echo ARM64_CROSS='"'${CLANG_LLVM}'"' CFLAGS='"'${CFLAGS}'"' >> clang.txt
+echo NATIVE='"'${CLANG_LLVM}'"' > clang.txt
+echo ARMV6_CROSS='"'${CLANG_LLVM}'"' >> clang.txt
+echo ARM64_CROSS='"'${CLANG_LLVM}'"' >> clang.txt
 source clang.txt
 }

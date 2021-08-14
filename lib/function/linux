@@ -151,9 +151,9 @@ cconfig(){
 echo_cconfig
 cp -f ../${DEF}/${MYCONFIG} arch/arm64/configs/
 if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
-	make -j${CORES} ARCH=arm64 ${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- ${MYCONFIG};
+	make -j${CORES} ARCH=arm64 ${ARM64_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=aarch64-linux-gnu- ${MYCONFIG};
 else
-	make -j${CORES} ARCH=arm64 ${NATIVE} ${MYCONFIG};
+	make -j${CORES} ARCH=arm64 ${NATIVE} CFLAGS="${CFLAGS}" ${MYCONFIG};
 fi
 echo_done
 }
@@ -167,9 +167,9 @@ if [[ `grep -w "lto_clang_thin=1" "../../userdata.txt"` ]]; then
 	echo CONFIG_LTO_CLANG_THIN=y >> arch/arm64/configs/bcm2711_defconfig;
 fi
 if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
-	make -j${CORES} ARCH=arm64 ${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- bcm2711_defconfig;
+	make -j${CORES} ARCH=arm64 ${ARM64_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=aarch64-linux-gnu- bcm2711_defconfig;
 else
-	make -j${CORES} ARCH=arm64 ${NATIVE} bcm2711_defconfig;
+	make -j${CORES} ARCH=arm64 ${NATIVE} CFLAGS="${CFLAGS}" bcm2711_defconfig;
 fi
 echo_done
 }
@@ -179,23 +179,23 @@ echo
 echo_menuconfig
 sleep 1s
 if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
-	make -j${CORES} ARCH=arm64 ${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- menuconfig;
+	make -j${CORES} ARCH=arm64 ${ARM64_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=aarch64-linux-gnu- menuconfig;
 else
-	make -j${CORES} ARCH=arm64 ${NATIVE} menuconfig;
+	make -j${CORES} ARCH=arm64 ${NATIVE} CFLAGS="${CFLAGS}" menuconfig;
 fi
 }
 
 cross_compile(){
     echo -e "-- ${GRN}CC${FIN}"
     echo_build
-    echo 'y' | make -j${CORES} KBUILD_BUILD_HOST=${KBHOST} ARCH=arm64 ${ARM64_CROSS} CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
+    echo 'y' | make -j${CORES} ARCH=arm64 KBUILD_BUILD_HOST=${KBHOST} ${ARM64_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
     rm -f ../*libc*.deb
 }
 
 native_compile(){
     echo -e "-- ${GRN}NC${FIN}"
     echo_build
-    echo 'y' | make -j${CORES} KBUILD_BUILD_HOST=${KBHOST} ${NATIVE} ARCH=arm64 bindeb-pkg
+    echo 'y' | make -j${CORES} ARCH=arm64 KBUILD_BUILD_HOST=${KBHOST} ${NATIVE} CFLAGS="${CFLAGS}" bindeb-pkg
     rm -f ../*libc*.deb
 }
 
