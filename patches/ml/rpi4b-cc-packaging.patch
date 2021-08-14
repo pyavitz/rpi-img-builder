@@ -91,7 +91,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
 +	cat > $kernel_headers_dir/DEBIAN/postinst <<EOT
 +#!/bin/bash
 +# compile headers
-+CORES=$(grep -c 'processor' /proc/cpuinfo)
++#
 +clean_headers(){
 +echo 'y' | make M=scripts clean
 +if [ -e headers-byteshift.patch ]; then patch -p1 < headers-byteshift.patch; fi
@@ -104,8 +104,8 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
 +echo -e "\e[1;37mCompiling headers\e[0m ..."
 +find -type f -exec touch {} +
 +clean_headers > /dev/null 2>&1
-+echo 'y' | make -j${CORES} -s scripts >/dev/null
-+echo 'y' | make -j${CORES} -s M=scripts/mod/ >/dev/null
++echo 'y' | make -j\$(grep -c 'processor' /proc/cpuinfo) -s scripts >/dev/null
++echo 'y' | make -j\$(grep -c 'processor' /proc/cpuinfo) -s M=scripts/mod/ >/dev/null
 +exit 0
 +EOT
 +
