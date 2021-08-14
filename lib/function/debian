@@ -1,10 +1,21 @@
 # STAGE 1
-stable_sources(){
+buster_sources(){
 rm -f p2/etc/apt/sources.list
 tee p2/etc/apt/sources.list <<EOF
 deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free
 deb http://deb.debian.org/debian ${DISTRO_VERSION}-updates main contrib non-free
 deb http://security.debian.org/debian-security ${DISTRO_VERSION}/updates main contrib non-free
+deb http://deb.debian.org/debian/ ${DISTRO_VERSION}-backports main contrib non-free
+EOF
+}
+
+bullseye_sources(){
+rm -f p2/etc/apt/sources.list
+tee p2/etc/apt/sources.list <<EOF
+deb http://deb.debian.org/debian/ ${DISTRO_VERSION} main contrib non-free
+deb http://deb.debian.org/debian/ ${DISTRO_VERSION}-updates main contrib non-free
+deb http://deb.debian.org/debian ${DISTRO_VERSION}-proposed-updates main contrib non-free
+deb http://deb.debian.org/debian-security/ ${DISTRO_VERSION}-security main contrib non-free
 deb http://deb.debian.org/debian/ ${DISTRO_VERSION}-backports main contrib non-free
 EOF
 }
@@ -18,10 +29,10 @@ EOF
 
 distro_release(){
 if `grep -Fx 'DISTRO_VERSION="buster"' "userdata.txt" >/dev/null;`
-	then stable_sources;
+	then buster_sources;
 fi
 if `grep -Fx 'DISTRO_VERSION="bullseye"' "userdata.txt" >/dev/null;`
-	then unstable_sources;
+	then bullseye_sources;
 fi
 if `grep -Fx 'DISTRO_VERSION="testing"' "userdata.txt" >/dev/null;`
 	then unstable_sources;
