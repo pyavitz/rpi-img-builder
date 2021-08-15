@@ -133,10 +133,10 @@ adduser ${user} --gecos ${user^} --disabled-password
 
 user_config(){
 if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
-	bcm2711_user
+	bcm2711_user;
 fi
 if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
-	bcm2710_user
+	bcm2710_user;
 fi
 
 echo "${user}:${passwd}" | chpasswd
@@ -204,10 +204,10 @@ sed -i '1 a 127.0.1.1	bcm2711' /etc/hosts
 
 admin_config(){
 if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
-	bcm2711_admin
+	bcm2711_admin;
 fi
 if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
-	bcm2710_admin
+	bcm2710_admin;
 fi
 
 groupadd spi
