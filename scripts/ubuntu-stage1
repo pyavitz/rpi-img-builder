@@ -27,22 +27,24 @@ else
     userdata
 fi
 
-if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
-	then set -eux -o pipefail;
-	else set -eu -o pipefail;
+if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
+	set -eux -o pipefail;
+else
+	set -eu -o pipefail;
 fi
-if ls /usr/bin/toilet > /dev/null 2>&1
-	then toilet -f small --filter metal 'Raspberry Pi';
-	else echo -e "${RED}Raspberry Pi Image Builder${FIN}";
+if [ -e /usr/bin/toilet ]; then
+	toilet -f small --filter metal 'Raspberry Pi';
+else
+	echo -e "${RED}Raspberry Pi Image Builder${FIN}";
 fi
 RAM=0
 PROXY=""
 IMAGE_FOLDER="img/"
-if `grep -Fx "bcm2711" "soc.txt" >/dev/null;`
-	then DEVICE_SOC="rpi-4" ;
+if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
+	DEVICE_SOC="rpi-4";
 fi 
-if `grep -Fx "bcm2710" "soc.txt" >/dev/null;`
-	then DEVICE_SOC="rpi-3" ;
+if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
+	DEVICE_SOC="rpi-3";
 fi
 IMAGE_DATE="$(date +%F)"
 IMAGE_FILE_NAME="${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img"
@@ -54,34 +56,53 @@ if [ $RAM -ne 0 ]; then
 	mount -t tmpfs -o size=3G tmpfs $IMAGE_FOLDER
 fi
 
-if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
-	then image_size;
-	else image_size > /dev/null 2>&1;
+if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
+	image_size;
+else
+	image_size > /dev/null 2>&1;
 fi
-if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
-	then partition_uuid;
-	else partition_uuid > /dev/null 2>&1;
+if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
+	partition_uuid;
+else
+	partition_uuid > /dev/null 2>&1;
 fi
 
 ### cmd line
-echo && echo
+echo
+echo
 echo -e -n "${RED}Setting up boot directory${FIN}."
 cmdline > /dev/null 2>&1
-if [ -e p1/cmdline.txt ];
-	then echo && echo -n "cmdline.txt " && sleep 1s && echo_nok;
-	else echo && echo -n "cmdline.txt " && sleep 1s && echo_fail && exit;
+if [ -e p1/cmdline.txt ]; then
+	echo
+	echo -n "cmdline.txt "
+	sleep 1s
+	echo_nok;
+else
+	echo
+	echo -n "cmdline.txt "
+	sleep 1s
+	echo_fail
+	exit;
 fi
 
 ### config dot txt
-if `grep -Fx "bcm2711" "soc.txt" >/dev/null;`
-	then bcm2711_config > /dev/null 2>&1;
+if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
+	bcm2711_config > /dev/null 2>&1;
 fi
-if `grep -Fx "bcm2710" "soc.txt" >/dev/null;`
-	then bcm2710_config > /dev/null 2>&1;
+if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
+	bcm2710_config > /dev/null 2>&1;
 fi
-if [ -e p1/config.txt ];
-	then echo && echo -n "config.txt  " && sleep 1s && echo_nok;
-	else echo && echo -n "config.txt  " && sleep 1s && echo_fail && exit;
+if [ -e p1/config.txt ]; then
+	echo
+	echo -n "config.txt  "
+	sleep 1s
+	echo_nok;
+else
+	echo
+	echo -n "config.txt  "
+	sleep 1s
+	echo_fail
+	exit;
 fi
 
 ### rootfs
@@ -93,17 +114,19 @@ echo "force-unsafe-io" > "p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
 mkdir -p p2/usr/bin
 cp $(which "qemu-aarch64-static") p2/usr/bin
 
-if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
-	then distro_release;
-	else distro_release > /dev/null 2>&1;
+if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
+	distro_release;
+else
+	distro_release > /dev/null 2>&1;
 fi
 
-if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
-	then create_fstab;
-	else create_fstab > /dev/null 2>&1;
+if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
+	create_fstab;
+else
+	create_fstab > /dev/null 2>&1;
 fi
 
-if [ -n "$PROXY" ] ; then
+if [ -n "$PROXY" ]; then
 	tee "p2/etc/apt/apt.conf.d/30proxy" <<EOF
 Acquire::http::proxy "http://127.0.0.1:3142";
 EOF
@@ -116,11 +139,11 @@ cp lib/function/universal p2/root/universal.txt
 cp lib/source p2/root/source.txt
 cp userdata.txt p2/root
 cp soc.txt p2/root
-if `grep -Fx "bcm2711" "soc.txt" >/dev/null;`
-	then cp output/bcm2711/*.deb p2/root;
+if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
+	cp output/bcm2711/*.deb p2/root;
 fi
-if `grep -Fx "bcm2710" "soc.txt" >/dev/null;`
-	then cp output/bcm2710/*.deb p2/root;
+if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
+	cp output/bcm2710/*.deb p2/root;
 fi
 cp files/ubuntu/misc/* p2/root
 cp files/ubuntu/patches/* p2/root
@@ -130,8 +153,8 @@ cp files/misc/* p2/root
 cp files/scripts/* p2/root
 cp files/users/* p2/root
 cp firmware/{fw-0a5c_21e8.hcd,UPDATE.mem} p2/root
-if `grep -Fx "userscripts=1" "userdata.txt" >/dev/null;`
-	then uscripts_stage1;
+if [[ `grep -w "userscripts=1" "userdata.txt"` ]]; then
+	uscripts_stage1;
 fi
 echo -e "${RED}Starting chroot${FIN} ..."
 # Mount and chroot
@@ -150,7 +173,7 @@ rm p2/root/ubuntu-stage2
 rm -f p2/root/*.txt
 rm -f p2/var/cache/debconf/*
 
-if [ -n "$PROXY" ] ; then
+if [ -n "$PROXY" ]; then
 	rm p2/etc/apt/apt.conf.d/30proxy
 fi
 rm p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
@@ -169,13 +192,18 @@ fi
 rmdir "${IMAGE_FOLDER}"
 rmdir p1 p2
 
-if `grep -Fx "ext4=1" "userdata.txt" >/dev/null;`
-	then ext4_shrink;
-	else :;
+if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
+	ext4_shrink;
+else
+	:;
 fi
 
-if `grep -Fx "admin=1" "userdata.txt" >/dev/null;`
-	then echo && echo_compress && compress_image && echo_done;
-	else rename_image;
+if [[ `grep -w "admin=1" "userdata.txt"` ]]; then
+	echo
+	echo_compress
+	compress_image
+	echo_done;
+else
+	rename_image;
 fi
-rm -f part-uuid.txt soc.txt kernel.txt
+rm -f {part-uuid.txt,soc.txt,kernel.txt}

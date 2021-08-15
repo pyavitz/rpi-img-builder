@@ -38,14 +38,14 @@ fi
 
 apt_preferences
 echo
-if `grep -Fx "ext4=1" "/root/userdata.txt" >/dev/null;`
-	then apt install -y e2fsprogs;
+if [[ `grep -w "ext4=1" "/root/userdata.txt"` ]]; then
+	apt install -y e2fsprogs;
 fi
-if `grep -Fx "btrfs=1" "/root/userdata.txt" >/dev/null;`
-	then apt install -y btrfs-progs;
+if [[ `grep -w "btrfs=1" "/root/userdata.txt"` ]]; then
+	apt install -y btrfs-progs;
 fi
-if `grep -Fx "xfs=1" "/root/userdata.txt" >/dev/null;`
-	then apt install -y xfsprogs;
+if [[ `grep -w "xfs=1" "/root/userdata.txt"` ]]; then
+	apt install -y xfsprogs;
 fi
 apt install -y ${UBUNTU1} ${UBUNTU2}
 apt -y clean
@@ -60,25 +60,17 @@ mkdir -p /usr/local/bin
 mkdir -p /usr/local/sbin
 # Scripts
 led_service
-mv -f run-setup /usr/local/bin/
-mv -f sysinfo /usr/local/bin/
-mv -f smon /usr/local/bin/
-case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
-  0)
+if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
 	wget -cq --show-progress ${URL}write2usb
-	mv -f write2usb /usr/local/bin/
 	wget -cq --show-progress ${URL}deb-eeprom
-	mv -f deb-eeprom /usr/local/bin/
-    ;;
-esac
+	mv -f {write2usb,deb-eeprom} /usr/local/bin/;
+fi
 mv -f growpart /usr/bin/
-mv -f credentials /usr/local/bin/
 wget -cq --show-progress ${URL}fetch
-mv -f fetch /usr/local/bin/
 wget -cq --show-progress ${URL}governor
-mv -f governor /usr/local/bin/
-if `grep -Fx "userscripts=1" "/root/userdata.txt" >/dev/null;`
-	then uscripts_stage2;
+mv -f {run-setup,sysinfo,smon,credentials,fetch,governor} /usr/local/bin/
+if [[ `grep -w "userscripts=1" "/root/userdata.txt"` ]]; then
+	uscripts_stage2;
 fi
 initrd_script
 # Service
@@ -124,11 +116,11 @@ echo Done.
 extra_firmware
 
 ### Network Setup
-if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
-	then bcm2711_network ;
+if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
+	bcm2711_network;
 fi
-if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
-	then bcm2710_network ;
+if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
+	bcm2710_network;
 fi
 
 ### ZSWAP
@@ -165,14 +157,14 @@ cd ~
 dpkg -i raspberrypi-sys-mods*.deb
 rm -fdR raspberrypi-sys-mods*
 echo Removing vscode repo...
-if ls /etc/apt/sources.list.d/vscode.list > /dev/null 2>&1
-	then rm -f /etc/apt/sources.list.d/vscode.list;
+if [ -e /etc/apt/sources.list.d/vscode.list ]; then
+	rm -f /etc/apt/sources.list.d/vscode.list;
 fi
-if ls /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null 2>&1
-	then rm -f /etc/apt/trusted.gpg.d/microsoft.gpg;
+if [ -e /etc/apt/trusted.gpg.d/microsoft.gpg ]; then
+	rm -f /etc/apt/trusted.gpg.d/microsoft.gpg;
 fi
-if ls /etc/apt/preferences.d/3rd_parties.pref > /dev/null 2>&1
-	then rm -f /etc/apt/preferences.d/3rd_parties.pref;
+if [ -e /etc/apt/preferences.d/3rd_parties.pref ]; then
+	rm -f /etc/apt/preferences.d/3rd_parties.pref;
 fi
 echo Done.
 
@@ -183,8 +175,8 @@ pi_bluetooth
 rpi_userland
 
 ### Adding eeprom
-if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
-	then bcm2711_eeprom ;
+if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
+	bcm2711_eeprom;
 fi
 
 #### Kernel
@@ -203,30 +195,25 @@ sleep 1s
 fetch_version
 
 ### Modules
-if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
-	then bcm_modules ;
+if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
+	bcm_modules;
 fi
-if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
-	then bcm2710_modules ;
+if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
+	bcm2710_modules;
 fi
 
 ### Admin or user
-case `grep -Fx "admin=1" "/root/userdata.txt" >/dev/null; echo $?` in
-  0)
-	admin_config
-    ;;
-  1)
-	user_config
-	if `grep -Fx "rootpasswd=1" "/root/userdata.txt" >/dev/null;`
-		then root_password;
-	fi
-    ;;
-esac
+if [[ `grep -w "admin=1" "/root/userdata.txt"` ]]; then
+	admin_config;
+else
+	user_config;
+fi
+if [[ `grep -w "rootpasswd=1" "/root/userdata.txt"` ]]; then
+	root_password;
+fi
 
 ### Clean misc files
-rm -f *.patch
-rm -f *led*
-rm -f *eeprom*
+rm -f {*.patch,*led*,*eeprom*}
 
 ### Vchiq permissions
 echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0777"' > /etc/udev/rules.d/10-vchiq-permissions.rules

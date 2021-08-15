@@ -92,17 +92,17 @@ EOF
 }
 
 distro_release(){
-if `grep -Fx 'DISTRO_VERSION="focal"' "userdata.txt" >/dev/null;`
-	then focal_sources;
+if [[ `grep -w 'DISTRO_VERSION="focal"' "userdata.txt"` ]]; then
+	focal_sources;
 fi
-if `grep -Fx 'DISTRO_VERSION="groovy"' "userdata.txt" >/dev/null;`
-	then groovy_sources;
+if [[ `grep -w 'DISTRO_VERSION="groovy"' "userdata.txt"` ]]; then
+	groovy_sources;
 fi
-if `grep -Fx 'DISTRO_VERSION="hirsute"' "userdata.txt" >/dev/null;`
-	then hirsute_sources;
+if [[ `grep -w 'DISTRO_VERSION="hirsute"' "userdata.txt"` ]]; then
+	hirsute_sources;
 fi
-if `grep -Fx 'DISTRO_VERSION="impish"' "userdata.txt" >/dev/null;`
-	then impish_sources;
+if [[ `grep -w 'DISTRO_VERSION="impish"' "userdata.txt"` ]]; then
+	impish_sources;
 fi
 }
 
@@ -132,16 +132,12 @@ adduser ${user} --gecos ${user^} --disabled-password
 }
 
 user_config(){
-case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
-  0)
+if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
 	bcm2711_user
-    ;;
-esac
-case `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null; echo $?` in
-  0)
+fi
+if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
 	bcm2710_user
-    ;;
-esac
+fi
 
 echo "${user}:${passwd}" | chpasswd
 adduser ${user} sudo
@@ -207,16 +203,12 @@ sed -i '1 a 127.0.1.1	bcm2711' /etc/hosts
 }
 
 admin_config(){
-case `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null; echo $?` in
-  0)
+if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
 	bcm2711_admin
-    ;;
-esac
-case `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null; echo $?` in
-  0)
+fi
+if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
 	bcm2710_admin
-    ;;
-esac
+fi
 
 groupadd spi
 groupadd i2c
@@ -333,7 +325,7 @@ systemctl enable firstboot
 systemctl enable credentials
 systemctl enable governor
 #systemctl enable serial-getty@ttyUSB0.service
-if ls /etc/systemd/system/multi-user.target.wants/ondemand.service
-	then systemctl disable ondemand;
+if [ -e /etc/systemd/system/multi-user.target.wants/ondemand.service ]; then
+	systemctl disable ondemand;
 fi
 }

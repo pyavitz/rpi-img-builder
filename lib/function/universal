@@ -18,13 +18,11 @@ rm p2/usr/bin/qemu-arm-static
 }
 
 bcm2708_initrd(){
-case `grep -Fx "bcm2708" "soc.txt" >/dev/null; echo $?` in
-  0)
-if `grep -Fx "ext4=1" "userdata.txt" >/dev/null;`
-	then sed -i 's/initramfs initrd.gz/#initramfs initrd.gz/g' p1/config.txt;
+if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
+	if [[ `grep -Fx "ext4=1" "userdata.txt"` ]]; then
+		sed -i 's/initramfs initrd.gz/#initramfs initrd.gz/g' p1/config.txt;
+	fi
 fi
-    ;;
-esac
 }
 
 aarch64_extract(){
@@ -157,14 +155,14 @@ mv -f userland-remove-hi-pi.patch /root/userland/
 cd userland
 patch -p1 < userland-remove-hi-pi.patch
 rm -f userland-remove-hi-pi.patch
-if `grep -Fx "bcm2711" "/root/soc.txt" >/dev/null;`
-	then ./buildme --aarch64 ;
+if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
+	./buildme --aarch64;
 fi
-if `grep -Fx "bcm2710" "/root/soc.txt" >/dev/null;`
-	then ./buildme --aarch64 ;
+if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
+	./buildme --aarch64;
 fi
-if `grep -Fx "bcm2708" "/root/soc.txt" >/dev/null;`
-	then ./buildme ;
+if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
+	./buildme;
 fi
 cd ~
 rm -f -d -R userland
@@ -222,14 +220,14 @@ cat /usr/src/linux-headers*/include/config/kernel.release > /root/kernel2
 echo '"' > /root/kernel3
 paste -d '\0' kernel1 kernel2 kernel3  > /root/kernel.txt
 rm -f kernel1 kernel2 kernel3
-if `grep -Fx "ext4=1" "/root/userdata.txt" >/dev/null;`
-	then echo FSTYPE='"'ext4'"' >> /root/kernel.txt;
+if [[ `grep -w "ext4=1" "/root/userdata.txt"` ]]; then
+	echo FSTYPE='"'ext4'"' >> /root/kernel.txt;
 fi
-if `grep -Fx "btrfs=1" "/root/userdata.txt" >/dev/null;`
-	then echo FSTYPE='"'btrfs'"' >> /root/kernel.txt;
+if [[ `grep -w "btrfs=1" "/root/userdata.txt"` ]]; then
+	echo FSTYPE='"'btrfs'"' >> /root/kernel.txt;
 fi
-if `grep -Fx "xfs=1" "/root/userdata.txt" >/dev/null;`
-	then echo FSTYPE='"'xfs'"' >> /root/kernel.txt;
+if [[ `grep -w "xfs=1" "/root/userdata.txt"` ]]; then
+	echo FSTYPE='"'xfs'"' >> /root/kernel.txt;
 fi
 }
 
@@ -269,9 +267,13 @@ rm -f UPDATE.mem
 ln -sr /lib/firmware /etc/firmware
 mkdir -p /lib/firmware/updates/rtl_nic
 cd /lib/firmware/updates/rtl_nic
-wget -cq --show-progress https://kernel.googlesource.com/pub/scm/linux/kernel/git/firmware/linux-firmware.git/+archive/refs/heads/master/rtl_nic.tar.gz
-tar xf rtl_nic.tar.gz
-rm -f rtl_nic.tar.gz
+wget -cq https://kernel.googlesource.com/pub/scm/linux/kernel/git/firmware/linux-firmware.git/+archive/refs/heads/master/rtl_nic.tar.gz
+if [ -e rtl_nic.tar.gz ]; then
+	tar xf rtl_nic.tar.gz
+	rm -f rtl_nic.tar.gz;
+else
+	:;
+fi
 cd ~
 echo Done.
 }
@@ -397,22 +399,23 @@ EOF
 ### Finish
 # Defrag
 defrag_p2(){
-if `grep -Fx "ext4=1" "userdata.txt" >/dev/null;`
-	then e4defrag -c p2;
+if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
+	e4defrag -c p2;
 fi
-if `grep -Fx "btrfs=1" "userdata.txt" >/dev/null;`
-	then btrfs filesystem defragment -f -r p2;
+if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
+	btrfs filesystem defragment -f -r p2;
 fi
-if `grep -Fx "xfs=1" "userdata.txt" >/dev/null;`
-	then xfs_fsr p2;
+if [[ `grep -w "xfs=1" "userdata.txt"` ]]; then
+	xfs_fsr p2;
 fi
 }
 
 # Shrink
 ext4_shrink(){
-if `grep -Fx "verbose=1" "userdata.txt" >/dev/null;`
-	then shrink;
-	else start_shrink;
+if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
+	shrink;
+else
+	start_shrink;
 fi
 }
 
