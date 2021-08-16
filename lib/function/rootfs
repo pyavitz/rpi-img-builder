@@ -2,8 +2,11 @@ check_keyring(){
 URL="https://pkgmaster.devuan.org/devuan/pool/main/d/devuan-keyring/"
 FILE="devuan-keyring_2017.10.03_all.deb"
 if ls /usr/share/keyrings/{devuan-archive-keyring.gpg,devuan-keyring.gpg} > /dev/null 2>&1;
-	then : ;
-	else wget -cq --show-progress $URL$FILE && sudo dpkg -i $FILE && rm -f $FILE;
+	then :;
+else
+	wget -cq --show-progress $URL$FILE
+	sudo dpkg -i $FILE
+	rm -f $FILE;
 fi
 }
 

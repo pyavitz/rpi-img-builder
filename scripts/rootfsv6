@@ -30,23 +30,26 @@ if [ -f "$UD" ]; then
 else 
     userdata
 fi
-if `grep -Fx 'DISTRO="ubuntu"' "userdata.txt" >/dev/null;`
-	then echo -e "${YLW}Ubuntu is not supported${FIN}." && exit;
+if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; then
+	echo -e "${YLW}Ubuntu is not supported${FIN}."
+	exit;
 fi
-if `grep -Fx 'DISTRO="devuan"' "userdata.txt" >/dev/null;`
-	then check_keyring;
+if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
+	check_keyring;
 fi
 echo
 validation
-if `grep -Fx "verbose=1" "userdata.txt" > /dev/null 2>&1;`
-	then set -eux -o pipefail;
-	else set -eu -o pipefail;
+if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
+	set -eux -o pipefail;
+else
+	set -eu -o pipefail;
 fi
 ROOT="sysroot"
 ROOTFS_ARCH="rootfs-armel"
 RELEASE=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
-if ls $RELEASE > /dev/null 2>&1;
-	then ls $RELEASE && exit;
+if [ -e $RELEASE ];
+	then ls $RELEASE
+	exit;
 fi
 echo -e "${GRN}Starting debootstrap${FIN} ..."
 echo -e -n ${RED}
@@ -54,9 +57,10 @@ echo -e -n ${RED}
 # start debootstrap
 mkdir -p ${ROOT}/usr/bin
 cp $(which "qemu-arm-static") ${ROOT}/usr/bin
-if `grep -Fx 'DISTRO="devuan"' "userdata.txt" >/dev/null;`
-	then armv6_devuan;
-	else armv6_debootstrap
+if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
+	armv6_devuan;
+else
+	armv6_debootstrap
 fi
 rm -f ${ROOT}/usr/bin/qemu-arm-static
 rm -f ${ROOT}/var/cache/debconf/*

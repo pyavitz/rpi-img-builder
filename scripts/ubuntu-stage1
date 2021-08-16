@@ -69,9 +69,6 @@ else
 fi
 
 ### cmd line
-echo
-echo
-echo -e -n "${RED}Setting up boot directory${FIN}."
 cmdline > /dev/null 2>&1
 if [ -e p1/cmdline.txt ]; then
 	echo
