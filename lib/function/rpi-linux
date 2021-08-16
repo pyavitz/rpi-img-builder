@@ -384,9 +384,6 @@ echo_done
 rpi2_fconfig(){
 echo -e "${RED}Making bcm2709 defconfig${FIN}."
 module_sig
-if [[ `grep -w "lto_clang_thin=1" "../../userdata.txt"` ]]; then
-	echo CONFIG_LTO_CLANG_THIN=y >> arch/arm/configs/bcm2709_defconfig;
-fi
 if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
 	make -j${CORES} ARCH=arm ${ARMV7_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=arm-linux-gnueabihf- bcm2709_defconfig;
 else
