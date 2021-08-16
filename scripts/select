@@ -22,12 +22,17 @@ else
     userdata
 fi
 
-if `grep -Fx "rpiuser=1" "userdata.txt" >/dev/null;`
-	then make kernel;
-fi
-if `grep -Fx "admin=1" "userdata.txt" >/dev/null;`
-	then make kernel;
-fi
-if `grep -Fx "devuser=1" "userdata.txt" >/dev/null;`
-	then make mainline;
+if [ `grep -w "rpiuser=1" "userdata.txt"` ]]; then
+	make kernel;
+else
+	if [[ `grep -w "admin=1" "userdata.txt"` ]]; then
+		make kernel;
+	else
+		if [[ `grep -w "devuser=1" "userdata.txt"` ]]; then
+			make mainline;
+		else
+			echo "${WHT}Something went wrong? Please check the userdata.txt file.${FIN}"
+			exit;
+		fi
+	fi
 fi

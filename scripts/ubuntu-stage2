@@ -40,12 +40,14 @@ apt_preferences
 echo
 if [[ `grep -w "ext4=1" "/root/userdata.txt"` ]]; then
 	apt install -y e2fsprogs;
-fi
-if [[ `grep -w "btrfs=1" "/root/userdata.txt"` ]]; then
-	apt install -y btrfs-progs;
-fi
-if [[ `grep -w "xfs=1" "/root/userdata.txt"` ]]; then
-	apt install -y xfsprogs;
+else
+	if [[ `grep -w "btrfs=1" "/root/userdata.txt"` ]]; then
+		apt install -y btrfs-progs;
+	else
+		if [[ `grep -w "xfs=1" "/root/userdata.txt"` ]]; then
+			apt install -y xfsprogs;
+		fi
+	fi
 fi
 apt install -y ${UBUNTU1} ${UBUNTU2}
 apt -y clean

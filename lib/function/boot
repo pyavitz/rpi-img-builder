@@ -1,12 +1,14 @@
 image_size(){
-if `grep -Fx "ext4=1" "userdata.txt" >/dev/null;`
-	then truncate -s ${EXT4} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
-fi
-if `grep -Fx "btrfs=1" "userdata.txt" >/dev/null;`
-	then truncate -s ${BTRFS} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
-fi
-if `grep -Fx "xfs=1" "userdata.txt" >/dev/null;`
-	then truncate -s ${XFS} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
+	truncate -s ${EXT4} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+else
+	if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
+		truncate -s ${BTRFS} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+	else
+		if [[ `grep -w "xfs=1" "userdata.txt"` ]]; then
+			truncate -s ${XFS} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+		fi
+	fi
 fi
 partitions
 }
@@ -37,43 +39,49 @@ IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
 IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
 partprobe "${IMAGE_LOOP_DEV}"
 mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
-if `grep -Fx "ext4=1" "userdata.txt" >/dev/null;`
-	then mkfs.ext4 -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}";
-fi
-if `grep -Fx "btrfs=1" "userdata.txt" >/dev/null;`
-	then mkfs.btrfs -f -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}";
-fi
-if `grep -Fx "xfs=1" "userdata.txt" >/dev/null;`
-	then mkfs.xfs -f -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}";
+if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
+	mkfs.ext4 -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}";
+else
+	if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
+		mkfs.btrfs -f -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}";
+	else
+		if [[ `grep -Fx "xfs=1" "userdata.txt"` ]]; then
+			mkfs.xfs -f -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}";
+		fi
+	fi
 fi
 mkdir -p p1 p2
 mount "${IMAGE_LOOP_DEV_BOOT}" p1
 mount "${IMAGE_LOOP_DEV_ROOTFS}" p2
-if `grep -Fx "btrfs=1" "userdata.txt" >/dev/null;`
-	then btrfs subvolume create p2/@;
+if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
+	btrfs subvolume create p2/@;
 fi
 sync
 umount p2
-if `grep -Fx "ext4=1" "userdata.txt" >/dev/null;`
-	then mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2;
-fi
-if `grep -Fx "btrfs=1" "userdata.txt" >/dev/null;`
-	then mount -o compress=lzo,noatime,subvol=@ "${IMAGE_LOOP_DEV_ROOTFS}" p2;
-fi
-if `grep -Fx "xfs=1" "userdata.txt" >/dev/null;`
-	then mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2;
+if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
+	mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2;
+else
+	if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
+		mount -o compress=lzo,noatime,subvol=@ "${IMAGE_LOOP_DEV_ROOTFS}" p2;
+	else
+		if [[ `grep -w "xfs=1" "userdata.txt"` ]]; then
+			mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2;
+		fi
+	fi
 fi
 }
 
 create_fstab(){
-if `grep -Fx "ext4=1" "userdata.txt" >/dev/null;`
-	then ext4_fstab;
-fi
-if `grep -Fx "btrfs=1" "userdata.txt" >/dev/null;`
-	then btrfs_fstab;
-fi
-if `grep -Fx "xfs=1" "userdata.txt" >/dev/null;`
-	then xfs_fstab;
+if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
+	ext4_fstab;
+else
+	if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
+		btrfs_fstab;
+	else
+		if [[ `grep -w "xfs=1" "userdata.txt"` ]]; then
+			xfs_fstab;
+		fi
+	fi
 fi
 }
 
@@ -114,14 +122,16 @@ source part-uuid.txt
 }
 
 cmdline(){
-if `grep -Fx "ext4=1" "userdata.txt" >/dev/null;`
-	then cmdline_ext4;
-fi
-if `grep -Fx "btrfs=1" "userdata.txt" >/dev/null;`
-	then cmdline_btrfs;
-fi
-if `grep -Fx "xfs=1" "userdata.txt" >/dev/null;`
-	then cmdline_xfs;
+if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
+	cmdline_ext4;
+else
+	if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
+		cmdline_btrfs;
+	else
+		if [[ `grep -w "xfs=1" "userdata.txt"` ]]; then
+			cmdline_xfs;
+		fi
+	fi
 fi
 }
 

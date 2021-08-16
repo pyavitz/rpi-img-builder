@@ -97,7 +97,7 @@ fi
 finding_eeprom(){
 EEPROM_VERSION=$(curl --silent -L ${CHANGELOG} | awk '{if (NR==10) {print substr($2, 1, length($2)-3)}}' | sed 's/[()]//g')
 if [[ `wget -S --spider ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]];
-	then download_eeprom; else EEPROM_VERSION="12.3" && download_eeprom;
+	then download_eeprom; else EEPROM_VERSION="12.9" && download_eeprom;
 fi
 }
 
@@ -155,14 +155,16 @@ mv -f userland-remove-hi-pi.patch /root/userland/
 cd userland
 patch -p1 < userland-remove-hi-pi.patch
 rm -f userland-remove-hi-pi.patch
-if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
+if [[ `grep -w "arm64" "/root/soc.txt"` ]]; then
+	echo -e "\e[1;37m== ARM64\e[0m"
+	sleep 2s
 	./buildme --aarch64;
-fi
-if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
-	./buildme --aarch64;
-fi
-if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
-	./buildme;
+else
+	if [[ `grep -w "arm" "/root/soc.txt"` ]]; then
+		echo -e "\e[1;37m== ARM\e[0m"
+		sleep 2s
+		./buildme;
+	fi
 fi
 cd ~
 rm -f -d -R userland
@@ -401,35 +403,25 @@ EOF
 defrag_p2(){
 if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
 	e4defrag -c p2;
-fi
-if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
-	btrfs filesystem defragment -f -r p2;
-fi
-if [[ `grep -w "xfs=1" "userdata.txt"` ]]; then
-	xfs_fsr p2;
+else
+	if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
+		btrfs filesystem defragment -f -r p2;
+	else
+		if [[ `grep -w "xfs=1" "userdata.txt"` ]]; then
+			xfs_fsr p2;
+		fi
+	fi
 fi
 }
 
 # Shrink
 ext4_shrink(){
-if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
-	shrink;
-else
-	start_shrink;
-fi
-}
-
-start_shrink(){
 echo
 echo_shrink
-shrink > /dev/null 2>&1
-echo_done
-}
-
-shrink(){
 chmod +x scripts/shrink
 scripts/shrink -s ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img
 fix_cmdline
+echo_done
 }
 
 fix_cmdline(){

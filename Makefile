@@ -135,12 +135,14 @@ ncompile:
 kernel:
 	# Linux | aarch64
 	@ echo bcm2711 > soc.txt
+	@ echo arm64 >> soc.txt
 	@chmod +x ${XLINUX}
 	@${LINUX}
 
 image:
 	# Making bootable image
 	@ echo bcm2711 > soc.txt
+	@ echo arm64 >> soc.txt
 	@chmod +x ${CHOOSE}
 	@${CHOOSE}
 
@@ -150,6 +152,7 @@ all:
 	#
 	# Building linux
 	@ echo bcm2711 > soc.txt
+	@ echo arm64 >> soc.txt
 	@chmod +x ${SELECT}
 	@${SELECT}
 	# Creating ROOTFS tarball
@@ -157,12 +160,14 @@ all:
 	@${ROOTFSV8}
 	# Making bootable image
 	@ echo bcm2711 > soc.txt
+	@ echo arm64 >> soc.txt
 	@chmod +x ${CHOOSE}
 	@${CHOOSE}
 
 mainline:
 	# Mainline Linux | aarch64
 	@ echo bcm2711 > soc.txt
+	@ echo arm64 >> soc.txt
 	@chmod +x ${XMAINLINE}
 	@${MAINLINE}
 
@@ -170,12 +175,14 @@ mainline:
 rpi3-kernel:
 	# Linux | aarch64
 	@ echo bcm2710 > soc.txt
+	@ echo arm64 >> soc.txt
 	@chmod +x ${XLINUX}
 	@${LINUX}
 
 rpi3-image:
 	# Making bootable image
 	@ echo bcm2710 > soc.txt
+	@ echo arm64 >> soc.txt
 	@chmod +x ${CHOOSE}
 	@${CHOOSE}
 
@@ -185,6 +192,7 @@ rpi3-all:
 	#
 	# Building linux
 	@ echo bcm2710 > soc.txt
+	@ echo arm64 >> soc.txt
 	@chmod +x ${XLINUX}
 	@${LINUX}
 	# Creating ROOTFS tarball
@@ -192,6 +200,7 @@ rpi3-all:
 	@${ROOTFSV8}
 	# Making bootable image
 	@ echo bcm2710 > soc.txt
+	@ echo arm64 >> soc.txt
 	@chmod +x ${CHOOSE}
 	@${CHOOSE}
 
@@ -199,12 +208,14 @@ rpi3-all:
 rpi-kernel:
 	# Linux | armv6l
 	@ echo bcm2708 > soc.txt
+	@ echo arm >> soc.txt
 	@chmod +x ${XLINUX}
 	@${LINUX}
 
 rpi-image:
 	# Make bootable image
 	@ echo bcm2708 > soc.txt
+	@ echo arm >> soc.txt
 	@chmod +x ${CHOOSE}
 	@${CHOOSE}
 
@@ -214,6 +225,7 @@ rpi-all:
 	#
 	# Building linux
 	@ echo bcm2708 > soc.txt
+	@ echo arm >> soc.txt
 	@chmod +x ${XLINUX}
 	@${LINUX}
 	# Creating ROOTFS tarball
@@ -221,6 +233,7 @@ rpi-all:
 	@${ROOTFSV6}
 	# Making bootable img
 	@ echo bcm2708 > soc.txt
+	@ echo arm >> soc.txt
 	@chmod +x ${CHOOSE}
 	@${CHOOSE}
 

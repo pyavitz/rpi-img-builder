@@ -33,7 +33,7 @@ else
 	set -eu -o pipefail;
 fi
 if [ -e /usr/bin/toilet ]; then
-	toilet -f small --filter metal 'Raspberry Pi';
+	toilet -f small --filter metal 'Debian';
 else
 	echo -e "${RED}Raspberry Pi Image Builder${FIN}";
 fi
@@ -42,12 +42,14 @@ PROXY=""
 IMAGE_FOLDER="img/"
 if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
 	DEVICE_SOC="rpi-4";
-fi
-if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
-	DEVICE_SOC="rpi-3";
-fi
-if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
-	DEVICE_SOC="rpi";
+else
+	if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
+		DEVICE_SOC="rpi-3";
+	else
+		if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
+			DEVICE_SOC="rpi";
+		fi
+	fi
 fi
 IMAGE_DATE="$(date +%F)"
 IMAGE_FILE_NAME="${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img"
@@ -90,12 +92,14 @@ fi
 ### config dot txt
 if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
 	bcm2711_config > /dev/null 2>&1;
-fi
-if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
-	bcm2710_config > /dev/null 2>&1;
-fi
-if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
-	bcm2708_config > /dev/null 2>&1;
+else
+	if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
+		bcm2710_config > /dev/null 2>&1;
+	else
+		if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
+			bcm2708_config > /dev/null 2>&1;
+		fi
+	fi
 fi
 if [ -e p1/config.txt ]; then
 	echo
@@ -111,28 +115,24 @@ else
 fi
 bcm2708_initrd
 ### extract rootfs
-if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
+if [[ `grep -w "arm64" "soc.txt"` ]]; then
 	aarch64_rootfs;
-fi
-if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
-	aarch64_rootfs;
-fi
-if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
-	armel_rootfs;
+else
+	if [[ `grep -w "arm" "soc.txt"` ]]; then
+		armel_rootfs;
+	fi
 fi
 
 mkdir -p p2/etc/apt/apt.conf.d p2/etc/dpkg/dpkg.cfg.d
 echo "force-unsafe-io" > "p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
 
 # qemu static
-if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
+if [[ `grep -w "arm64" "soc.txt"` ]]; then
 	qemu_arm64;
-fi
-if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
-	qemu_arm64;
-fi
-if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
-	qemu_arm;
+else
+	if [[ `grep -w "arm" "soc.txt"` ]]; then
+		qemu_arm;
+	fi
 fi
 
 if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
@@ -161,12 +161,14 @@ cp userdata.txt p2/root
 cp soc.txt p2/root
 if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
 	cp output/bcm2711/*.deb p2/root;
-fi
-if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
-	cp output/bcm2710/*.deb p2/root;
-fi
-if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
-	cp output/bcm2708/*.deb p2/root;
+else
+	if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
+		cp output/bcm2710/*.deb p2/root;
+	else
+		if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
+			cp output/bcm2708/*.deb p2/root;
+		fi
+	fi
 fi
 cp files/debian/misc/* p2/root
 cp files/debian/patches/* p2/root
@@ -191,14 +193,12 @@ umount p2/dev
 umount p2/boot
 
 # qemu remove static
-if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
+if [[ `grep -w "arm64" "soc.txt"` ]]; then
 	qemu_arm64_remove;
-fi
-if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
-	qemu_arm64_remove;
-fi
-if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
-	qemu_arm_remove;
+else
+	if [[ `grep -w "arm" "soc.txt"` ]]; then
+		qemu_arm_remove;
+	fi
 fi
 cp -f p2/root/kernel.txt .
 rm p2/root/debian-stage2
