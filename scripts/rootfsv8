@@ -56,7 +56,7 @@ cp $(which "qemu-aarch64-static") ${ROOT}/usr/bin
 if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
 	arm64_devuan;
 else
-	arm64_debootstrap
+	arm64_debootstrap;
 fi
 rm -f ${ROOT}/usr/bin/qemu-aarch64-static
 rm -f ${ROOT}/var/cache/debconf/*

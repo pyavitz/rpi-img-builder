@@ -60,7 +60,7 @@ cp $(which "qemu-arm-static") ${ROOT}/usr/bin
 if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
 	armv6_devuan;
 else
-	armv6_debootstrap
+	armv6_debootstrap;
 fi
 rm -f ${ROOT}/usr/bin/qemu-arm-static
 rm -f ${ROOT}/var/cache/debconf/*
