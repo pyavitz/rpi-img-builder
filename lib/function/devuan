@@ -39,6 +39,12 @@ sed -i '1 a 127.0.1.1	bcm2708' /etc/hosts
 adduser ${user} --gecos ${user^} --disabled-password
 }
 
+bcm2709_user(){
+echo -n 'bcm2709' > /etc/hostname
+sed -i '1 a 127.0.1.1	bcm2709' /etc/hosts
+adduser ${user} --gecos ${user^} --disabled-password
+}
+
 bcm2710_user(){
 echo -n 'bcm2710' > /etc/hostname
 sed -i '1 a 127.0.1.1	bcm2710' /etc/hosts
@@ -57,6 +63,9 @@ if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
 fi
 if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
 	bcm2710_user;
+fi
+if [[ `grep -w "bcm2709" "/root/soc.txt"` ]]; then
+	bcm2709_user;
 fi
 if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
 	bcm2708_user;
@@ -125,6 +134,11 @@ echo -n 'bcm2708' > /etc/hostname
 sed -i '1 a 127.0.1.1	bcm2708' /etc/hosts
 }
 
+bcm2709_admin(){
+echo -n 'bcm2709' > /etc/hostname
+sed -i '1 a 127.0.1.1	bcm2709' /etc/hosts
+}
+
 bcm2710_admin(){
 echo -n 'bcm2710' > /etc/hostname
 sed -i '1 a 127.0.1.1	bcm2710' /etc/hosts
@@ -141,6 +155,9 @@ if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
 fi
 if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
 	bcm2710_admin;
+fi
+if [[ `grep -w "bcm2709" "/root/soc.txt"` ]]; then
+	bcm2709_admin;
 fi
 if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
 	bcm2708_admin;

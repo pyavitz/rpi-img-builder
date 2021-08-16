@@ -46,8 +46,12 @@ else
 	if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
 		DEVICE_SOC="rpi-3";
 	else
-		if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
-			DEVICE_SOC="rpi";
+		if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
+			DEVICE_SOC="rpi-2~3";
+		else
+			if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
+				DEVICE_SOC="rpi";
+			fi
 		fi
 	fi
 fi
@@ -93,8 +97,12 @@ else
 	if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
 		bcm2710_config > /dev/null 2>&1;
 	else
-		if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
-			bcm2708_config > /dev/null 2>&1;
+		if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
+			bcm2709_config > /dev/null 2>&1;
+		else
+			if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
+				bcm2708_config > /dev/null 2>&1;
+			fi
 		fi
 	fi
 fi
@@ -115,8 +123,12 @@ bcm2708_initrd
 if [[ `grep -w "arm64" "soc.txt"` ]]; then
 	aarch64_rootfs;
 else
-	if [[ `grep -w "arm" "soc.txt"` ]]; then
-		armel_rootfs;
+	if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
+		armhf_rootfs;
+	else
+		if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
+			armel_rootfs;
+		fi
 	fi
 fi
 
@@ -162,8 +174,12 @@ else
 	if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
 		cp output/bcm2710/*.deb p2/root;
 	else
-		if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
-			cp output/bcm2708/*.deb p2/root;
+		if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
+			cp output/bcm2709/*.deb p2/root;
+		else
+			if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
+				cp output/bcm2708/*.deb p2/root;
+			fi
 		fi
 	fi
 fi

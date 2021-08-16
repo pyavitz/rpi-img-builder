@@ -45,6 +45,10 @@ if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
 else 
 	if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
 		DEVICE_SOC="rpi-3";
+	else
+		if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
+			DEVICE_SOC="rpi-2~3";
+		fi
 	fi
 fi
 IMAGE_DATE="$(date +%F)"
@@ -89,6 +93,10 @@ if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
 else
 	if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
 		bcm2710_config > /dev/null 2>&1;
+	else
+		if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
+			bcm2709_config > /dev/null 2>&1;
+		fi
 	fi
 fi
 if [ -e p1/config.txt ]; then
@@ -105,13 +113,25 @@ else
 fi
 
 ### rootfs
-aarch64_rootfs
+if [[ `grep -w "arm64" "soc.txt"` ]]; then
+	aarch64_rootfs;
+else
+	if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
+		armhf_rootfs;
+	fi
+fi
 
 mkdir -p p2/etc/apt/apt.conf.d p2/etc/dpkg/dpkg.cfg.d
 echo "force-unsafe-io" > "p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
 
-mkdir -p p2/usr/bin
-cp $(which "qemu-aarch64-static") p2/usr/bin
+# qemu static
+if [[ `grep -w "arm64" "soc.txt"` ]]; then
+	qemu_arm64;
+else
+	if [[ `grep -w "arm" "soc.txt"` ]]; then
+		qemu_arm;
+	fi
+fi
 
 if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
 	distro_release;
@@ -143,6 +163,10 @@ if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
 else
 	if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
 		cp output/bcm2710/*.deb p2/root;
+	else
+		if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
+			cp output/bcm2709/*.deb p2/root;
+		fi
 	fi
 fi
 cp files/ubuntu/misc/* p2/root
@@ -167,7 +191,14 @@ umount p2/dev/pts
 umount p2/dev
 umount p2/boot
 
-rm p2/usr/bin/qemu-aarch64-static
+# qemu remove static
+if [[ `grep -w "arm64" "soc.txt"` ]]; then
+	qemu_arm64_remove;
+else
+	if [[ `grep -w "arm" "soc.txt"` ]]; then
+		qemu_arm_remove;
+	fi
+fi
 cp -f p2/root/kernel.txt .
 rm p2/root/ubuntu-stage2
 rm -f p2/root/*.txt

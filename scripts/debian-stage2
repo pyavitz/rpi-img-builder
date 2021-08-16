@@ -202,6 +202,9 @@ fi
 if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
 	bcm2710_modules;
 fi
+if [[ `grep -w "bcm2709" "/root/soc.txt"` ]]; then
+	bcm2710_modules;
+fi
 if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
 	bcm_modules;
 fi
@@ -234,6 +237,9 @@ if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
 	led_switches;
 fi
 if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
+	led_switches;
+fi
+if [[ `grep -w "bcm2709" "/root/soc.txt"` ]]; then
 	led_switches;
 fi
 

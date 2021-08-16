@@ -137,6 +137,12 @@ fi
 if `grep -Fx "bcm2708" "/etc/opt/soc.txt" >/dev/null;`
 	then create_cmdline > /dev/null 2>&1;
 fi
+if `grep -Fx "bcm2709" "/etc/opt/soc.txt" >/dev/null;`
+	then partition_uuid > /dev/null 2>&1;
+fi
+if `grep -Fx "bcm2709" "/etc/opt/soc.txt" >/dev/null;`
+	then create_cmdline > /dev/null 2>&1;
+fi
 }
 
 ### Grow Partition

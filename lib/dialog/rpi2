@@ -1,6 +1,6 @@
 #!/bin/bash
 ### DO NOT EDIT
-OUTPUT="output/bcm2710"
+OUTPUT="output/bcm2709"
 DIALOG_CANCEL=1
 DIALOG_ESC=255
 HEIGHT=0
@@ -16,7 +16,7 @@ while true; do
   exec 3>&1
   selection=$(dialog \
     --backtitle "Raspberry Pi Image Builder" \
-    --title "Raspberry Pi 3/A/B/+" \
+    --title "Raspberry Pi 2B" \
     --clear \
     --cancel-label "Exit" \
     --menu "Select:" $HEIGHT $WIDTH 4 \
@@ -45,21 +45,21 @@ while true; do
       echo "Program terminated."
       ;;
     1 )
-      make rpi3-all
-      dialog --prgbox "Results:" "ls rpi-3*.img* *aarch64* $OUTPUT/" 30 70
+      make rpi2-all
+      dialog --prgbox "Results:" "ls rpi-2~3*.img* *armhf* $OUTPUT/" 30 70
       exit 0
       ;;
     2 )
-      make rpi3-kernel
+      make rpi2-kernel
       dialog --prgbox "Results:" "ls $OUTPUT/*.deb" 30 70
       ;;
     3 )
-      make rootfs
-      dialog --prgbox "Results:" "ls *aarch64*" 30 70
+      make rootfsv7
+      dialog --prgbox "Results:" "ls *armhf*" 30 70
       ;;
     4 )
-      make rpi3-image
-      dialog --prgbox "Results:" "ls rpi-3*.img*" 30 70
+      make rpi2-image
+      dialog --prgbox "Results:" "ls rpi-2~3*.img*" 30 70
       ;;
   esac
 done

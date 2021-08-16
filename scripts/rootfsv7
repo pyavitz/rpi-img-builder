@@ -1,5 +1,5 @@
 #!/bin/bash
-#ARMEL ROOTFS
+#ARMHF ROOTFS
 RED="\e[0;31m"
 BRED="\e[1;31m"
 GRN="\e[0;32m"
@@ -30,10 +30,6 @@ if [ -f "$UD" ]; then
 else 
     userdata
 fi
-if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; then
-	echo -e "${YLW}Ubuntu is not supported${FIN}."
-	exit;
-fi
 if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
 	check_keyring;
 fi
@@ -45,10 +41,10 @@ else
 	set -eu -o pipefail;
 fi
 ROOT="sysroot"
-ROOTFS_ARCH="rootfs-armel"
+ROOTFS_ARCH="rootfs-armhf"
 RELEASE=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
-if [ -e $RELEASE ];
-	then ls $RELEASE
+if [ -e $RELEASE ]; then
+	ls $RELEASE
 	exit;
 fi
 echo -e "${GRN}Starting debootstrap${FIN} ..."
@@ -58,9 +54,9 @@ echo -e -n ${RED}
 mkdir -p ${ROOT}/usr/bin
 cp $(which "qemu-arm-static") ${ROOT}/usr/bin
 if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
-	armel_devuan;
+	armhf_devuan;
 else
-	armel_debootstrap;
+	armhf_debootstrap;
 fi
 rm -f ${ROOT}/usr/bin/qemu-arm-static
 rm -f ${ROOT}/var/cache/debconf/*

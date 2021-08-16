@@ -2,7 +2,8 @@
 
 ## The boards and distributions that are currently supported
 * Raspberry Pi 4B | Debian, Devuan and Ubuntu
-* Raspberry Pi 2/3/A/B/+ | Debian, Devuan and Ubuntu
+* Raspberry Pi 3/A/B/+ | Debian, Devuan and Ubuntu
+* Raspberry Pi 2B | Debian, Devuan and Ubuntu
 * Raspberry Pi 0/W/B/+ | Debian and Devuan
 * [Raspberry Pi Hardware](https://www.raspberrypi.org/documentation/hardware/raspberrypi)
 
@@ -116,17 +117,13 @@ nano userdata.txt
 ### COMPILER TUNING
 CFLAGS=""
 ```
-GCC examples: [fm4dd](https://gist.github.com/fm4dd/c663217935dc17f0fc73c9c81b0aa845) / [valvers](https://www.valvers.com/open-software/raspberry-pi/bare-metal-programming-in-c-part-1)
+**GCC flags:** [fm4dd](https://gist.github.com/fm4dd/c663217935dc17f0fc73c9c81b0aa845) / [valvers](https://www.valvers.com/open-software/raspberry-pi/bare-metal-programming-in-c-part-1)
+**Clang flags:** [#34](https://github.com/pyavitz/rpi-img-builder/issues/34)
 
 ```sh
 ### CLANG/LLVM
 CLANG_LLVM="LLVM=1 LLVM_IAS=1"
 lto_clang_thin=0	# 1 to enable (Arm64 only)
-```
-Clang examples: [#34](https://github.com/pyavitz/rpi-img-builder/issues/34)
-```sh
-Arm64: CFLAGS="-march=armv8-a+fp+simd"
-Armv6: CFLAGS="-march=armv6 -mfloat-abi=hard -mfpu=vfp"
 ```
 
 #### User defconfig
@@ -151,6 +148,7 @@ this patch is to enhance system responsiveness/latency.
 ```
 
 #### User scripts
+
 ```sh
 nano userdata.txt
 # place scripts in files/userscripts directory
@@ -162,26 +160,35 @@ userscripts=0	# 1 to enable
 #### Raspberry Pi 4B
 
 ```sh
-# AARCH64
+# ARM64
 make all	# kernel > rootfs > image (run at own risk)
 make kernel	# Foundation
 make mainline	# Mainline
 make image
 ```
 
-#### Raspberry Pi 2/3/A/B/+
+#### Raspberry Pi 3/A/B/+
 
 ```sh
-# AARCH64
+# ARM64
 make rpi3-all	# kernel > rootfs > image (run at own risk)
 make rpi3-kernel
 make rpi3-image
 ```
 
+#### Raspberry Pi 2B
+
+```sh
+# ARMHF
+make rpi2-all	# kernel > rootfs > image (run at own risk)
+make rpi2-kernel
+make rpi2-image
+```
+
 #### Raspberry Pi 0/0W/B/+
 
 ```sh
-# ARMv6l
+# ARMEL
 make rpi-all	# kernel > rootfs > image (run at own risk)
 make rpi-kernel
 make rpi-image
@@ -190,8 +197,9 @@ make rpi-image
 #### Root Filesystems
 
 ```sh
-make rootfs   # arm64
-make rootfsv6 # armel
+make rootfs     # arm64
+make rootfsv7   # armhf
+make rootfsv6   # armel
 ```
 
 #### Miscellaneous
@@ -286,10 +294,10 @@ Usage: fetch -h
    -U       Update Raspberry Pi Userland
 
    -u       Update Fetch
-   -s       Not working? Setup Fetch
 
 fetch -u will list available options and kernel revisions
 ```
+
 #### Simple wifi helper (Debian / Devuan)
 ```sh
 swh -h
@@ -301,6 +309,7 @@ swh -h
    -W       Edit wpa supplicant
    -I       Edit interfaces
 ```
+
 #### CPU frequency scaling
 ```sh
 Usage: governor -h

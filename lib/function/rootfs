@@ -10,7 +10,7 @@ else
 fi
 }
 
-# aarch64
+# arm64
 arm64_debootstrap(){
 debootstrap --arch arm64 --foreign ${DISTRO_VERSION} ${ROOT}
 chroot ${ROOT} /debootstrap/debootstrap --second-stage
@@ -22,13 +22,25 @@ debootstrap --arch arm64 --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VER
 chroot ${ROOT} /debootstrap/debootstrap --second-stage
 }
 
-# armv6
-armv6_debootstrap(){
+# armhf
+armhf_debootstrap(){
+debootstrap --arch armhf --foreign ${DISTRO_VERSION} ${ROOT}
+chroot ${ROOT} /debootstrap/debootstrap --second-stage
+}
+
+armhf_devuan(){
+KEY="/usr/share/keyrings/devuan-archive-keyring.gpg"
+debootstrap --arch armhf --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VERSION} ${ROOT} http://pkgmaster.devuan.org/merged
+chroot ${ROOT} /debootstrap/debootstrap --second-stage
+}
+
+# armel
+armel_debootstrap(){
 debootstrap --arch armel --foreign ${DISTRO_VERSION} ${ROOT}
 chroot ${ROOT} /debootstrap/debootstrap --second-stage
 }
 
-armv6_devuan(){
+armel_devuan(){
 KEY="/usr/share/keyrings/devuan-archive-keyring.gpg"
 debootstrap --arch armel --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VERSION} ${ROOT} http://pkgmaster.devuan.org/merged
 chroot ${ROOT} /debootstrap/debootstrap --second-stage

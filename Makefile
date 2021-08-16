@@ -8,6 +8,8 @@ DIALOGRC=$(shell cp -f lib/dialogrc ~/.dialogrc)
 # rootfs
 RFSV8=./scripts/rootfsv8
 ROOTFSV8=sudo ./scripts/rootfsv8
+RFSV7=./scripts/rootfsv7
+ROOTFSV7=sudo ./scripts/rootfsv7
 RFSV6=./scripts/rootfsv6
 ROOTFSV6=sudo ./scripts/rootfsv6
 
@@ -77,7 +79,8 @@ commands:
 	@echo "Boards:"
 	@echo
 	@echo "  bcm2711                 Raspberry Pi 4B"
-	@echo "  bcm2710                 Raspberry Pi 2/3/A/B/+"
+	@echo "  bcm2710                 Raspberry Pi 3/A/B/+"
+	@echo "  bcm2709                 Raspberry Pi 2B"
 	@echo "  bcm2708                 Raspberry Pi 0/0W/B/+"
 	@echo
 	@echo "bcm2711:"
@@ -91,6 +94,12 @@ commands:
 	@echo "  make rpi3-kernel        Builds linux kernel"
 	@echo "  make rpi3-image         Make bootable image"
 	@echo "  make rpi3-all           Kernel > rootfs > image"
+	@echo
+	@echo "bcm2709:"
+	@echo " "
+	@echo "  make rpi2-kernel        Builds linux kernel"
+	@echo "  make rpi2-image         Make bootable image"
+	@echo "  make rpi2-all           Kernel > rootfs > image"
 	@echo
 	@echo "bcm2708:"
 	@echo " "
@@ -115,14 +124,13 @@ commands:
 	@echo "  make helper		  Download a binary Linux package"
 	@echo
 
-# aarch64
 ccompile:
-	# Installing cross dependencies:
+	# Installing x86_64 cross dependencies:
 	@chmod +x ${CCOMPILE}
 	@${CCOMPILE}
 	
 ccompile64:
-	# Installing cross dependencies:
+	# Installing arm64 cross dependencies:
 	@chmod +x ${CCOMPILE64}
 	@${CCOMPILE64}
 
@@ -131,9 +139,9 @@ ncompile:
 	@chmod +x ${NCOMPILE}
 	@${NCOMPILE}
 
-# Raspberry Pi 4 | aarch64
+# Raspberry Pi 4
 kernel:
-	# Linux | aarch64
+	# Linux
 	@ echo bcm2711 > soc.txt
 	@ echo arm64 >> soc.txt
 	@chmod +x ${XLINUX}
@@ -147,7 +155,7 @@ image:
 	@${CHOOSE}
 
 all:
-	# RPi4B | aarch64
+	# Raspberry Pi 4
 	# - - - - - - - -
 	#
 	# Building linux
@@ -165,15 +173,15 @@ all:
 	@${CHOOSE}
 
 mainline:
-	# Mainline Linux | aarch64
+	# Mainline Linux
 	@ echo bcm2711 > soc.txt
 	@ echo arm64 >> soc.txt
 	@chmod +x ${XMAINLINE}
 	@${MAINLINE}
 
-# Raspberry Pi 2 / 3 | aarch64
+# Raspberry Pi 3
 rpi3-kernel:
-	# Linux | aarch64
+	# Linux
 	@ echo bcm2710 > soc.txt
 	@ echo arm64 >> soc.txt
 	@chmod +x ${XLINUX}
@@ -187,7 +195,7 @@ rpi3-image:
 	@${CHOOSE}
 
 rpi3-all:
-	# RPi2/3 | aarch64
+	# Raspberry Pi 3
 	# - - - - - - - -
 	#
 	# Building linux
@@ -203,10 +211,43 @@ rpi3-all:
 	@ echo arm64 >> soc.txt
 	@chmod +x ${CHOOSE}
 	@${CHOOSE}
+	
+# Raspberry Pi 2
+rpi2-kernel:
+	# Linux
+	@ echo bcm2709 > soc.txt
+	@ echo arm >> soc.txt
+	@chmod +x ${XLINUX}
+	@${LINUX}
 
-# Raspberry Pi | armv6l
+rpi2-image:
+	# Making bootable image
+	@ echo bcm2709 > soc.txt
+	@ echo arm >> soc.txt
+	@chmod +x ${CHOOSE}
+	@${CHOOSE}
+
+rpi2-all:
+	# Raspberry Pi 2
+	# - - - - - - - -
+	#
+	# Building linux
+	@ echo bcm2709 > soc.txt
+	@ echo arm >> soc.txt
+	@chmod +x ${XLINUX}
+	@${LINUX}
+	# Creating ROOTFS tarball
+	@chmod +x ${RFSV7}
+	@${ROOTFSV7}
+	# Making bootable image
+	@ echo bcm2709 > soc.txt
+	@ echo arm >> soc.txt
+	@chmod +x ${CHOOSE}
+	@${CHOOSE}
+
+# Raspberry Pi
 rpi-kernel:
-	# Linux | armv6l
+	# Linux
 	@ echo bcm2708 > soc.txt
 	@ echo arm >> soc.txt
 	@chmod +x ${XLINUX}
@@ -220,7 +261,7 @@ rpi-image:
 	@${CHOOSE}
 
 rpi-all:
-	# RPi | armv6l
+	# Raspberry Pi
 	# - - - - - - - -
 	#
 	# Building linux
@@ -242,6 +283,11 @@ rootfs:
 	# ROOTFS
 	@chmod +x ${RFSV8}
 	@${ROOTFSV8}
+	
+rootfsv7:
+	# ROOTFS
+	@chmod +x ${RFSV7}
+	@${ROOTFSV7}
 
 rootfsv6:
 	# ROOTFS
@@ -363,6 +409,11 @@ helper:
 	# BCM2708
 	@chmod +x ${XHELPER}
 	@${HELPER} -1
+	
+2709:
+	# BCM2709
+	@chmod +x ${XHELPER}
+	@${HELPER} -2
 
 2710:
 	# BCM2710

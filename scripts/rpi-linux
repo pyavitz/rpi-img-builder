@@ -66,11 +66,14 @@ if [[ `grep -w "bcm2710" "../soc.txt"` ]]; then
 	armv8_setup
 	rpi_binaries;
 fi
+if [[ `grep -w "bcm2709" "../soc.txt"` ]]; then
+	armv7_setup
+	rpi_binaries;
+fi
 if [[ `grep -w "bcm2708" "../soc.txt"` ]]; then
 	armv6_setup
 	rpi_binaries;
 fi
-
 
 ### Patching
 if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
@@ -86,6 +89,9 @@ fi
 if [[ `grep -w "bcm2710" "../../soc.txt"` ]]; then
 	choose_rpi3_defconfig;
 fi
+if [[ `grep -w "bcm2709" "../../soc.txt"` ]]; then
+	choose_rpi2_defconfig;
+fi
 if [[ `grep -w "bcm2708" "../../soc.txt"` ]]; then
 	choose_rpi_defconfig;
 fi
@@ -97,6 +103,9 @@ fi
 if [[ `grep -w "bcm2710" "../../soc.txt"` ]]; then
 	choose_v8_menuconfig;
 fi
+if [[ `grep -w "bcm2709" "../../soc.txt"` ]]; then
+	choose_v7_menuconfig;
+fi
 if [[ `grep -w "bcm2708" "../../soc.txt"` ]]; then
 	choose_v6_menuconfig;
 fi
@@ -107,6 +116,9 @@ if [[ `grep -w "bcm2711" "../../soc.txt"` ]]; then
 fi
 if [[ `grep -w "bcm2710" "../../soc.txt"` ]]; then
 	choose_v8_compile;
+fi
+if [[ `grep -w "bcm2709" "../../soc.txt"` ]]; then
+	choose_v7_compile;
 fi
 if [[ `grep -w "bcm2708" "../../soc.txt"` ]]; then
 	choose_v6_compile;
@@ -125,6 +137,11 @@ if [[ `grep -w "bcm2710" "../soc.txt"` ]]; then
 	bcm2710_check
 	mkdir -p ${OUT3}
 	mv -f *.deb ${OUT3}/;
+fi
+if [[ `grep -w "bcm2709" "../soc.txt"` ]]; then
+	bcm2709_check
+	mkdir -p ${OUT2}
+	mv -f *.deb ${OUT2}/;
 fi
 if [[ `grep -w "bcm2708" "../soc.txt"` ]]; then
 	bcm2708_check

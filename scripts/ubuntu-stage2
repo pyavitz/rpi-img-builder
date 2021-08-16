@@ -124,6 +124,9 @@ fi
 if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
 	bcm2710_network;
 fi
+if [[ `grep -w "bcm2709" "/root/soc.txt"` ]]; then
+	bcm2710_network;
+fi
 
 ### ZSWAP
 echo
@@ -201,6 +204,9 @@ if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
 	bcm_modules;
 fi
 if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
+	bcm2710_modules;
+fi
+if [[ `grep -w "bcm2709" "/root/soc.txt"` ]]; then
 	bcm2710_modules;
 fi
 

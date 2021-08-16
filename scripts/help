@@ -78,6 +78,34 @@ ls output/bcm2708/*.deb
 echo
 }
 
+rpi2(){
+os_release
+echo
+echo -e "${RED}Downloading${FIN} ..."
+if [[ `wget -S --spider ${URL}rpi2-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+	${DOWNLOAD} ${URL}rpi2-${VERSION}.tar.xz
+	echo_bdone;
+else
+	echo -e "${WHT}Something went wrong? Please report which Distribution and Release you are trying to download.${FIN}"
+	exit;
+fi
+echo
+echo -e "${RED}Extracting archive${FIN} ..."
+echo -e -n "${WHT}"
+pv rpi2-${VERSION}.tar.xz | tar -xJ rpi2-${VERSION}
+echo -e -n "${FIN}"
+rm -f rpi2-${VERSION}.tar.xz
+if [ -e output/bcm2709 ]; then
+	sudo rm -fdr output/bcm2709;
+fi
+mkdir -p output
+mv rpi2-${VERSION} output/bcm2709
+echo
+echo -e "${RED}Results${FIN}:"
+ls output/bcm2709/*.deb
+echo
+}
+
 rpi3(){
 os_release
 echo
@@ -150,6 +178,9 @@ while getopts "1234h" OPTION; do
                 1)
                         ECHO="rpi"
                         ;;
+                2)
+                        ECHO="rpi2"
+                        ;;
                 3)
                         ECHO="rpi3"
                         ;;
@@ -160,7 +191,8 @@ while getopts "1234h" OPTION; do
                         echo -e "${RED}Helper, downloads a binary Linux package${FIN}."
                         echo ""
                         echo -e "   make 2708        Raspberry Pi 0/1/W/B/+"
-                        echo -e "   make 2710        Raspberry Pi 2/3/A/B/+"
+                        echo -e "   make 2709        Raspberry Pi 2B"
+                        echo -e "   make 2710        Raspberry Pi 3/A/B/+"
                         echo -e "   make 2711        Raspberry Pi 4B"
                         echo ""
                         exit 0
@@ -171,6 +203,10 @@ done
 if [ $ECHO = "rpi" ]
 then
         rpi;
+fi
+if [ $ECHO = "rpi2" ]
+then
+        rpi2;
 fi
 if [ $ECHO = "rpi3" ]
 then
