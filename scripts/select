@@ -22,7 +22,7 @@ else
     userdata
 fi
 
-if [ `grep -w "rpiuser=1" "userdata.txt"` ]]; then
+if [[ `grep -w "rpiuser=1" "userdata.txt"` ]]; then
 	make kernel;
 else
 	if [[ `grep -w "admin=1" "userdata.txt"` ]]; then
