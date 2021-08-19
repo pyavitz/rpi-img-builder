@@ -3,23 +3,15 @@
 OUTPUT="output/bcm2709"
 DIALOG_CANCEL=1
 DIALOG_ESC=255
-HEIGHT=0
-WIDTH=0
-
-display_result() {
-  dialog --title "$1" \
-    --no-collapse \
-    --msgbox "$result" 0 0
-}
 
 while true; do
   exec 3>&1
   selection=$(dialog \
     --backtitle "Raspberry Pi Image Builder" \
-    --title "Raspberry Pi 2B" \
+    --title "  Raspberry Pi 2B" \
     --clear \
     --cancel-label "Exit" \
-    --menu "Select:" $HEIGHT $WIDTH 4 \
+    --menu "Select:" 0 22 0 \
     "1" "Make All" \
     "2" "Make Kernel" \
     "3" "Make ROOTFS" \

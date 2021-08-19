@@ -4,14 +4,6 @@ RED="\e[0;31m"
 FIN="\e[0m"
 DIALOG_CANCEL=1
 DIALOG_ESC=255
-HEIGHT=0
-WIDTH=0
-
-display_result() {
-  dialog --title "$1" \
-    --no-collapse \
-    --msgbox "$result" 0 0
-}
 
 while true; do
   exec 3>&1
@@ -20,7 +12,7 @@ while true; do
     --title "Boards" \
     --clear \
     --cancel-label "Exit" \
-    --menu "Select:" $HEIGHT $WIDTH 3 \
+    --menu "Select:" 0 30 0 \
     "1" "Raspberry Pi 4B" \
     "2" "Raspberry Pi 3/A/B/+" \
     "3" "Raspberry Pi 2B" \
