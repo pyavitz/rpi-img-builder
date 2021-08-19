@@ -13,7 +13,7 @@ sudo apt install -y build-essential bison bc git dialog patch \
 	gcc-8-arm-linux-gnueabihf gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf \
 	gcc-8-aarch64-linux-gnu gcc-9-aarch64-linux-gnu gcc-10-aarch64-linux-gnu \
 	gcc-8 gcc-9 gcc-10 debian-archive-keyring debian-keyring make libelf-dev \
-	distro-info-data xfsprogs
+	distro-info-data xfsprogs fdisk
 }
 
 if [[ `sudo dmesg | grep -w arm64` ]]; then

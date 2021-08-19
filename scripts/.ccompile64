@@ -11,7 +11,7 @@ sudo apt install -y build-essential bison bc git dialog patch dosfstools \
 	debian-archive-keyring crossbuild-essential-armel crossbuild-essential-armhf \
 	gcc-8-arm-linux-gnueabi gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi \
 	gcc-8-arm-linux-gnueabihf gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf \
-	debian-keyring make libelf-dev xfsprogs gcc-8 gcc-9 gcc-10
+	debian-keyring make libelf-dev xfsprogs gcc-8 gcc-9 gcc-10 fdisk
 }
 
 if [[ `sudo dmesg | grep -w x86-64` ]]; then
