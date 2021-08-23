@@ -101,6 +101,8 @@ if [ -e /boot/credentials.txt ]; then
 fi
 if [ -e /boot/credentials.txt ]; then
 	connect_wifi;
+else
+	remove_wifi;
 fi
 
 ### Renew ssh keys and machine-id
