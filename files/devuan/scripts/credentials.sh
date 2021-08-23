@@ -28,6 +28,7 @@ sed -i 's/name=/ssid="'"${SSID}"'"/g' /etc/opt/wpa_supplicant.conf
 sed -i 's/password=/psk="'"${PASSKEY}"'"/g' /etc/opt/wpa_supplicant.conf
 mv -f /etc/opt/interfaces /etc/network/interfaces
 mv -f /etc/opt/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf
+sleep 1s
 iw reg set ${COUNTRYCODE}
 sed -i 's/# Default-Start:/# Default-Start: S/g' /etc/init.d/network
 sed -i 's/# Default-Stop:/# Default-Stop: 0 6/g' /etc/init.d/network
@@ -48,6 +49,7 @@ sed -i 's/name=/ssid="'"${SSID}"'"/g' /etc/opt/wpa_supplicant.conf
 sed -i 's/password=/psk="'"${PASSKEY}"'"/g' /etc/opt/wpa_supplicant.conf
 mv -f /etc/opt/interfaces /etc/network/interfaces
 mv -f /etc/opt/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf
+sleep 1s
 iw reg set ${COUNTRYCODE}
 sed -i 's/# Default-Start:/# Default-Start: S/g' /etc/init.d/network
 sed -i 's/# Default-Stop:/# Default-Stop: 0 6/g' /etc/init.d/network
@@ -57,36 +59,33 @@ service network start
 }
 
 connect_wifi(){
-case `grep -Fx "MANUAL=y" "/boot/credentials.txt" >/dev/null; echo $?` in
-  0)
-    static
-    ;;
-  1)
-    dhcp
-    ;;
-esac
+if [[ `grep -Fx "MANUAL=y" "/boot/credentials.txt"` ]]; then
+	static;
+else
+	dhcp;
+fi
 }
 
 hostname_branding(){
-case `grep -Fx "CHANGE=y" "/boot/credentials.txt" >/dev/null; echo $?` in
-  0)
-    change_hostname
-    change_branding
-    service hostname.sh --full-restart
-    if service avahi-daemon status | grep is\ running > /dev/null 2>&1; then service avahi-daemon restart; else :; fi
-    ;;
-esac
+if [[ `grep -Fx "CHANGE=y" "/boot/credentials.txt"` ]]; then
+	change_hostname
+	change_branding
+	service hostname.sh --full-restart;
+	if service avahi-daemon status | grep is\ running > /dev/null 2>&1; then
+		service avahi-daemon restart;
+	fi
+fi
 }
 
 remove_wifi(){
 update-rc.d -f credentials remove
 sed -i 's/# Default-Start:/# Default-Start: S/g' /etc/init.d/network
 sed -i 's/# Default-Stop:/# Default-Stop: 0 6/g' /etc/init.d/network
+sleep 1s
 update-rc.d network defaults S
-rm -f /usr/local/bin/credentials > /dev/null 2>&1
-rm -f /boot/rename_to_credentials.txt > /dev/null 2>&1
-rm -f /etc/opt/interfaces > /dev/null 2>&1
-rm -f /etc/opt/wpa_supplicant.conf > /dev/null 2>&1
+rm -f /usr/local/bin/credentials
+rm -f /boot/rename_to_credentials.txt
+rm -f /etc/opt/{interfaces,wpa_supplicant.conf}
 mv -f /etc/opt/interfaces.manual /etc/network/interfaces
 mv -f /etc/opt/wpa_supplicant.manual /etc/wpa_supplicant/wpa_supplicant.conf
 sleep 1s
@@ -94,20 +93,20 @@ service network start
 }
 
 ### Check Credentials
-if ls /boot/username.txt > /dev/null 2>&1; then /usr/local/bin/whogoesthere > /dev/null 2>&1;
-        else : > /dev/null 2>&1;
+if [ -e /boot/username.txt ]; then
+	/usr/local/bin/whogoesthere > /dev/null 2>&1;
 fi
-if ls /boot/credentials.txt > /dev/null 2>&1; then hostname_branding;
-        else : > /dev/null 2>&1;
+if [ -e /boot/credentials.txt ]; then
+	hostname_branding;
 fi
-if ls /boot/credentials.txt > /dev/null 2>&1; then connect_wifi;
-        else remove_wifi > /dev/null 2>&1;
+if [ -e /boot/credentials.txt ]; then
+	connect_wifi;
 fi
 
 ### Renew ssh keys and machine-id
 sleep 1s
 echo -e " \e[0;31mCreating new ssh keys\e[0m ..."
-/bin/rm -v /etc/ssh/ssh_host_* > /dev/null 2>&1
+rm -f /etc/ssh/ssh_host_*
 dpkg-reconfigure openssh-server
 service ssh restart
 rm -f /etc/machine-id
@@ -117,8 +116,8 @@ dbus-uuidgen --ensure
 
 ### Clean
 update-rc.d -f credentials remove
-rm -f /usr/local/bin/credentials > /dev/null 2>&1
-rm -f /boot/credentials.txt > /dev/null 2>&1
-rm -f /etc/opt/interfaces.manual > /dev/null 2>&1
-rm -f /etc/opt/wpa_supplicant.manual > /dev/null 2>&1
+rm -f /usr/local/bin/credentials
+rm -f /boot/credentials.txt
+rm -f /etc/opt/{interfaces.manual,wpa_supplicant.manual}
+
 exit 0
