@@ -162,7 +162,7 @@ lock_disk() {
 	# Do not use --nonblock or --timeout as udev may be already processing
 	# the disk and we must wait until it has released the disk to
 	# proceed.  Failure to obtain exclusive lock is fatal to growpart.
-	rq flock flock --exclusive $FLOCK_DISK_FD ||
+	rq flock flock -x $FLOCK_DISK_FD ||
 		fail "Error while obtaining exclusive lock on $DISK"
 	debug 1 "FLOCK: $disk: obtained exclusive lock"
 }
@@ -230,7 +230,7 @@ get_sfdisk_version() {
 		return 0
 	}
 	# expected output: sfdisk from util-linux 2.25.2
-	out=$(sfdisk --version) ||
+	out=$(LANG=C sfdisk --version) ||
 		{ error "failed to get sfdisk version"; return 1; }
 	set -- $out
 	ver=$4
@@ -292,7 +292,7 @@ resize_sfdisk() {
 	local pt_start pt_size pt_end max_end new_size change_info dpart
 	local sector_num sector_size disk_size tot out
 
-	rqe sfd_list sfdisk --list --unit=S "$DISK" >"$tmp" ||
+	LANG=C rqe sfd_list sfdisk --list --unit=S "$DISK" >"$tmp" ||
 		fail "failed: sfdisk --list $DISK"
 	if [ "${SFDISK_VERSION}" -lt ${SFDISK_2_26} ]; then
 		# exected output contains: Units: sectors of 512 bytes, ...
