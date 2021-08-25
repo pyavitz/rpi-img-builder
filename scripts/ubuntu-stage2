@@ -76,12 +76,9 @@ if [[ `grep -w "userscripts=1" "/root/userdata.txt"` ]]; then
 fi
 initrd_script
 # Service
-mv -f firstboot.init /etc/init.d/firstboot
-mv -f firstboot /usr/local/sbin/
+mv -f firstboot.sh /usr/local/sbin/firstboot
 chmod +x /usr/bin/growpart
 chown root:root /usr/bin/growpart
-chmod +x /etc/init.d/firstboot
-chown root:root /etc/init.d/firstboot
 chmod +x /usr/local/bin/*
 chmod +x /usr/local/sbin/*
 chown -R root:root /usr/local/bin/

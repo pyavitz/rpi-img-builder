@@ -384,7 +384,7 @@ Before=credentials.service
 ConditionPathExists=/usr/local/sbin/firstboot
 
 [Service]
-ExecStart=/etc/init.d/firstboot start > /dev/null 2>&1
+ExecStart=/usr/local/sbin/firstboot > /dev/null 2>&1
 Type=oneshot
 RemainAfterExit=no
 

@@ -47,9 +47,6 @@ apt -y autoclean
 #### Scripts
 cd ~
 led_service
-mv -f firstboot.sh /usr/local/sbin/firstboot 
-chmod +x /usr/local/sbin/*
-chown -R root:root /usr/local/sbin/
 echo
 echo Moving scripts.
 sleep 1s
@@ -62,6 +59,7 @@ wget -cq --show-progress ${URL}swh
 wget -cq --show-progress ${URL}fetch
 wget -cq --show-progress ${URL}governor
 mv -f {swh,fetch,governor,run-setup,sysinfo,smon} /usr/local/bin/
+mv -f firstboot.sh /usr/local/sbin/firstboot
 if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
 	wget -cq --show-progress ${URL}write2usb
 	wget -cq --show-progress ${URL}deb-eeprom
@@ -72,7 +70,7 @@ if [[ `grep -w "userscripts=1" "/root/userdata.txt"` ]]; then
 fi
 initrd_script
 # Inits
-mv -f firstboot /etc/init.d/
+mv -f firstboot.init /etc/init.d/firstboot
 mv -f pwrledoff /etc/init.d/
 mv -f actledoff /etc/init.d/
 mv -f governor.init /etc/init.d/governor
@@ -85,6 +83,8 @@ chmod +x /usr/bin/growpart
 chown root:root /usr/bin/growpart
 chmod +x /usr/local/bin/*
 chown -R root:root /usr/local/bin/
+chmod +x /usr/local/sbin/*
+chown -R root:root /usr/local/sbin/
 echo Done.
 
 #### MOTD
