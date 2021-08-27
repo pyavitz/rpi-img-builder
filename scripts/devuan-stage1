@@ -66,13 +66,10 @@ if [ $RAM -ne 0 ]; then
 fi
 
 if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
-	image_size;
-else
-	image_size > /dev/null 2>&1;
-fi
-if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
+	image_size
 	partition_uuid;
 else
+	image_size > /dev/null 2>&1
 	partition_uuid > /dev/null 2>&1;
 fi
 
@@ -145,13 +142,10 @@ else
 fi
 
 if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
-	distro_release;
-else
-	distro_release > /dev/null 2>&1;
-fi
-if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
+	distro_release
 	create_fstab;
 else
+	distro_release > /dev/null 2>&1
 	create_fstab > /dev/null 2>&1;
 fi
 
