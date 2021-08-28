@@ -71,4 +71,7 @@ echo -e -n ${FIN}
 cd ..
 
 rm -fdr ${ROOT}
+if [ -e /usr/share/debootstrap/scripts/chimaera ]; then
+	rm -f /usr/share/debootstrap/scripts/chimaera;
+fi
 clear

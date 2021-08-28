@@ -8,6 +8,11 @@ else
 	sudo dpkg -i $FILE
 	rm -f $FILE;
 fi
+if [ -e /usr/share/debootstrap/scripts/chimaera ]; then
+	:;
+else
+	ln -sr /usr/share/debootstrap/scripts/sid /usr/share/debootstrap/scripts/chimaera;
+fi
 }
 
 # arm64
