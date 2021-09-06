@@ -19,14 +19,6 @@ echo_shrink(){
 echo -e "${RED}Shrinking image${FIN}."
 }
 
-echo_ccpatch(){
-echo -e "${RED}Applying cc packaging patch${FIN}."
-}
-
-echo_ncpatch(){
-echo -e "${RED}Applying nc packaging patch${FIN}."
-}
-
 echo_patch(){
 echo -e "${RED}Applying patches${FIN}."
 }

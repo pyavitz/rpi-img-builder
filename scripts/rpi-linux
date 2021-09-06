@@ -76,11 +76,7 @@ if [[ `grep -w "bcm2708" "../soc.txt"` ]]; then
 fi
 
 ### Patching
-if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
-	ccpatch;
-else
-	ncpatch;
-fi
+patching
 
 ### Defconfig
 if [[ `grep -w "bcm2711" "../../soc.txt"` ]]; then

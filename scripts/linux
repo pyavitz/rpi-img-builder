@@ -79,7 +79,7 @@ if [[ `grep -w "menuconfig=1" "../../userdata.txt"` ]]; then
 fi
 
 ### Build deb
-case [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
 	cross_compile;
 else
 	native_compile;

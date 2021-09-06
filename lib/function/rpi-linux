@@ -281,9 +281,9 @@ fi
 echo 'y' | make -j${CORES} ARCH=arm64 KBUILD_BUILD_HOST=${KBHOST} ${NATIVE} CFLAGS="${CFLAGS}" bindeb-pkg
 }
 
-ccpatch(){
+patching(){
 echo
-echo_ccpatch
+echo_patch
 userpatches
 rm -f scripts/package/builddeb
 rm -f scripts/package/mkdebian
@@ -292,51 +292,26 @@ cp -R ../${PAT}/mkdebian scripts/package/
 chmod +x scripts/package/builddeb
 chmod +x scripts/package/mkdebian
 if [[ `grep -w "bcm2711" "../../soc.txt"` ]]; then
-	patch -p1 < ../${CC}/rpi4b-packaging.patch
+	patch -p1 < ../${PAT}/rpi4-packaging.patch
 	rpi4;
+else
+	if [[ `grep -w "bcm2710" "../../soc.txt"` ]]; then
+		patch -p1 < ../${PAT}/rpi3-packaging.patch
+		rpi2+3;
+	else
+		if [[ `grep -w "bcm2709" "../../soc.txt"` ]]; then
+			patch -p1 < ../${PAT}/rpi2-packaging.patch
+			rpi2+3;
+		else
+			if [[ `grep -w "bcm2708" "../../soc.txt"` ]]; then
+				patch -p1 < ../${PAT}/rpi-packaging.patch
+				rpi0+1;
+			fi
+		fi
+	fi
 fi
-if [[ `grep -w "bcm2710" "../../soc.txt"` ]]; then
-	patch -p1 < ../${CC}/rpi3b-packaging.patch
-	rpi2+3;
-fi
-if [[ `grep -w "bcm2709" "../../soc.txt"` ]]; then
-	patch -p1 < ../${CC}/rpi2b-packaging.patch
-	rpi2+3;
-fi
-if [[ `grep -w "bcm2708" "../../soc.txt"` ]]; then
-	patch -p1 < ../${CC}/rpi-packaging.patch
-	rpi0+1;
-fi
-cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch
-echo_done
-echo
-}
-
-ncpatch(){
-echo
-echo_ncpatch
-userpatches
-rm -f scripts/package/builddeb
-rm -f scripts/package/mkdebian
-cp -R ../${PAT}/builddeb scripts/package/
-cp -R ../${PAT}/mkdebian scripts/package/
-chmod +x scripts/package/builddeb
-chmod +x scripts/package/mkdebian
-if [[ `grep -w "bcm2711" "../../soc.txt"` ]]; then
-	patch -p1 < ../${NC}/rpi4b-packaging.patch
-	rpi4;
-fi
-if [[ `grep -w "bcm2710" "../../soc.txt"` ]]; then
-	patch -p1 < ../${NC}/rpi3b-packaging.patch
-	rpi2+3;
-fi
-if [[ `grep -w "bcm2709" "../../soc.txt"` ]]; then
-	patch -p1 < ../${NC}/rpi2b-packaging.patch
-	rpi2+3;
-fi
-if [[ `grep -w "bcm2708" "../../soc.txt"` ]]; then
-	patch -p1 < ../${NC}/rpi-packaging.patch
-	rpi0+1;
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+	cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch;
 fi
 echo_done
 echo

@@ -1,8 +1,5 @@
 DEF="../defconfig"
 PAT="../patches"
-CC="../patches/cc"
-NC="../patches/nc"
-ML="../patches/ml"
 UP="../patches/userpatches"
 OUT4="../output/bcm2711"
 OUT3="../output/bcm2710"

@@ -134,15 +134,10 @@ cp -R ../${PAT}/builddeb scripts/package/
 cp -R ../${PAT}/mkdebian scripts/package/
 chmod +x scripts/package/builddeb
 chmod +x scripts/package/mkdebian
+patch -p1 < ../${PAT}/rpi4-packaging.patch;
 if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
-	patch -p1 < ../${ML}/rpi4b-cc-packaging.patch;
-else
-	patch -p1 < ../${ML}/rpi4b-nc-packaging.patch;
+	cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch;
 fi
-if ls ../${ML}/misc/*.patch > /dev/null 2>&1; then
-	for i in ../${ML}/misc/*.patch; do patch -p1 < $i; done;
-fi
-cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch;
 echo_done
 echo
 }
