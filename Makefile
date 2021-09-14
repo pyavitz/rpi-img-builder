@@ -81,7 +81,7 @@ commands:
 	@echo "  bcm2711                 Raspberry Pi 4B"
 	@echo "  bcm2710                 Raspberry Pi 3/A/B/+"
 	@echo "  bcm2709                 Raspberry Pi 2B"
-	@echo "  bcm2708                 Raspberry Pi 0/0W/B/+"
+	@echo "  bcm2708                 Raspberry Pi 0/W/B/+"
 	@echo
 	@echo "bcm2711:"
 	@echo " "
@@ -115,6 +115,7 @@ commands:
 	@echo "Root filesystem:"
 	@echo
 	@echo "  make rootfs		  arm64"
+	@echo "  make rootfsv7		  armhf"
 	@echo "  make rootfsv6		  armel"
 	@echo
 	@echo "Miscellaneous:"
