@@ -156,8 +156,6 @@ echo_done
 rpi_config(){
 echo_fconfig
 cp -f ../${DEF}/bcm2711_defconfig arch/arm64/configs/
-echo CONFIG_MODULE_SIG=y >> arch/arm64/configs/bcm2711_defconfig
-echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm64/configs/bcm2711_defconfig
 if [[ `grep -w "lto_clang_thin=1" "../../userdata.txt"` ]]; then
 	echo CONFIG_LTO_CLANG_THIN=y >> arch/arm64/configs/bcm2711_defconfig;
 fi
