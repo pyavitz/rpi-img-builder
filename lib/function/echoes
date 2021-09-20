@@ -67,6 +67,10 @@ echo_fconfig(){
 echo -e "${RED}Making foundation defconfig${FIN}."
 }
 
+echo_bconfig(){
+echo -e "${RED}Making builder defconfig${FIN}."
+}
+
 echo_menuconfig(){
 echo -e "${RED}Opening menuconfig${FIN}."
 }

@@ -154,7 +154,7 @@ echo_done
 }
 
 rpi_config(){
-echo_fconfig
+echo_bconfig
 cp -f ../${DEF}/bcm2711_defconfig arch/arm64/configs/
 if [[ `grep -w "lto_clang_thin=1" "../../userdata.txt"` ]]; then
 	echo CONFIG_LTO_CLANG_THIN=y >> arch/arm64/configs/bcm2711_defconfig;
