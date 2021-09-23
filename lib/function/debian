@@ -343,8 +343,7 @@ if [[ `grep -w 'DISTRO_VERSION="bullseye"' "/root/userdata.txt"` ]]; then
 		echo -e '[Service]\nSystemCallFilter=uname' > /etc/systemd/system/haveged.service.d/fix.conf
 		systemctl daemon-reload
 		systemctl enable haveged
-		systemctl restart haveged
-		
+		systemctl restart haveged;
 	fi
 fi
 #systemctl enable serial-getty@ttyUSB0.service
