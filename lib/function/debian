@@ -332,11 +332,20 @@ enable_services(){
 systemctl enable rc-local
 systemctl enable ifplugd
 systemctl enable resolvconf
-systemctl enable haveged
 systemctl enable zramswap
 systemctl enable bluetooth
 systemctl enable firstboot
 systemctl enable credentials
 systemctl enable governor
+if [[ `grep -w 'DISTRO_VERSION="bullseye"' "/root/userdata.txt"` ]]; then
+	if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
+		mkdir -p /etc/systemd/system/haveged.service.d
+		echo -e '[Service]\nSystemCallFilter=uname' > /etc/systemd/system/haveged.service.d/fix.conf
+		systemctl daemon-reload
+		systemctl enable haveged
+		systemctl restart haveged
+		
+	fi
+fi
 #systemctl enable serial-getty@ttyUSB0.service
 }
