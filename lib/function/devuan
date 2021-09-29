@@ -80,18 +80,30 @@ adduser ${user} audio
 adduser ${user} dialout
 adduser ${user} video
 adduser ${user} disk
-groupadd spi
-groupadd i2c
-groupadd gpio
-adduser ${user} spi
-adduser ${user} i2c
-adduser ${user} gpio
 adduser ${user} plugdev
 adduser ${user} netdev
 adduser ${user} bluetooth
 adduser ${user} input
 adduser ${user} tty
-if [[ `grep "kvm" "/etc/group"` ]]; then
+if [[ `grep -w "spi" "/etc/group"` ]]; then
+	adduser ${user} spi;
+else
+	groupadd spi;
+	adduser ${user} spi;
+fi
+if [[ `grep -w "i2c" "/etc/group"` ]]; then
+	adduser ${user} i2c;
+else
+	groupadd i2c;
+	adduser ${user} i2c;
+fi
+if [[ `grep -w "gpio" "/etc/group"` ]]; then
+	adduser ${user} gpio;
+else
+	groupadd gpio;
+	adduser ${user} gpio;
+fi
+if [[ `grep -w "kvm" "/etc/group"` ]]; then
 	:;
 else
 	addgroup --gid 125 kvm;
@@ -166,10 +178,22 @@ if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
 	bcm2708_admin;
 fi
 
-groupadd spi
-groupadd i2c
-groupadd gpio
-if [[ `grep "kvm" "/etc/group"` ]]; then
+if [[ `grep -w "spi" "/etc/group"` ]]; then
+	:;
+else
+	groupadd spi;
+fi
+if [[ `grep -w "i2c" "/etc/group"` ]]; then
+	:;
+else
+	groupadd i2c;
+fi
+if [[ `grep -w "gpio" "/etc/group"` ]]; then
+	:;
+else
+	groupadd gpio;
+fi
+if [[ `grep -w "kvm" "/etc/group"` ]]; then
 	:;
 else
 	addgroup --gid 125 kvm;

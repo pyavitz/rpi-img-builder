@@ -28,7 +28,7 @@ XFS="1825MB"
 # debian
 DEBIAN1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	fonty-rg patch curl wget apt-transport-https dirmngr cmake rsync \
-	psmisc parted pv zip unzip aria2 libell0"
+	psmisc parted pv zip unzip aria2 libell0 i2c-tools"
 
 DEBIAN2="cpu hwinfo haveged resolvconf git build-essential net-tools ifplugd \
 	fuse wpasupplicant wireless-tools usbutils alsa-utils gettext crda \
@@ -40,7 +40,7 @@ DEBIAN2="cpu hwinfo haveged resolvconf git build-essential net-tools ifplugd \
 # devuan
 DEVUAN1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	fonty-rg patch curl wget apt-transport-https dirmngr cmake rsync \
-	psmisc parted pv zip unzip aria2 libell0"
+	psmisc parted pv zip unzip aria2 libell0 i2c-tools"
 
 DEVUAN2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
 	fuse wpasupplicant wireless-tools usbutils alsa-utils gettext crda \
@@ -52,7 +52,7 @@ DEVUAN2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
 # ubuntu
 UBUNTU1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	fonty-rg patch curl wget apt-transport-https dirmngr cmake rsync \
-	psmisc parted pv zip unzip aria2 fdisk"
+	psmisc parted pv zip unzip aria2 fdisk i2c-tools"
 
 UBUNTU2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
 	fuse wpasupplicant wireless-tools usbutils alsa-utils gettext crda \
