@@ -5,18 +5,18 @@ tee p2/etc/apt/sources.list <<EOF
 deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free
 deb http://deb.debian.org/debian ${DISTRO_VERSION}-updates main contrib non-free
 deb http://security.debian.org/debian-security ${DISTRO_VERSION}/updates main contrib non-free
-deb http://deb.debian.org/debian/ ${DISTRO_VERSION}-backports main contrib non-free
+deb http://deb.debian.org/debian ${DISTRO_VERSION}-backports main contrib non-free
 EOF
 }
 
 bullseye_sources(){
 rm -f p2/etc/apt/sources.list
 tee p2/etc/apt/sources.list <<EOF
-deb http://deb.debian.org/debian/ ${DISTRO_VERSION} main contrib non-free
-deb http://deb.debian.org/debian/ ${DISTRO_VERSION}-updates main contrib non-free
+deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free
+deb http://deb.debian.org/debian ${DISTRO_VERSION}-updates main contrib non-free
 deb http://deb.debian.org/debian ${DISTRO_VERSION}-proposed-updates main contrib non-free
-deb http://deb.debian.org/debian-security/ ${DISTRO_VERSION}-security main contrib non-free
-deb http://deb.debian.org/debian/ ${DISTRO_VERSION}-backports main contrib non-free
+deb http://deb.debian.org/debian-security ${DISTRO_VERSION}-security main contrib non-free
+deb http://deb.debian.org/debian ${DISTRO_VERSION}-backports main contrib non-free
 EOF
 }
 

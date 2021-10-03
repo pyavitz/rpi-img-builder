@@ -1,9 +1,20 @@
 # STAGE 1
-stable_sources(){
+beowulf_sources(){
 rm -f p2/etc/apt/sources.list
 tee p2/etc/apt/sources.list <<EOF
 deb http://deb.devuan.org/merged ${DISTRO_VERSION} main contrib non-free
 deb http://deb.devuan.org/merged ${DISTRO_VERSION}-updates main contrib non-free
+deb http://deb.devuan.org/merged ${DISTRO_VERSION}-security main contrib non-free
+deb http://deb.devuan.org/merged ${DISTRO_VERSION}-backports main contrib non-free
+EOF
+}
+
+chimaera_sources(){
+rm -f p2/etc/apt/sources.list
+tee p2/etc/apt/sources.list <<EOF
+deb http://deb.devuan.org/merged ${DISTRO_VERSION} main contrib non-free
+deb http://deb.devuan.org/merged ${DISTRO_VERSION}-updates main contrib non-free
+deb http://deb.devuan.org/devuan ${DISTRO_VERSION}-proposed-updates main contrib non-free
 deb http://deb.devuan.org/merged ${DISTRO_VERSION}-security main contrib non-free
 deb http://deb.devuan.org/merged ${DISTRO_VERSION}-backports main contrib non-free
 EOF
@@ -18,10 +29,10 @@ EOF
 
 distro_release(){
 if [[ `grep -w 'DISTRO_VERSION="beowulf"' "userdata.txt"` ]]; then
-	stable_sources;
+	beowulf_sources;
 fi
 if [[ `grep -w 'DISTRO_VERSION="chimaera"' "userdata.txt"` ]]; then
-	unstable_sources;
+	chimaera_sources;
 fi
 if [[ `grep -w 'DISTRO_VERSION="testing"' "userdata.txt"` ]]; then
 	unstable_sources;
