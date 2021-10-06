@@ -66,7 +66,7 @@ ${DOWNLOAD} ${BINURL}start4x.elf
 ${DOWNLOAD} ${BINURL}LICENCE.broadcom
 ${DOWNLOAD} ${BINURL}COPYING.linux
 cd ..
-if ls binaries/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf} > /dev/null 2>&1
+if ls binaries/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf,LICENCE.broadcom,COPYING.linux} > /dev/null 2>&1
 	then echo_bdone;
 	else echo_fail && exit;
 fi
