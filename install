@@ -78,7 +78,6 @@ if [[ `sudo dmesg | grep -w x86-64` ]]; then
 		sudo apt update
 		make ccompile;
 	else
-		echo -e "${WHT}Starting install ...${FIN}"
 		sleep 2s
 		sudo apt update
 		sudo apt install -y make
