@@ -47,7 +47,7 @@ else
 		DEVICE_SOC="rpi-3";
 	else
 		if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
-			DEVICE_SOC="rpi-2~3";
+			DEVICE_SOC="rpi-2+3";
 		fi
 	fi
 fi
