@@ -85,7 +85,7 @@ userdata(){
 tee userdata.txt <<EOF
 ### LINUX KERNEL
 VERSION="$branch.y"
-BUILD_VERSION="1"
+BUILD_VERSION="$build"
 menuconfig=0
 crosscompile=1
 ### COMPILER
@@ -132,18 +132,23 @@ make cleanup > /dev/null 2>&1
 make purge-all > /dev/null 2>&1
 echo_done
 echo ""
-echo -e -n "${WHT}Select branch: ${FIN}"
+echo -e -n "${WHT}Linux branch: ${FIN}"
 read branch
-echo -e -n "${WHT}Select release: ${FIN}"
+echo -e -n "${WHT}Build number: ${FIN}"
+read build
+echo -e -n "${WHT}Debian release: ${FIN}"
 read release
 
 userdata > /dev/null 2>&1
 sleep 1s
 sed -i 's/crosscompile=1/crosscompile=0/g' userdata.txt
 sleep 1s
+echo `date` > log.txt
+echo "" >> log.txt
+echo "Results:" >> log.txt
 make kernel
 if [[ `ls output/bcm2711/*.deb` ]] > /dev/null 2>&1; then
-	echo "bcm2711 | OK!" > log.txt;
+	echo "bcm2711 | OK!" >> log.txt;
 else
 	echo -e "Build 2711 failed!";
 	exit 1;
@@ -172,11 +177,11 @@ else
 	echo -e "Build 2708 failed!";
 	exit 1;
 fi
-
 echo ""
-echo -e "${WHT}Results:"
+echo -e "${WHT}"
 cat log.txt
-${FIN}
+echo -e "${FIN}"
+echo ""
 rm -f {userdata.txt,log.txt}
 make cleanup > /dev/null 2>&1
 
