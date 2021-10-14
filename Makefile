@@ -49,6 +49,8 @@ XHELPER=./scripts/help
 HELPER=sudo ./scripts/help
 XCHECK=./scripts/check
 CHECK=./scripts/check
+XRUNNER=./scripts/runner
+RUNNER=./scripts/runner
 
 # dependencies
 CCOMPILE=./scripts/.ccompile
@@ -425,3 +427,7 @@ helper:
 	# BCM2711
 	@chmod +x ${XHELPER}
 	@${HELPER} -4
+
+runner:
+	@chmod +x ${XRUNNER}
+	@${RUNNER}

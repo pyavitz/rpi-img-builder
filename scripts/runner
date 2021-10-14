@@ -1,0 +1,183 @@
+#!/bin/bash
+
+RED="\e[1;31m"
+GRN="\e[1;32m"
+PNK="\e[1;35m"
+WHT="\e[1;37m"
+YLW="\e[1;33m"
+FIN="\e[0m"
+
+### Functions
+echo_nok(){
+echo -e -n "${PNK}[${FIN}${GRN}OK${FIN}${PNK}]${FIN}"
+}
+
+echo_done(){
+echo -n -e "${PNK}[${FIN}${GRN}DONE${FIN}${PNK}]${FIN}"
+}
+
+echo_focal(){
+echo -e -n "${PNK}[${FIN}${GRN}Ubuntu Focal${FIN}${PNK}]${FIN}"
+}
+
+echo_hirsute(){
+echo -e -n "${PNK}[${FIN}${GRN}Ubuntu Hirsute Hippo${FIN}${PNK}]${FIN}"
+}
+
+echo_fail(){
+echo -n -e "${PNK}[${FIN}${RED}FAILED${FIN}${PNK}]${FIN}"
+}
+
+ierror(){
+echo
+echo -e "${WHT}Please check your internet connection and try again${FIN}."
+}
+
+derror(){
+echo
+echo -e "${WHT}The OS you are running is not supported${FIN}."
+}
+
+confirm(){
+echo -e "${YLW}If you don't know what this command does, say no.${FIN}"
+echo -e ""
+read -p "Continue (y/n)?" choice
+case "$choice" in 
+  y|Y ) echo && echo -e "${RED}Confirmed${FIN}!";;
+  n|N ) echo && echo -e "${YLW}You have chosen${FIN}... ${YLW}wisely${FIN}." && exit 0;;
+  * ) echo && echo -e "${YLW}Invalid choice${FIN}." && exit 0;;
+esac
+}
+
+internet_check(){
+echo -e -n "${WHT}Checking Internet Connection:${FIN} "
+if [[ `wget -S --spider https://github.com 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+	echo_nok
+	echo "";
+else
+	echo_fail
+	echo ""
+	ierror
+	exit 1;
+fi
+}
+
+distro_check(){
+echo -e -n "${WHT}Checking Host Machine:${FIN} "
+sleep 1s
+if [[ `grep -w "focal" "/etc/os-release"` ]]; then
+	echo_focal
+	echo ""
+else
+	if [[ `grep -w "hirsute" "/etc/os-release"` ]]; then
+		echo_hirsute
+		echo "";
+	else
+		echo_fail
+		echo ""
+		derror
+		exit 1;
+	fi
+fi
+}
+
+userdata(){
+tee userdata.txt <<EOF
+### LINUX KERNEL
+VERSION="$branch.y"
+BUILD_VERSION="1"
+menuconfig=0
+crosscompile=1
+### COMPILER
+gcc=1
+ccache=0
+clang=0
+### DISTRIBUTION
+DISTRO="debian"
+DISTRO_VERSION="$release"
+### FILESYSTEM
+ext4=1
+btrfs=0
+xfs=0
+### CUSTOM
+custom_defconfig=0
+MYCONFIG="_defconfig"
+userscripts=0
+verbose=0
+### CLANG/LLVM
+CLANG_LLVM="LLVM=1 LLVM_IAS=1"
+lto_clang_thin=0
+### COMPILER TUNING
+CFLAGS=""
+### DO NOT EDIT BELOW THIS LINE
+admin=1
+builder=3.13
+EOF
+}
+
+### Run
+if [[ `sudo dmesg | grep -w arm64` ]]; then
+	echo ""
+	confirm
+	echo ""
+	internet_check
+	distro_check
+else
+	echo -e "${RED}This command is for administrative purposes only${FIN}."
+	exit 1;
+fi
+echo -n -e "${WHT}Preparing build area${FIN}: "
+rm -f {userdata.txt,log.txt}
+make cleanup > /dev/null 2>&1
+make purge-all > /dev/null 2>&1
+echo_done
+echo ""
+echo -e -n "${WHT}Select branch: ${FIN}"
+read branch
+echo -e -n "${WHT}Select release: ${FIN}"
+read release
+
+userdata > /dev/null 2>&1
+sleep 1s
+sed -i 's/crosscompile=1/crosscompile=0/g' userdata.txt
+sleep 1s
+make kernel
+if [[ `ls output/bcm2711/*.deb` ]] > /dev/null 2>&1; then
+	echo "bcm2711 | OK!" > log.txt;
+else
+	echo -e "Build 2711 failed!";
+	exit 1;
+fi
+make rpi3-kernel
+if [[ `ls output/bcm2710/*.deb` ]] > /dev/null 2>&1; then
+	echo "bcm2710 | OK!" >> log.txt;
+else
+	echo -e "Build 2710 failed!";
+	exit 1;
+fi
+sleep 1s
+sed -i 's/crosscompile=0/crosscompile=1/g' userdata.txt
+sleep 1s
+make rpi2-kernel
+if [[ `ls output/bcm2709/*.deb` ]] > /dev/null 2>&1; then
+	echo "bcm2709 | OK!" >> log.txt;
+else
+	echo -e "Build 2709 failed!";
+	exit 1;
+fi
+make rpi-kernel
+if [[ `ls output/bcm2708/*.deb` ]] > /dev/null 2>&1; then
+	echo "bcm2708 | OK!" >> log.txt;
+else
+	echo -e "Build 2708 failed!";
+	exit 1;
+fi
+
+echo ""
+echo -e "${WHT}Results:"
+cat log.txt
+${FIN}
+rm -f {userdata.txt,log.txt}
+make cleanup > /dev/null 2>&1
+
+exit 0
