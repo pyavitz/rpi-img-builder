@@ -82,8 +82,19 @@ echo verbose=0 >> tmp0
 echo CLANG_LLVM='"'LLVM=1 LLVM_IAS=1'"' >> tmp0
 echo lto_clang_thin=0 >> tmp0
 echo CFLAGS='"''"' >> tmp0
+echo "set_locales(){" >> tmp0
+echo "apt install -y locales" >> tmp0
+echo "export LANGUAGE=en_US.UTF-8" >> tmp0
+echo "export LANG=en_US.UTF-8" >> tmp0
+echo "export LC_ALL=C.UTF-8" >> tmp0
+echo "locale-gen en_US.UTF-8" >> tmp0
+echo "}" >> tmp0
+echo "set_timezone(){" >> tmp0
+echo "ln -snf /usr/share/zoneinfo/America/New_York /etc/localtime" >> tmp0
+echo "echo -n 'America/New_York' > /etc/timezone" >> tmp0
+echo "}" >> tmp0
 echo rpiuser=1 >> tmp0
-echo builder=3.13 >> tmp0
+echo builder=3.14 >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
 echo >> tmp2
@@ -111,7 +122,9 @@ sed -i '15i### FILESYSTEM' userdata.txt
 sed -i '19i### CUSTOM' userdata.txt
 sed -i '24i### CLANG/LLVM' userdata.txt
 sed -i '27i### COMPILER TUNING' userdata.txt
-sed -i '29i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '29i### LOCALES' userdata.txt
+sed -i '37i### TIMEZONE' userdata.txt
+sed -i '42i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # clear screen
 clear

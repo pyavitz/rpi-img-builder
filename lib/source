@@ -13,10 +13,11 @@ MLKERNEL="linux"
 KBHOST="rpi-img-builder"
 
 validation(){
-if grep -q "builder=3.13" userdata.txt; then
-    :;
+if [[ `grep -w "builder=3.14" "userdata.txt"` ]]; then
+	:;
 else
-    echo -e "${YLW}Userdata file is old${FIN}! ${YLW}Please create a new one${FIN}." && exit;
+	echo -e "${YLW}Userdata file is old! Please create a new one${FIN}."
+	exit;
 fi
 }
 # do not edit above this line
