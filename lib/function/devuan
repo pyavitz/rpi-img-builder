@@ -243,6 +243,10 @@ ln -sr /etc/network/if-up.d/00check-network-cable /etc/network/if-pre-up.d/00che
 sed -i 's/#CONFIGURE_INTERFACES=yes/CONFIGURE_INTERFACES=yes/g' /etc/default/networking
 sed -i 's/#WAIT_ONLINE_METHOD=ifup/WAIT_ONLINE_METHOD=ifup/g' /etc/default/networking
 sed -i 's/#WAIT_ONLINE_TIMEOUT=300/WAIT_ONLINE_TIMEOUT=10/g' /etc/default/networking
+if [ -e /etc/default/network-test ]; then
+	sed -i 's/DO_ARPING=${DO_ARPING:-yes}/DO_ARPING=${DO_ARPING:-no}/g' /etc/default/network-test
+	sed -i 's/DO_SYSLOG=${DO_SYSLOG:-yes}/DO_SYSLOG=${DO_SYSLOG:-no}/g' /etc/default/network-test
+fi
 mv -f credentials.txt /boot/rename_to_credentials.txt
 cp -f soc.txt /etc/opt/
 chown root:root /etc/opt/soc.txt
@@ -348,6 +352,10 @@ ln -sr /etc/network/if-up.d/00check-network-cable /etc/network/if-pre-up.d/00che
 sed -i 's/#CONFIGURE_INTERFACES=yes/CONFIGURE_INTERFACES=yes/g' /etc/default/networking
 sed -i 's/#WAIT_ONLINE_METHOD=ifup/WAIT_ONLINE_METHOD=ifup/g' /etc/default/networking
 sed -i 's/#WAIT_ONLINE_TIMEOUT=300/WAIT_ONLINE_TIMEOUT=10/g' /etc/default/networking
+if [ -e /etc/default/network-test ]; then
+	sed -i 's/DO_ARPING=${DO_ARPING:-yes}/DO_ARPING=${DO_ARPING:-no}/g' /etc/default/network-test
+	sed -i 's/DO_SYSLOG=${DO_SYSLOG:-yes}/DO_SYSLOG=${DO_SYSLOG:-no}/g' /etc/default/network-test
+fi
 mv -f credentials.txt /boot/rename_to_credentials.txt
 cp -f soc.txt /etc/opt/
 chown root:root /etc/opt/soc.txt
@@ -467,6 +475,10 @@ ln -sr /etc/network/if-up.d/00check-network-cable /etc/network/if-pre-up.d/00che
 sed -i 's/#CONFIGURE_INTERFACES=yes/CONFIGURE_INTERFACES=yes/g' /etc/default/networking
 sed -i 's/#WAIT_ONLINE_METHOD=ifup/WAIT_ONLINE_METHOD=ifup/g' /etc/default/networking
 sed -i 's/#WAIT_ONLINE_TIMEOUT=300/WAIT_ONLINE_TIMEOUT=10/g' /etc/default/networking
+if [ -e /etc/default/network-test ]; then
+	sed -i 's/DO_ARPING=${DO_ARPING:-yes}/DO_ARPING=${DO_ARPING:-no}/g' /etc/default/network-test
+	sed -i 's/DO_SYSLOG=${DO_SYSLOG:-yes}/DO_SYSLOG=${DO_SYSLOG:-no}/g' /etc/default/network-test
+fi
 mv -f credentials.txt /boot/rename_to_credentials.txt
 cp -f soc.txt /etc/opt/
 chown root:root /etc/opt/soc.txt
