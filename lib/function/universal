@@ -25,6 +25,7 @@ if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
 fi
 }
 
+# rootfs
 aarch64_extract(){
 tar -xf ${DISTRO}-${DISTRO_VERSION}-rootfs-aarch64.tar.xz -C p2/
 }
@@ -80,6 +81,46 @@ else
 	exit;
 fi
 echo
+}
+
+# banners
+debian_banner(){
+if [ -e /usr/bin/toilet ]; [ -e /usr/share/figlet/small.flf ]; then
+	toilet -f small --filter metal 'Debian';
+else
+	echo "${WHT}You are missing depends?${FIN}"
+	sleep 1s
+	sudo apt update
+	sudo apt install -y toilet figlet
+	echo ""
+	toilet -f small --filter metal 'Debian';
+fi
+}
+
+devuan_banner(){
+if [ -e /usr/bin/toilet ]; [ -e /usr/share/figlet/small.flf ]; then
+	toilet -f small --filter metal 'Devuan';
+else
+	echo "${WHT}You are missing depends?${FIN}"
+	sleep 1s
+	sudo apt update
+	sudo apt install -y toilet figlet
+	echo ""
+	toilet -f small --filter metal 'Devuan';
+fi
+}
+
+ubuntu_banner(){
+if [ -e /usr/bin/toilet ]; [ -e /usr/share/figlet/small.flf ]; then
+	toilet -f small --filter metal 'Ubuntu';
+else
+	echo "${WHT}You are missing depends?${FIN}"
+	sleep 1s
+	sudo apt update
+	sudo apt install -y toilet figlet
+	echo ""
+	toilet -f small --filter metal 'Ubuntu';
+fi
 }
 
 # Stage 2

@@ -32,11 +32,7 @@ if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
 else
 	set -eu -o pipefail;
 fi
-if [ -e /usr/bin/toilet ]; then
-	toilet -f small --filter metal 'Debian';
-else
-	echo -e "${RED}Raspberry Pi Image Builder${FIN}";
-fi
+debian_banner
 RAM=0
 PROXY=""
 IMAGE_FOLDER="img/"
