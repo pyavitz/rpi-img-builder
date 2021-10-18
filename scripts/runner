@@ -144,6 +144,7 @@ sleep 1s
 sed -i 's/crosscompile=1/crosscompile=0/g' userdata.txt
 sleep 1s
 echo `date` > log.txt
+echo "" >> log.txt
 echo "Linux branch: $branch" >> log.txt
 echo "Build number: $build" >> log.txt
 echo "Debian Release: $release" >> log.txt
