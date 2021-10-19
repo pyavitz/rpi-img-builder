@@ -49,8 +49,8 @@ XHELPER=./scripts/help
 HELPER=sudo ./scripts/help
 XCHECK=./scripts/check
 CHECK=./scripts/check
-XRUNNER=./scripts/runner
-RUNNER=./scripts/runner
+XRUN=./scripts/run-linux
+RUN=./scripts/run-linux
 
 # dependencies
 CCOMPILE=./scripts/.ccompile
@@ -316,6 +316,7 @@ menu:
 	# User menu interface
 	@chmod +x ${MENU}
 	@${MENU}
+
 config:
 	# User config menu
 	@chmod go=rx files/scripts/*
@@ -428,6 +429,6 @@ helper:
 	@chmod +x ${XHELPER}
 	@${HELPER} -4
 
-runner:
-	@chmod +x ${XRUNNER}
-	@${RUNNER}
+run:
+	@chmod +x ${XRUN}
+	@${RUN}

@@ -152,42 +152,47 @@ echo "" >> log.txt
 echo "Results:" >> log.txt
 make kernel
 if [[ `ls output/bcm2711/*.deb` ]] > /dev/null 2>&1; then
-	echo "bcm2711 | OK!" >> log.txt;
+	echo "bcm2711" >> log.txt;
+	ls output/bcm2711/*.deb >> log.txt;
+	echo "" >> log.txt;
 else
 	echo -e "Build 2711 failed!";
-	exit 1;
+	exit;
 fi
 make rpi3-kernel
 if [[ `ls output/bcm2710/*.deb` ]] > /dev/null 2>&1; then
-	echo "bcm2710 | OK!" >> log.txt;
+	echo "bcm2710" >> log.txt;
+	ls output/bcm2710/*.deb >> log.txt;
+	echo "" >> log.txt;
 else
 	echo -e "Build 2710 failed!";
-	exit 1;
+	exit;
 fi
 sleep 1s
 sed -i 's/crosscompile=0/crosscompile=1/g' userdata.txt
 sleep 1s
 make rpi2-kernel
 if [[ `ls output/bcm2709/*.deb` ]] > /dev/null 2>&1; then
-	echo "bcm2709 | OK!" >> log.txt;
+	echo "bcm2709" >> log.txt;
+	ls output/bcm2709/*.deb >> log.txt;
+	echo "" >> log.txt;
 else
 	echo -e "Build 2709 failed!";
-	exit 1;
+	exit;
 fi
 make rpi-kernel
 if [[ `ls output/bcm2708/*.deb` ]] > /dev/null 2>&1; then
-	echo "bcm2708 | OK!" >> log.txt;
+	echo "bcm2708" >> log.txt;
+	ls output/bcm2708/*.deb >> log.txt;
+	echo "" >> log.txt;
 else
 	echo -e "Build 2708 failed!";
-	exit 1;
+	exit;
 fi
-echo "" >> log.txt
 echo `date` >> log.txt
-echo ""
 echo -e "${WHT}"
 cat log.txt
 echo -e "${FIN}"
-echo ""
 rm -f {userdata.txt,log.txt}
 make cleanup > /dev/null 2>&1
 
