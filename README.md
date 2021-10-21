@@ -54,7 +54,7 @@ Crosscompile:   # 1 to cross compile | 0 to native compile
 Compiler        WARNING: Only one may be selected
 GCC:            # 1 to select (default)
 Ccache:         # 1 to select
-Clang:          # 1 to select
+Clang:          # 1 to select (host: hirsute only)
 
 Distribution
 Distro:		# Supported: debian, devuan and ubuntu
@@ -88,7 +88,7 @@ Crosscompile:   # 1 to cross compile | 0 to native compile
 Compiler        WARNING: Only one may be selected
 GCC:            # 1 to select (default)
 Ccache:         # 1 to select
-Clang:          # 1 to select
+Clang:          # 1 to select (host: hirsute only)
 
 Distribution
 Distro:		# Supported: debian, devuan and ubuntu
