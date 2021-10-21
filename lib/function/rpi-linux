@@ -310,9 +310,7 @@ else
 		fi
 	fi
 fi
-if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
-	cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch;
-fi
+cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch;
 echo_done
 echo
 }
