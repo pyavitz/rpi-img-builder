@@ -191,7 +191,7 @@ while getopts "1234h" OPTION; do
                         echo -e "${RED}Helper, downloads a binary Linux package${FIN}."
                         echo ""
                         echo -e "   make 2708        Raspberry Pi 0/1/W/B/+"
-                        echo -e "   make 2709        Raspberry Pi 2B"
+                        echo -e "   make 2709        Raspberry Pi 2/3/A/B/+"
                         echo -e "   make 2710        Raspberry Pi 3/A/B/+"
                         echo -e "   make 2711        Raspberry Pi 4B"
                         echo ""

@@ -3,7 +3,7 @@
 ## The boards and distributions that are currently supported
 * **Raspberry Pi 4B** (*Debian, Devuan and Ubuntu*)
 * **Raspberry Pi 3/A/B/+** (*Debian, Devuan and Ubuntu*)
-* **Raspberry Pi 2B** (*Debian, Devuan and Ubuntu*)
+* **Raspberry Pi 2/3/A/B/+** (*Debian, Devuan and Ubuntu*)
 * **Raspberry Pi 0/W/B/+** (*Debian and Devuan*)
 * [Raspberry Pi Hardware](https://www.raspberrypi.org/documentation/hardware/raspberrypi)
 
@@ -176,13 +176,13 @@ make rpi3-kernel
 make rpi3-image
 ```
 
-#### Raspberry Pi 2B
+#### Raspberry Pi 2/3/A/B/+
 
 ```sh
 # ARMHF
-make rpi2-all	# kernel > rootfs > image (run at own risk)
-make rpi2-kernel
-make rpi2-image
+make rpi2+3-all	# kernel > rootfs > image (run at own risk)
+make rpi2+3-kernel
+make rpi2+3-image
 ```
 
 #### Raspberry Pi 0/0W/B/+

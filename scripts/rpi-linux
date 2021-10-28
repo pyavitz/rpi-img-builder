@@ -86,7 +86,7 @@ if [[ `grep -w "bcm2710" "../../soc.txt"` ]]; then
 	choose_rpi3_defconfig;
 fi
 if [[ `grep -w "bcm2709" "../../soc.txt"` ]]; then
-	choose_rpi2_defconfig;
+	choose_rpi2+3_defconfig;
 fi
 if [[ `grep -w "bcm2708" "../../soc.txt"` ]]; then
 	choose_rpi_defconfig;

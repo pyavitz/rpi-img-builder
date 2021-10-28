@@ -99,9 +99,9 @@ commands:
 	@echo
 	@echo "bcm2709:"
 	@echo " "
-	@echo "  make rpi2-kernel        Builds linux kernel"
-	@echo "  make rpi2-image         Make bootable image"
-	@echo "  make rpi2-all           Kernel > rootfs > image"
+	@echo "  make rpi2+3-kernel      Builds linux kernel"
+	@echo "  make rpi2+3-image       Make bootable image"
+	@echo "  make rpi2+3-all         Kernel > rootfs > image"
 	@echo
 	@echo "bcm2708:"
 	@echo " "
@@ -215,22 +215,22 @@ rpi3-all:
 	@chmod +x ${CHOOSE}
 	@${CHOOSE}
 	
-# Raspberry Pi 2
-rpi2-kernel:
+# Raspberry Pi 2+3
+rpi2+3-kernel:
 	# Linux
 	@ echo bcm2709 > soc.txt
 	@ echo arm >> soc.txt
 	@chmod +x ${XLINUX}
 	@${LINUX}
 
-rpi2-image:
+rpi2+3-image:
 	# Making bootable image
 	@ echo bcm2709 > soc.txt
 	@ echo arm >> soc.txt
 	@chmod +x ${CHOOSE}
 	@${CHOOSE}
 
-rpi2-all:
+rpi2+3-all:
 	# Raspberry Pi 2
 	# - - - - - - - -
 	#

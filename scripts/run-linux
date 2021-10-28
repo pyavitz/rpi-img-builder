@@ -171,7 +171,7 @@ fi
 sleep 1s
 sed -i 's/crosscompile=0/crosscompile=1/g' userdata.txt
 sleep 1s
-make rpi2-kernel
+make rpi2+3-kernel
 if [[ `ls output/bcm2709/*.deb` ]] > /dev/null 2>&1; then
 	echo "bcm2709" >> log.txt;
 	ls output/bcm2709/*.deb >> log.txt;

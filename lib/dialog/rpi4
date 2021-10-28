@@ -11,7 +11,7 @@ while true; do
     --title "  Raspberry Pi 4B" \
     --clear \
     --cancel-label "Exit" \
-    --menu "Select:" 0 22 0 \
+    --menu "Select:" 0 28 0 \
     "1" "Make All" \
     "2" "Make Kernel" \
     "3" "Make ROOTFS" \
