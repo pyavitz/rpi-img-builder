@@ -231,7 +231,7 @@ rpi2+3-image:
 	@${CHOOSE}
 
 rpi2+3-all:
-	# Raspberry Pi 2
+	# Raspberry Pi 2+3
 	# - - - - - - - -
 	#
 	# Building linux
