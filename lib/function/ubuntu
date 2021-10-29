@@ -289,7 +289,7 @@ chown root:root /etc/network/interfaces
 mv -f wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf
 chown root:root /etc/wpa_supplicant/wpa_supplicant.conf
 if [ -e /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf ]; then
-	rm -f /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf
+	rm -f /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf;
 fi
 if [ -e /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf ]; then
 	sed -i 's/wifi.powersave = 3/wifi.powersave = 2/g' /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf;
