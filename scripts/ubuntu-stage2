@@ -115,15 +115,7 @@ echo Done.
 extra_firmware
 
 ### Network Setup
-if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
-	bcm2711_network;
-fi
-if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
-	bcm2710_network;
-fi
-if [[ `grep -w "bcm2709" "/root/soc.txt"` ]]; then
-	bcm2710_network;
-fi
+network_manager
 
 ### ZSWAP
 echo
@@ -271,8 +263,6 @@ tee /etc/rc.local <<EOF
 #
 # By default this script does nothing.
 
-# tmp wlan pwr mngt fix
-iwconfig wlan0 power off
 exit 0
 EOF
 chmod +x /etc/rc.local
