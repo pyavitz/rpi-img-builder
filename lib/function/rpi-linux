@@ -131,6 +131,15 @@ else
 	${DOWNLOAD} ${RPIURL}rpi-${VERSION}.tar.gz
 	echo_bdone;
 fi
+if [[ `grep -w "rtl8812au=1" "../userdata.txt"` ]]; then
+	rtl8812au_download;
+fi
+if [[ `grep -w "rtl88x2bu=1" "../userdata.txt"` ]]; then
+	rtl88x2bu_download;
+fi
+if [[ `grep -w "rtl8811cu=1" "../userdata.txt"` ]]; then
+	rtl8811cu_download;
+fi
 }
 
 extract(){
@@ -143,6 +152,15 @@ echo -e -n "${FIN}"
 
 # armv6l
 armv6_setup(){
+if [[ `grep -w "rtl8812au=1" "../userdata.txt"` ]]; then
+	rtl8812au;
+fi
+if [[ `grep -w "rtl88x2bu=1" "../userdata.txt"` ]]; then
+	rtl88x2bu;
+fi
+if [[ `grep -w "rtl8811cu=1" "../userdata.txt"` ]]; then
+	rtl8811cu;
+fi
 cd ${KERNEL}-${VERSION}
 export ARCH=arm
 KERNEL=kernel
@@ -190,6 +208,15 @@ echo 'y' | make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm KBUILD_BUILD_HOST=${KBH
 
 # armv7l
 armv7_setup(){
+if [[ `grep -w "rtl8812au=1" "../userdata.txt"` ]]; then
+	rtl8812au;
+fi
+if [[ `grep -w "rtl88x2bu=1" "../userdata.txt"` ]]; then
+	rtl88x2bu;
+fi
+if [[ `grep -w "rtl8811cu=1" "../userdata.txt"` ]]; then
+	rtl8811cu;
+fi
 cd ${KERNEL}-${VERSION}
 export ARCH=arm
 KERNEL=kernel7
@@ -237,6 +264,15 @@ echo 'y' | make -j${CORES} KBUILD_BUILD_HOST=${KBHOST} ARCH=arm ${NATIVE} CFLAGS
 
 # aarch64
 armv8_setup(){
+if [[ `grep -w "rtl8812au=1" "../userdata.txt"` ]]; then
+	rtl8812au;
+fi
+if [[ `grep -w "rtl88x2bu=1" "../userdata.txt"` ]]; then
+	rtl88x2bu;
+fi
+if [[ `grep -w "rtl8811cu=1" "../userdata.txt"` ]]; then
+	rtl8811cu;
+fi
 cd ${KERNEL}-${VERSION}
 export ARCH=arm64
 }
@@ -329,6 +365,9 @@ echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm/configs/bcmrp
 rpi4_fconfig(){
 echo -e "${RED}Making bcm2711 defconfig${FIN}."
 module_sig
+rtl8812au_module
+rtl88x2bu_module
+rtl8811cu_module
 if [[ `grep -w "lto_clang_thin=1" "../../userdata.txt"` ]]; then
 	echo CONFIG_LTO_CLANG_THIN=y >> arch/arm64/configs/bcm2711_defconfig;
 fi
@@ -343,6 +382,9 @@ echo_done
 rpi3_fconfig(){
 echo -e "${RED}Making bcmrpi3 defconfig${FIN}."
 module_sig
+rtl8812au_module
+rtl88x2bu_module
+rtl8811cu_module
 if [[ `grep -w "lto_clang_thin=1" "../../userdata.txt"` ]]; then
 	echo CONFIG_LTO_CLANG_THIN=y >> arch/arm64/configs/bcmrpi3_defconfig;
 fi
@@ -357,6 +399,9 @@ echo_done
 rpi2+3_fconfig(){
 echo -e "${RED}Making bcm2709 defconfig${FIN}."
 module_sig
+rtl8812au_module
+rtl88x2bu_module
+rtl8811cu_module
 if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
 	make -j${CORES} ARCH=arm ${ARMV7_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=arm-linux-gnueabihf- bcm2709_defconfig;
 else
@@ -368,6 +413,9 @@ echo_done
 rpi_fconfig(){
 echo -e "${RED}Making bcmrpi defconfig${FIN}."
 module_sig
+rtl8812au_module
+rtl88x2bu_module
+rtl8811cu_module
 if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
 	make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm ${ARMV6_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=arm-linux-gnueabi- bcmrpi_defconfig;
 else

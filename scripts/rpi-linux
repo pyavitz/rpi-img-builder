@@ -5,6 +5,7 @@ source lib/function/ccache
 source lib/function/clang
 source lib/function/rpi-linux
 source lib/function/echoes
+source lib/function/wireless
 source userdata.txt
 UD=userdata.txt
 

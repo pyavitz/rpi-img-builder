@@ -86,8 +86,11 @@ echo "set_timezone(){" >> tmp0
 echo "ln -snf /usr/share/zoneinfo/America/New_York /etc/localtime" >> tmp0
 echo "echo -n 'America/New_York' > /etc/timezone" >> tmp0
 echo "}" >> tmp0
+echo rtl8812au=0 >> tmp0
+echo rtl88x2bu=0 >> tmp0
+echo rtl8811cu=0 >> tmp0
 echo admin=1 >> tmp0
-echo builder=3.14 >> tmp0
+echo builder=3.15 >> tmp0
 echo '"' >> tmp2
 echo '"' >> tmp2
 echo >> tmp2
@@ -115,7 +118,8 @@ sed -i '22i### CLANG/LLVM' userdata.txt
 sed -i '25i### COMPILER TUNING' userdata.txt
 sed -i '27i### LOCALES' userdata.txt
 sed -i '35i### TIMEZONE' userdata.txt
-sed -i '40i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '40i### EXTRA WIRELESS' userdata.txt
+sed -i '44i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # clear screen
 clear
