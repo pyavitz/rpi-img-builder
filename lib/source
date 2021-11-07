@@ -22,9 +22,9 @@ fi
 }
 # do not edit above this line
 
-EXT4="2200MB"
-BTRFS="1600MB"
-XFS="1825MB"
+EXT4="2800MB"
+BTRFS="2650MB"
+XFS="2650MB"
 
 # debian
 DEBIAN1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
