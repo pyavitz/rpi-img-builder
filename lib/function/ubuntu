@@ -22,52 +22,6 @@ deb http://ports.ubuntu.com/ubuntu-ports/ focal-security multiverse
 EOF
 }
 
-groovy_sources(){
-rm -f p2/etc/apt/sources.list
-tee p2/etc/apt/sources.list <<EOF
-deb http://ports.ubuntu.com/ubuntu-ports/ groovy main restricted
-deb http://ports.ubuntu.com/ubuntu-ports/ groovy-updates main restricted
-deb http://ports.ubuntu.com/ubuntu-ports/ groovy universe
-deb http://ports.ubuntu.com/ubuntu-ports/ groovy-updates universe
-deb http://ports.ubuntu.com/ubuntu-ports/ groovy multiverse
-deb http://ports.ubuntu.com/ubuntu-ports/ groovy-updates multiverse
-deb http://ports.ubuntu.com/ubuntu-ports/ groovy-backports main restricted universe multiverse
-deb http://ports.ubuntu.com/ubuntu-ports/ groovy-security main restricted
-deb http://ports.ubuntu.com/ubuntu-ports/ groovy-security universe
-deb http://ports.ubuntu.com/ubuntu-ports/ groovy-security multiverse
-
-## Uncomment the following two lines to add software from Canonical's
-## 'partner' repository.
-## This software is not part of Ubuntu, but is offered by Canonical and the
-## respective vendors as a service to Ubuntu users.
-# deb http://archive.canonical.com/ubuntu groovy partner
-# deb-src http://archive.canonical.com/ubuntu groovy partner
-EOF
-}
-
-hirsute_sources(){
-rm -f p2/etc/apt/sources.list
-tee p2/etc/apt/sources.list <<EOF
-deb http://ports.ubuntu.com/ubuntu-ports/ hirsute main restricted
-deb http://ports.ubuntu.com/ubuntu-ports/ hirsute-updates main restricted
-deb http://ports.ubuntu.com/ubuntu-ports/ hirsute universe
-deb http://ports.ubuntu.com/ubuntu-ports/ hirsute-updates universe
-deb http://ports.ubuntu.com/ubuntu-ports/ hirsute multiverse
-deb http://ports.ubuntu.com/ubuntu-ports/ hirsute-updates multiverse
-deb http://ports.ubuntu.com/ubuntu-ports/ hirsute-backports main restricted universe multiverse
-deb http://ports.ubuntu.com/ubuntu-ports/ hirsute-security main restricted
-deb http://ports.ubuntu.com/ubuntu-ports/ hirsute-security universe
-deb http://ports.ubuntu.com/ubuntu-ports/ hirsute-security multiverse
-
-## Uncomment the following two lines to add software from Canonical's
-## 'partner' repository.
-## This software is not part of Ubuntu, but is offered by Canonical and the
-## respective vendors as a service to Ubuntu users.
-# deb http://archive.canonical.com/ubuntu hirsute partner
-# deb-src http://archive.canonical.com/ubuntu hirsute partner
-EOF
-}
-
 impish_sources(){
 rm -f p2/etc/apt/sources.list
 tee p2/etc/apt/sources.list <<EOF
@@ -91,18 +45,38 @@ deb http://ports.ubuntu.com/ubuntu-ports/ impish-security multiverse
 EOF
 }
 
+jammy_sources(){
+rm -f p2/etc/apt/sources.list
+tee p2/etc/apt/sources.list <<EOF
+deb http://ports.ubuntu.com/ubuntu-ports/ jammy main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ jammy-updates main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ jammy universe
+deb http://ports.ubuntu.com/ubuntu-ports/ jammy-updates universe
+deb http://ports.ubuntu.com/ubuntu-ports/ jammy multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ jammy-updates multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ jammy-backports main restricted universe multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ jammy-security main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ jammy-security universe
+deb http://ports.ubuntu.com/ubuntu-ports/ jammy-security multiverse
+
+## Uncomment the following two lines to add software from Canonical's
+## 'partner' repository.
+## This software is not part of Ubuntu, but is offered by Canonical and the
+## respective vendors as a service to Ubuntu users.
+# deb http://archive.canonical.com/ubuntu jammy partner
+# deb-src http://archive.canonical.com/ubuntu jammy partner
+EOF
+}
+
 distro_release(){
 if [[ `grep -w 'DISTRO_VERSION="focal"' "userdata.txt"` ]]; then
 	focal_sources;
 fi
-if [[ `grep -w 'DISTRO_VERSION="groovy"' "userdata.txt"` ]]; then
-	groovy_sources;
-fi
-if [[ `grep -w 'DISTRO_VERSION="hirsute"' "userdata.txt"` ]]; then
-	hirsute_sources;
-fi
 if [[ `grep -w 'DISTRO_VERSION="impish"' "userdata.txt"` ]]; then
 	impish_sources;
+fi
+if [[ `grep -w 'DISTRO_VERSION="jammy"' "userdata.txt"` ]]; then
+	jammy_sources;
 fi
 }
 

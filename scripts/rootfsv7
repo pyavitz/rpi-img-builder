@@ -52,7 +52,7 @@ echo -e -n ${RED}
 
 # start debootstrap
 mkdir -p ${ROOT}/usr/bin
-cp $(which "qemu-arm-static") ${ROOT}/usr/bin
+cp $(command -v "qemu-arm-static") ${ROOT}/usr/bin
 if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
 	armhf_devuan;
 else

@@ -7,7 +7,7 @@
 * **Raspberry Pi 0/W/B/+** (*Debian and Devuan*)
 * [Raspberry Pi Hardware](https://www.raspberrypi.org/documentation/hardware/raspberrypi)
 
-## Dependencies for Ubuntu Focal / Hirsute Hippo
+## Dependencies for Ubuntu Jammy (Development Branch)
 
 **Install options:**
 * Run the `./install` script ***(recommended)***
@@ -54,13 +54,13 @@ Crosscompile:   # 1 to cross compile | 0 to native compile
 Compiler        WARNING: Only one may be selected
 GCC:            # 1 to select (default)
 Ccache:         # 1 to select
-Clang:          # 1 to select (host: hirsute only)
+Clang:          # 1 to select
 
 Distribution
 Distro:		# Supported: debian, devuan and ubuntu
-Release:	# Debian: buster, bullseye, testing, unstable and sid
-		# Devuan: beowulf, chimaera, testing, unstable and ceres
-		# Ubuntu: focal and hirsute
+Release:	# Debian: bullseye, testing, unstable and sid
+		# Devuan: chimaera, testing, unstable and ceres
+		# Ubuntu: focal, impish and jammy
 
 Filesystem
 ext4:		# 1 to select (default)
@@ -88,13 +88,13 @@ Crosscompile:   # 1 to cross compile | 0 to native compile
 Compiler        WARNING: Only one may be selected
 GCC:            # 1 to select (default)
 Ccache:         # 1 to select
-Clang:          # 1 to select (host: hirsute only)
+Clang:          # 1 to select
 
 Distribution
 Distro:		# Supported: debian, devuan and ubuntu
-Release:	# Debian: buster, bullseye, testing, unstable and sid
-		# Devuan: beowulf, chimaera, testing, unstable and ceres
-		# Ubuntu: focal and hirsute
+Release:	# Debian: bullseye, testing, unstable and sid
+		# Devuan: chimaera, testing, unstable and ceres
+		# Ubuntu: focal, impish and jammy
 
 Filesystem
 ext4:		# 1 to select (default)

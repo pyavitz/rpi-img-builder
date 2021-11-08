@@ -52,7 +52,7 @@ echo -e -n ${RED}
 
 # start debootstrap
 mkdir -p ${ROOT}/usr/bin
-cp $(which "qemu-aarch64-static") ${ROOT}/usr/bin
+cp $(command -v "qemu-aarch64-static") ${ROOT}/usr/bin
 if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
 	arm64_devuan;
 else
