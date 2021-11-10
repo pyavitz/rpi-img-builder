@@ -10,6 +10,7 @@ VERSION="5.14.6"
 rc="0"
 menuconfig="0"
 crosscompile="1"
+GCC_VERSION="gcc-10"
 gcc="1"
 ccache="0"
 clang="0"
@@ -40,22 +41,23 @@ VALUES=$(dialog --ok-label "Submit" --no-cancel \
 	"Crosscompile:" 9 1	"$crosscompile" 	9 15 2 0 \
 	""		10 1	""	 		10 14 0 0 \
 	"Compiler"	11 1	""	 		11 14 0 0 \
-	"GCC:"		12 1	"$gcc"		 	12 9 2 0 \
-	"Ccache:"	13 1	"$ccache"	 	13 9 2 0 \
-	"Clang:"	14 1	"$clang"	 	14 9 2 0 \
-	""		15 1	""	 		15 14 0 0 \
-	"Distribution"	16 1	""	 		16 14 0 0 \
-	"Distro:"	17 1	"$DISTRO"	  	17 10 15 0 \
-	"Release:"	18 1	"$DISTRO_VERSION"  	18 10 15 0 \
-	""		19 1	""	 		19 14 0 0 \
-	"Filesystem"	20 1	""	 		20 14 0 0 \
-	"ext4:"		21 1	"$ext4"		 	21 8 2 0 \
-	"btrfs:"	22 1	"$btrfs"	 	22 8 2 0 \
-	"xfs:"		23 1	"$xfs"		 	23 8 2 0 \
-	""		24 1	""	 		24 14 0 0 \
-	"Customize"	25 1	""	 		25 14 0 0 \
-	"Defconfig:"	26 1	"$custom_defconfig" 	26 12 2 0 \
-	"Name:"		27 1	"$MYCONFIG"	  	27 7 20 0 \
+	"Version:"	12 1	"$GCC_VERSION"	 	12 10 8 0 \
+	"GCC:"		13 1	"$gcc"		 	13 9 2 0 \
+	"Ccache:"	14 1	"$ccache"	 	14 9 2 0 \
+	"Clang:"	15 1	"$clang"	 	15 9 2 0 \
+	""		16 1	""	 		16 14 0 0 \
+	"Distribution"	17 1	""	 		17 14 0 0 \
+	"Distro:"	18 1	"$DISTRO"	  	18 10 15 0 \
+	"Release:"	19 1	"$DISTRO_VERSION"  	19 10 15 0 \
+	""		20 1	""	 		20 14 0 0 \
+	"Filesystem"	21 1	""	 		21 14 0 0 \
+	"ext4:"		22 1	"$ext4"		 	22 8 2 0 \
+	"btrfs:"	23 1	"$btrfs"	 	23 8 2 0 \
+	"xfs:"		24 1	"$xfs"		 	24 8 2 0 \
+	""		25 1	""	 		25 14 0 0 \
+	"Customize"	26 1	""	 		26 14 0 0 \
+	"Defconfig:"	27 1	"$custom_defconfig" 	27 12 2 0 \
+	"Name:"		28 1	"$MYCONFIG"	  	28 7 20 0 \
 2>&1 1>&3)
 
 # close fd
@@ -70,6 +72,7 @@ echo VERSION='"' >> tmp0
 echo rc= >> tmp0
 echo menuconfig= >> tmp0
 echo crosscompile= >> tmp0
+echo GCC_VERSION='"' >> tmp0
 echo gcc= >> tmp0
 echo ccache= >> tmp0
 echo clang= >> tmp0
@@ -105,6 +108,7 @@ echo '"' >> tmp2
 echo >> tmp2
 echo >> tmp2
 echo >> tmp2
+echo '"' >> tmp2
 echo >> tmp2
 echo >> tmp2
 echo >> tmp2
@@ -121,14 +125,14 @@ rm -f tmp0 tmp1 tmp2
 # categories
 sed -i '4i### LINUX KERNEL' userdata.txt
 sed -i '9i### COMPILER' userdata.txt
-sed -i '13i### DISTRIBUTION' userdata.txt
-sed -i '16i### FILESYSTEM' userdata.txt
-sed -i '20i### CUSTOM' userdata.txt
-sed -i '25i### CLANG/LLVM' userdata.txt
-sed -i '28i### COMPILER TUNING' userdata.txt
-sed -i '30i### LOCALES' userdata.txt
-sed -i '38i### TIMEZONE' userdata.txt
-sed -i '43i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '14i### DISTRIBUTION' userdata.txt
+sed -i '17i### FILESYSTEM' userdata.txt
+sed -i '21i### CUSTOM' userdata.txt
+sed -i '26i### CLANG/LLVM' userdata.txt
+sed -i '29i### COMPILER TUNING' userdata.txt
+sed -i '31i### LOCALES' userdata.txt
+sed -i '39i### TIMEZONE' userdata.txt
+sed -i '44i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # clear screen
 clear

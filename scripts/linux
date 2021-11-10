@@ -1,11 +1,9 @@
 #!/bin/bash
 source userdata.txt
-source lib/function/gcc
-source lib/function/ccache
-source lib/function/clang
+source lib/source
 source lib/function/linux
 source lib/function/echoes
-source lib/source
+source lib/function/compiler
 UD=userdata.txt
 
 userdata(){
