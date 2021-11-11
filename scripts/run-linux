@@ -95,7 +95,7 @@ ccache=0
 clang=0
 ### DISTRIBUTION
 DISTRO="debian"
-DISTRO_VERSION="$release"
+DISTRO_VERSION="bullseye"
 ### FILESYSTEM
 ext4=1
 btrfs=0
@@ -139,8 +139,6 @@ echo -e -n "${WHT}Build number: ${FIN}"
 read build
 echo -e -n "${WHT}GCC Version: ${FIN}"
 read version
-echo -e -n "${WHT}Debian release: ${FIN}"
-read release
 
 userdata > /dev/null 2>&1
 sleep 1s
