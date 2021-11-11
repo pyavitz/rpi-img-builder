@@ -1,12 +1,10 @@
 #!/bin/bash
-source lib/source
-source lib/function/gcc
-source lib/function/ccache
-source lib/function/clang
-source lib/function/rpi-linux
-source lib/function/echoes
-source lib/function/wireless
 source userdata.txt
+source lib/source
+source lib/function/echoes
+source lib/function/compiler
+source lib/function/rpi-linux
+source lib/function/wireless
 UD=userdata.txt
 
 userdata(){

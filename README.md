@@ -7,14 +7,15 @@
 * **Raspberry Pi 0/W/B/+** (*Debian and Devuan*)
 * [Raspberry Pi Hardware](https://www.raspberrypi.org/documentation/hardware/raspberrypi)
 
-## Dependencies for Ubuntu Focal / Hirsute Hippo
+## Dependencies for Debian Bullseye and Ubuntu Focal / Jammy Jellyfish
+* **Recommended host:** Ubuntu Jammy Jellyfish
 
 **Install options:**
 * Run the `./install` script ***(recommended)***
 * Run builder [make commands](https://github.com/pyavitz/rpi-img-builder#install-dependencies) (dependency: make)
 * Review [package list](https://raw.githubusercontent.com/pyavitz/rpi-img-builder/master/lib/.package.list) and install manually
 
-## Docker
+## Docker (obsolete)
 
 To build using [Docker](https://www.docker.com/), follow the install [instructions](https://docs.docker.com/engine/install/) and use our other [builder](https://github.com/pyavitz/arm-img-builder).
 
@@ -52,15 +53,16 @@ Menuconfig:     # 1 to run kernel menuconfig
 Crosscompile:   # 1 to cross compile | 0 to native compile
 
 Compiler        WARNING: Only one may be selected
+Version:        # Defaults at gcc-10
 GCC:            # 1 to select (default)
 Ccache:         # 1 to select
-Clang:          # 1 to select (host: hirsute only)
+Clang:          # 1 to select (Supported: Jammy Jellyfish)
 
 Distribution
 Distro:		# Supported: debian, devuan and ubuntu
-Release:	# Debian: buster, bullseye, testing, unstable and sid
-		# Devuan: beowulf, chimaera, testing, unstable and ceres
-		# Ubuntu: focal and hirsute
+Release:	# Debian: bullseye, testing, unstable and sid
+		# Devuan: chimaera, testing, unstable and ceres
+		# Ubuntu: focal, impish and jammy
 
 Filesystem
 ext4:		# 1 to select (default)
@@ -86,15 +88,16 @@ Menuconfig:     # 1 to run kernel menuconfig
 Crosscompile:   # 1 to cross compile | 0 to native compile
 
 Compiler        WARNING: Only one may be selected
+Version:        # Defaults at gcc-10
 GCC:            # 1 to select (default)
 Ccache:         # 1 to select
-Clang:          # 1 to select (host: hirsute only)
+Clang:          # 1 to select (Supported: Jammy Jellyfish)
 
 Distribution
 Distro:		# Supported: debian, devuan and ubuntu
-Release:	# Debian: buster, bullseye, testing, unstable and sid
-		# Devuan: beowulf, chimaera, testing, unstable and ceres
-		# Ubuntu: focal and hirsute
+Release:	# Debian: bullseye, testing, unstable and sid
+		# Devuan: chimaera, testing, unstable and ceres
+		# Ubuntu: focal, impish and jammy
 
 Filesystem
 ext4:		# 1 to select (default)
@@ -285,7 +288,7 @@ Upon install please run 'deb-eeprom -u' before using this script.
 #### Using fetch ([initrd support](https://github.com/pyavitz/rpi-img-builder/pull/26))
 ```sh
 Fetch, Linux kernel installer for the Raspberry Pi Image Builder
-Usage: fetch -h
+Usage: fetch -u
 
    -1       Linux 5.10.y LTS
    -2       Linux Stable Branch

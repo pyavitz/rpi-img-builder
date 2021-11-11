@@ -15,10 +15,13 @@ echo_focal(){
 echo -e -n "${PNK}[${FIN}${GRN}Ubuntu Focal${FIN}${PNK}]${FIN}"
 }
 
-echo_hirsute(){
-echo -e -n "${PNK}[${FIN}${GRN}Ubuntu Hirsute Hippo${FIN}${PNK}]${FIN}"
+echo_jammy(){
+echo -e -n "${PNK}[${FIN}${GRN}Ubuntu Jammy Jellyfish${FIN}${PNK}]${FIN}"
 }
 
+echo_bullseye(){
+echo -e -n "${PNK}[${FIN}${GRN}Debian Bullseye${FIN}${PNK}]${FIN}"
+}
 
 echo_fail(){
 echo -n -e "${PNK}[${FIN}${RED}failed${FIN}${PNK}]${FIN}"
@@ -54,14 +57,19 @@ if [[ `grep -w "focal" "/etc/os-release"` ]]; then
 	echo_focal
 	echo ""
 else
-	if [[ `grep -w "hirsute" "/etc/os-release"` ]]; then
-		echo_hirsute
+	if [[ `grep -w "jammy" "/etc/os-release"` ]]; then
+		echo_jammy
 		echo "";
 	else
-		echo_fail
-		echo ""
-		derror
-		exit 1;
+		if [[ `grep -w "bullseye" "/etc/os-release"` ]]; then
+			echo_bullseye
+			echo "";
+		else
+			echo_fail
+			echo ""
+			derror
+			exit;
+		fi
 	fi
 fi
 }
@@ -133,21 +141,6 @@ do
 	esac
 done
 echo -e -n "${FIN}"
-fi
-
-if [[ `sudo dmesg | grep -w armv6` ]]; then
-	if [ -e /usr/bin/make ]; then
-		echo -e "${WHT}Starting install ...${FIN}"
-		sleep 2s
-		sudo apt update
-		make ncompile;
-	else
-		echo -e "${WHT}Starting install ...${FIN}"
-		sleep 2s
-		sudo apt update
-		sudo apt install -y make
-		make ncompile;
-	fi
 fi
 
 make dialogrc > /dev/null 2>&1

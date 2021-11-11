@@ -8,6 +8,7 @@ rootpasswd="0"
 VERSION="5.10.y"
 menuconfig="0"
 crosscompile="1"
+GCC_VERSION="gcc-10"
 gcc="1"
 ccache="0"
 clang="0"
@@ -38,22 +39,23 @@ VALUES=$(dialog --ok-label "Submit" --no-cancel \
 	"Crosscompile:" 8 1	"$crosscompile" 	8 15 2 0 \
 	""		9 1	""	 		9 14 0 0 \
 	"Compiler"	10 1	""	 		10 14 0 0 \
-	"GCC:"		11 1	"$gcc"		 	11 9 2 0 \
-	"Ccache:"	12 1	"$ccache"	 	12 9 2 0 \
-	"Clang:"	13 1	"$clang"	 	13 9 2 0 \
-	""		14 1	""	 		14 14 0 0 \
-	"Distribution"	15 1	""	 		15 14 0 0 \
-	"Distro:"	16 1	"$DISTRO"	  	16 10 15 0 \
-	"Release:"	17 1	"$DISTRO_VERSION"  	17 10 15 0 \
-	""		18 1	""	 		18 14 0 0 \
-	"Filesystem"	19 1	""	 		19 14 0 0 \
-	"ext4:"		20 1	"$ext4"		 	20 8 2 0 \
-	"btrfs:"	21 1	"$btrfs"	 	21 8 2 0 \
-	"xfs:"		22 1	"$xfs"		 	22 8 2 0 \
-	""		23 1	""	 		23 14 0 0 \
-	"Customize"	24 1	""	 		24 14 0 0 \
-	"Defconfig:"	25 1	"$custom_defconfig" 	25 12 2 0 \
-	"Name:"		26 1	"$MYCONFIG"	  	26 7 20 0 \
+	"Version:"	11 1	"$GCC_VERSION"	 	11 10 8 0 \
+	"GCC:"		12 1	"$gcc"		 	12 9 2 0 \
+	"Ccache:"	13 1	"$ccache"	 	13 9 2 0 \
+	"Clang:"	14 1	"$clang"	 	14 9 2 0 \
+	""		15 1	""	 		15 14 0 0 \
+	"Distribution"	16 1	""	 		16 14 0 0 \
+	"Distro:"	17 1	"$DISTRO"	  	17 10 15 0 \
+	"Release:"	18 1	"$DISTRO_VERSION"  	18 10 15 0 \
+	""		19 1	""	 		19 14 0 0 \
+	"Filesystem"	20 1	""	 		20 14 0 0 \
+	"ext4:"		21 1	"$ext4"		 	21 8 2 0 \
+	"btrfs:"	22 1	"$btrfs"	 	22 8 2 0 \
+	"xfs:"		23 1	"$xfs"		 	23 8 2 0 \
+	""		24 1	""	 		24 14 0 0 \
+	"Customize"	25 1	""	 		25 14 0 0 \
+	"Defconfig:"	26 1	"$custom_defconfig" 	26 12 2 0 \
+	"Name:"		27 1	"$MYCONFIG"	  	27 7 20 0 \
 2>&1 1>&3)
 
 # close fd
@@ -67,6 +69,7 @@ echo rootpasswd= >> tmp0
 echo VERSION='"' >> tmp0
 echo menuconfig= >> tmp0
 echo crosscompile= >> tmp0
+echo GCC_VERSION='"' >> tmp0
 echo gcc= >> tmp0
 echo ccache= >> tmp0
 echo clang= >> tmp0
@@ -97,13 +100,14 @@ echo rtl8812au=0 >> tmp0
 echo rtl88x2bu=0 >> tmp0
 echo rtl8811cu=0 >> tmp0
 echo rpiuser=1 >> tmp0
-echo builder=3.15 >> tmp0
+echo builder=4.0 >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
 echo >> tmp2
 echo '"' >> tmp2
 echo >> tmp2
 echo >> tmp2
+echo '"' >> tmp2
 echo >> tmp2
 echo >> tmp2
 echo >> tmp2
@@ -120,15 +124,15 @@ rm -f tmp0 tmp1 tmp2
 # categories
 sed -i '4i### LINUX KERNEL' userdata.txt
 sed -i '8i### COMPILER' userdata.txt
-sed -i '12i### DISTRIBUTION' userdata.txt
-sed -i '15i### FILESYSTEM' userdata.txt
-sed -i '19i### CUSTOM' userdata.txt
-sed -i '24i### CLANG/LLVM' userdata.txt
-sed -i '27i### COMPILER TUNING' userdata.txt
-sed -i '29i### LOCALES' userdata.txt
-sed -i '37i### TIMEZONE' userdata.txt
-sed -i '42i### EXTRA WIRELESS' userdata.txt
-sed -i '46i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '13i### DISTRIBUTION' userdata.txt
+sed -i '16i### FILESYSTEM' userdata.txt
+sed -i '20i### CUSTOM' userdata.txt
+sed -i '25i### CLANG/LLVM' userdata.txt
+sed -i '28i### COMPILER TUNING' userdata.txt
+sed -i '30i### LOCALES' userdata.txt
+sed -i '38i### TIMEZONE' userdata.txt
+sed -i '43i### EXTRA WIRELESS' userdata.txt
+sed -i '47i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # clear screen
 clear

@@ -18,6 +18,7 @@ if [[ `grep -w "ccache=1" "userdata.txt"` ]]; then
 
 else
 	sudo apt update
+	sudo apt upgrade -y
 	sudo apt install -y ccache
 	sleep 1s
 	rm -f {gcc.txt,ccache.txt,clang.txt}
@@ -25,12 +26,13 @@ else
 	fi
 fi
 if [[ `grep -w "clang=1" "userdata.txt"` ]]; then
-	if [ -e /usr/bin/clang-12 ]; then
+	if [ -e /usr/bin/clang-13 ]; then
 	rm -f {gcc.txt,ccache.txt,clang.txt}
 	clang_compiler;
 else
 	sudo apt update
-	sudo apt install -y clang clang-12 lld lld-12 llvm
+	sudo apt upgrade -y
+	sudo apt install -y clang clang-13 lld lld-13 llvm
 	sleep 1s
 	rm -f {gcc.txt,ccache.txt,clang.txt}
 	clang_compiler;

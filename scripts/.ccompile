@@ -3,17 +3,39 @@
 WHT="\e[1;37m"
 FIN="\e[0m"
 
-ccompile(){
+focal-ccompile(){
 sudo apt install -y build-essential bison bc git dialog patch \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
-	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig kpartx \
-	aria2 pv toilet figlet lsb-release xz-utils curl e2fsprogs btrfs-progs \
-	crossbuild-essential-arm64 crossbuild-essential-armhf crossbuild-essential-armel \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
+	aria2 pv toilet figlet lsb-release xz-utils curl e2fsprogs kpartx \
+	distro-info-data crossbuild-essential-armhf crossbuild-essential-armel \
 	gcc-8-arm-linux-gnueabi gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi \
 	gcc-8-arm-linux-gnueabihf gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf \
 	gcc-8-aarch64-linux-gnu gcc-9-aarch64-linux-gnu gcc-10-aarch64-linux-gnu \
-	gcc-8 gcc-9 gcc-10 debian-archive-keyring debian-keyring make libelf-dev \
-	distro-info-data xfsprogs fdisk
+	gcc-8 gcc-9 gcc-10 debian-archive-keyring debian-keyring make libelf-dev
+}
+
+jammy-ccompile(){
+sudo apt install -y build-essential bison bc git dialog patch fdisk distro-info-data \
+	dosfstools zip unzip qemu debootstrap qemu-user-static rsync xfsprogs \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig kpartx \
+	aria2 pv toilet figlet lsb-release xz-utils curl e2fsprogs btrfs-progs \
+	crossbuild-essential-arm64 crossbuild-essential-armhf crossbuild-essential-armel \
+	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-11-arm-linux-gnueabi \
+	gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf gcc-11-arm-linux-gnueabihf \
+	gcc-9-aarch64-linux-gnu gcc-10-aarch64-linux-gnu gcc-11-aarch64-linux-gnu \
+	gcc-9 gcc-10 gcc-11 debian-archive-keyring debian-keyring make libelf-dev
+}
+
+bullseye-ccompile(){
+sudo apt install -y build-essential bison bc git dialog patch kpartx zstd aria2 pv \
+	dosfstools zip unzip qemu debootstrap qemu-user-static rsync make toilet figlet \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig libelf-dev \
+	crossbuild-essential-arm64 crossbuild-essential-armel crossbuild-essential-armhf \
+	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs xfsprogs \
+	fdisk gcc-9 gcc-10 gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf \
+	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-9-aarch64-linux-gnu \
+	gcc-10-aarch64-linux-gnu
 }
 
 if [[ `sudo dmesg | grep -w arm64` ]]; then
@@ -24,12 +46,22 @@ if [[ `sudo dmesg | grep -w arm64` ]]; then
         exit;
 fi
 
-if [[ `sudo dmesg | grep -w armv6` ]]; then
-        echo ""
-        echo -e "${WHT}Host Machine: Armv6${FIN}"
-        echo -e "${WHT}Please run:${FIN} make ncompile"
-        echo ""
-        exit;
+if [[ `grep -w "focal" "/etc/os-release"` ]]; then
+	echo ""
+	focal-ccompile;
+else
+	if [[ `grep -w "jammy" "/etc/os-release"` ]]; then
+		echo ""
+		jammy-ccompile;
+	else
+		if [[ `grep -w "bullseye" "/etc/os-release"` ]]; then
+			echo ""
+			bullseye-ccompile;
+		else
+			echo ""
+			echo -e "${WHT}What OS are you running?${FIN}"
+			echo ""
+			exit;
+		fi
+	fi
 fi
-
-ccompile

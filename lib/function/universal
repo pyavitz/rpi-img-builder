@@ -1,12 +1,12 @@
 # Stage1
 qemu_arm64(){
 mkdir -p p2/usr/bin
-cp $(which "qemu-aarch64-static") p2/usr/bin
+cp $(command -v "qemu-aarch64-static") p2/usr/bin
 }
 
 qemu_arm(){
 mkdir -p p2/usr/bin
-cp $(which "qemu-arm-static") p2/usr/bin
+cp $(command -v "qemu-arm-static") p2/usr/bin
 }
 
 qemu_arm64_remove(){

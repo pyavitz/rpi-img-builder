@@ -20,8 +20,8 @@ echo_focal(){
 echo -e -n "${PNK}[${FIN}${GRN}Ubuntu Focal${FIN}${PNK}]${FIN}"
 }
 
-echo_hirsute(){
-echo -e -n "${PNK}[${FIN}${GRN}Ubuntu Hirsute Hippo${FIN}${PNK}]${FIN}"
+echo_jammy(){
+echo -e -n "${PNK}[${FIN}${GRN}Ubuntu Jammy Jellyfish${FIN}${PNK}]${FIN}"
 }
 
 echo_fail(){
@@ -69,8 +69,8 @@ if [[ `grep -w "focal" "/etc/os-release"` ]]; then
 	echo_focal
 	echo ""
 else
-	if [[ `grep -w "hirsute" "/etc/os-release"` ]]; then
-		echo_hirsute
+	if [[ `grep -w "jammy" "/etc/os-release"` ]]; then
+		echo_jammy
 		echo "";
 	else
 		echo_fail
@@ -89,12 +89,13 @@ BUILD_VERSION="$build"
 menuconfig=0
 crosscompile=1
 ### COMPILER
+GCC_VERSION="$version"
 gcc=1
 ccache=0
 clang=0
 ### DISTRIBUTION
 DISTRO="debian"
-DISTRO_VERSION="$release"
+DISTRO_VERSION="bullseye"
 ### FILESYSTEM
 ext4=1
 btrfs=0
@@ -136,8 +137,8 @@ echo -e -n "${WHT}Linux branch: ${FIN}"
 read branch
 echo -e -n "${WHT}Build number: ${FIN}"
 read build
-echo -e -n "${WHT}Debian release: ${FIN}"
-read release
+echo -e -n "${WHT}GCC Version: ${FIN}"
+read version
 
 userdata > /dev/null 2>&1
 sleep 1s
@@ -147,7 +148,7 @@ echo `date` > log.txt
 echo "" >> log.txt
 echo "Linux branch: $branch" >> log.txt
 echo "Build number: $build" >> log.txt
-echo "Debian Release: $release" >> log.txt
+echo "GCC Version:  $version" >> log.txt
 echo "" >> log.txt
 echo "Results:" >> log.txt
 make kernel
