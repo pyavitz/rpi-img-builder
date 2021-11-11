@@ -1,4 +1,4 @@
-check_keyring(){
+devuan_keyring(){
 URL="https://pkgmaster.devuan.org/devuan/pool/main/d/devuan-keyring/"
 FILE="devuan-keyring_2017.10.03_all.deb"
 if ls /usr/share/keyrings/{devuan-archive-keyring.gpg,devuan-keyring.gpg} > /dev/null 2>&1;
@@ -12,6 +12,43 @@ if [ -e /usr/share/debootstrap/scripts/chimaera ]; then
 	:;
 else
 	ln -sr /usr/share/debootstrap/scripts/sid /usr/share/debootstrap/scripts/chimaera;
+fi
+echo ""
+}
+
+ubuntu_keyring(){
+URL0="http://ftp.us.debian.org/debian/pool/main/d/debootstrap/"
+URL1="http://ftp.us.debian.org/debian/pool/main/u/ubuntu-keyring/"
+FILE0="debootstrap_1.0.126_all.deb"
+FILE1="ubuntu-keyring_2020.06.17.1-1_all.deb"
+FILE2="ubuntu-archive-keyring_2020.06.17.1-1_all.deb"
+FILE3="ubuntu-cloud-keyring_2020.06.17.1-1_all.deb"
+FILE4="ubuntu-dbgsym-keyring_2020.06.17.1-1_all.deb"
+if [ -e /usr/share/keyrings/ubuntu-archive-keyring.gpg ]; then
+	:;
+else
+	wget -cq --show-progress $URL0$FILE0
+	wget -cq --show-progress $URL1$FILE1
+	wget -cq --show-progress $URL1$FILE2
+	wget -cq --show-progress $URL1$FILE3
+	wget -cq --show-progress $URL1$FILE4
+	sudo dpkg -i *.deb
+	rm -f *.deb
+	ubuntu_dbs_links;
+fi
+echo ""
+}
+
+ubuntu_dbs_links(){
+if [ -e /usr/share/debootstrap/scripts/impish ]; then
+	:;
+else
+	ln -sr /usr/share/debootstrap/scripts/gutsy /usr/share/debootstrap/scripts/impish;
+fi
+if [ -e /usr/share/debootstrap/scripts/jammy ]; then
+	:;
+else
+	ln -sr /usr/share/debootstrap/scripts/gutsy /usr/share/debootstrap/scripts/jammy;
 fi
 }
 

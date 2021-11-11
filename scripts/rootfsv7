@@ -14,13 +14,13 @@ UD=userdata.txt
 
 userdata(){
 echo ""
-echo "Please create a userdata.txt file"
+echo -e "Please create a ${WHT}userdata.txt${FIN} file"
 while [ true ] ; do
 read -t 10 -n 1
 if [ $? = 0 ] ; then
 exit ;
 else
-echo "run make config"
+echo -e "run make config"
 fi
 done
 }
@@ -30,11 +30,17 @@ if [ -f "$UD" ]; then
 else 
     userdata
 fi
-if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
-	check_keyring;
-fi
-echo
 validation
+if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
+	devuan_keyring;
+fi
+if [[ `grep -w "Ubuntu" "/etc/os-release"` ]]; then
+	:;
+else
+	if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; then
+		ubuntu_keyring;
+	fi
+fi
 if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
 	set -eux -o pipefail;
 else
@@ -47,8 +53,8 @@ if [ -e $RELEASE ]; then
 	ls $RELEASE
 	exit;
 fi
-echo -e "${GRN}Starting debootstrap${FIN} ..."
-echo -e -n ${RED}
+echo -e "${WHT}Starting debootstrap${FIN} ..."
+echo -e -n ${GRN}
 
 # start debootstrap
 mkdir -p ${ROOT}/usr/bin
