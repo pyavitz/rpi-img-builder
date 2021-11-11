@@ -3,7 +3,18 @@
 WHT="\e[1;37m"
 FIN="\e[0m"
 
-ccompile64(){
+focal-ccompile64(){
+sudo apt install -y build-essential bison bc git dialog patch dosfstools \
+	zip unzip qemu debootstrap qemu-user-static rsync kmod cpio flex \
+	libssl-dev libncurses5-dev parted fakeroot swig aria2 pv toilet figlet \
+	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs kpartx \
+	debian-archive-keyring crossbuild-essential-armel crossbuild-essential-armhf \
+	gcc-8-arm-linux-gnueabi gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi \
+	gcc-8-arm-linux-gnueabihf gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf \
+	gcc-8 gcc-9 gcc-10 debian-keyring make libelf-dev xfsprogs fdisk
+}
+
+jammy-ccompile64(){
 sudo apt install -y build-essential bison bc git dialog patch dosfstools \
 	zip unzip qemu debootstrap qemu-user-static rsync kmod cpio flex \
 	libssl-dev libncurses5-dev parted fakeroot swig aria2 pv toilet figlet \
@@ -14,6 +25,15 @@ sudo apt install -y build-essential bison bc git dialog patch dosfstools \
 	gcc-9 gcc-10 gcc-11 debian-keyring make libelf-dev xfsprogs fdisk
 }
 
+bullseye-ccompile64(){
+sudo apt install -y build-essential bison bc git dialog patch kpartx zstd \
+	dosfstools zip unzip qemu debootstrap qemu-user-static rsync make fdisk \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig libelf-dev \
+	crossbuild-essential-armel crossbuild-essential-armhf aria2 pv toilet figlet \
+	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs xfsprogs \
+	gcc-9 gcc-10
+}
+
 if [[ `sudo dmesg | grep -w x86-64` ]]; then
 	echo ""
 	echo -e "${WHT}Host Machine: x86-64${FIN}"
@@ -22,4 +42,22 @@ if [[ `sudo dmesg | grep -w x86-64` ]]; then
 	exit;
 fi
 
-ccompile64
+if [[ `grep -w "focal" "/etc/os-release"` ]]; then
+	echo ""
+	focal-ccompile64;
+else
+	if [[ `grep -w "jammy" "/etc/os-release"` ]]; then
+		echo ""
+		jammy-ccompile64;
+	else
+		if [[ `grep -w "bullseye" "/etc/os-release"` ]]; then
+			echo ""
+			bullseye-ccompile64;
+		else
+			echo ""
+			echo -e "${WHT}What OS are you running?${FIN}"
+			echo ""
+			exit;
+		fi
+	fi
+fi

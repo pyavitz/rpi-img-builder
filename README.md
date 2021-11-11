@@ -7,7 +7,7 @@
 * **Raspberry Pi 0/W/B/+** (*Debian and Devuan*)
 * [Raspberry Pi Hardware](https://www.raspberrypi.org/documentation/hardware/raspberrypi)
 
-## Dependencies for Ubuntu Jammy (Development Branch)
+## Dependencies for Debian Bullseye and Ubuntu Focal / Jammy Jellyfish
 
 **Install options:**
 * Run the `./install` script ***(recommended)***
