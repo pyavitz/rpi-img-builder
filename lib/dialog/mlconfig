@@ -100,7 +100,7 @@ echo "ln -snf /usr/share/zoneinfo/America/New_York /etc/localtime" >> tmp0
 echo "echo -n 'America/New_York' > /etc/timezone" >> tmp0
 echo "}" >> tmp0
 echo devuser=1 >> tmp0
-echo builder=3.15 >> tmp0
+echo builder=4.0 >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
 echo >> tmp2
