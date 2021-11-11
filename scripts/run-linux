@@ -148,7 +148,7 @@ echo `date` > log.txt
 echo "" >> log.txt
 echo "Linux branch: $branch" >> log.txt
 echo "Build number: $build" >> log.txt
-echo "Debian Release: $release" >> log.txt
+echo "GCC Version:  $version" >> log.txt
 echo "" >> log.txt
 echo "Results:" >> log.txt
 make kernel
