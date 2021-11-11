@@ -8,6 +8,7 @@
 * [Raspberry Pi Hardware](https://www.raspberrypi.org/documentation/hardware/raspberrypi)
 
 ## Dependencies for Debian Bullseye and Ubuntu Focal / Jammy Jellyfish
+* **Recommended host:** Ubuntu Jammy Jellyfish
 
 **Install options:**
 * Run the `./install` script ***(recommended)***
@@ -55,7 +56,7 @@ Compiler        WARNING: Only one may be selected
 Version:        # Defaults at gcc-10
 GCC:            # 1 to select (default)
 Ccache:         # 1 to select
-Clang:          # 1 to select
+Clang:          # 1 to select (Supported: Jammy Jellyfish)
 
 Distribution
 Distro:		# Supported: debian, devuan and ubuntu
@@ -90,7 +91,7 @@ Compiler        WARNING: Only one may be selected
 Version:        # Defaults at gcc-10
 GCC:            # 1 to select (default)
 Ccache:         # 1 to select
-Clang:          # 1 to select
+Clang:          # 1 to select (Supported: Jammy Jellyfish)
 
 Distribution
 Distro:		# Supported: debian, devuan and ubuntu
@@ -287,7 +288,7 @@ Upon install please run 'deb-eeprom -u' before using this script.
 #### Using fetch ([initrd support](https://github.com/pyavitz/rpi-img-builder/pull/26))
 ```sh
 Fetch, Linux kernel installer for the Raspberry Pi Image Builder
-Usage: fetch -h
+Usage: fetch -u
 
    -1       Linux 5.10.y LTS
    -2       Linux Stable Branch

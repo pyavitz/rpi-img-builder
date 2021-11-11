@@ -28,12 +28,14 @@ sudo apt install -y build-essential bison bc git dialog patch fdisk distro-info-
 }
 
 bullseye-ccompile(){
-sudo apt install -y build-essential bison bc git dialog patch kpartx zstd \
-	dosfstools zip unzip qemu debootstrap qemu-user-static rsync make \
+sudo apt install -y build-essential bison bc git dialog patch kpartx zstd aria2 pv \
+	dosfstools zip unzip qemu debootstrap qemu-user-static rsync make toilet figlet \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig libelf-dev \
 	crossbuild-essential-arm64 crossbuild-essential-armel crossbuild-essential-armhf \
 	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs xfsprogs \
-	aria2 pv toilet figlet fdisk gcc-9 gcc-10
+	fdisk gcc-9 gcc-10 gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf \
+	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-9-aarch64-linux-gnu \
+	gcc-10-aarch64-linux-gnu
 }
 
 if [[ `sudo dmesg | grep -w arm64` ]]; then
