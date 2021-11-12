@@ -8,7 +8,7 @@
 * [Raspberry Pi Hardware](https://www.raspberrypi.org/documentation/hardware/raspberrypi)
 
 ## Dependencies for Debian Bullseye and Ubuntu Focal / Jammy Jellyfish
-* **Recommended host:** Ubuntu Jammy Jellyfish
+* **Recommended host:** Debian Bullseye
 
 **Install options:**
 * Run the `./install` script ***(recommended)***
