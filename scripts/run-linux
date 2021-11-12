@@ -24,6 +24,10 @@ echo_jammy(){
 echo -e -n "${PNK}[${FIN}${GRN}Ubuntu Jammy Jellyfish${FIN}${PNK}]${FIN}"
 }
 
+echo_bullseye(){
+echo -e -n "${PNK}[${FIN}${GRN}Debian Bullseye${FIN}${PNK}]${FIN}"
+}
+
 echo_fail(){
 echo -n -e "${PNK}[${FIN}${RED}FAILED${FIN}${PNK}]${FIN}"
 }
@@ -73,10 +77,15 @@ else
 		echo_jammy
 		echo "";
 	else
-		echo_fail
-		echo ""
-		derror
-		exit 1;
+		if [[ `grep -w "bullseye" "/etc/os-release"` ]]; then
+			echo_bullseye
+			echo "";
+		else
+			echo_fail
+			echo ""
+			derror
+			exit;
+		fi
 	fi
 fi
 }
