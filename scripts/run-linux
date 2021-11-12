@@ -121,7 +121,7 @@ lto_clang_thin=0
 CFLAGS=""
 ### DO NOT EDIT BELOW THIS LINE
 admin=1
-builder=3.15
+builder=4.0
 EOF
 }
 
