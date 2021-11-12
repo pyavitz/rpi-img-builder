@@ -1,5 +1,25 @@
-### Cross Dependencies for Ubuntu Jammy ( AMD64/x86_64 )
+### Cross Dependencies for Debian Bullseye ( AMD64/x86_64 )
+sudo apt install -y build-essential bison bc git dialog patch kpartx zstd aria2 pv \
+	dosfstools zip unzip qemu debootstrap qemu-user-static rsync make toilet figlet \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig libelf-dev \
+	crossbuild-essential-arm64 crossbuild-essential-armel crossbuild-essential-armhf \
+	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs xfsprogs \
+	fdisk gcc-9 gcc-10 gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf \
+	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-9-aarch64-linux-gnu \
+	gcc-10-aarch64-linux-gnu
 
+### Cross Dependencies for Ubuntu Focal ( AMD64/x86_64 )
+sudo apt install -y build-essential bison bc git dialog patch \
+	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
+	aria2 pv toilet figlet lsb-release xz-utils curl e2fsprogs kpartx \
+	distro-info-data crossbuild-essential-armhf crossbuild-essential-armel \
+	gcc-8-arm-linux-gnueabi gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi \
+	gcc-8-arm-linux-gnueabihf gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf \
+	gcc-8-aarch64-linux-gnu gcc-9-aarch64-linux-gnu gcc-10-aarch64-linux-gnu \
+	gcc-8 gcc-9 gcc-10 debian-archive-keyring debian-keyring make libelf-dev
+
+### Cross Dependencies for Ubuntu Jammy ( AMD64/x86_64 )
 sudo apt install -y build-essential bison bc git dialog patch fdisk distro-info-data \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync xfsprogs \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig kpartx \
@@ -10,8 +30,26 @@ sudo apt install -y build-essential bison bc git dialog patch fdisk distro-info-
 	gcc-9-aarch64-linux-gnu gcc-10-aarch64-linux-gnu gcc-11-aarch64-linux-gnu \
 	gcc-9 gcc-10 gcc-11 debian-archive-keyring debian-keyring make libelf-dev
 
-### Cross Dependencies for Ubuntu Jammy ( Arm64 )
+### Cross Dependencies for Debian Bullseye ( ARM64 )
+sudo apt install -y build-essential bison bc git dialog patch kpartx zstd \
+	dosfstools zip unzip qemu debootstrap qemu-user-static rsync make fdisk \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig libelf-dev \
+	crossbuild-essential-armel crossbuild-essential-armhf aria2 pv toilet \
+	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs xfsprogs \
+	figlet gcc-9 gcc-10 gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf \
+	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi
 
+### Cross Dependencies for Ubuntu Focal ( ARM64 )
+sudo apt install -y build-essential bison bc git dialog patch dosfstools \
+	zip unzip qemu debootstrap qemu-user-static rsync kmod cpio flex \
+	libssl-dev libncurses5-dev parted fakeroot swig aria2 pv toilet figlet \
+	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs kpartx \
+	debian-archive-keyring crossbuild-essential-armel crossbuild-essential-armhf \
+	gcc-8-arm-linux-gnueabi gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi \
+	gcc-8-arm-linux-gnueabihf gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf \
+	gcc-8 gcc-9 gcc-10 debian-keyring make libelf-dev xfsprogs fdisk
+
+### Cross Dependencies for Ubuntu Jammy ( ARM64 )
 sudo apt install -y build-essential bison bc git dialog patch dosfstools \
 	zip unzip qemu debootstrap qemu-user-static rsync kmod cpio flex \
 	libssl-dev libncurses5-dev parted fakeroot swig aria2 pv toilet figlet \
@@ -21,8 +59,22 @@ sudo apt install -y build-essential bison bc git dialog patch dosfstools \
 	gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf gcc-11-arm-linux-gnueabihf \
 	gcc-9 gcc-10 gcc-11 debian-keyring make libelf-dev xfsprogs fdisk
 
-### Native Dependencies for Ubuntu Jammy ( ARM )
+### Native Dependencies for Debian Bullseye ( ARM )
+sudo apt install -y build-essential bison bc git dialog patch fdisk \
+	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
+	aria2 pv toilet figlet distro-info-data lsb-release xz-utils curl \
+	e2fsprogs btrfs-progs xfsprogs kpartx make libelf-dev zstd gcc-9 gcc-10
 
+### Native Dependencies for Ubuntu Focal ( ARM )
+sudo apt install -y build-essential bison bc git dialog patch \
+	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
+	aria2 pv toilet figlet distro-info-data lsb-release xz-utils curl \
+	e2fsprogs btrfs-progs kpartx xfsprogs fdisk debian-archive-keyring \
+	debian-keyring make libelf-dev gcc-8 gcc-9 gcc-10
+
+### Native Dependencies for Ubuntu Jammy Jellyfish ( ARM )
 sudo apt install -y build-essential bison bc git dialog patch \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
