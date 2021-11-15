@@ -1,17 +1,20 @@
 #!/bin/bash
-### System Setup Script
-echo Running System Setup.
+COL="\033[1m"
+FIN="\033[0m"
+
+echo -e "${COL}Running System Setup${FIN} ..."
 sleep 1s
 sudo dpkg-reconfigure locales tzdata keyboard-configuration
-### Clear Motd
-echo Cleaning motd.
 sleep 1s
-sudo rm -f /etc/motd
-sudo mv -f /etc/new.motd /etc/motd
-echo Done.
+if [ -e /etc/new.motd ]; then
+	sudo rm -f /etc/motd
+	sudo mv -f /etc/new.motd /etc/motd;
+else
+	:;
+fi
 sleep 1s
-echo
+echo ""
 sudo update-ca-certificates -f
-echo
-echo System is ready to go.
+echo ""
+echo -e "${COL}System is ready to go${FIN}."
 sudo rm -f /usr/local/bin/run-setup
