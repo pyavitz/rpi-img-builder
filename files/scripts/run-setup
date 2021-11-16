@@ -13,7 +13,6 @@ else
 	:;
 fi
 sleep 1s
-echo ""
 sudo update-ca-certificates -f
 echo ""
 echo -e "${COL}System is ready to go${FIN}."
