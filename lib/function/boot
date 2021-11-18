@@ -159,10 +159,6 @@ arm_64bit=1
 kernel=kernel8.img
 initramfs initrd.gz
 
-# For more options and information see
-# http://rpf.io/configtxt
-# Some settings may impact device functionality. See link above for details
-
 # uncomment if you get no picture on HDMI for a default "safe" mode
 #hdmi_safe=1
 
@@ -181,19 +177,6 @@ disable_overscan=1
 # overscan.
 #framebuffer_width=1280
 #framebuffer_height=720
-
-### uncomment to set display to 1024x768
-#overscan_left=0
-#overscan_right=0
-#overscan_top=0
-#overscan_bottom=0
-
-#framebuffer_width=1024
-#framebuffer_height=768
-#framebuffer_depth=16
-
-#hdmi_group=2
-#hdmi_mode=16
 
 # uncomment if hdmi display is not detected and composite is being output
 #hdmi_force_hotplug=1
@@ -217,8 +200,10 @@ disable_overscan=1
 #start_x=1
 gpu_mem=128
 
-# uncomment to overclock the arm. 700 MHz is the default.
-#arm_freq=800
+# uncomment to overclock: https://www.tomshardware.com/how-to/overclock-any-raspberry-pi
+#arm_freq=
+#gpu_freq=
+#over_voltage=
 
 # uncomment some or all of these to enable the optional hardware interfaces
 #dtparam=i2c_arm=on
@@ -261,10 +246,6 @@ arm_64bit=1
 kernel=kernel8.img
 initramfs initrd.gz
 
-# For more options and information see
-# http://rpf.io/configtxt
-# Some settings may impact device functionality. See link above for details
-
 # uncomment if you get no picture on HDMI for a default "safe" mode
 #hdmi_safe=1
 
@@ -283,19 +264,6 @@ disable_overscan=1
 # overscan.
 #framebuffer_width=1280
 #framebuffer_height=720
-
-### uncomment to set display to 1024x768
-#overscan_left=0
-#overscan_right=0
-#overscan_top=0
-#overscan_bottom=0
-
-#framebuffer_width=1024
-#framebuffer_height=768
-#framebuffer_depth=16
-
-#hdmi_group=2
-#hdmi_mode=16
 
 # uncomment if hdmi display is not detected and composite is being output
 #hdmi_force_hotplug=1
@@ -319,8 +287,10 @@ disable_overscan=1
 #start_x=1
 gpu_mem=128
 
-# uncomment to overclock the arm. 700 MHz is the default.
-#arm_freq=800
+# uncomment to overclock: https://www.tomshardware.com/how-to/overclock-any-raspberry-pi
+#arm_freq=
+#gpu_freq=
+#over_voltage=
 
 # uncomment some or all of these to enable the optional hardware interfaces
 #dtparam=i2c_arm=on
@@ -356,10 +326,6 @@ tee p1/config.txt <<EOF
 kernel=kernel7.img
 initramfs initrd.gz
 
-# For more options and information see
-# http://rpf.io/configtxt
-# Some settings may impact device functionality. See link above for details
-
 # uncomment if you get no picture on HDMI for a default "safe" mode
 #hdmi_safe=1
 
@@ -378,19 +344,6 @@ disable_overscan=1
 # overscan.
 #framebuffer_width=1280
 #framebuffer_height=720
-
-### uncomment to set display to 1024x768
-#overscan_left=0
-#overscan_right=0
-#overscan_top=0
-#overscan_bottom=0
-
-#framebuffer_width=1024
-#framebuffer_height=768
-#framebuffer_depth=16
-
-#hdmi_group=2
-#hdmi_mode=16
 
 # uncomment if hdmi display is not detected and composite is being output
 #hdmi_force_hotplug=1
@@ -414,8 +367,10 @@ disable_overscan=1
 #start_x=1
 gpu_mem=128
 
-# uncomment to overclock the arm. 700 MHz is the default.
-#arm_freq=800
+# uncomment to overclock: https://www.tomshardware.com/how-to/overclock-any-raspberry-pi
+#arm_freq=
+#gpu_freq=
+#over_voltage=
 
 # uncomment some or all of these to enable the optional hardware interfaces
 #dtparam=i2c_arm=on
@@ -451,10 +406,6 @@ tee p1/config.txt <<EOF
 kernel=kernel.img
 initramfs initrd.gz
 
-# For more options and information see
-# http://rpf.io/configtxt
-# Some settings may impact device functionality. See link above for details
-
 # uncomment if you get no picture on HDMI for a default "safe" mode
 #hdmi_safe=1
 
@@ -473,19 +424,6 @@ disable_overscan=1
 # overscan.
 #framebuffer_width=1280
 #framebuffer_height=720
-
-### uncomment to set display to 1024x768
-#overscan_left=0
-#overscan_right=0
-#overscan_top=0
-#overscan_bottom=0
-
-#framebuffer_width=1024
-#framebuffer_height=768
-#framebuffer_depth=16
-
-#hdmi_group=2
-#hdmi_mode=16
 
 # uncomment if hdmi display is not detected and composite is being output
 #hdmi_force_hotplug=1
@@ -509,8 +447,10 @@ disable_overscan=1
 #start_x=1
 gpu_mem=128
 
-# uncomment to overclock the arm. 700 MHz is the default.
-#arm_freq=800
+# uncomment to overclock: https://www.tomshardware.com/how-to/overclock-any-raspberry-pi
+#arm_freq=
+#gpu_freq=
+#over_voltage=
 
 # uncomment some or all of these to enable the optional hardware interfaces
 #dtparam=i2c_arm=on
