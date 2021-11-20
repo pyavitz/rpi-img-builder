@@ -9,8 +9,8 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-echo 'nameserver 8.8.8.8' > /etc/resolv.conf
-echo 'nameserver 8.8.4.4' >> /etc/resolv.conf
+echo "nameserver ${NAMESERVER1}" > /etc/resolv.conf
+echo "nameserver ${NAMESERVER2}" >> /etc/resolv.conf
 
 mount -t proc proc proc/
 mount -t sysfs sys sys/

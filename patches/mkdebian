@@ -133,7 +133,7 @@ else
 fi
 
 mkdir -p debian/source/
-echo "1.0" > debian/source/format
+echo "2.0" > debian/source/format
 
 echo $debarch > debian/arch
 extra_build_depends=", $(if_enabled_echo CONFIG_UNWINDER_ORC libelf-dev:native)"
