@@ -41,6 +41,7 @@ make dialogrc   # Set builder theme (optional)
 ```
 
 #### Config Menu
+* Review the userdata.txt file for further options: locales, timezone, nameserver(s) and extra wireless support
 
 ```sh
 Username:       # Your username
