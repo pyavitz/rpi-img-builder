@@ -59,19 +59,19 @@ extract
 ### Setup
 if [[ `grep -w "bcm2711" "../soc.txt"` ]]; then
 	armv8_setup
-	rpi4_binaries;
+	rpi4_firmware;
 fi
 if [[ `grep -w "bcm2710" "../soc.txt"` ]]; then
 	armv8_setup
-	rpi_binaries;
+	rpi_firmware;
 fi
 if [[ `grep -w "bcm2709" "../soc.txt"` ]]; then
 	armv7_setup
-	rpi_binaries;
+	rpi_firmware;
 fi
 if [[ `grep -w "bcm2708" "../soc.txt"` ]]; then
 	armv6_setup
-	rpi_binaries;
+	rpi_firmware;
 fi
 
 ### Patching
