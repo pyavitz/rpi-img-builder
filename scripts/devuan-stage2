@@ -158,10 +158,12 @@ sleep 1s
 apt update
 apt install -y debhelper d-shlibs rfkill dosfstools psmisc
 git clone https://github.com/RPi-Distro/raspberrypi-sys-mods.git
-mv raspberrypi-sys-mods.patch raspberrypi-sys-mods/
+mv -f {raspberrypi-sys-mods-control.patch,raspberrypi-sys-mods-rules.patch,raspberrypi-sys-mods-postinst.patch} raspberrypi-sys-mods/
 cd raspberrypi-sys-mods
-patch -p1 < raspberrypi-sys-mods.patch
-rm -f raspberrypi-sys-mods.patch
+patch -p1 < raspberrypi-sys-mods-control.patch
+patch -p1 < raspberrypi-sys-mods-rules.patch
+patch -p1 < raspberrypi-sys-mods-postinst.patch
+rm -f raspberrypi-sys-mods-*.patch
 dpkg-buildpackage -us -uc
 cd ~
 dpkg -i raspberrypi-sys-mods*.deb

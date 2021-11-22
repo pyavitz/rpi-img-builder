@@ -1,0 +1,13 @@
+--- a/debian/raspberrypi-sys-mods.postinst	2021-11-22 09:02:59.417245204 -0500
++++ b/debian/raspberrypi-sys-mods.postinst	2021-11-22 09:29:46.602344954 -0500
+@@ -66,10 +66,6 @@
+       echo "Updating documentation URL in /boot/config.txt..."
+       sed -i 's|http://www.raspberrypi.org/documentation/configuration/config-txt.md|http://rpf.io/configtxtreadme|' /boot/config.txt || echo "Failed"
+     fi
+-    if dpkg --compare-versions "${2}" lt "20170717"; then
+-      deb-systemd-invoke disable apply_noobs_os_config.service
+-      deb-systemd-invoke disable regenerate_ssh_host_keys.service
+-    fi
+     if dpkg --compare-versions "${2}" lt "20180328+1"; then
+       echo "Updating apt sources from {mirrordirector,archive}.raspbian.org to raspbian.raspberrypi.org..."
+       find /etc/apt/sources.list* -type f -exec sed -i -E 's/(mirrordirector|archive)\.raspbian\.org/raspbian.raspberrypi.org/g' {} \;
