@@ -17,10 +17,10 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  	cp System.map "$tmpdir/boot/System.map-$version"
  	cp $KCONFIG_CONFIG "$tmpdir/boot/config-$version"
 +	cp arch/arm64/boot/Image "$tmpdir/boot/kernel8.img"
-+	install -m 0644 binaries/fixup4*.dat "$tmpdir/boot"
-+	install -m 0644 binaries/start4*.elf "$tmpdir/boot"
-+	cp binaries/LICENCE.broadcom "$tmpdir/boot"
-+	cp binaries/COPYING.linux "$tmpdir/boot"
++	install -m 0644 firmware/fixup4*.dat "$tmpdir/boot"
++	install -m 0644 firmware/start4*.elf "$tmpdir/boot"
++	cp firmware/LICENCE.broadcom "$tmpdir/boot"
++	cp firmware/COPYING.linux "$tmpdir/boot"
  fi
  cp "$($MAKE -s -f $srctree/Makefile image_name)" "$tmpdir/$installed_image_path"
  

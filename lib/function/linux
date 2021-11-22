@@ -50,11 +50,11 @@ if [ -e ${MLKERNEL}-${VERSION} ]; then
 fi
 }
 
-rpi4_binaries(){
+rpi4_firmware(){
 BINURL="https://github.com/raspberrypi/firmware/raw/master/boot/"
-mkdir -p binaries
-rm -f binaries/*
-cd binaries
+mkdir -p firmware
+rm -f firmware/*
+cd firmware
 echo
 echo_bins
 ${DOWNLOAD} ${BINURL}fixup4.dat
@@ -68,7 +68,7 @@ ${DOWNLOAD} ${BINURL}start4x.elf
 ${DOWNLOAD} ${BINURL}LICENCE.broadcom
 ${DOWNLOAD} ${BINURL}COPYING.linux
 cd ..
-if ls binaries/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf,LICENCE.broadcom,COPYING.linux} > /dev/null 2>&1
+if ls firmware/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf,LICENCE.broadcom,COPYING.linux} > /dev/null 2>&1
 	then echo_bdone;
 	else echo_fail && exit;
 fi
@@ -89,7 +89,7 @@ echo -e -n "${WHT}"
 pv ${MLKERNEL}-${VERSION}.tar.gz | tar -xzf - -C .
 echo -e -n "${FIN}"
 cd ${MLKERNEL}-${VERSION}
-rpi4_binaries
+rpi4_firmware
 export ARCH=arm64
 }
 
@@ -108,7 +108,7 @@ echo -e -n "${WHT}"
 pv ${MLKERNEL}-${VERSION}.tar.xz | tar -xJ ${MLKERNEL}-${VERSION}
 echo -e -n "${FIN}"
 cd ${MLKERNEL}-${VERSION}
-rpi4_binaries
+rpi4_firmware
 export ARCH=arm64
 }
 

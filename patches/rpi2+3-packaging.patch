@@ -22,11 +22,11 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
 +	if [ -e arch/arm64/boot/Image ]; then
 +		cp arch/arm64/boot/Image "$tmpdir/boot/kernel8.img";
 +	fi
-+	install -m 0644 binaries/bootcode.bin "$tmpdir/boot"
-+	install -m 0644 binaries/fixup*.dat "$tmpdir/boot"
-+	install -m 0644 binaries/start*.elf "$tmpdir/boot"
-+	cp binaries/LICENCE.broadcom "$tmpdir/boot"
-+	cp binaries/COPYING.linux "$tmpdir/boot"
++	install -m 0644 firmware/bootcode.bin "$tmpdir/boot"
++	install -m 0644 firmware/fixup*.dat "$tmpdir/boot"
++	install -m 0644 firmware/start*.elf "$tmpdir/boot"
++	cp firmware/LICENCE.broadcom "$tmpdir/boot"
++	cp firmware/COPYING.linux "$tmpdir/boot"
  fi
  cp "$($MAKE -s -f $srctree/Makefile image_name)" "$tmpdir/$installed_image_path"
  
