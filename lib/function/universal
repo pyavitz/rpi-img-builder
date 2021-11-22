@@ -158,7 +158,7 @@ fi
 finding_eeprom(){
 EEPROM_VERSION=$(curl --silent -L ${CHANGELOG} | awk '{if (NR==10) {print substr($2, 1, length($2)-3)}}' | sed 's/[()]//g')
 if [[ `wget -S --spider ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]];
-	then download_eeprom; else EEPROM_VERSION="12.9" && download_eeprom;
+	then download_eeprom; else EEPROM_VERSION="12.15" && download_eeprom;
 fi
 }
 
@@ -169,7 +169,7 @@ wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz
 
 bcm2711_eeprom(){
 ERURL="https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/"
-CHANGELOG="https://raw.githubusercontent.com/raspberrypi/rpi-eeprom/debian/buster/debian/changelog"
+CHANGELOG="https://raw.githubusercontent.com/raspberrypi/rpi-eeprom/debian/bullseye/debian/changelog"
 echo
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 echo Installing rpi-eeprom.
