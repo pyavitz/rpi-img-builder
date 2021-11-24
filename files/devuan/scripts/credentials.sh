@@ -1,5 +1,7 @@
 #!/bin/bash
-source /boot/credentials.txt
+if [ -e /boot/credentials.txt ]; then
+	source /boot/credentials.txt;
+fi
 
 ### Functions
 change_hostname(){
@@ -78,7 +80,7 @@ fi
 }
 
 remove_wifi(){
-update-rc.d -f credentials remove
+update-rc.d -f credentials remove > /dev/null 2>&1
 sed -i 's/# Default-Start:/# Default-Start: S/g' /etc/init.d/network
 sed -i 's/# Default-Stop:/# Default-Stop: 0 6/g' /etc/init.d/network
 sleep 1s
@@ -117,7 +119,7 @@ dbus-uuidgen --ensure=/etc/machine-id
 dbus-uuidgen --ensure
 
 ### Clean
-update-rc.d -f credentials remove
+update-rc.d -f credentials remove > /dev/null 2>&1
 rm -f /usr/local/bin/credentials
 rm -f /boot/credentials.txt
 rm -f /etc/opt/{interfaces.manual,wpa_supplicant.manual}
