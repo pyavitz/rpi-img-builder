@@ -147,6 +147,36 @@ rm -fdr wireless-regdb
 echo Done.
 }
 
+# SYS-MODS
+raspberrypi_sys_mods(){
+echo
+echo Building raspi-sys-mods package.
+sleep 1s
+apt update
+apt install -y debhelper d-shlibs rfkill dosfstools psmisc
+if [[ `wget -S --spider https://github.com/RPi-Distro/raspberrypi-sys-mods/tree/bullseye 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+	git clone https://github.com/RPi-Distro/raspberrypi-sys-mods.git -b bullseye;
+else
+	git clone https://github.com/RPi-Distro/raspberrypi-sys-mods.git;
+fi
+cd raspberrypi-sys-mods
+dpkg-buildpackage -us -uc
+cd ~
+dpkg -i raspberrypi-sys-mods*.deb
+rm -fdR raspberrypi-sys-mods*
+echo Removing vscode repo...
+if [ -e /etc/apt/sources.list.d/vscode.list ]; then
+	rm -f /etc/apt/sources.list.d/vscode.list;
+fi
+if [ -e /etc/apt/trusted.gpg.d/microsoft.gpg ]; then
+	rm -f /etc/apt/trusted.gpg.d/microsoft.gpg;
+fi
+if [ -e /etc/apt/preferences.d/3rd_parties.pref ]; then
+	rm -f /etc/apt/preferences.d/3rd_parties.pref;
+fi
+echo Done.
+}
+
 # EEPROM
 find_eeprom(){
 EEPROM_VERSION=$(curl --silent -L ${CHANGELOG} | awk '{if (NR==1) {print substr($2, 1, length($2)-3)}}' | sed 's/[()]//g')

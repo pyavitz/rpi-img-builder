@@ -133,28 +133,7 @@ echo Done.
 wireless_regdb
 
 ### Adding sys-mods
-echo
-echo Building raspi-sys-mods package.
-sleep 1s
-apt update
-apt install -y debhelper d-shlibs rfkill dosfstools psmisc
-git clone https://github.com/RPi-Distro/raspberrypi-sys-mods.git
-cd raspberrypi-sys-mods
-dpkg-buildpackage -us -uc
-cd ~
-dpkg -i raspberrypi-sys-mods*.deb
-rm -fdR raspberrypi-sys-mods*
-echo Removing vscode repo...
-if [ -e /etc/apt/sources.list.d/vscode.list ]; then
-	rm -f /etc/apt/sources.list.d/vscode.list;
-fi
-if [ -e /etc/apt/trusted.gpg.d/microsoft.gpg ]; then
-	rm -f /etc/apt/trusted.gpg.d/microsoft.gpg;
-fi
-if [ -e /etc/apt/preferences.d/3rd_parties.pref ]; then
-	rm -f /etc/apt/preferences.d/3rd_parties.pref;
-fi
-echo Done.
+raspberrypi_sys_mods
 
 ### Pi Bluetooth
 echo
