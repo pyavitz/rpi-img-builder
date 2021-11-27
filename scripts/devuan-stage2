@@ -46,7 +46,7 @@ apt -y autoclean
 
 #### Scripts
 cd ~
-led_service
+led_scripts > /dev/null 2>&1
 echo
 echo Moving scripts.
 sleep 1s
@@ -118,16 +118,16 @@ echo Done.
 
 ### Network Setup
 if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
-	bcm2711_network;
+	bcm2711_network > /dev/null 2>&1;
 fi
 if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
-	bcm2710_network;
+	bcm2710_network > /dev/null 2>&1;
 fi
 if [[ `grep -w "bcm2709" "/root/soc.txt"` ]]; then
-	bcm2710_network;
+	bcm2710_network > /dev/null 2>&1;
 fi
 if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
-	bcm2708_network;
+	bcm2708_network > /dev/null 2>&1;
 fi
 
 ### ZSWAP

@@ -155,6 +155,7 @@ fi
 cp scripts/debian-stage2 p2/root
 cp lib/function/debian p2/root/debian.txt
 cp lib/function/universal p2/root/universal.txt
+cp lib/function/services p2/root/services.txt
 cp lib/source p2/root/source.txt
 cp userdata.txt p2/root
 cp soc.txt p2/root

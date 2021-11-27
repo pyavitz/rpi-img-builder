@@ -382,113 +382,6 @@ chmod +x /etc/initramfs/post-update.d/99-initrd
 chown root:root /etc/initramfs/post-update.d/99-initrd
 }
 
-# LED scripts
-led_service(){
-echo
-echo Creating actled switch.
-tee /usr/local/sbin/actled <<EOF
-#!/bin/bash
-# activity led switch
-rpi_switch(){
-sh -c 'echo 0 > /sys/devices/platform/leds/leds/led0/brightness'
-}
-
-ml_switch(){
-sh -c 'echo 0 > /sys/devices/platform/leds/leds/ACT/brightness'
-}
-
-if [ -e /sys/devices/platform/leds/leds/led0/brightness ];
-	then rpi_switch;
-fi
-if [ -e /sys/devices/platform/leds/leds/ACT/brightness ];
-	then ml_switch;
-fi
-
-EOF
-
-echo
-echo Creating pwrled switch.
-tee /usr/local/sbin/pwrled <<EOF
-#!/bin/bash
-# power led switch
-rpi_switch(){
-sh -c 'echo 0 > /sys/devices/platform/leds/leds/led1/brightness'
-}
-
-ml_switch(){
-sh -c 'echo 0 > /sys/devices/platform/leds/leds/PWR/brightness'
-}
-
-if [ -e /sys/devices/platform/leds/leds/led1/brightness ];
-	then rpi_switch;
-fi
-if [ -e /sys/devices/platform/leds/leds/PWR/brightness ];
-	then ml_switch;
-fi
-
-EOF
-}
-
-# Systemd services
-firstboot_service(){
-echo
-echo Creating first boot.
-sleep 1s
-tee /etc/systemd/system/firstboot.service <<EOF
-[Unit]
-Description=First Boot
-After=systemd-remount-fs.service
-Before=credentials.service
-ConditionPathExists=/usr/local/sbin/firstboot
-
-[Service]
-ExecStart=/usr/local/sbin/firstboot > /dev/null 2>&1
-Type=oneshot
-RemainAfterExit=no
-
-[Install]
-WantedBy=multi-user.target
-EOF
-}
-
-credentials_service(){
-echo
-echo Creating wifi credentials.
-sleep 1s
-tee /etc/systemd/system/credentials.service <<EOF
-[Unit]
-Description=Credentials
-After=firstboot.service network.target
-Before=rc-local.service
-ConditionPathExists=/usr/local/bin/credentials
-[Service]
-ExecStart=/usr/local/bin/credentials > /dev/null 2>&1
-Type=oneshot
-RemainAfterExit=yes
-[Install]
-WantedBy=multi-user.target
-EOF
-}
-
-governor_service(){
-echo
-echo Creating governor service.
-sleep 1s
-tee /etc/systemd/system/governor.service <<EOF
-[Unit]
-Description=Set Governor
-ConditionPathExists=/usr/local/bin/governor
-
-[Service]
-ExecStart=/usr/local/bin/governor -r &>/dev/null
-Type=oneshot
-RemainAfterExit=yes
-
-[Install]
-WantedBy=multi-user.target
-EOF
-}
-
 ### Finish
 # Defrag
 defrag_p2(){
@@ -560,4 +453,46 @@ compress_image(){
 source kernel.txt
 mv -f ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${FSTYPE}-${IMAGE_DATE}.img
 xz -zev --threads=${CORES} ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${FSTYPE}-${IMAGE_DATE}.img
+}
+
+led_scripts(){
+tee /usr/local/sbin/actled <<EOF
+#!/bin/bash
+# activity led switch
+rpi_switch(){
+sh -c 'echo 0 > /sys/devices/platform/leds/leds/led0/brightness'
+}
+
+ml_switch(){
+sh -c 'echo 0 > /sys/devices/platform/leds/leds/ACT/brightness'
+}
+
+if [ -e /sys/devices/platform/leds/leds/led0/brightness ];
+	then rpi_switch;
+fi
+if [ -e /sys/devices/platform/leds/leds/ACT/brightness ];
+	then ml_switch;
+fi
+
+EOF
+
+tee /usr/local/sbin/pwrled <<EOF
+#!/bin/bash
+# power led switch
+rpi_switch(){
+sh -c 'echo 0 > /sys/devices/platform/leds/leds/led1/brightness'
+}
+
+ml_switch(){
+sh -c 'echo 0 > /sys/devices/platform/leds/leds/PWR/brightness'
+}
+
+if [ -e /sys/devices/platform/leds/leds/led1/brightness ];
+	then rpi_switch;
+fi
+if [ -e /sys/devices/platform/leds/leds/PWR/brightness ];
+	then ml_switch;
+fi
+
+EOF
 }

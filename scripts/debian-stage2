@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 source /root/debian.txt
 source /root/universal.txt
+source /root/services.txt
 source /root/source.txt
 source /root/userdata.txt
 URL="https://raw.githubusercontent.com/pyavitz/scripts/master/"
@@ -51,7 +52,7 @@ cd ~
 mkdir -p /usr/local/bin
 mkdir -p /usr/local/sbin
 # Scripts
-led_service
+
 if  [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
 	wget -cq --show-progress ${URL}write2usb
 	wget -cq --show-progress ${URL}deb-eeprom
@@ -208,72 +209,34 @@ echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' > /etc/udev/rules.d/10-vchiq
 echo 'SUBSYSTEM=="vcio",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
 echo 'SUBSYSTEM=="vc-mem",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
 
-#### Led switches
-if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
-	led_switches;
+# First boot service
+firstboot_service > /dev/null 2>&1
+
+# Credentials service
+credentials_service > /dev/null 2>&1
+
+# Governor service
+governor_service > /dev/null 2>&1
+
+# Led service
+if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
+	:;
+else
+	led_scripts > /dev/null 2>&1;
+	led_service > /dev/null 2>&1;
 fi
-if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
-	led_switches;
-fi
-if [[ `grep -w "bcm2709" "/root/soc.txt"` ]]; then
-	led_switches;
-fi
 
-#### First boot service
-firstboot_service
+# Create RC.LOCAL
+rc-local_service > /dev/null 2>&1
 
-#### Credentials service
-credentials_service
-
-#### Governor service
-governor_service
-
-#### Create RC.LOCAL
-echo
-echo Creating rc.local file.
-sleep 1s
-tee /etc/systemd/system/rc-local.service <<EOF
-[Unit]
-Description=/etc/rc.local
-ConditionPathExists=/etc/rc.local
-
-[Service]
-Type=forking
-ExecStart=/etc/rc.local start
-TimeoutSec=0
-StandardOutput=tty
-RemainAfterExit=yes
-SysVStartPriority=99
-
-[Install]
-WantedBy=multi-user.target
-EOF
-tee /etc/rc.local <<EOF
-#!/bin/sh -e
-#
-# rc.local
-#
-# This script is executed at the end of each multiuser runlevel.
-# Make sure that the script will "exit 0" on success or any other
-# value on error.
-#
-# In order to enable or disable this script just change the execution
-# bits.
-#
-# By default this script does nothing.
-
-exit 0
-EOF
-chmod +x /etc/rc.local
-echo Done.
-### Enable services
+# Enable services
 echo
 echo Enabling Services.
 sleep 1s
 enable_services > /dev/null 2>&1
 echo Done.
 
-###### Finish
+# Finish
 echo
 echo Moving out of stage2 and creating image.
 echo

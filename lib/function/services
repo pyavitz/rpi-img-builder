@@ -1,0 +1,136 @@
+# Systemd services
+
+led_service(){
+tee /etc/systemd/system/pwrledoff.service <<EOF
+[Unit]
+Description=Turn off power led
+ConditionPathExists=/usr/local/sbin/pwrled
+[Service]
+Type=forking
+ExecStart=/usr/local/sbin/pwrled &>/dev/null
+[Install]
+WantedBy=multi-user.target
+EOF
+
+tee /etc/systemd/system/actledoff.service <<EOF
+[Unit]
+Description=Turn off activity led
+ConditionPathExists=/usr/local/sbin/actled
+[Service]
+Type=forking
+ExecStart=/usr/local/sbin/actled &>/dev/null
+[Install]
+WantedBy=multi-user.target
+EOF
+}
+
+firstboot_service(){
+tee /etc/systemd/system/firstboot.service <<EOF
+[Unit]
+Description=First Boot
+After=systemd-remount-fs.service
+Before=credentials.service
+ConditionPathExists=/usr/local/sbin/firstboot
+
+[Service]
+ExecStart=/usr/local/sbin/firstboot > /dev/null 2>&1
+Type=oneshot
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target
+EOF
+}
+
+credentials_service(){
+tee /etc/systemd/system/credentials.service <<EOF
+[Unit]
+Description=Credentials
+After=firstboot.service network.target
+Before=rc-local.service
+ConditionPathExists=/usr/local/bin/credentials
+[Service]
+ExecStart=/usr/local/bin/credentials > /dev/null 2>&1
+Type=oneshot
+RemainAfterExit=yes
+[Install]
+WantedBy=multi-user.target
+EOF
+}
+
+governor_service(){
+tee /etc/systemd/system/governor.service <<EOF
+[Unit]
+Description=Set Governor
+ConditionPathExists=/usr/local/bin/governor
+
+[Service]
+ExecStart=/usr/local/bin/governor -r &>/dev/null
+Type=oneshot
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+EOF
+}
+
+rc-local_service(){
+tee /etc/systemd/system/rc-local.service <<EOF
+[Unit]
+Description=/etc/rc.local
+ConditionPathExists=/etc/rc.local
+
+[Service]
+Type=forking
+ExecStart=/etc/rc.local start
+TimeoutSec=0
+StandardOutput=tty
+RemainAfterExit=yes
+SysVStartPriority=99
+
+[Install]
+WantedBy=multi-user.target
+EOF
+tee /etc/rc.local <<EOF
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+exit 0
+EOF
+chmod +x /etc/rc.local
+}
+
+enable_services(){
+systemctl enable rc-local
+systemctl enable ifplugd
+systemctl enable zramswap
+systemctl enable bluetooth
+systemctl enable firstboot
+systemctl enable credentials
+systemctl enable governor
+if [[ `grep -w 'DISTRO_VERSION="bullseye"' "/root/userdata.txt"` ]]; then
+	if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
+		mkdir -p /etc/systemd/system/haveged.service.d
+		echo -e '[Service]\nSystemCallFilter=uname' > /etc/systemd/system/haveged.service.d/fix.conf
+		systemctl daemon-reload
+		systemctl restart haveged;
+	fi
+fi
+if [ -e /etc/systemd/system/multi-user.target.wants/ondemand.service ]; then
+	systemctl disable ondemand;
+fi
+if [[ `grep -w 'DISTRO="debian"' "/root/userdata.txt"` ]]; then
+	systemctl enable resolvconf;
+fi
+#systemctl enable serial-getty@ttyUSB0.service
+}
