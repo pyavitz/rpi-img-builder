@@ -56,7 +56,7 @@ mkdir -p firmware
 rm -f firmware/*
 cd firmware
 echo
-echo_bins
+echo_firm
 ${DOWNLOAD} ${BINURL}fixup4.dat
 ${DOWNLOAD} ${BINURL}fixup4cd.dat
 ${DOWNLOAD} ${BINURL}fixup4db.dat

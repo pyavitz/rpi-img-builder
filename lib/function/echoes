@@ -47,8 +47,8 @@ echo_kernel(){
 echo -e "${RED}Downloading kernel${FIN}."
 }
 
-echo_bins(){
-echo -e "${RED}Downloading binaries${FIN}."
+echo_firm(){
+echo -e "${RED}Downloading firmware${FIN}."
 }
 
 echo_stable(){
