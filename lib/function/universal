@@ -455,6 +455,7 @@ mv -f ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img ${DEVICE_SOC}-
 xz -zev --threads=${CORES} ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${FSTYPE}-${IMAGE_DATE}.img
 }
 
+# LED scripts
 led_scripts(){
 tee /usr/local/sbin/actled <<EOF
 #!/bin/bash
@@ -467,13 +468,12 @@ ml_switch(){
 sh -c 'echo 0 > /sys/devices/platform/leds/leds/ACT/brightness'
 }
 
-if [ -e /sys/devices/platform/leds/leds/led0/brightness ];
-	then rpi_switch;
+if [ -e /sys/devices/platform/leds/leds/led0/brightness ]; then
+	rpi_switch;
 fi
-if [ -e /sys/devices/platform/leds/leds/ACT/brightness ];
-	then ml_switch;
+if [ -e /sys/devices/platform/leds/leds/ACT/brightness ]; then
+	ml_switch;
 fi
-
 EOF
 
 tee /usr/local/sbin/pwrled <<EOF
@@ -487,12 +487,11 @@ ml_switch(){
 sh -c 'echo 0 > /sys/devices/platform/leds/leds/PWR/brightness'
 }
 
-if [ -e /sys/devices/platform/leds/leds/led1/brightness ];
-	then rpi_switch;
+if [ -e /sys/devices/platform/leds/leds/led1/brightness ]; then
+	rpi_switch;
 fi
-if [ -e /sys/devices/platform/leds/leds/PWR/brightness ];
-	then ml_switch;
+if [ -e /sys/devices/platform/leds/leds/PWR/brightness ]; then
+	ml_switch;
 fi
-
 EOF
 }
