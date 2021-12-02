@@ -37,6 +37,24 @@ echo
 echo -e "${WHT}The OS you are running is not supported${FIN}."
 }
 
+depends_check(){
+if [[ `command -v wget` ]]; then
+	:;
+else
+	if [[ `curl -I https://github.com 2>&1 | grep 'HTTP/2 200'` ]]; then
+		echo -e "${WHT}Installing missing depends${FIN}."
+		sudo apt update
+		sudo apt upgrade -y
+		sudo apt install -y wget;
+	else
+		echo_fail
+		echo ""
+		ierror
+		exit 1;
+	fi
+fi
+}
+
 internet_check(){
 echo -e -n "${WHT}Checking Internet Connection:${FIN} "
 if [[ `wget -S --spider https://github.com 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
@@ -75,6 +93,7 @@ fi
 }
 
 echo ""
+depends_check
 internet_check
 distro_check
 echo ""
