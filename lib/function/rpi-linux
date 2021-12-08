@@ -196,7 +196,7 @@ echo_build
 if [[ `grep -w "admin=1" "../../userdata.txt"` ]]; then
 	echo ${BUILD_VERSION} > .version;
 fi
-echo 'y' | make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm KBUILD_BUILD_HOST=${KBHOST} ${ARMV6_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=arm-linux-gnueabi- bindeb-pkg
+echo 'y' | make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} ${ARMV6_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=arm-linux-gnueabi- bindeb-pkg
 }
 
 armv6_ncompile(){
@@ -205,7 +205,7 @@ echo_build
 if [[ `grep -w "admin=1" "../../userdata.txt"` ]]; then
 	echo ${BUILD_VERSION} > .version;
 fi
-echo 'y' | make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm KBUILD_BUILD_HOST=${KBHOST} ${NATIVE} CFLAGS="${CFLAGS}" bindeb-pkg
+echo 'y' | make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} ${NATIVE} CFLAGS="${CFLAGS}" bindeb-pkg
 }
 
 # armv7l
@@ -252,7 +252,7 @@ echo_build
 if [[ `grep -w "admin=1" "../../userdata.txt"` ]]; then
 	echo ${BUILD_VERSION} > .version;
 fi
-echo 'y' | make -j${CORES} KBUILD_BUILD_HOST=${KBHOST} ARCH=arm ${ARMV7_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=arm-linux-gnueabihf- bindeb-pkg
+echo 'y' | make -j${CORES} KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} ARCH=arm ${ARMV7_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=arm-linux-gnueabihf- bindeb-pkg
 }
 
 armv7_ncompile(){
@@ -261,7 +261,7 @@ echo_build
 if [[ `grep -w "admin=1" "../../userdata.txt"` ]]; then
 	echo ${BUILD_VERSION} > .version;
 fi
-echo 'y' | make -j${CORES} KBUILD_BUILD_HOST=${KBHOST} ARCH=arm ${NATIVE} CFLAGS="${CFLAGS}" bindeb-pkg
+echo 'y' | make -j${CORES} KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} ARCH=arm ${NATIVE} CFLAGS="${CFLAGS}" bindeb-pkg
 }
 
 # aarch64
@@ -307,7 +307,7 @@ echo_build
 if [[ `grep -w "admin=1" "../../userdata.txt"` ]]; then
 	echo ${BUILD_VERSION} > .version;
 fi
-echo 'y' | make -j${CORES} ARCH=arm64 KBUILD_BUILD_HOST=${KBHOST} ${ARM64_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
+echo 'y' | make -j${CORES} ARCH=arm64 KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} ${ARM64_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
 }
 
 armv8_ncompile(){
@@ -316,7 +316,7 @@ echo_build
 if [[ `grep -w "admin=1" "../../userdata.txt"` ]]; then
 	echo ${BUILD_VERSION} > .version;
 fi
-echo 'y' | make -j${CORES} ARCH=arm64 KBUILD_BUILD_HOST=${KBHOST} ${NATIVE} CFLAGS="${CFLAGS}" bindeb-pkg
+echo 'y' | make -j${CORES} ARCH=arm64 KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} ${NATIVE} CFLAGS="${CFLAGS}" bindeb-pkg
 }
 
 patching(){

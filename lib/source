@@ -10,6 +10,7 @@ SRC="source"
 CORES=`nproc`
 KERNEL="linux-rpi"
 MLKERNEL="linux"
+KBUSER="marvin"
 KBHOST="rpi-img-builder"
 
 validation(){

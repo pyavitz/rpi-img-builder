@@ -181,14 +181,14 @@ fi
 cross_compile(){
     echo -e "-- ${GRN}CC${FIN}"
     echo_build
-    echo 'y' | make -j${CORES} ARCH=arm64 KBUILD_BUILD_HOST=${KBHOST} ${ARM64_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
+    echo 'y' | make -j${CORES} ARCH=arm64 KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} ${ARM64_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
     rm -f ../*libc*.deb
 }
 
 native_compile(){
     echo -e "-- ${GRN}NC${FIN}"
     echo_build
-    echo 'y' | make -j${CORES} ARCH=arm64 KBUILD_BUILD_HOST=${KBHOST} ${NATIVE} CFLAGS="${CFLAGS}" bindeb-pkg
+    echo 'y' | make -j${CORES} ARCH=arm64 KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} ${NATIVE} CFLAGS="${CFLAGS}" bindeb-pkg
     rm -f ../*libc*.deb
 }
 
