@@ -1,23 +1,23 @@
 #!/bin/bash
 ### BEGIN INIT INFO
-# Provides: pwrled
+# Provides: leds
 # Required-Start:
 # Required-Stop:
 # Default-Start: 2
 # Default-Stop:
-# Short-Description: Turns off power led
+# Short-Description: LED Service
 # Description:
 ### END INIT INFO
 
-# chmod +x /etc/init.d/pwrled
-# update-rc.d pwrled defaults 2
+# chmod +x /etc/init.d/leds
+# update-rc.d leds defaults 2
 
 . /lib/lsb/init-functions
 
 case "$1" in
   start)
-    log_daemon_msg "Turning off power led"
-    /usr/local/sbin/pwrled 2>/dev/null
+    log_daemon_msg "LED Service"
+    /usr/local/sbin/leds 2>/dev/null
     log_end_msg $?
     ;;
   *)

@@ -52,7 +52,6 @@ cd ~
 mkdir -p /usr/local/bin
 mkdir -p /usr/local/sbin
 # Scripts
-
 if  [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
 	wget -cq --show-progress ${URL}write2usb
 	wget -cq --show-progress ${URL}deb-eeprom
@@ -219,12 +218,8 @@ credentials_service > /dev/null 2>&1
 governor_service > /dev/null 2>&1
 
 # Led service
-if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
-	:;
-else
-	led_scripts > /dev/null 2>&1;
-	led_service > /dev/null 2>&1;
-fi
+led_script > /dev/null 2>&1;
+led_service > /dev/null 2>&1;
 
 # Create RC.LOCAL
 rc-local_service > /dev/null 2>&1

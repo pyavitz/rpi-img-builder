@@ -206,7 +206,7 @@ credentials_service > /dev/null 2>&1
 governor_service > /dev/null 2>&1
 
 # Led service
-led_scripts > /dev/null 2>&1
+led_script > /dev/null 2>&1
 led_service > /dev/null 2>&1
 
 # Create RC.LOCAL

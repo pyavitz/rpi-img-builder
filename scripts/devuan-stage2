@@ -46,7 +46,7 @@ apt -y autoclean
 
 #### Scripts
 cd ~
-led_scripts > /dev/null 2>&1
+led_script > /dev/null 2>&1
 echo
 echo Moving scripts.
 sleep 1s
@@ -71,8 +71,7 @@ fi
 initrd_script
 # Inits
 mv -f firstboot.init /etc/init.d/firstboot
-mv -f pwrledoff /etc/init.d/
-mv -f actledoff /etc/init.d/
+mv -f leds.init /etc/init.d/leds
 mv -f governor.init /etc/init.d/governor
 mv -f bthelper /etc/init.d/
 mv -f zramswap /etc/init.d/

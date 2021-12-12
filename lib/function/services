@@ -1,27 +1,20 @@
 # Systemd services
 
 led_service(){
-tee /etc/systemd/system/pwrledoff.service <<EOF
+tee /etc/systemd/system/leds.service <<EOF
 [Unit]
-Description=Turn off power led
-ConditionPathExists=/usr/local/sbin/pwrled
-[Service]
-Type=forking
-ExecStart=/usr/local/sbin/pwrled &>/dev/null
-[Install]
-WantedBy=multi-user.target
-EOF
+Description=LED Service
+ConditionPathExists=/usr/local/sbin/leds
 
-tee /etc/systemd/system/actledoff.service <<EOF
-[Unit]
-Description=Turn off activity led
-ConditionPathExists=/usr/local/sbin/actled
 [Service]
-Type=forking
-ExecStart=/usr/local/sbin/actled &>/dev/null
+ExecStart=/usr/local/sbin/leds &>/dev/null
+Type=oneshot
+RemainAfterExit=yes
+
 [Install]
 WantedBy=multi-user.target
 EOF
+systemctl enable leds
 }
 
 firstboot_service(){
