@@ -336,7 +336,6 @@ sudo systemctl stop leds
 sudo systemctl disable leds
 
 # Devuan
-sudo service leds stop
 sudo update-rc.d -f leds remove
 ```
 
