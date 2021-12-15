@@ -17,6 +17,17 @@ qemu_arm_remove(){
 rm p2/usr/bin/qemu-arm-static
 }
 
+bcm2711_config_arch(){
+if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
+	if [[ `grep -w "arm64" "soc.txt"` ]]; then
+		:;
+	else
+		sed -i '1d' p1/config.txt;
+		sed -i 's/kernel=kernel8.img/kernel=kernel7l.img/g' p1/config.txt;
+	fi
+fi
+}
+
 bcm2708_initrd(){
 if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
 	if [[ `grep -Fx "ext4=1" "userdata.txt"` ]]; then

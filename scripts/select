@@ -22,11 +22,21 @@ else
     userdata
 fi
 
+select_arch(){
+if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
+	if [[ `grep -w "arm64" "soc.txt"` ]]; then
+		make kernel;
+	else
+		make kernelv7;
+	fi
+fi
+}
+
 if [[ `grep -w "rpiuser=1" "userdata.txt"` ]]; then
-	make kernel;
+	select_arch;
 else
 	if [[ `grep -w "admin=1" "userdata.txt"` ]]; then
-		make kernel;
+		select_arch;
 	else
 		if [[ `grep -w "devuser=1" "userdata.txt"` ]]; then
 			make mainline;

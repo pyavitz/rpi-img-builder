@@ -38,7 +38,6 @@ fi
 if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
 	devuan_keyring;
 fi
-echo
 if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
 	set -eux -o pipefail;
 else
@@ -51,6 +50,7 @@ if [ -e $RELEASE ];
 	then ls $RELEASE
 	exit;
 fi
+echo ""
 echo -e "${WHT}Starting debootstrap${FIN} ..."
 echo -e -n ${GRN}
 

@@ -1,6 +1,6 @@
 diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
---- a/scripts/package/builddeb	2021-11-22 08:02:13.634262000 -0500
-+++ b/scripts/package/builddeb	2021-12-14 09:09:07.164769612 -0500
+--- a/scripts/package/builddeb	2021-12-07 19:34:46.734175000 -0500
++++ b/scripts/package/builddeb	2021-12-15 11:14:16.796820496 -0500
 @@ -51,8 +51,8 @@
  kernel_headers_dir="$objtree/debian/hdrtmp"
  libc_headers_dir="$objtree/debian/headertmp"
@@ -12,11 +12,16 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  libc_headers_packagename=linux-libc-dev
  dbg_packagename=$packagename-dbg
  
-@@ -92,6 +92,11 @@
+@@ -92,6 +92,16 @@
  else
  	cp System.map "$tmpdir/boot/System.map-$version"
  	cp $KCONFIG_CONFIG "$tmpdir/boot/config-$version"
-+	cp arch/arm64/boot/Image "$tmpdir/boot/kernel8.img"
++	if [ -e arch/arm/boot/zImage ]; then
++		cp arch/arm/boot/zImage "$tmpdir/boot/kernel7l.img";
++	fi
++	if [ -e arch/arm64/boot/Image ]; then
++		cp arch/arm64/boot/Image "$tmpdir/boot/kernel8.img";
++	fi
 +	install -m 0644 firmware/fixup4*.dat "$tmpdir/boot"
 +	install -m 0644 firmware/start4*.elf "$tmpdir/boot"
 +	cp firmware/LICENCE.broadcom "$tmpdir/boot"
@@ -24,12 +29,26 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  fi
  cp "$($MAKE -s -f $srctree/Makefile image_name)" "$tmpdir/$installed_image_path"
  
-@@ -139,6 +144,25 @@
+@@ -139,6 +149,40 @@
  	mv $libc_headers_dir/usr/include/asm $libc_headers_dir/usr/include/$host_arch/
  fi
  
 +# install dtb and overlays
 +if [ -e $tmpdir/boot ]; then :; else mkdir -p "$tmpdir/boot"; fi
++# armhf
++if [ -e $tmpdir/usr/lib/raspberrypi-linux-image/bcm2711-rpi-4-b.dtb ]; then
++	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2711-rpi-4-b.dtb" "$tmpdir/boot/bcm2711-rpi-4-b.dtb";
++fi
++if [ -e $tmpdir/usr/lib/raspberrypi-linux-image/bcm2711-rpi-400.dtb ]; then
++	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2711-rpi-400.dtb" "$tmpdir/boot/bcm2711-rpi-400.dtb";
++fi
++if [ -e $tmpdir/usr/lib/raspberrypi-linux-image/bcm2711-rpi-cm4.dtb ]; then
++	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2711-rpi-cm4.dtb" "$tmpdir/boot/bcm2711-rpi-cm4.dtb";
++fi
++if [ -e $tmpdir/usr/lib/raspberrypi-linux-image/bcm2711-rpi-cm4s.dtb ]; then
++	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2711-rpi-cm4s.dtb" "$tmpdir/boot/bcm2711-rpi-cm4s.dtb";
++fi
++# arm64
 +if [ -e $tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2711-rpi-4-b.dtb ]; then
 +	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2711-rpi-4-b.dtb" "$tmpdir/boot/bcm2711-rpi-4-b.dtb";
 +fi
@@ -42,6 +61,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
 +if [ -e $tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2711-rpi-cm4s.dtb ]; then
 +	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2711-rpi-cm4s.dtb" "$tmpdir/boot/bcm2711-rpi-cm4s.dtb";
 +fi
++# overlays
 +if [ -e $tmpdir/usr/lib/raspberrypi-linux-image/overlays ]; then
 +	mkdir -p "$tmpdir/boot/overlays";
 +	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/overlays/" "$tmpdir/boot/";
@@ -50,7 +70,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  # Install the maintainer scripts
  # Note: hook scripts under /etc/kernel are also executed by official Debian
  # kernel packages, as well as kernel packages built using make-kpkg.
-@@ -163,6 +187,21 @@
+@@ -163,6 +207,21 @@
  EOF
  	chmod 755 "$tmpdir/DEBIAN/$script"
  done
@@ -60,7 +80,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
 +
 +set -e
 +
-+if [ -e /boot/kernel8.img ]; then
++if [ -e /boot/kernel*.img ]; then
 +	rm -fdr /boot/{kernel*,initrd.img*,System.map-*,config-*,vmlinuz-*,*.dtb,fixup4*.dat,start4*.elf,LICENCE.broadcom,COPYING.linux,overlays};
 +else
 +	echo -e "\e[1;37mInstalling new kernel\e[0m ...";
@@ -72,7 +92,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  
  # Build kernel header package
  (cd $srctree; find . -name Makefile\* -o -name Kconfig\* -o -name \*.pl) > "$objtree/debian/hdrsrcfiles"
-@@ -183,6 +222,42 @@
+@@ -183,6 +242,51 @@
  (cd $objtree; cp $KCONFIG_CONFIG $destdir/.config) # copy .config manually to be where it's expected to be
  ln -sf "/usr/src/linux-headers-$version" "$kernel_headers_dir/lib/modules/$version/build"
  rm -f "$objtree/debian/hdrsrcfiles" "$objtree/debian/hdrobjfiles"
@@ -88,12 +108,21 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
 +
 +clean_headers(){
 +find -type f -exec touch {} +
-+echo 'y' | make M=scripts clean
++if grep -w "Linux/arm" ".config"; then
++	echo 'y' | make ARCH=arm M=scripts clean;
++else
++	echo 'y' | make M=scripts clean;
++fi
 +patch -p1 < headers-byteshift.patch
 +if [ -e scripts/module.lds ]; then :; else install -m 0644 module.lds scripts/; fi
 +rm -f {headers-byteshift.patch,module.lds}
-+echo 'y' | make -j\$(grep -c 'processor' /proc/cpuinfo) -s scripts
-+echo 'y' | make -j\$(grep -c 'processor' /proc/cpuinfo) -s M=scripts/mod/
++if grep -w "Linux/arm" ".config"; then
++	echo 'y' | make ARCH=arm -j\$(grep -c 'processor' /proc/cpuinfo) -s scripts;
++	echo 'y' | make ARCH=arm -j\$(grep -c 'processor' /proc/cpuinfo) -s M=scripts/mod/;
++else
++	echo 'y' | make -j\$(grep -c 'processor' /proc/cpuinfo) -s scripts;
++	echo 'y' | make -j\$(grep -c 'processor' /proc/cpuinfo) -s M=scripts/mod/;
++fi
 +}
 +
 +cd /usr/src/linux-headers-$version
@@ -116,8 +145,8 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  if [ "$ARCH" != "um" ]; then
  	create_package "$kernel_headers_packagename" "$kernel_headers_dir"
 diff -Naur a/scripts/package/mkdebian b/scripts/package/mkdebian
---- a/scripts/package/mkdebian	2021-11-21 11:20:44.708367000 -0500
-+++ b/scripts/package/mkdebian	2021-12-14 09:06:52.106277406 -0500
+--- a/scripts/package/mkdebian	2021-12-07 19:34:46.735175000 -0500
++++ b/scripts/package/mkdebian	2021-12-15 11:03:33.958610946 -0500
 @@ -94,8 +94,8 @@
  	packageversion=$version-$revision
  fi

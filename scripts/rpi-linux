@@ -58,8 +58,13 @@ extract
 
 ### Setup
 if [[ `grep -w "bcm2711" "../soc.txt"` ]]; then
-	armv8_setup
-	rpi4_firmware;
+	if [[ `grep -w "arm64" "../soc.txt"` ]]; then
+		armv8_setup;
+		rpi4_firmware;
+	else
+		armv7_setup;
+		rpi4_firmware;
+	fi
 fi
 if [[ `grep -w "bcm2710" "../soc.txt"` ]]; then
 	armv8_setup
@@ -79,7 +84,11 @@ patching
 
 ### Defconfig
 if [[ `grep -w "bcm2711" "../../soc.txt"` ]]; then
-	choose_rpi4_defconfig;
+	if [[ `grep -w "arm64" "../../soc.txt"` ]]; then
+		choose_rpi4_defconfig;
+	else
+		choose_rpi4v7_defconfig;
+	fi
 fi
 if [[ `grep -w "bcm2710" "../../soc.txt"` ]]; then
 	choose_rpi3_defconfig;
@@ -93,7 +102,11 @@ fi
 
 ### Menuconfig
 if [[ `grep -w "bcm2711" "../../soc.txt"` ]]; then
-	choose_v8_menuconfig;
+	if [[ `grep -w "arm64" "../../soc.txt"` ]]; then
+		choose_v8_menuconfig;
+	else
+		choose_v7_menuconfig;
+	fi
 fi
 if [[ `grep -w "bcm2710" "../../soc.txt"` ]]; then
 	choose_v8_menuconfig;
@@ -107,7 +120,11 @@ fi
 
 ### Build deb
 if [[ `grep -w "bcm2711" "../../soc.txt"` ]]; then
-	choose_v8_compile;
+	if [[ `grep -w "arm64" "../../soc.txt"` ]]; then
+		choose_v8_compile;
+	else
+		choose_v7_compile;
+	fi
 fi
 if [[ `grep -w "bcm2710" "../../soc.txt"` ]]; then
 	choose_v8_compile;

@@ -175,6 +175,38 @@ all:
 	@chmod +x ${CHOOSE}
 	@${CHOOSE}
 
+kernelv7:
+	# Linux
+	@ echo bcm2711 > soc.txt
+	@ echo arm >> soc.txt
+	@chmod +x ${XLINUX}
+	@${LINUX}
+
+imagev7:
+	# Making bootable image
+	@ echo bcm2711 > soc.txt
+	@ echo arm >> soc.txt
+	@chmod +x ${CHOOSE}
+	@${CHOOSE}
+
+allv7:
+	# Raspberry Pi 4
+	# - - - - - - - -
+	#
+	# Building linux
+	@ echo bcm2711 > soc.txt
+	@ echo arm >> soc.txt
+	@chmod +x ${SELECT}
+	@${SELECT}
+	# Creating ROOTFS tarball
+	@chmod +x ${RFSV7}
+	@${ROOTFSV7}
+	# Making bootable image
+	@ echo bcm2711 > soc.txt
+	@ echo arm >> soc.txt
+	@chmod +x ${CHOOSE}
+	@${CHOOSE}
+
 mainline:
 	# Mainline Linux
 	@ echo bcm2711 > soc.txt

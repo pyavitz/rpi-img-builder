@@ -221,7 +221,12 @@ if [[ `grep -w "rtl8811cu=1" "../userdata.txt"` ]]; then
 fi
 cd ${KERNEL}-${VERSION}
 export ARCH=arm
-KERNEL=kernel7
+if [[ `grep -w "bcm2711" "../soc.txt"` ]]; then
+	KERNEL=kernel7l
+fi
+if [[ `grep -w "bcm2709" "../soc.txt"` ]]; then
+	KERNEL=kernel7
+fi
 }
 
 armv7_cconfig(){
@@ -359,6 +364,8 @@ echo
 module_sig(){
 echo CONFIG_MODULE_SIG=y >> arch/arm64/configs/bcm2711_defconfig
 echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm64/configs/bcm2711_defconfig
+echo CONFIG_MODULE_SIG=y >> arch/arm/configs/bcm2711_defconfig
+echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm/configs/bcm2711_defconfig
 echo CONFIG_MODULE_SIG=y >> arch/arm64/configs/bcmrpi3_defconfig
 echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm64/configs/bcmrpi3_defconfig
 echo CONFIG_MODULE_SIG=y >> arch/arm/configs/bcm2709_defconfig
@@ -380,6 +387,20 @@ if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
 	make -j${CORES} ARCH=arm64 ${ARM64_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=aarch64-linux-gnu- bcm2711_defconfig;
 else
 	make -j${CORES} ARCH=arm64 ${NATIVE} CFLAGS="${CFLAGS}" bcm2711_defconfig;
+fi
+echo_done
+}
+
+rpi4v7_fconfig(){
+echo -e "${RED}Making bcm2711 defconfig${FIN}."
+module_sig
+rtl8812au_module
+rtl88x2bu_module
+rtl8811cu_module
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+	make -j${CORES} ARCH=arm ${ARMV7_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=arm-linux-gnueabihf- bcm2711_defconfig;
+else
+	make -j${CORES} ARCH=arm ${NATIVE} CFLAGS="${CFLAGS}" bcm2711_defconfig;
 fi
 echo_done
 }
@@ -434,6 +455,14 @@ if [[ `grep -w "custom_defconfig=1" "../../userdata.txt"` ]]; then
 	armv8_cconfig;
 else
 	rpi4_fconfig;
+fi
+}
+
+choose_rpi4v7_defconfig(){
+if [[ `grep -w "custom_defconfig=1" "../../userdata.txt"` ]]; then
+	armv7_cconfig;
+else
+	rpi4v7_fconfig;
 fi
 }
 

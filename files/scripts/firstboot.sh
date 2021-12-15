@@ -147,16 +147,10 @@ rm -f /etc/opt/root-pid.txt
 }
 
 fix_cmdline(){
-if [[ `grep -w "bcm2708" "/etc/opt/soc.txt"` ]]; then
-	partition_uuid
+if [[ `grep -w "arm" "/etc/opt/soc.txt"` ]]; then
+	partition_uuid;
 	sleep 1s
 	create_cmdline;
-else
-	if [[ `grep -w "bcm2709" "/etc/opt/soc.txt"` ]]; then
-		partition_uuid
-		sleep 1s
-		create_cmdline;
-	fi
 fi
 }
 

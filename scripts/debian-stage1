@@ -111,9 +111,17 @@ else
 	echo_fail
 	exit;
 fi
+bcm2711_config_arch
 bcm2708_initrd
 ### extract rootfs
-if [[ `grep -w "arm64" "soc.txt"` ]]; then
+if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
+	if [[ `grep -w "arm64" "soc.txt"` ]]; then
+		aarch64_rootfs;
+	else
+		armhf_rootfs;
+	fi
+fi
+if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
 	aarch64_rootfs;
 else
 	if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
