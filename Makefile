@@ -80,7 +80,7 @@ commands:
 	@echo
 	@echo "Boards:"
 	@echo
-	@echo "  bcm2711                 Raspberry Pi 4B"
+	@echo "  bcm2711                 Raspberry Pi 4B/400"
 	@echo "  bcm2710                 Raspberry Pi 3/A/B/+"
 	@echo "  bcm2709                 Raspberry Pi 2B"
 	@echo "  bcm2708                 Raspberry Pi 0/W/B/+"
@@ -90,6 +90,12 @@ commands:
 	@echo "  make kernel             Builds linux kernel"
 	@echo "  make image              Make bootable image"
 	@echo "  make all                Kernel > rootfs > image"
+	@echo
+	@echo "bcm2711v7:"
+	@echo " "
+	@echo "  make kernelv7           Builds linux kernel"
+	@echo "  make imagev7            Make bootable image"
+	@echo "  make allv7              Kernel > rootfs > image"
 	@echo
 	@echo "bcm2710:"
 	@echo " "
@@ -442,24 +448,29 @@ helper:
 	@${HELPER} -h
 
 2708:
-	# BCM2708
+	# BCM2708 (ARMEL)
 	@chmod +x ${XHELPER}
 	@${HELPER} -1
 	
 2709:
-	# BCM2709
+	# BCM2709 (ARMHF)
 	@chmod +x ${XHELPER}
 	@${HELPER} -2
 
 2710:
-	# BCM2710
+	# BCM2710 (ARM64)
 	@chmod +x ${XHELPER}
 	@${HELPER} -3
 
 2711:
-	# BCM2711
+	# BCM2711 (ARM64)
 	@chmod +x ${XHELPER}
 	@${HELPER} -4
+
+2711v7:
+	# BCM2711 (ARMHF)
+	@chmod +x ${XHELPER}
+	@${HELPER} -5
 
 run:
 	@chmod +x ${XRUN}

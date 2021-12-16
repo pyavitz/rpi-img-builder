@@ -160,6 +160,34 @@ ls output/bcm2711/*.deb
 echo
 }
 
+rpi4v7(){
+os_release
+echo
+echo -e "${RED}Downloading${FIN} ..."
+if [[ `wget -S --spider ${URL}rpi4v7-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+	${DOWNLOAD} ${URL}rpi4v7-${VERSION}.tar.xz
+	echo_bdone;
+else
+	echo -e "${WHT}Something went wrong? Please report which Distribution and Release you are trying to download.${FIN}"
+	exit;
+fi
+echo
+echo -e "${RED}Extracting archive${FIN} ..."
+echo -e -n "${WHT}"
+pv rpi4v7-${VERSION}.tar.xz | tar -xJ rpi4v7-${VERSION}
+echo -e -n "${FIN}"
+rm -f rpi4v7-${VERSION}.tar.xz
+if [ -e output/bcm2711v7 ]; then
+	sudo rm -fdr output/bcm2711v7;
+fi
+mkdir -p output
+mv rpi4v7-${VERSION} output/bcm2711v7
+echo
+echo -e "${RED}Results${FIN}:"
+ls output/bcm2711v7/*.deb
+echo
+}
+
 if [ $# -eq 0 ]
 then
         echo -e "\e[0;31mMissing options!${FIN}"
@@ -170,7 +198,7 @@ fi
 
 ECHO="false"
 
-while getopts "1234h" OPTION; do
+while getopts "12345h" OPTION; do
         case $OPTION in
 
                 1)
@@ -185,32 +213,35 @@ while getopts "1234h" OPTION; do
                 4)
                         ECHO="rpi4"
                         ;;
+                5)
+                        ECHO="rpi4v7"
+                        ;;
                 h)                       
                         echo -e "${RED}Helper, downloads a binary Linux package${FIN}."
                         echo ""
-                        echo -e "   make 2708        Raspberry Pi 0/1/W/B/+"
-                        echo -e "   make 2709        Raspberry Pi 2/3/A/B/+"
-                        echo -e "   make 2710        Raspberry Pi 3/A/B/+"
-                        echo -e "   make 2711        Raspberry Pi 4B"
+                        echo -e "   make 2708        Raspberry Pi 0/1/W/B/+ (ARMEL)"
+                        echo -e "   make 2709        Raspberry Pi 2/3/A/B/+ (ARMHF)"
+                        echo -e "   make 2710        Raspberry Pi 3/A/B/+   (ARM64)"
+                        echo -e "   make 2711        Raspberry Pi 4B/400    (ARM64)"
+                        echo -e "   make 2711v7      Raspberry Pi 4B/400    (ARMHF)"
                         echo ""
                         exit 0
                         ;;
 
         esac
 done
-if [ $ECHO = "rpi" ]
-then
-        rpi;
+if [ $ECHO = "rpi" ]; then
+	rpi;
 fi
-if [ $ECHO = "rpi2" ]
-then
-        rpi2;
+if [ $ECHO = "rpi2" ]; then
+	rpi2;
 fi
-if [ $ECHO = "rpi3" ]
-then
-        rpi3;
+if [ $ECHO = "rpi3" ]; then
+	rpi3;
 fi
-if [ $ECHO = "rpi4" ]
-then
-        rpi4;
+if [ $ECHO = "rpi4" ]; then
+	rpi4;
+fi
+if [ $ECHO = "rpi4v7" ]; then
+	rpi4v7;
 fi

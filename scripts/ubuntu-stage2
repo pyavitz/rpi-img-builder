@@ -75,11 +75,6 @@ if [[ `grep -w "userscripts=1" "/root/userdata.txt"` ]]; then
 	uscripts_stage2;
 fi
 initrd_script
-if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
-	if [[ `grep -w "arm" "/root/soc.txt"` ]]; then
-		rm -f /usr/local/bin/fetch;		
-	fi
-fi
 # Service
 mv -f firstboot.sh /usr/local/sbin/firstboot
 chmod +x /usr/bin/growpart

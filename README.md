@@ -174,7 +174,7 @@ make image
 
 ```sh
 make allv7	# kernel > rootfs > image (run at own risk)
-make kernelv7	# Foundation
+make kernelv7
 make imagev7
 ```
 
