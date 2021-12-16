@@ -1,7 +1,7 @@
 <img src="https://socialify.git.ci/pyavitz/rpi-img-builder/image?description=1&font=KoHo&forks=1&issues=1&logo=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fde%2Fthumb%2Fc%2Fcb%2FRaspberry_Pi_Logo.svg%2F475px-Raspberry_Pi_Logo.svg.png&owner=1&pattern=Charlie%20Brown&stargazers=1&theme=Dark" alt="rpi-img-builder" width="640" height="320" />
 
 ## The boards and distributions that are currently supported
-* **Raspberry Pi 4B** (*Debian, Devuan and Ubuntu*)
+* **Raspberry Pi 4B/400** (*Debian, Devuan and Ubuntu*)
 * **Raspberry Pi 3/A/B/+** (*Debian, Devuan and Ubuntu*)
 * **Raspberry Pi 2/3/A/B/+** (*Debian, Devuan and Ubuntu*)
 * **Raspberry Pi 0/W/B/+** (*Debian and Devuan*)
@@ -161,38 +161,42 @@ userscripts=0	# 1 to enable
 
 ## Command list
 
-#### Raspberry Pi 4B
+#### Raspberry Pi 4B/400 (ARM64)
 
 ```sh
-# ARM64
 make all	# kernel > rootfs > image (run at own risk)
 make kernel	# Foundation
 make mainline	# Mainline
 make image
 ```
 
-#### Raspberry Pi 3/A/B/+
+#### Raspberry Pi 4B/400 (ARMHF)
 
 ```sh
-# ARM64
+make allv7	# kernel > rootfs > image (run at own risk)
+make kernelv7	# Foundation
+make imagev7
+```
+
+#### Raspberry Pi 3/A/B/+ (ARM64)
+
+```sh
 make rpi3-all	# kernel > rootfs > image (run at own risk)
 make rpi3-kernel
 make rpi3-image
 ```
 
-#### Raspberry Pi 2/3/A/B/+
+#### Raspberry Pi 2/3/A/B/+ (ARMHF)
 
 ```sh
-# ARMHF
 make rpi2+3-all	# kernel > rootfs > image (run at own risk)
 make rpi2+3-kernel
 make rpi2+3-image
 ```
 
-#### Raspberry Pi 0/0W/B/+
+#### Raspberry Pi 0/0W/B/+ (ARMEL)
 
 ```sh
-# ARMEL
 make rpi-all	# kernel > rootfs > image (run at own risk)
 make rpi-kernel
 make rpi-image
