@@ -181,6 +181,15 @@ fi
 sleep 1s
 sed -i 's/crosscompile=0/crosscompile=1/g' userdata.txt
 sleep 1s
+make kernelv7
+if [[ `ls output/bcm2711v7/*.deb` ]] > /dev/null 2>&1; then
+	echo "bcm2711 v7" >> log.txt;
+	ls output/bcm2711v7/*.deb >> log.txt;
+	echo "" >> log.txt;
+else
+	echo -e "Build 2711v7 failed!";
+	exit;
+fi
 make rpi2+3-kernel
 if [[ `ls output/bcm2709/*.deb` ]] > /dev/null 2>&1; then
 	echo "bcm2709" >> log.txt;

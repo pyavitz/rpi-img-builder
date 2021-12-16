@@ -141,9 +141,15 @@ rm -f linux-libc-dev*.deb
 rm -f *.buildinfo
 rm -f *.changes
 if [[ `grep -w "bcm2711" "../soc.txt"` ]]; then
-	bcm2711_check
-	mkdir -p ${OUT4}
-	mv -f *.deb ${OUT4}/;
+	if [[ `grep -w "arm64" "../soc.txt"` ]]; then
+		bcm2711_check
+		mkdir -p ${OUT4}
+		mv -f *.deb ${OUT4}/;
+	else
+		bcm2711v7_check
+		mkdir -p ${OUT4v7}
+		mv -f *.deb ${OUT4v7}/;
+	fi
 fi
 if [[ `grep -w "bcm2710" "../soc.txt"` ]]; then
 	bcm2710_check

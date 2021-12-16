@@ -539,6 +539,13 @@ if ls ${OUT4}/*.deb > /dev/null 2>&1; then
 fi
 }
 
+bcm2711v7_check(){
+if ls ${OUT4v7}/*.deb > /dev/null 2>&1; then
+	mkdir -p ${OUT4v7}/tmp
+	mv -f ${OUT4v7}/*.deb ${OUT4v7}/tmp;
+fi
+}
+
 bcm2710_check(){
 if ls ${OUT3}/*.deb > /dev/null 2>&1; then
 	mkdir -p ${OUT3}/tmp

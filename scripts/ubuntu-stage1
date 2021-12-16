@@ -156,14 +156,17 @@ cp lib/source p2/root/source.txt
 cp userdata.txt p2/root
 cp soc.txt p2/root
 if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
-	cp output/bcm2711/*.deb p2/root;
-else
-	if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
-		cp output/bcm2710/*.deb p2/root;
+	if [[ `grep -w "arm64" "soc.txt"` ]]; then
+		cp output/bcm2711/*.deb p2/root;
 	else
-		if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
-			cp output/bcm2709/*.deb p2/root;
-		fi
+		cp output/bcm2711v7/*.deb p2/root;
+	fi
+fi
+if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
+	cp output/bcm2710/*.deb p2/root;
+else
+	if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
+		cp output/bcm2709/*.deb p2/root;
 	fi
 fi
 cp files/ubuntu/misc/* p2/root
