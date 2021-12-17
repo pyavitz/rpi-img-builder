@@ -5,12 +5,17 @@ CORES=`nproc`
 WHT="\e[1;37m"
 FIN="\e[0m"
 
+if [ -e output ]; then
+	cd output;
+else
+	exit;
+fi
+
 echo -e "${WHT}"
 echo -ne "Select release:${FIN} "
 read release
 echo -e "${WHT}"
 echo -en "Creating $release archives ... "
-cd output
 if [ -e bcm2708 ]; then
 	mv -f bcm2708 rpi-$release;
 	XZ_DEFAULTS="--threads=${CORES}";tar cfJ rpi-$release.tar.xz rpi-$release;
