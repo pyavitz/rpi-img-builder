@@ -6,7 +6,7 @@ WHT="\e[1;37m"
 FIN="\e[0m"
 
 confirm(){
-echo -e "${WHT}Would you like to archive the release${FIN}?"
+echo -e "Would you like to archive the release?"
 echo -e ""
 read -p "Continue (y/n)?" choice
 case "$choice" in 
@@ -26,7 +26,7 @@ fi
 echo -e "${WHT}"
 echo -ne "Select release:${FIN} "
 read release
-echo -e "${WHT}"
+echo -e ""
 echo -en "Creating $release archives ... "
 if [ -e bcm2708 ]; then
 	mv -f bcm2708 rpi-$release;
@@ -87,7 +87,7 @@ else
 	:;
 fi
 echo "Done."
-echo -e "${FIN}"
+echo -e ""
 cd ..
 
 exit 0
