@@ -1,0 +1,86 @@
+#!/bin/bash
+
+export XZ_DEFAULTS
+CORES=`nproc`
+WHT="\e[1;37m"
+FIN="\e[0m"
+
+echo -e "${WHT}"
+echo -ne "Select release:${FIN} "
+read release
+echo -e "${WHT}"
+echo -en "Creating $release archives ... "
+cd output
+if [ -e bcm2708 ]; then
+	mv -f bcm2708 rpi-$release;
+	XZ_DEFAULTS="--threads=${CORES}";tar cfJ rpi-$release.tar.xz rpi-$release;
+else
+	echo "Something went wrong?";
+	exit;
+fi
+if [ -e bcm2709 ]; then
+	mv -f bcm2709 rpi2-$release;
+	XZ_DEFAULTS="--threads=${CORES}";tar cfJ rpi2-$release.tar.xz rpi2-$release;
+else
+	echo "Something went wrong?";
+	exit;
+fi
+if [ -e bcm2710 ]; then
+	mv -f bcm2710 rpi3-$release;
+	XZ_DEFAULTS="--threads=${CORES}";tar cfJ rpi3-$release.tar.xz rpi3-$release;
+else
+	echo "Something went wrong?";
+	exit;
+fi
+if [ -e bcm2711 ]; then
+	mv -f bcm2711 rpi4-$release;
+	XZ_DEFAULTS="--threads=${CORES}";tar cfJ rpi4-$release.tar.xz rpi4-$release;
+else
+	echo "Something went wrong?";
+	exit;
+fi
+if [ -e bcm2711v7 ]; then
+	mv -f bcm2711v7 rpi4v7-$release;
+	XZ_DEFAULTS="--threads=${CORES}";tar cfJ rpi4v7-$release.tar.xz rpi4v7-$release;
+else
+	echo "Something went wrong?";
+	exit;
+fi
+echo "Done."
+
+echo -en "Running check and cleaning ... "
+if [ -e rpi-$release.tar.xz ]; then
+	rm -fdr rpi-$release;
+else
+	echo "Something went wrong?";
+	exit;
+fi
+if [ -e rpi2-$release.tar.xz ]; then
+	rm -fdr rpi2-$release;
+else
+	echo "Something went wrong?";
+	exit;
+fi
+if [ -e rpi3-$release.tar.xz ]; then
+	rm -fdr rpi3-$release;
+else
+	echo "Something went wrong?";
+	exit;
+fi
+if [ -e rpi4-$release.tar.xz ]; then
+	rm -fdr rpi4-$release;
+else
+	echo "Something went wrong?";
+	exit;
+fi
+if [ -e rpi4v7-$release.tar.xz ]; then
+	rm -fdr rpi4v7-$release;
+else
+	echo "Something went wrong?";
+	exit;
+fi
+echo "Done."
+echo -e "${FIN}"
+cd ..
+
+exit 0

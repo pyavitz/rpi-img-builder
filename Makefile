@@ -51,6 +51,8 @@ XCHECK=./scripts/check
 CHECK=./scripts/check
 XRUN=./scripts/run-linux
 RUN=./scripts/run-linux
+XCOMP=./scripts/compress
+COMP=sudo ./scripts/compress
 
 # dependencies
 CCOMPILE=./scripts/.ccompile
@@ -475,3 +477,7 @@ helper:
 run:
 	@chmod +x ${XRUN}
 	@${RUN}
+
+compress:
+	@chmod +x ${XCOMP}
+	@${COMP}
