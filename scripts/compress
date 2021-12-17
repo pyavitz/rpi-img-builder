@@ -5,13 +5,25 @@ CORES=`nproc`
 WHT="\e[1;37m"
 FIN="\e[0m"
 
+confirm(){
+echo -e "${WHT}Would you like to archive the release${FIN}?"
+echo -e ""
+read -p "Continue (y/n)?" choice
+case "$choice" in 
+  y|Y ) echo && echo -e "${WHT}Confirmed${FIN}.";;
+  n|N ) echo && echo -e "${WHT}Exiting script${FIN} ..." && exit 0;;
+  * ) echo && echo -e "${WHT}Invalid choice${FIN}." && exit 0;;
+esac
+}
+confirm
 if [ -e output ]; then
 	cd output;
 else
+	echo ""
 	echo -e "${WHT}This command is for administrative use${FIN}."
-	exit 1;
+	exit 0 > /dev/null 2>&1;
 fi
-
+echo ""
 echo -e "${WHT}"
 echo -ne "Select release:${FIN} "
 read release
