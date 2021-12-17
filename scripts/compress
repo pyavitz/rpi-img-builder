@@ -23,7 +23,6 @@ else
 	echo -e "${WHT}This command is for administrative use${FIN}."
 	exit 0 > /dev/null 2>&1;
 fi
-echo ""
 echo -e "${WHT}"
 echo -ne "Select release:${FIN} "
 read release
