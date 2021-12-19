@@ -203,6 +203,13 @@ if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
 	ln -s /lib/ld-linux.so.3 /lib/ld-linux-armhf.so.3
 fi
 
+### Flush runtime journal
+if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
+	:;
+else
+	systemd_journald;
+fi
+
 ### Vchiq permissions
 echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' > /etc/udev/rules.d/10-vchiq-permissions.rules
 echo 'SUBSYSTEM=="vcio",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules

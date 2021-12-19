@@ -191,6 +191,9 @@ fi
 ### Clean misc files
 rm -f {*.patch,*led*,*eeprom*}
 
+### Flush runtime journal
+systemd_journald
+
 ### Vchiq permissions
 echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0777"' > /etc/udev/rules.d/10-vchiq-permissions.rules
 echo 'SUBSYSTEM=="vcio",GROUP="video",MODE="0777"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
