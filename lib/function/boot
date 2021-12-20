@@ -204,6 +204,7 @@ gpu_mem=128
 #arm_freq=
 #gpu_freq=
 #over_voltage=
+#force_turbo=1
 
 # uncomment some or all of these to enable the optional hardware interfaces
 #dtparam=i2c_arm=on
@@ -289,7 +290,7 @@ gpu_mem=128
 
 # uncomment to overclock: https://www.tomshardware.com/how-to/overclock-any-raspberry-pi
 #arm_freq=
-#gpu_freq=
+#core_freq=
 #over_voltage=
 
 # uncomment some or all of these to enable the optional hardware interfaces
@@ -369,7 +370,7 @@ gpu_mem=128
 
 # uncomment to overclock: https://www.tomshardware.com/how-to/overclock-any-raspberry-pi
 #arm_freq=
-#gpu_freq=
+#core_freq=
 #over_voltage=
 
 # uncomment some or all of these to enable the optional hardware interfaces
@@ -449,7 +450,7 @@ gpu_mem=128
 
 # uncomment to overclock: https://www.tomshardware.com/how-to/overclock-any-raspberry-pi
 #arm_freq=
-#gpu_freq=
+#core_freq=
 #over_voltage=
 
 # uncomment some or all of these to enable the optional hardware interfaces
