@@ -173,16 +173,16 @@ fetch_version
 
 ### Modules
 if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
-	bcm_modules;
+	bcm_modules > /dev/null 2>&1;
 fi
 if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
-	bcm2710_modules;
+	bcm2710_modules > /dev/null 2>&1;
 fi
 if [[ `grep -w "bcm2709" "/root/soc.txt"` ]]; then
-	bcm2710_modules;
+	bcm2710_modules > /dev/null 2>&1;
 fi
 if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
-	bcm_modules;
+	bcm_modules > /dev/null 2>&1;
 fi
 
 ### Admin or user

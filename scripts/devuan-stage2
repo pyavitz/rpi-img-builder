@@ -217,16 +217,16 @@ fetch_version
 
 ### Modules
 if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
-	bcm_modules;
+	bcm_modules > /dev/null 2>&1;
 fi
 if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
-	bcm2710_modules;
+	bcm2710_modules > /dev/null 2>&1;
 fi
 if [[ `grep -w "bcm2709" "/root/soc.txt"` ]]; then
-	bcm2710_modules;
+	bcm2710_modules > /dev/null 2>&1;
 fi
 if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
-	bcm_modules;
+	bcm_modules > /dev/null 2>&1;
 fi
 
 ### Admin or user
@@ -252,7 +252,7 @@ echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' > /etc/udev/rules.d/10-vchiq
 echo 'SUBSYSTEM=="vcio",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
 echo 'SUBSYSTEM=="vc-mem",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
 
-if [[ `grep -Fx "btrfs=1" "/root/userdata.txt"` ]]; then
+if [[ `grep -w "btrfs=1" "/root/userdata.txt"` ]]; then
 	btrfs_udevrule;
 fi
 

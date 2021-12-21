@@ -48,18 +48,31 @@ source_dir
 mainline_clean
 
 ### Download kernel
-case `grep -Fx "rc=1" "../userdata.txt" >/dev/null; echo $?` in
-  0)
-if [[ `wget -S --spider ${MLURL}${MLKERNEL}-${VERSION}.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]];
-	then download_mainline; else echo && echo -e "${WHT}It appears the kernel you selected is not available${FIN}?" && exit;
+find_mainline(){
+if [[ `wget -S --spider ${MLURL}${MLKERNEL}-${VERSION}.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+	download_mainline;
+else	
+	echo ""
+	echo -e "${WHT}It appears the kernel you selected is not available${FIN}?"
+	exit > /dev/null 2>&1;
 fi
-    ;;
-  1)
-if [[ `wget -S --spider ${STBURL}${MLKERNEL}-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]];
-	then download_stable; else echo && echo -e "${WHT}It appears the kernel you selected is not available${FIN}?" && exit;
+}
+
+find_stable(){
+if [[ `wget -S --spider ${STBURL}${MLKERNEL}-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+	download_stable;
+else
+	echo ""
+	echo -e "${WHT}It appears the kernel you selected is not available${FIN}?"
+	exit > /dev/null 2>&1;
 fi
-    ;;
-esac
+}
+
+if [[ `grep -w "rc=1" "../userdata.txt"` ]]; then
+	find_mainline;
+else
+	find_stable;
+fi
 
 ### Patching
 patching

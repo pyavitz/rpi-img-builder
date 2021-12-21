@@ -276,8 +276,6 @@ echo Done.
 
 # Modules
 bcm_modules(){
-echo
-echo Updating etc modules.
 rm -f /etc/modules
 tee /etc/modules <<EOF
 # /etc/modules: kernel modules to load at boot time.
@@ -289,12 +287,9 @@ tee /etc/modules <<EOF
 
 EOF
 chown root:root /etc/modules
-echo Done.
 }
 
 bcm2710_modules(){
-echo
-echo Updating etc modules.
 rm -f /etc/modules
 tee /etc/modules <<EOF
 # /etc/modules: kernel modules to load at boot time.
@@ -307,7 +302,6 @@ snd_bcm2835
 
 EOF
 chown root:root /etc/modules
-echo Done.
 }
 
 # Zramswap setup

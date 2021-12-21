@@ -42,10 +42,12 @@ Description=Credentials
 After=firstboot.service network.target
 Before=rc-local.service
 ConditionPathExists=/usr/local/bin/credentials
+
 [Service]
 ExecStart=/usr/local/bin/credentials > /dev/null 2>&1
 Type=oneshot
 RemainAfterExit=yes
+
 [Install]
 WantedBy=multi-user.target
 EOF
