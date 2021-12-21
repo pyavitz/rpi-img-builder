@@ -31,7 +31,7 @@ fi
 bcm2708_initrd(){
 if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
 	if [[ `grep -Fx "ext4=1" "userdata.txt"` ]]; then
-		sed -i 's/initramfs initrd.gz/#initramfs initrd.gz/g' p1/config.txt;
+		sed -i 's/initramfs initrd.gz followkernel/#initramfs initrd.gz followkernel/g' p1/config.txt;
 	fi
 fi
 }

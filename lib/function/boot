@@ -157,7 +157,7 @@ bcm2711_config(){
 tee p1/config.txt <<EOF
 arm_64bit=1
 kernel=kernel8.img
-initramfs initrd.gz
+initramfs initrd.gz followkernel
 
 # uncomment if you get no picture on HDMI for a default "safe" mode
 #hdmi_safe=1
@@ -235,9 +235,10 @@ disable_splash=1
 
 [pi4]
 # enable DRM VC4 V3D driver on top of the dispmanx display stack
-#dtoverlay=vc4-kms-v3d
-dtoverlay=vc4-fkms-v3d
+dtoverlay=vc4-kms-v3d
+#dtoverlay=vc4-fkms-v3d
 max_framebuffers=2
+arm_boost=1
 EOF
 }
 
@@ -245,7 +246,7 @@ bcm2710_config(){
 tee p1/config.txt <<EOF
 arm_64bit=1
 kernel=kernel8.img
-initramfs initrd.gz
+initramfs initrd.gz followkernel
 
 # uncomment if you get no picture on HDMI for a default "safe" mode
 #hdmi_safe=1
@@ -325,7 +326,7 @@ EOF
 bcm2709_config(){
 tee p1/config.txt <<EOF
 kernel=kernel7.img
-initramfs initrd.gz
+initramfs initrd.gz followkernel
 
 # uncomment if you get no picture on HDMI for a default "safe" mode
 #hdmi_safe=1
@@ -405,7 +406,7 @@ EOF
 bcm2708_config(){
 tee p1/config.txt <<EOF
 kernel=kernel.img
-initramfs initrd.gz
+initramfs initrd.gz followkernel
 
 # uncomment if you get no picture on HDMI for a default "safe" mode
 #hdmi_safe=1
