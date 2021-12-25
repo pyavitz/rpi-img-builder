@@ -100,12 +100,12 @@ echo ""
 
 if [[ `sudo dmesg | grep -w x86-64` ]]; then
 	echo -e "${WHT}Starting install ...${FIN}"
-	sleep 2s
-	if [ -e /usr/bin/make ]; then
+	sleep 1s
+	if [[ `command -v make` ]]; then
 		sudo apt update
 		make ccompile;
 	else
-		sleep 2s
+		sleep 1s
 		sudo apt update
 		sudo apt install -y make
 		make ccompile;
@@ -120,16 +120,16 @@ select opt in "${options[@]}"
 do
 	case $opt in
 		"Cross Compiling")
-		if [ -e /usr/bin/make ]; then
+		if [[ `command -v make` ]]; then
 			echo ""
 			echo -e "${WHT}Starting install ...${FIN}"
-			sleep 2s
+			sleep 1s
 			sudo apt update
 			make ccompile64;
 		else
 			echo ""
 			echo -e "${WHT}Starting install ...${FIN}"
-			sleep 2s
+			sleep 1s
 			sudo apt update
 			sudo apt install -y make
 			make ccompile64;
@@ -137,16 +137,16 @@ do
 			break
 			;;
 		"Native Compiling")
-		if [ -e /usr/bin/make ]; then
+		if [[ `command -v make` ]]; then
 			echo ""
 			echo -e "${WHT}Starting install ...${FIN}"
-			sleep 2s
+			sleep 1s
 			sudo apt update
 			make ncompile;
 		else
 			echo ""
 			echo -e "${WHT}Starting install ...${FIN}"
-			sleep 2s
+			sleep 1s
 			sudo apt update
 			sudo apt install -y make
 			make ncompile;
