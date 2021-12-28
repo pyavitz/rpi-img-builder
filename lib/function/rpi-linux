@@ -353,9 +353,6 @@ else
 		fi
 	fi
 fi
-if [[ `grep -w 'VERSION="5.15.y"' "../../userdata.txt"` ]]; then
-	patch -p1 < ../${PAT}/direct-firmware-load-failed-error-2-REVERT-rpi-broadcom-firmware-c.patch;
-fi
 cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch;
 echo_done
 echo
