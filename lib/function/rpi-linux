@@ -92,9 +92,11 @@ ${DOWNLOAD} ${BINURL}start4x.elf
 ${DOWNLOAD} ${BINURL}LICENCE.broadcom
 ${DOWNLOAD} ${BINURL}COPYING.linux
 cd ..
-if ls firmware/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf,LICENCE.broadcom,COPYING.linux} > /dev/null 2>&1
-	then echo_bdone;
-	else echo_fail && exit;
+if ls firmware/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf,LICENCE.broadcom,COPYING.linux} > /dev/null 2>&1; then
+	echo_bdone;
+else
+	echo_fail
+	exit > /dev/null 2>&1;
 fi
 }
 
@@ -117,9 +119,11 @@ ${DOWNLOAD} ${BINURL}start_x.elf
 ${DOWNLOAD} ${BINURL}LICENCE.broadcom
 ${DOWNLOAD} ${BINURL}COPYING.linux
 cd ..
-if ls firmware/{bootcode.bin,fixup.dat,fixup_cd.dat,fixup_db.dat,fixup_x.dat,start.elf,start_cd.elf,start_db.elf,start_x.elf,LICENCE.broadcom,COPYING.linux} > /dev/null 2>&1
-	then echo_bdone;
-	else echo_fail && exit;
+if ls firmware/{bootcode.bin,fixup.dat,fixup_cd.dat,fixup_db.dat,fixup_x.dat,start.elf,start_cd.elf,start_db.elf,start_x.elf,LICENCE.broadcom,COPYING.linux} > /dev/null 2>&1; then
+	echo_bdone;
+else
+	echo_fail
+	exit > /dev/null 2>&1;
 fi
 }
 
@@ -530,35 +534,35 @@ fi
 }
 
 bcm2711_check(){
-if ls ${OUT4}/*.deb > /dev/null 2>&1; then
+if [[ `ls ${OUT4}/*.deb` ]] > /dev/null 2>&1; then
 	mkdir -p ${OUT4}/tmp
 	mv -f ${OUT4}/*.deb ${OUT4}/tmp;
 fi
 }
 
 bcm2711v7_check(){
-if ls ${OUT4v7}/*.deb > /dev/null 2>&1; then
+if [[ `ls ${OUT4v7}/*.deb` ]] > /dev/null 2>&1; then
 	mkdir -p ${OUT4v7}/tmp
 	mv -f ${OUT4v7}/*.deb ${OUT4v7}/tmp;
 fi
 }
 
 bcm2710_check(){
-if ls ${OUT3}/*.deb > /dev/null 2>&1; then
+if [[ `ls ${OUT3}/*.deb` ]] > /dev/null 2>&1; then
 	mkdir -p ${OUT3}/tmp
 	mv -f ${OUT3}/*.deb ${OUT3}/tmp;
 fi
 }
 
 bcm2709_check(){
-if ls ${OUT2}/*.deb > /dev/null 2>&1; then
+if [[ `ls ${OUT2}/*.deb` ]] > /dev/null 2>&1; then
 	mkdir -p ${OUT2}/tmp
 	mv -f ${OUT2}/*.deb ${OUT2}/tmp;
 fi
 }
 
 bcm2708_check(){
-if ls ${OUT}/*.deb > /dev/null 2>&1; then
+if [[ `ls ${OUT}/*.deb` ]] > /dev/null 2>&1; then
 	mkdir -p ${OUT}/tmp
 	mv -f ${OUT}/*.deb ${OUT}/tmp;
 fi
