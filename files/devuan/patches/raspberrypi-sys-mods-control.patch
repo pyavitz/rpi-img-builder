@@ -1,12 +1,12 @@
---- a/debian/control	2021-07-10 08:18:37.352760542 -0400
-+++ b/debian/control	2021-07-10 08:20:41.335787659 -0400
-@@ -10,8 +10,7 @@
+diff -Naur a/debian/control b/debian/control
+--- a/debian/control	2022-01-06 12:12:31.988631601 -0500
++++ b/debian/control	2022-01-06 12:13:00.075783120 -0500
+@@ -10,7 +10,7 @@
  
  Package: raspberrypi-sys-mods
  Architecture: any
--Depends: ${shlibs:Depends}, ${misc:Depends}, libcap2-bin, systemd (>= 230),
-- gettext-base, procps
-+Depends: ${shlibs:Depends}, ${misc:Depends}, libcap2-bin, gettext-base, procps
- Breaks: raspberrypi-ui-mods (<<1.20210706)
+-Depends: ${shlibs:Depends}, ${misc:Depends}, systemd (>= 230), gettext-base
++Depends: ${shlibs:Depends}, ${misc:Depends}, gettext-base
+ Breaks: raspberrypi-ui-mods (<<1.20210706), dhcpcd5 (<<1:8.1.2-1+rpt2)
  Replaces: raspberrypi-ui-mods (<<1.20210706)
  Recommends: rfkill, rpi-eeprom
