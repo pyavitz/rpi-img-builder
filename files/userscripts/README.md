@@ -18,25 +18,11 @@ This script is just an example of what one could do if someone so wished.
 # Prerequisite: Debian Bullseye
 # Install Xfce DE.
 
-DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
-
 XFCE="xfce4 xinit thunar mousepad gvfs-backends gvfs-fuse gnome-screensaver feh \
 	xfce4-terminal avahi-utils pulseaudio blueman xfce4-goodies file-roller \
 	fbi alacarte chromium lightdm-gtk-greeter lightdm x11-xserver-utils xserver-xorg"
 
-### CHECK ARIA2
-aria2c_check(){
-if [[ `command -v aria2c` ]]; then
-	:;
-else
-	sudo apt update
-	sudo apt install -y aria2;
-fi
-}
-
-### THE MAGIC
-aria2c_check
-echo
+echo ""
 sudo apt install -y ${XFCE}
 sudo apt purge -y light-locker
 sudo wget -cq https://raw.githubusercontent.com/pyavitz/rpi-img-builder/xfce/files/scripts/sleep-locker -P /usr/local/bin
