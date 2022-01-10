@@ -21,6 +21,9 @@ distro_release(){
 if [[ `grep -w 'DISTRO_VERSION="chimaera"' "userdata.txt"` ]]; then
 	stable_sources;
 fi
+if [[ `grep -w 'DISTRO_VERSION="daedalus"' "userdata.txt"` ]]; then
+	unstable_sources;
+fi
 if [[ `grep -w 'DISTRO_VERSION="testing"' "userdata.txt"` ]]; then
 	unstable_sources;
 fi

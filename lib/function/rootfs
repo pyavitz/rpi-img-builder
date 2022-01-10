@@ -13,6 +13,11 @@ if [ -e /usr/share/debootstrap/scripts/chimaera ]; then
 else
 	ln -sr /usr/share/debootstrap/scripts/sid /usr/share/debootstrap/scripts/chimaera;
 fi
+if [ -e /usr/share/debootstrap/scripts/daedalus ]; then
+	:;
+else
+	ln -sr /usr/share/debootstrap/scripts/sid /usr/share/debootstrap/scripts/daedalus;
+fi
 }
 
 ubuntu_keyring(){

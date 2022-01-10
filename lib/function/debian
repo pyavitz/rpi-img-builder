@@ -21,6 +21,9 @@ distro_release(){
 if [[ `grep -w 'DISTRO_VERSION="bullseye"' "userdata.txt"` ]]; then
 	stable_sources;
 fi
+if [[ `grep -w 'DISTRO_VERSION="bookworm"' "userdata.txt"` ]]; then
+	unstable_sources;
+fi
 if [[ `grep -w 'DISTRO_VERSION="testing"' "userdata.txt"` ]]; then
 	unstable_sources;
 fi

@@ -32,7 +32,9 @@ validation
 
 os_release(){
 if [[ `grep -w 'DISTRO_VERSION="bullseye"' "userdata.txt"` ]]; then URL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"; fi
+if [[ `grep -w 'DISTRO_VERSION="bookworm"' "userdata.txt"` ]]; then URL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"; fi
 if [[ `grep -w 'DISTRO_VERSION="chimaera"' "userdata.txt"` ]]; then URL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"; fi
+if [[ `grep -w 'DISTRO_VERSION="daedalus"' "userdata.txt"` ]]; then URL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"; fi
 if [[ `grep -w 'DISTRO_VERSION="focal"' "userdata.txt"` ]]; then URL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"; fi
 if [[ `grep -w 'DISTRO_VERSION="impish"' "userdata.txt"` ]]; then URL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"; fi
 if [[ `grep -w 'DISTRO_VERSION="jammy"' "userdata.txt"` ]]; then URL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"; fi

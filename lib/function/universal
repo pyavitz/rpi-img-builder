@@ -377,7 +377,7 @@ rm -f UPDATE.mem
 ln -sr /lib/firmware /etc/firmware
 mkdir -p /lib/firmware/updates/rtl_nic
 cd /lib/firmware/updates/rtl_nic
-wget -cq https://kernel.googlesource.com/pub/scm/linux/kernel/git/firmware/linux-firmware.git/+archive/refs/heads/master/rtl_nic.tar.gz
+wget -cq https://kernel.googlesource.com/pub/scm/linux/kernel/git/firmware/linux-firmware.git/+archive/refs/heads/main/rtl_nic.tar.gz
 if [ -e rtl_nic.tar.gz ]; then
 	tar xf rtl_nic.tar.gz
 	rm -f rtl_nic.tar.gz;

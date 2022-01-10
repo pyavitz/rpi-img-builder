@@ -61,8 +61,8 @@ Clang:          # 1 to select (Supported: Jammy Jellyfish)
 
 Distribution
 Distro:		# Supported: debian, devuan and ubuntu
-Release:	# Debian: bullseye, testing, unstable and sid
-		# Devuan: chimaera, testing, unstable and ceres
+Release:	# Debian: bullseye, bookworm, testing, unstable and sid
+		# Devuan: chimaera, daedalus, testing, unstable and ceres
 		# Ubuntu: focal, impish and jammy
 
 Filesystem
@@ -96,8 +96,8 @@ Clang:          # 1 to select (Supported: Jammy Jellyfish)
 
 Distribution
 Distro:		# Supported: debian, devuan and ubuntu
-Release:	# Debian: bullseye, testing, unstable and sid
-		# Devuan: chimaera, testing, unstable and ceres
+Release:	# Debian: bullseye, bookworm, testing, unstable and sid
+		# Devuan: chimaera, daedalus, testing, unstable and ceres
 		# Ubuntu: focal, impish and jammy
 
 Filesystem
