@@ -25,7 +25,7 @@ XFCE="xfce4 xinit thunar mousepad gvfs-backends gvfs-fuse gnome-screensaver feh 
 echo ""
 sudo apt install -y ${XFCE}
 sudo apt purge -y light-locker
-sudo wget -cq https://raw.githubusercontent.com/pyavitz/rpi-img-builder/xfce/files/scripts/sleep-locker -P /usr/local/bin
+sudo wget -cq https://raw.githubusercontent.com/pyavitz/scripts/master/sleep-locker -P /usr/local/bin
 sudo chmod +x /usr/local/bin/sleep-locker
 sudo chown root:root /usr/local/bin/sleep-locker
 sudo chown -R $USER:$USER /home/$USER
