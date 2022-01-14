@@ -42,7 +42,7 @@ while true; do
       exit 0
       ;;
     2 )
-      make select
+      make kernel
       dialog --prgbox "Results:" "ls $OUTPUT/*.deb" 30 70
       ;;
     3 )
