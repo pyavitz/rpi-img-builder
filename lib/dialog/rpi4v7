@@ -1,13 +1,13 @@
 #!/bin/bash
 ### DO NOT EDIT
-OUTPUT="output/bcm2711"
+OUTPUT="output/bcm2711v7"
 DIALOG_CANCEL=1
 DIALOG_ESC=255
 
 while true; do
   exec 3>&1
   selection=$(dialog \
-    --backtitle "Raspberry Pi Image Builder \ Raspberry Pi 4B/400 (ARM64)" \
+    --backtitle "Raspberry Pi Image Builder \ Raspberry Pi 4B/400 (ARMHF)" \
     --title "  Raspberry Pi 4B/400" \
     --clear \
     --cancel-label "Exit" \
@@ -38,7 +38,7 @@ while true; do
       ;;
     1 )
       make all
-      dialog --prgbox "Results:" "ls rpi-4*.img* *aarch64* $OUTPUT/" 30 70
+      dialog --prgbox "Results:" "ls rpi-4*.img* *armhf* $OUTPUT/" 30 70
       exit 0
       ;;
     2 )
@@ -47,7 +47,7 @@ while true; do
       ;;
     3 )
       make rootfs
-      dialog --prgbox "Results:" "ls *aarch64*" 30 70
+      dialog --prgbox "Results:" "ls *armhf*" 30 70
       ;;
     4 )
       make image
