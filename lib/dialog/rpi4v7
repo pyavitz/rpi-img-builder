@@ -37,7 +37,7 @@ while true; do
       echo "Program terminated."
       ;;
     1 )
-      make all
+      make allv7
       dialog --prgbox "Results:" "ls rpi-4*.img* *armhf* $OUTPUT/" 30 70
       exit 0
       ;;
@@ -46,11 +46,11 @@ while true; do
       dialog --prgbox "Results:" "ls $OUTPUT/*.deb" 30 70
       ;;
     3 )
-      make rootfs
+      make rootfsv7
       dialog --prgbox "Results:" "ls *armhf*" 30 70
       ;;
     4 )
-      make image
+      make imagev7
       dialog --prgbox "Results:" "ls rpi-4*.img*" 30 70
       ;;
   esac
