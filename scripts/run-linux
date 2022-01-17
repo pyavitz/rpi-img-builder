@@ -28,6 +28,10 @@ echo_bullseye(){
 echo -e -n "${PNK}[${FIN}${GRN}Debian Bullseye${FIN}${PNK}]${FIN}"
 }
 
+echo_chimaera(){
+echo -e -n "${PNK}[${FIN}${GRN}Devuan Chimaera${FIN}${PNK}]${FIN}"
+}
+
 echo_fail(){
 echo -n -e "${PNK}[${FIN}${RED}FAILED${FIN}${PNK}]${FIN}"
 }
@@ -62,7 +66,7 @@ else
 	echo_fail
 	echo ""
 	ierror
-	exit 1;
+	exit 1 > /dev/null 2>&1;
 fi
 }
 
@@ -81,10 +85,15 @@ else
 			echo_bullseye
 			echo "";
 		else
-			echo_fail
-			echo ""
-			derror
-			exit;
+			if [[ `grep -w "chimaera" "/etc/os-release"` ]]; then
+				echo_chimaera
+				echo "";
+			else
+				echo_fail
+				echo ""
+				derror
+				exit > /dev/null 2>&1;
+			fi
 		fi
 	fi
 fi
@@ -167,7 +176,7 @@ if [[ `ls output/bcm2711/*.deb` ]] > /dev/null 2>&1; then
 	echo "" >> log.txt;
 else
 	echo -e "Build 2711 failed!";
-	exit;
+	exit > /dev/null 2>&1;
 fi
 make rpi3-kernel
 if [[ `ls output/bcm2710/*.deb` ]] > /dev/null 2>&1; then
@@ -176,7 +185,7 @@ if [[ `ls output/bcm2710/*.deb` ]] > /dev/null 2>&1; then
 	echo "" >> log.txt;
 else
 	echo -e "Build 2710 failed!";
-	exit;
+	exit > /dev/null 2>&1;
 fi
 sleep 1s
 sed -i 's/crosscompile=0/crosscompile=1/g' userdata.txt
@@ -188,7 +197,7 @@ if [[ `ls output/bcm2711v7/*.deb` ]] > /dev/null 2>&1; then
 	echo "" >> log.txt;
 else
 	echo -e "Build 2711v7 failed!";
-	exit;
+	exit > /dev/null 2>&1;
 fi
 make rpi2+3-kernel
 if [[ `ls output/bcm2709/*.deb` ]] > /dev/null 2>&1; then
@@ -197,7 +206,7 @@ if [[ `ls output/bcm2709/*.deb` ]] > /dev/null 2>&1; then
 	echo "" >> log.txt;
 else
 	echo -e "Build 2709 failed!";
-	exit;
+	exit > /dev/null 2>&1;
 fi
 make rpi-kernel
 if [[ `ls output/bcm2708/*.deb` ]] > /dev/null 2>&1; then
@@ -206,7 +215,7 @@ if [[ `ls output/bcm2708/*.deb` ]] > /dev/null 2>&1; then
 	echo "" >> log.txt;
 else
 	echo -e "Build 2708 failed!";
-	exit;
+	exit > /dev/null 2>&1;
 fi
 echo `date` >> log.txt
 echo -e "${WHT}"
