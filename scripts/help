@@ -190,9 +190,9 @@ echo
 
 options(){
 echo ""
-echo -e "${WHT}Options${FIN}: 5.10.y or stable"
+echo -e "${WHT}Options${FIN}: 5.15.y or stable"
 echo -e "${WHT}"
-echo -ne "Select release:${FIN} "
+echo -ne "Select release${FIN}: "
 read release
 }
 

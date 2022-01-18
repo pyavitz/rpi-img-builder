@@ -49,7 +49,7 @@ Password:       # Your password
 Enable root:	# 1 to enable (set root password to `toor`)
 
 Linux kernel
-Branch:         # Supported: 5.10.y and above
+Branch:         # Supported: 5.15.y and above
 Menuconfig:     # 1 to run kernel menuconfig
 Crosscompile:   # 1 to cross compile | 0 to native compile
 

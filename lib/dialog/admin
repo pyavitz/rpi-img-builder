@@ -2,7 +2,7 @@
 ### DO NOT EDIT
 RED="\e[0;31m"
 FIN="\e[0m"
-VERSION="5.10.y"
+VERSION="5.15.y"
 BUILD_VERSION="1"
 menuconfig="0"
 crosscompile="1"
