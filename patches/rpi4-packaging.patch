@@ -1,6 +1,6 @@
 diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
 --- a/scripts/package/builddeb	2021-12-07 19:34:46.734175000 -0500
-+++ b/scripts/package/builddeb	2021-12-15 11:14:16.796820496 -0500
++++ b/scripts/package/builddeb	2022-01-18 14:47:33.199644114 -0500
 @@ -51,8 +51,8 @@
  kernel_headers_dir="$objtree/debian/hdrtmp"
  libc_headers_dir="$objtree/debian/headertmp"
@@ -92,7 +92,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  
  # Build kernel header package
  (cd $srctree; find . -name Makefile\* -o -name Kconfig\* -o -name \*.pl) > "$objtree/debian/hdrsrcfiles"
-@@ -183,6 +242,51 @@
+@@ -183,6 +242,52 @@
  (cd $objtree; cp $KCONFIG_CONFIG $destdir/.config) # copy .config manually to be where it's expected to be
  ln -sf "/usr/src/linux-headers-$version" "$kernel_headers_dir/lib/modules/$version/build"
  rm -f "$objtree/debian/hdrsrcfiles" "$objtree/debian/hdrobjfiles"
@@ -123,11 +123,12 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
 +	echo 'y' | make -j\$(grep -c 'processor' /proc/cpuinfo) -s scripts;
 +	echo 'y' | make -j\$(grep -c 'processor' /proc/cpuinfo) -s M=scripts/mod/;
 +fi
++if [ -e .config.old ]; then rm -f .config.old; fi
 +}
 +
 +cd /usr/src/linux-headers-$version
 +echo -e "\e[1;37mCompiling headers\e[0m ..."
-+clean_headers > /dev/null 2>&1;
++clean_headers > /dev/null 2>&1
 +exit 0
 +EOT
 +	chmod 755 $kernel_headers_dir/DEBIAN/postinst
@@ -146,7 +147,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
  	create_package "$kernel_headers_packagename" "$kernel_headers_dir"
 diff -Naur a/scripts/package/mkdebian b/scripts/package/mkdebian
 --- a/scripts/package/mkdebian	2021-12-07 19:34:46.735175000 -0500
-+++ b/scripts/package/mkdebian	2021-12-15 11:03:33.958610946 -0500
++++ b/scripts/package/mkdebian	2022-01-18 14:47:10.425112028 -0500
 @@ -94,8 +94,8 @@
  	packageversion=$version-$revision
  fi
