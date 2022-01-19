@@ -50,7 +50,7 @@ else
 		echo_fail
 		echo ""
 		ierror
-		exit 1;
+		exit > /dev/null 2>&1;
 	fi
 fi
 }
@@ -64,7 +64,7 @@ else
 	echo_fail
 	echo ""
 	ierror
-	exit 1;
+	exit > /dev/null 2>&1;
 fi
 }
 
@@ -86,7 +86,7 @@ else
 			echo_fail
 			echo ""
 			derror
-			exit;
+			exit > /dev/null 2>&1;
 		fi
 	fi
 fi
@@ -98,7 +98,7 @@ internet_check
 distro_check
 echo ""
 
-if [[ `sudo dmesg | grep -w x86-64` ]]; then
+if [[ `uname -m | grep -w x86_64` ]]; then
 	echo -e "${WHT}Starting install ...${FIN}"
 	sleep 1s
 	if [[ `command -v make` ]]; then
@@ -112,7 +112,7 @@ if [[ `sudo dmesg | grep -w x86-64` ]]; then
 	fi
 fi
 
-if [[ `sudo dmesg | grep -w arm64` ]]; then
+if [[ `uname -m | grep -w aarch64` ]]; then
 echo -e -n "${WHT}"
 echo -e "Arm64 Detected! Select the dependencies you would like installed."
 options=("Cross Compiling" "Native Compiling" "Quit")

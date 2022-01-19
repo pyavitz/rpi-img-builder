@@ -29,12 +29,12 @@ sudo apt install -y build-essential bison bc git dialog patch fdisk \
 	e2fsprogs btrfs-progs xfsprogs kpartx make libelf-dev zstd gcc-9 gcc-10
 }
 
-if [[ `sudo dmesg | grep -w x86-64` ]]; then
+if [[ `uname -m | grep -w x86_64` ]]; then
 	echo ""
 	echo -e "${WHT}Host Machine: x86-64${FIN}"
 	echo -e "${WHT}Please run:${FIN} make ccompile"
 	echo ""
-	exit;
+	exit > /dev/null 2>&1;
 fi
 
 if [[ `grep -w "focal" "/etc/os-release"` ]]; then
@@ -52,7 +52,7 @@ else
 			echo ""
 			echo -e "${WHT}What OS are you running?${FIN}"
 			echo ""
-			exit;
+			exit > /dev/null 2>&1;
 		fi
 	fi
 fi
