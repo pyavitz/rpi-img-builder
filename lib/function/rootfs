@@ -55,6 +55,60 @@ else
 fi
 }
 
+ubuntu_aarch64(){
+DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
+TBURL="https://github.com/pyavitz/rootfs-tarballs/releases/download/rootfs/"
+if [[ `grep -w "Ubuntu" "/etc/os-release"` ]]; [[ `grep -w "VERSION_CODENAME=impish" "/etc/os-release"` ]]; then
+	:;
+else
+	if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; [[ `grep -w 'DISTRO_VERSION="impish"' "userdata.txt"` ]]; then
+		echo ""
+		echo -e "${WHT}Downloading${FIN} ..."
+		${DOWNLOAD} ${TBURL}ubuntu-impish-rootfs-aarch64.tar.xz
+		echo -e " ${WHT}Done${FIN}."
+		exit;
+	fi
+fi
+if [[ `grep -w "Ubuntu" "/etc/os-release"` ]]; [[ `grep -w "VERSION_CODENAME=jammy" "/etc/os-release"` ]]; then
+	:;
+else
+	if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; [[ `grep -w 'DISTRO_VERSION="jammy"' "userdata.txt"` ]]; then
+		echo ""
+		echo -e "${WHT}Downloading${FIN} ..."
+		${DOWNLOAD} ${TBURL}ubuntu-jammy-rootfs-aarch64.tar.xz
+		echo -e " ${WHT}Done${FIN}."
+		exit;
+	fi
+fi
+}
+
+ubuntu_armhf(){
+DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
+TBURL="https://github.com/pyavitz/rootfs-tarballs/releases/download/rootfs/"
+if [[ `grep -w "Ubuntu" "/etc/os-release"` ]]; [[ `grep -w "VERSION_CODENAME=impish" "/etc/os-release"` ]]; then
+	:;
+else
+	if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; [[ `grep -w 'DISTRO_VERSION="impish"' "userdata.txt"` ]]; then
+		echo ""
+		echo -e "${WHT}Downloading${FIN} ..."
+		${DOWNLOAD} ${TBURL}ubuntu-impish-rootfs-armhf.tar.xz
+		echo -e " ${WHT}Done${FIN}."
+		exit;
+	fi
+fi
+if [[ `grep -w "Ubuntu" "/etc/os-release"` ]]; [[ `grep -w "VERSION_CODENAME=jammy" "/etc/os-release"` ]]; then
+	:;
+else
+	if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; [[ `grep -w 'DISTRO_VERSION="jammy"' "userdata.txt"` ]]; then
+		echo ""
+		echo -e "${WHT}Downloading${FIN} ..."
+		${DOWNLOAD} ${TBURL}ubuntu-jammy-rootfs-armhf.tar.xz
+		echo -e " ${WHT}Done${FIN}."
+		exit;
+	fi
+fi
+}
+
 # arm64
 arm64_debootstrap(){
 debootstrap --arch arm64 --foreign ${DISTRO_VERSION} ${ROOT}

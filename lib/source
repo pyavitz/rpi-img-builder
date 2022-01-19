@@ -58,7 +58,7 @@ UBUNTU1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	psmisc parted pv zip unzip aria2 fdisk i2c-tools"
 
 UBUNTU2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
-	fuse wpasupplicant wireless-tools usbutils alsa-utils gettext crda \
+	wpasupplicant wireless-tools usbutils alsa-utils gettext crda \
 	bison flex mc nano figlet toilet dialog python3 python3-setuptools \
 	openssh-client openssh-server ntfs-3g bc zram-tools libncursesw5-dev \
 	libssl-dev autopoint autoconf automake pkg-config libtool fake-hwclock \

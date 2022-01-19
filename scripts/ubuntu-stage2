@@ -50,7 +50,11 @@ else
 		fi
 	fi
 fi
-apt install -y ${UBUNTU1} ${UBUNTU2}
+if [[ `grep -w 'DISTRO_VERSION="jammy"' "/root/userdata.txt"` ]]; then
+	apt install -y ${UBUNTU1} ${UBUNTU2} fuse3;
+else
+	apt install -y ${UBUNTU1} ${UBUNTU2} fuse;
+fi
 apt -y clean
 apt -y autoclean
 

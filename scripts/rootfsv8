@@ -53,6 +53,7 @@ if [ -e $RELEASE ]; then
 	ls $RELEASE
 	exit;
 fi
+ubuntu_aarch64
 echo ""
 echo -e "${WHT}Starting debootstrap${FIN} ..."
 echo -e -n ${GRN}
