@@ -158,16 +158,16 @@ echo -e -n "${FIN}"
 
 # armv6l
 armv6_setup(){
-if [[ `grep -w "rtl8812au=1" "../userdata.txt"` ]]; then
+cd ${MLKERNEL}-$commit
+if [[ `grep -w "rtl8812au=1" "../../userdata.txt"` ]]; then
 	rtl8812au;
 fi
-if [[ `grep -w "rtl88x2bu=1" "../userdata.txt"` ]]; then
+if [[ `grep -w "rtl88x2bu=1" "../../userdata.txt"` ]]; then
 	rtl88x2bu;
 fi
-if [[ `grep -w "rtl8811cu=1" "../userdata.txt"` ]]; then
+if [[ `grep -w "rtl8811cu=1" "../../userdata.txt"` ]]; then
 	rtl8811cu;
 fi
-cd ${MLKERNEL}-$commit
 export ARCH=arm
 KERNEL=kernel
 }
@@ -214,16 +214,16 @@ echo 'y' | make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm KBUILD_BUILD_USER=${KBU
 
 # armv7l
 armv7_setup(){
-if [[ `grep -w "rtl8812au=1" "../userdata.txt"` ]]; then
+cd ${MLKERNEL}-$commit
+if [[ `grep -w "rtl8812au=1" "../../userdata.txt"` ]]; then
 	rtl8812au;
 fi
-if [[ `grep -w "rtl88x2bu=1" "../userdata.txt"` ]]; then
+if [[ `grep -w "rtl88x2bu=1" "../../userdata.txt"` ]]; then
 	rtl88x2bu;
 fi
-if [[ `grep -w "rtl8811cu=1" "../userdata.txt"` ]]; then
+if [[ `grep -w "rtl8811cu=1" "../../userdata.txt"` ]]; then
 	rtl8811cu;
 fi
-cd ${MLKERNEL}-$commit
 export ARCH=arm
 if [[ `grep -w "bcm2711" "../soc.txt"` ]]; then
 	KERNEL=kernel7l
@@ -275,16 +275,16 @@ echo 'y' | make -j${CORES} KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOS
 
 # aarch64
 armv8_setup(){
-if [[ `grep -w "rtl8812au=1" "../userdata.txt"` ]]; then
+cd ${MLKERNEL}-$commit
+if [[ `grep -w "rtl8812au=1" "../../userdata.txt"` ]]; then
 	rtl8812au;
 fi
-if [[ `grep -w "rtl88x2bu=1" "../userdata.txt"` ]]; then
+if [[ `grep -w "rtl88x2bu=1" "../../userdata.txt"` ]]; then
 	rtl88x2bu;
 fi
-if [[ `grep -w "rtl8811cu=1" "../userdata.txt"` ]]; then
+if [[ `grep -w "rtl8811cu=1" "../../userdata.txt"` ]]; then
 	rtl8811cu;
 fi
-cd ${MLKERNEL}-$commit
 export ARCH=arm64
 }
 
