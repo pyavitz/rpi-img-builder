@@ -20,6 +20,10 @@ LINUX=sudo ./scripts/rpi-linux
 XMAINLINE=./scripts/linux
 MAINLINE=sudo ./scripts/linux
 
+# commit
+XCOMMIT=./scripts/rpi-commit
+COMMIT=sudo ./scripts/rpi-commit
+
 # stages
 DEB=./scripts/debian-stage1
 DEBIAN=sudo ./scripts/debian-stage1
@@ -158,6 +162,14 @@ kernel:
 	@chmod +x ${XLINUX}
 	@${LINUX}
 
+commit:
+	# Linux commit
+	@ echo bcm2711 > soc.txt
+	@ echo arm64 >> soc.txt
+	@chmod +x ${XCOMMIT}
+	@${COMMIT}
+
+
 image:
 	# Making bootable image
 	@ echo bcm2711 > soc.txt
@@ -187,8 +199,15 @@ kernelv7:
 	# Linux
 	@ echo bcm2711 > soc.txt
 	@ echo arm >> soc.txt
-	@chmod +x ${XLINUX}
-	@${LINUX}
+	@chmod +x ${XCOMMIT}
+	@${COMMIT}
+
+commitv7:
+	# Linux commit
+	@ echo bcm2711 > soc.txt
+	@ echo arm >> soc.txt
+	@chmod +x ${XCOMMIT}
+	@${COMMIT}
 
 imagev7:
 	# Making bootable image
@@ -230,6 +249,13 @@ rpi3-kernel:
 	@chmod +x ${XLINUX}
 	@${LINUX}
 
+rpi3-commit:
+	# Linux commit
+	@ echo bcm2710 > soc.txt
+	@ echo arm64 >> soc.txt
+	@chmod +x ${XCOMMIT}
+	@${COMMIT}
+
 rpi3-image:
 	# Making bootable image
 	@ echo bcm2710 > soc.txt
@@ -263,6 +289,13 @@ rpi2+3-kernel:
 	@chmod +x ${XLINUX}
 	@${LINUX}
 
+rpi2+3-commit:
+	# Linux commit
+	@ echo bcm2709 > soc.txt
+	@ echo arm >> soc.txt
+	@chmod +x ${XCOMMIT}
+	@${COMMIT}
+
 rpi2+3-image:
 	# Making bootable image
 	@ echo bcm2709 > soc.txt
@@ -295,6 +328,13 @@ rpi-kernel:
 	@ echo arm >> soc.txt
 	@chmod +x ${XLINUX}
 	@${LINUX}
+
+rpi-commit:
+	# Linux commit
+	@ echo bcm2708 > soc.txt
+	@ echo arm >> soc.txt
+	@chmod +x ${XCOMMIT}
+	@${COMMIT}
 
 rpi-image:
 	# Make bootable image

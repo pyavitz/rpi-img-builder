@@ -1,0 +1,569 @@
+DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
+
+source_dir(){
+mkdir -p ${SRC}
+cp -f soc.txt ${SRC}/
+cd ${SRC}
+}
+
+compiler(){
+if [[ `grep -w "gcc=1" "userdata.txt"` ]]; then
+	rm -f {gcc.txt,ccache.txt,clang.txt}
+	gcc_compiler;
+fi
+if [[ `grep -w "ccache=1" "userdata.txt"` ]]; then
+	if [ -e /usr/bin/ccache ]; then
+	rm -f {gcc.txt,ccache.txt,clang.txt}
+	ccache_compiler;
+
+else
+	sudo apt update
+	sudo apt upgrade -y
+	sudo apt install -y ccache
+	sleep 1s
+	rm -f {gcc.txt,ccache.txt,clang.txt}
+	ccache_compiler;
+	fi
+fi
+if [[ `grep -w "clang=1" "userdata.txt"` ]]; then
+	if [ -e /usr/bin/clang-13 ]; then
+	rm -f {gcc.txt,ccache.txt,clang.txt}
+	clang_compiler;
+else
+	sudo apt update
+	sudo apt upgrade -y
+	sudo apt install -y clang clang-13 lld lld-13 llvm
+	sleep 1s
+	rm -f {gcc.txt,ccache.txt,clang.txt}
+	clang_compiler;
+	fi
+fi
+}
+
+clean_source(){
+if [ -e ${MLKERNEL}-$commit ]; then
+	echo ""
+	echo -e "${PNK}Cleaning${FIN} ..."
+	rm -fdr ${MLKERNEL}-$commit;
+fi
+}
+
+noinitrd(){
+sed -i 's/export INITRD=$want_initrd/export INITRD=No/g' scripts/package/builddeb
+sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
+}
+
+rpi0+1(){
+sed -i 's/packageversion=$version-$revision/packageversion=$version-$revision~rpi0+1/g' scripts/package/mkdebian
+}
+
+rpi2+3(){
+sed -i 's/packageversion=$version-$revision/packageversion=$version-$revision~rpi2+3/g' scripts/package/mkdebian
+}
+
+rpi4(){
+sed -i 's/packageversion=$version-$revision/packageversion=$version-$revision~rpi4/g' scripts/package/mkdebian
+}
+
+userpatches(){
+if
+ls ../${UP}/*.patch > /dev/null 2>&1;
+then echo -e "${GRN}Applying user patches${FIN}." &&
+for i in ../${UP}/*.patch; do patch -p1 < $i; done ;
+else echo -e "${YLW}No user patches found${FIN}." 
+fi
+}
+
+rpi4_firmware(){
+BINURL="https://github.com/raspberrypi/firmware/raw/master/boot/"
+mkdir -p firmware
+rm -f firmware/*
+cd firmware
+echo
+echo_firm
+${DOWNLOAD} ${BINURL}fixup4.dat
+${DOWNLOAD} ${BINURL}fixup4cd.dat
+${DOWNLOAD} ${BINURL}fixup4db.dat
+${DOWNLOAD} ${BINURL}fixup4x.dat
+${DOWNLOAD} ${BINURL}start4.elf
+${DOWNLOAD} ${BINURL}start4cd.elf
+${DOWNLOAD} ${BINURL}start4db.elf
+${DOWNLOAD} ${BINURL}start4x.elf
+${DOWNLOAD} ${BINURL}LICENCE.broadcom
+${DOWNLOAD} ${BINURL}COPYING.linux
+cd ..
+if ls firmware/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf,LICENCE.broadcom,COPYING.linux} > /dev/null 2>&1; then
+	echo_bdone;
+else
+	echo_fail
+	exit > /dev/null 2>&1;
+fi
+}
+
+rpi_firmware(){
+BINURL="https://github.com/raspberrypi/firmware/raw/master/boot/"
+mkdir -p firmware
+rm -f firmware/*
+cd firmware
+echo
+echo_firm
+${DOWNLOAD} ${BINURL}bootcode.bin
+${DOWNLOAD} ${BINURL}fixup.dat
+${DOWNLOAD} ${BINURL}fixup_cd.dat
+${DOWNLOAD} ${BINURL}fixup_db.dat
+${DOWNLOAD} ${BINURL}fixup_x.dat
+${DOWNLOAD} ${BINURL}start.elf
+${DOWNLOAD} ${BINURL}start_cd.elf
+${DOWNLOAD} ${BINURL}start_db.elf
+${DOWNLOAD} ${BINURL}start_x.elf
+${DOWNLOAD} ${BINURL}LICENCE.broadcom
+${DOWNLOAD} ${BINURL}COPYING.linux
+cd ..
+if ls firmware/{bootcode.bin,fixup.dat,fixup_cd.dat,fixup_db.dat,fixup_x.dat,start.elf,start_cd.elf,start_db.elf,start_x.elf,LICENCE.broadcom,COPYING.linux} > /dev/null 2>&1; then
+	echo_bdone;
+else
+	echo_fail
+	exit > /dev/null 2>&1;
+fi
+}
+
+download(){
+RPIURL="https://github.com/raspberrypi/linux/archive/"
+echo
+echo_kernel
+if [ -e ${MLKERNEL}-$commit.tar.gz ]; then
+	echo -e "${YLW}${MLKERNEL}-$commit.tar.gz found${FIN}.";
+else
+	${DOWNLOAD} ${RPIURL}$commit.tar.gz
+	echo_bdone;
+fi
+if [[ `grep -w "rtl8812au=1" "../userdata.txt"` ]]; then
+	rtl8812au_download;
+fi
+if [[ `grep -w "rtl88x2bu=1" "../userdata.txt"` ]]; then
+	rtl88x2bu_download;
+fi
+if [[ `grep -w "rtl8811cu=1" "../userdata.txt"` ]]; then
+	rtl8811cu_download;
+fi
+}
+
+extract(){
+echo
+echo_extract
+echo -e -n "${WHT}"
+pv ${MLKERNEL}-$commit.tar.gz | tar -xzf - -C .
+echo -e -n "${FIN}"
+}
+
+# armv6l
+armv6_setup(){
+if [[ `grep -w "rtl8812au=1" "../userdata.txt"` ]]; then
+	rtl8812au;
+fi
+if [[ `grep -w "rtl88x2bu=1" "../userdata.txt"` ]]; then
+	rtl88x2bu;
+fi
+if [[ `grep -w "rtl8811cu=1" "../userdata.txt"` ]]; then
+	rtl8811cu;
+fi
+cd ${MLKERNEL}-$commit
+export ARCH=arm
+KERNEL=kernel
+}
+
+armv6_cconfig(){
+echo_cconfig
+cp -f ../${DEF}/${MYCONFIG} arch/arm/configs/
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+	make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm ${ARMV6_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=arm-linux-gnueabi- ${MYCONFIG};
+else
+	make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm ${NATIVE} CFLAGS="${CFLAGS}" ${MYCONFIG};
+fi
+echo_done
+}
+
+armv6_menuconfig(){
+echo
+echo_menuconfig
+sleep 1s
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+	make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm ${ARMV6_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=arm-linux-gnueabi- menuconfig;
+else
+	make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm ${NATIVE} CFLAGS="${CFLAGS}" menuconfig;
+fi
+}
+
+armv6_ccompile(){
+echo -e "-- ${GRN}CC${FIN}"
+echo_build
+if [[ `grep -w "admin=1" "../../userdata.txt"` ]]; then
+	echo ${BUILD_VERSION} > .version;
+fi
+echo 'y' | make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} ${ARMV6_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=arm-linux-gnueabi- bindeb-pkg
+}
+
+armv6_ncompile(){
+echo -e "-- ${GRN}NC${FIN}"
+echo_build
+if [[ `grep -w "admin=1" "../../userdata.txt"` ]]; then
+	echo ${BUILD_VERSION} > .version;
+fi
+echo 'y' | make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} ${NATIVE} CFLAGS="${CFLAGS}" bindeb-pkg
+}
+
+# armv7l
+armv7_setup(){
+if [[ `grep -w "rtl8812au=1" "../userdata.txt"` ]]; then
+	rtl8812au;
+fi
+if [[ `grep -w "rtl88x2bu=1" "../userdata.txt"` ]]; then
+	rtl88x2bu;
+fi
+if [[ `grep -w "rtl8811cu=1" "../userdata.txt"` ]]; then
+	rtl8811cu;
+fi
+cd ${MLKERNEL}-$commit
+export ARCH=arm
+if [[ `grep -w "bcm2711" "../soc.txt"` ]]; then
+	KERNEL=kernel7l
+fi
+if [[ `grep -w "bcm2709" "../soc.txt"` ]]; then
+	KERNEL=kernel7
+fi
+}
+
+armv7_cconfig(){
+echo_cconfig
+cp -f ../${DEF}/${MYCONFIG} arch/arm/configs/
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+	make -j${CORES} ARCH=arm ${ARMV7_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=arm-linux-gnueabihf- ${MYCONFIG};
+else
+	make -j${CORES} ARCH=arm ${NATIVE} CFLAGS="${CFLAGS}" ${MYCONFIG};
+fi
+echo_done
+}
+
+armv7_menuconfig(){
+echo
+echo_menuconfig
+sleep 1s
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+	make -j${CORES} ARCH=arm ${ARMV7_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=arm-linux-gnueabihf- menuconfig;
+else
+	make -j${CORES} ARCH=arm ${NATIVE} CFLAGS="${CFLAGS}" menuconfig;
+fi
+}
+
+armv7_ccompile(){
+echo -e "-- ${GRN}CC${FIN}"
+echo_build
+if [[ `grep -w "admin=1" "../../userdata.txt"` ]]; then
+	echo ${BUILD_VERSION} > .version;
+fi
+echo 'y' | make -j${CORES} KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} ARCH=arm ${ARMV7_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=arm-linux-gnueabihf- bindeb-pkg
+}
+
+armv7_ncompile(){
+echo -e "-- ${GRN}NC${FIN}"
+echo_build
+if [[ `grep -w "admin=1" "../../userdata.txt"` ]]; then
+	echo ${BUILD_VERSION} > .version;
+fi
+echo 'y' | make -j${CORES} KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} ARCH=arm ${NATIVE} CFLAGS="${CFLAGS}" bindeb-pkg
+}
+
+# aarch64
+armv8_setup(){
+if [[ `grep -w "rtl8812au=1" "../userdata.txt"` ]]; then
+	rtl8812au;
+fi
+if [[ `grep -w "rtl88x2bu=1" "../userdata.txt"` ]]; then
+	rtl88x2bu;
+fi
+if [[ `grep -w "rtl8811cu=1" "../userdata.txt"` ]]; then
+	rtl8811cu;
+fi
+cd ${MLKERNEL}-$commit
+export ARCH=arm64
+}
+
+armv8_cconfig(){
+echo_cconfig
+cp -f ../${DEF}/${MYCONFIG} arch/arm64/configs/
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+	make -j${CORES} ARCH=arm64 ${ARM64_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=aarch64-linux-gnu- ${MYCONFIG};
+else
+	make -j${CORES} ARCH=arm64 ${NATIVE} CFLAGS="${CFLAGS}" ${MYCONFIG};
+fi
+echo_done
+}
+
+armv8_menuconfig(){
+echo
+echo_menuconfig
+sleep 1s
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+	make -j${CORES} ARCH=arm64 ${ARM64_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=aarch64-linux-gnu- menuconfig;
+else
+	make -j${CORES} ARCH=arm64 ${NATIVE} CFLAGS="${CFLAGS}" menuconfig;
+fi
+}
+
+armv8_ccompile(){
+echo -e "-- ${GRN}CC${FIN}"
+echo_build
+if [[ `grep -w "admin=1" "../../userdata.txt"` ]]; then
+	echo ${BUILD_VERSION} > .version;
+fi
+echo 'y' | make -j${CORES} ARCH=arm64 KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} ${ARM64_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=aarch64-linux-gnu- bindeb-pkg
+}
+
+armv8_ncompile(){
+echo -e "-- ${GRN}NC${FIN}"
+echo_build
+if [[ `grep -w "admin=1" "../../userdata.txt"` ]]; then
+	echo ${BUILD_VERSION} > .version;
+fi
+echo 'y' | make -j${CORES} ARCH=arm64 KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} ${NATIVE} CFLAGS="${CFLAGS}" bindeb-pkg
+}
+
+patching(){
+echo
+echo_patch
+userpatches
+rm -f scripts/package/builddeb
+rm -f scripts/package/mkdebian
+cp -R ../${PAT}/builddeb scripts/package/
+cp -R ../${PAT}/mkdebian scripts/package/
+chmod +x scripts/package/builddeb
+chmod +x scripts/package/mkdebian
+if [[ `grep -w "bcm2711" "../../soc.txt"` ]]; then
+	patch -p1 < ../${PAT}/rpi4-packaging.patch
+	rpi4;
+else
+	if [[ `grep -w "bcm2710" "../../soc.txt"` ]]; then
+		patch -p1 < ../${PAT}/rpi2+3-packaging.patch
+		rpi2+3;
+	else
+		if [[ `grep -w "bcm2709" "../../soc.txt"` ]]; then
+			patch -p1 < ../${PAT}/rpi2+3-packaging.patch
+			rpi2+3;
+		else
+			if [[ `grep -w "bcm2708" "../../soc.txt"` ]]; then
+				patch -p1 < ../${PAT}/rpi-packaging.patch
+				rpi0+1;
+			fi
+		fi
+	fi
+fi
+cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch;
+echo_done
+echo
+}
+
+module_sig(){
+echo CONFIG_MODULE_SIG=y >> arch/arm64/configs/bcm2711_defconfig
+echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm64/configs/bcm2711_defconfig
+echo CONFIG_MODULE_SIG=y >> arch/arm/configs/bcm2711_defconfig
+echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm/configs/bcm2711_defconfig
+echo CONFIG_MODULE_SIG=y >> arch/arm64/configs/bcmrpi3_defconfig
+echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm64/configs/bcmrpi3_defconfig
+echo CONFIG_MODULE_SIG=y >> arch/arm/configs/bcm2709_defconfig
+echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm/configs/bcm2709_defconfig
+echo CONFIG_MODULE_SIG=y >> arch/arm/configs/bcmrpi_defconfig
+echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm/configs/bcmrpi_defconfig
+}
+
+rpi4_fconfig(){
+echo -e "${RED}Making bcm2711 defconfig${FIN}."
+module_sig
+rtl8812au_module
+rtl88x2bu_module
+rtl8811cu_module
+if [[ `grep -w "lto_clang_thin=1" "../../userdata.txt"` ]]; then
+	echo CONFIG_LTO_CLANG_THIN=y >> arch/arm64/configs/bcm2711_defconfig;
+fi
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+	make -j${CORES} ARCH=arm64 ${ARM64_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=aarch64-linux-gnu- bcm2711_defconfig;
+else
+	make -j${CORES} ARCH=arm64 ${NATIVE} CFLAGS="${CFLAGS}" bcm2711_defconfig;
+fi
+echo_done
+}
+
+rpi4v7_fconfig(){
+echo -e "${RED}Making bcm2711 defconfig${FIN}."
+module_sig
+rtl8812au_module
+rtl88x2bu_module
+rtl8811cu_module
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+	make -j${CORES} ARCH=arm ${ARMV7_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=arm-linux-gnueabihf- bcm2711_defconfig;
+else
+	make -j${CORES} ARCH=arm ${NATIVE} CFLAGS="${CFLAGS}" bcm2711_defconfig;
+fi
+echo_done
+}
+
+rpi3_fconfig(){
+echo -e "${RED}Making bcmrpi3 defconfig${FIN}."
+module_sig
+rtl8812au_module
+rtl88x2bu_module
+rtl8811cu_module
+if [[ `grep -w "lto_clang_thin=1" "../../userdata.txt"` ]]; then
+	echo CONFIG_LTO_CLANG_THIN=y >> arch/arm64/configs/bcmrpi3_defconfig;
+fi
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+	make -j${CORES} ARCH=arm64 ${ARM64_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=aarch64-linux-gnu- bcmrpi3_defconfig;
+else
+	make -j${CORES} ARCH=arm64 ${NATIVE} CFLAGS="${CFLAGS}" bcmrpi3_defconfig;
+fi
+echo_done
+}
+
+rpi2+3_fconfig(){
+echo -e "${RED}Making bcm2709 defconfig${FIN}."
+module_sig
+rtl8812au_module
+rtl88x2bu_module
+rtl8811cu_module
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+	make -j${CORES} ARCH=arm ${ARMV7_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=arm-linux-gnueabihf- bcm2709_defconfig;
+else
+	make -j${CORES} ARCH=arm ${NATIVE} CFLAGS="${CFLAGS}" bcm2709_defconfig;
+fi
+echo_done
+}
+
+rpi_fconfig(){
+echo -e "${RED}Making bcmrpi defconfig${FIN}."
+module_sig
+rtl8812au_module
+rtl88x2bu_module
+rtl8811cu_module
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+	make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm ${ARMV6_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=arm-linux-gnueabi- bcmrpi_defconfig;
+else
+	make -j${CORES} KBUILD_DEBARCH=armel ARCH=arm ${NATIVE} CFLAGS="${CFLAGS}" bcmrpi_defconfig;
+fi
+echo_done
+}
+
+choose_rpi4_defconfig(){
+if [[ `grep -w "custom_defconfig=1" "../../userdata.txt"` ]]; then
+	armv8_cconfig;
+else
+	rpi4_fconfig;
+fi
+}
+
+choose_rpi4v7_defconfig(){
+if [[ `grep -w "custom_defconfig=1" "../../userdata.txt"` ]]; then
+	armv7_cconfig;
+else
+	rpi4v7_fconfig;
+fi
+}
+
+choose_rpi3_defconfig(){
+if [[ `grep -w "custom_defconfig=1" "../../userdata.txt"` ]]; then
+	armv8_cconfig;
+else
+	rpi3_fconfig;
+fi
+}
+
+choose_rpi2+3_defconfig(){
+if [[ `grep -w "custom_defconfig=1" "../../userdata.txt"` ]]; then
+	armv7_cconfig;
+else
+	rpi2+3_fconfig;
+fi
+}
+
+choose_rpi_defconfig(){
+if [[ `grep -w "custom_defconfig=1" "../../userdata.txt"` ]]; then
+	armv6_cconfig;
+else
+	rpi_fconfig;
+fi
+}
+
+choose_v8_menuconfig(){
+if [[ `grep -w "menuconfig=1" "../../userdata.txt"` ]]; then
+	armv8_menuconfig;
+fi
+}
+
+choose_v7_menuconfig(){
+if [[ `grep -w "menuconfig=1" "../../userdata.txt"` ]]; then
+	armv7_menuconfig;
+fi
+}
+
+choose_v6_menuconfig(){
+if [[ `grep -w "menuconfig=1" "../../userdata.txt"` ]]; then
+	armv6_menuconfig;
+fi
+}
+
+choose_v8_compile(){
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+	armv8_ccompile;
+else
+	armv8_ncompile;
+fi
+}
+
+choose_v7_compile(){
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+	armv7_ccompile;
+else
+	armv7_ncompile;
+fi
+}
+
+choose_v6_compile(){
+if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
+	armv6_ccompile;
+else
+	armv6_ncompile;
+fi
+}
+
+bcm2711_check(){
+if [[ `ls ${OUT4}/*.deb` ]] > /dev/null 2>&1; then
+	mkdir -p ${OUT4}/tmp
+	mv -f ${OUT4}/*.deb ${OUT4}/tmp;
+fi
+}
+
+bcm2711v7_check(){
+if [[ `ls ${OUT4v7}/*.deb` ]] > /dev/null 2>&1; then
+	mkdir -p ${OUT4v7}/tmp
+	mv -f ${OUT4v7}/*.deb ${OUT4v7}/tmp;
+fi
+}
+
+bcm2710_check(){
+if [[ `ls ${OUT3}/*.deb` ]] > /dev/null 2>&1; then
+	mkdir -p ${OUT3}/tmp
+	mv -f ${OUT3}/*.deb ${OUT3}/tmp;
+fi
+}
+
+bcm2709_check(){
+if [[ `ls ${OUT2}/*.deb` ]] > /dev/null 2>&1; then
+	mkdir -p ${OUT2}/tmp
+	mv -f ${OUT2}/*.deb ${OUT2}/tmp;
+fi
+}
+
+bcm2708_check(){
+if [[ `ls ${OUT}/*.deb` ]] > /dev/null 2>&1; then
+	mkdir -p ${OUT}/tmp
+	mv -f ${OUT}/*.deb ${OUT}/tmp;
+fi
+}
