@@ -169,7 +169,6 @@ commit:
 	@chmod +x ${XCOMMIT}
 	@${COMMIT}
 
-
 image:
 	# Making bootable image
 	@ echo bcm2711 > soc.txt
