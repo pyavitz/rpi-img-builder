@@ -140,12 +140,6 @@ in the userdata.txt file.
 Patches "-p1" placed in patches/userpatches are applied during
 compilation. This works for both Foundation and Mainline kernels.
 ```
-[CacULE CPU scheduler](https://github.com/hamadmarri/cacule-cpu-scheduler) [#30](https://github.com/pyavitz/rpi-img-builder/issues/30)
-```sh
-The CacULE CPU scheduler is a CFS patchset that is based on interactivity score mechanism.
-The interactivity score is inspired by the ULE scheduler (FreeBSD scheduler). The goal of
-this patch is to enhance system responsiveness/latency.
-```
 
 #### User scripts
 
