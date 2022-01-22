@@ -198,8 +198,8 @@ kernelv7:
 	# Linux
 	@ echo bcm2711 > soc.txt
 	@ echo arm >> soc.txt
-	@chmod +x ${XCOMMIT}
-	@${COMMIT}
+	@chmod +x ${XLINUX}
+	@${LINUX}
 
 commitv7:
 	# Linux commit
