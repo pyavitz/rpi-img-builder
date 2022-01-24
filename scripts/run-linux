@@ -135,15 +135,23 @@ EOF
 }
 
 ### Run
-if [[ `uname -m | grep -w aarch64` ]]; then
+if [[ `uname -m | grep -w x86_64` ]]; then
 	echo ""
 	confirm
 	echo ""
 	internet_check
 	distro_check
 else
-	echo -e "${RED}This command is for administrative purposes only${FIN}."
-	exit 1 > /dev/null 2>&1;
+	if [[ `uname -m | grep -w aarch64` ]]; then
+		echo ""
+		confirm
+		echo ""
+		internet_check
+		distro_check
+	else
+		echo -e "${RED}This command is for administrative purposes only${FIN}."
+		exit 1 > /dev/null 2>&1;
+	fi
 fi
 echo -n -e "${WHT}Preparing build area${FIN}: "
 rm -f {userdata.txt,log.txt}
@@ -160,7 +168,9 @@ read version
 
 userdata > /dev/null 2>&1
 sleep 1s
-sed -i 's/crosscompile=1/crosscompile=0/g' userdata.txt
+if [[ `uname -m | grep -w aarch64` ]]; then
+	sed -i 's/crosscompile=1/crosscompile=0/g' userdata.txt;
+fi
 sleep 1s
 echo `date` > log.txt
 echo "" >> log.txt
@@ -188,7 +198,9 @@ else
 	exit > /dev/null 2>&1;
 fi
 sleep 1s
-sed -i 's/crosscompile=0/crosscompile=1/g' userdata.txt
+if [[ `grep -w "crosscompile=0" "userdata.txt"` ]]; then
+	sed -i 's/crosscompile=0/crosscompile=1/g' userdata.txt;
+fi
 sleep 1s
 make kernelv7
 if [[ `ls output/bcm2711v7/*.deb` ]] > /dev/null 2>&1; then
