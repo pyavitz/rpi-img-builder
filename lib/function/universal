@@ -134,6 +134,39 @@ else
 fi
 }
 
+stage1_kernel(){
+if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
+	if [[ `grep -w "arm64" "soc.txt"` ]]; then
+		if [[ `ls output/bcm2711/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}` ]] > /dev/null 2>&1; then
+			cp output/bcm2711/*.deb p2/root;
+		fi
+	else
+		if [[ `grep -w "arm" "soc.txt"` ]]; then
+			if [[ `ls output/bcm2711v7/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}` ]] > /dev/null 2>&1; then
+				cp output/bcm2711v7/*.deb p2/root;
+			fi
+		fi
+	fi
+fi
+if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
+	if [[ `ls output/bcm2710/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}` ]] > /dev/null 2>&1; then
+		cp output/bcm2710/*.deb p2/root;
+	fi
+else
+	if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
+		if [[ `ls output/bcm2709/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}` ]] > /dev/null 2>&1; then
+			cp output/bcm2709/*.deb p2/root;
+		fi
+	else
+		if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
+			if [[ `ls output/bcm2708/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}` ]] > /dev/null 2>&1; then
+				cp output/bcm2708/*.deb p2/root;
+			fi
+		fi
+	fi
+fi
+}
+
 # Stage 2
 root_password(){
 echo "root:toor" | chpasswd
@@ -326,6 +359,134 @@ if [ -e /etc/systemd/journald.conf ]; then
 	sed -i 's/#SystemMaxFileSize=/SystemMaxFileSize=50M/g' /etc/systemd/journald.conf;
 	sed -i 's/#SystemMaxFiles=100/SystemMaxFiles=5/g' /etc/systemd/journald.conf;
 fi
+}
+
+# Download kernel archive
+download_kernel(){
+DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
+KURL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"
+echo -e -n "\e[1;37mSearching\e[0m ...";
+sleep 1s;
+if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
+	if [[ `wget -S --spider ${KURL}rpi4-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+		${DOWNLOAD} ${KURL}rpi4-${VERSION}.tar.xz;
+		echo "";
+		tar xf rpi4-${VERSION}.tar.xz;
+		cd rpi4-${VERSION};
+		dpkg -i *.deb;
+		cd ~;
+		rm -fdr rpi4-${VERSION}*;
+	else
+		${DOWNLOAD} ${KURL}rpi4-5.15.y.tar.xz
+		echo "";
+		tar xf rpi4-5.15.y.tar.xz;
+		cd rpi4-5.15.y;
+		dpkg -i *.deb;
+		cd ~;
+		rm -fdr rpi4-5.15.y*;
+	fi
+else
+	if [[ `grep -w "bcm2711v7" "/root/soc.txt"` ]]; then
+		if [[ `wget -S --spider ${KURL}rpi4v7-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+			${DOWNLOAD} ${KURL}rpi4v7-${VERSION}.tar.xz;
+			echo "";
+			tar xf rpi4v7-${VERSION}.tar.xz;
+			cd rpi4v7-${VERSION};
+			dpkg -i *.deb;
+			cd ~;
+			rm -fdr rpi4v7-${VERSION}*;
+		else
+			${DOWNLOAD} ${KURL}rpi4v7-5.15.y.tar.xz
+			echo "";
+			tar xf rpi4v7-5.15.y.tar.xz;
+			cd rpi4v7-5.15.y;
+			dpkg -i *.deb;
+			cd ~;
+			rm -fdr rpi4v7-5.15.y*;
+		fi
+	else
+		if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
+			if [[ `wget -S --spider ${KURL}rpi3-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+				${DOWNLOAD} ${KURL}rpi3-${VERSION}.tar.xz;
+				echo "";
+				tar xf rpi3-${VERSION}.tar.xz;
+				cd rpi3-${VERSION};
+				dpkg -i *.deb;
+				cd ~;
+				rm -fdr rpi3-${VERSION}*;
+			else
+				${DOWNLOAD} ${KURL}rpi3-5.15.y.tar.xz
+				echo "";
+				tar xf rpi3-5.15.y.tar.xz;
+				cd rpi3-5.15.y;
+				dpkg -i *.deb;
+				cd ~;
+				rm -fdr rpi3-5.15.y*;
+			fi
+		else
+			if [[ `grep -w "bcm2709" "/root/soc.txt"` ]]; then
+				if [[ `wget -S --spider ${KURL}rpi2-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+					${DOWNLOAD} ${KURL}rpi2-${VERSION}.tar.xz;
+					echo "";
+					tar xf rpi2-${VERSION}.tar.xz;
+					cd rpi2-${VERSION};
+					dpkg -i *.deb;
+					cd ~;
+					rm -fdr rpi2-${VERSION}*;
+				else
+					${DOWNLOAD} ${KURL}rpi2-5.15.y.tar.xz
+					echo "";
+					tar xf rpi2-5.15.y.tar.xz;
+					cd rpi2-5.15.y;
+					dpkg -i *.deb;
+					cd ~;
+					rm -fdr rpi2-5.15.y*;
+				fi
+			else
+				if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
+					if [[ `wget -S --spider ${KURL}rpi-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+						${DOWNLOAD} ${KURL}rpi-${VERSION}.tar.xz;
+						echo "";
+						tar xf rpi-${VERSION}.tar.xz;
+						cd rpi-${VERSION};
+						dpkg -i *.deb;
+						cd ~;
+						rm -fdr rpi-${VERSION}*;
+					else
+						${DOWNLOAD} ${KURL}rpi-5.15.y.tar.xz
+						echo "";
+						tar xf rpi-5.15.y.tar.xz;
+						cd rpi-5.15.y;
+						dpkg -i *.deb;
+						cd ~;
+						rm -fdr rpi-5.15.y*;
+					fi
+				fi
+			fi
+		fi
+	fi
+fi
+}
+
+# Kernel
+stage2_kernel(){
+echo
+echo Installing kernel.
+apt update
+apt upgrade -y
+apt -y clean
+apt -y autoclean
+sleep 1s
+cd ~
+if [[ `ls /root/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}` ]] > /dev/null 2>&1; then
+	dpkg -i *.deb;
+	rm -f *.deb;
+else
+	download_kernel;
+fi
+echo Done.
+sleep 1s
+fetch_version
 }
 
 # Fetch kernel version

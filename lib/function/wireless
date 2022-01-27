@@ -110,7 +110,7 @@ if [ -e rtl88x2bu ]; then
 	git pull
 	cd ..;
 else
-	git clone https://github.com/morrownr/88x2bu-20210702 rtl88x2bu;
+	git clone https://github.com/morrownr/88x2bu-20210702.git rtl88x2bu;
 fi
 echo_done
 }

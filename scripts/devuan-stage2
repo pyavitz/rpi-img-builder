@@ -44,7 +44,7 @@ apt install -y ${DEVUAN1} ${DEVUAN2} ${FIRMWARE}
 apt -y clean
 apt -y autoclean
 
-#### Scripts
+### Scripts
 cd ~
 led_script > /dev/null 2>&1
 echo
@@ -86,7 +86,7 @@ chmod +x /usr/local/sbin/*
 chown -R root:root /usr/local/sbin/
 echo Done.
 
-#### MOTD
+### MOTD
 echo
 echo Adding motd.
 sleep 1s
@@ -104,10 +104,10 @@ chown root:root /etc/update-motd.d/15-brand
 chown root:root /etc/update-motd.d/20-sysinfo
 echo Done.
 
-#### Extra firmware
+### Extra firmware
 extra_firmware
 
-####
+###
 echo
 echo Bluetooth udev rule.
 sleep 1s
@@ -174,20 +174,8 @@ if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
 	bcm2711_eeprom;
 fi
 
-#### Kernel
-echo
-echo Installing kernel.
-apt update
-apt upgrade -y
-apt -y clean
-apt -y autoclean
-sleep 1s
-cd ~
-dpkg -i *.deb
-rm -f *.deb
-echo Done.
-sleep 1s
-fetch_version
+### Kernel
+stage2_kernel
 
 ### Modules
 if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
@@ -236,7 +224,7 @@ echo Adding services.
 enable_services > /dev/null 2>&1
 echo Done.
 
-###### Finish
+##### Finish
 echo
 echo Moving out of stage2 and creating image.
 echo

@@ -48,9 +48,7 @@ CLEAN=sudo ./scripts/clean
 PURGE=$(shell sudo rm -fdr source)
 PURGEALL=$(shell sudo rm -fdr source output)
 
-# help
-XHELPER=./scripts/help
-HELPER=sudo ./scripts/help
+# miscellaneous
 XCHECK=./scripts/check
 CHECK=./scripts/check
 XRUN=./scripts/run-linux
@@ -136,7 +134,6 @@ commands:
 	@echo
 	@echo "  make dialogrc		  Set builder theme"
 	@echo "  make check		  Shows latest revision of selected branch"
-	@echo "  make helper		  Download a binary Linux package"
 	@echo
 
 ccompile:
@@ -482,37 +479,7 @@ ubuntuos:
 	@chmod +x ${UBUSTG2}
 	@${UBUNTU}
 
-# kernel helper
-helper:
-	# Helper script
-	@chmod +x ${XHELPER}
-	@${HELPER} -h
-
-2708:
-	# BCM2708 (ARMEL)
-	@chmod +x ${XHELPER}
-	@${HELPER} -1
-	
-2709:
-	# BCM2709 (ARMHF)
-	@chmod +x ${XHELPER}
-	@${HELPER} -2
-
-2710:
-	# BCM2710 (ARM64)
-	@chmod +x ${XHELPER}
-	@${HELPER} -3
-
-2711:
-	# BCM2711 (ARM64)
-	@chmod +x ${XHELPER}
-	@${HELPER} -4
-
-2711v7:
-	# BCM2711 (ARMHF)
-	@chmod +x ${XHELPER}
-	@${HELPER} -5
-
+# kernel run
 run:
 	@chmod +x ${XRUN}
 	@${RUN}

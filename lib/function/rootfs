@@ -65,7 +65,7 @@ else
 		echo ""
 		echo -e "${WHT}Downloading${FIN} ..."
 		${DOWNLOAD} ${TBURL}ubuntu-impish-rootfs-aarch64.tar.xz
-		echo -e " ${WHT}Done${FIN}."
+		echo -e "[${WHT}done${FIN}]"
 		exit;
 	fi
 fi
@@ -76,7 +76,7 @@ else
 		echo ""
 		echo -e "${WHT}Downloading${FIN} ..."
 		${DOWNLOAD} ${TBURL}ubuntu-jammy-rootfs-aarch64.tar.xz
-		echo -e " ${WHT}Done${FIN}."
+		echo -e "[${WHT}done${FIN}]"
 		exit;
 	fi
 fi
@@ -92,7 +92,7 @@ else
 		echo ""
 		echo -e "${WHT}Downloading${FIN} ..."
 		${DOWNLOAD} ${TBURL}ubuntu-impish-rootfs-armhf.tar.xz
-		echo -e " ${WHT}Done${FIN}."
+		echo -e "[${WHT}done${FIN}]"
 		exit;
 	fi
 fi
@@ -103,7 +103,7 @@ else
 		echo ""
 		echo -e "${WHT}Downloading${FIN} ..."
 		${DOWNLOAD} ${TBURL}ubuntu-jammy-rootfs-armhf.tar.xz
-		echo -e " ${WHT}Done${FIN}."
+		echo -e "[${WHT}done${FIN}]"
 		exit;
 	fi
 fi
