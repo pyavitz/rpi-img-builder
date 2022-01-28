@@ -389,7 +389,7 @@ if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
 	fi
 else
 	if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
-		if [[ `grep -w "arm" "soc.txt"` ]]; then
+		if [[ `grep -w "arm" "/root/soc.txt"` ]]; then
 			if [[ `wget -S --spider ${KURL}rpi4v7-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
 				${DOWNLOAD} ${KURL}rpi4v7-${VERSION}.tar.xz;
 				echo "";
