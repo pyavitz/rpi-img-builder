@@ -368,41 +368,45 @@ KURL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"
 echo -e -n "\e[1;37mSearching\e[0m ...";
 sleep 1s;
 if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
-	if [[ `wget -S --spider ${KURL}rpi4-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
-		${DOWNLOAD} ${KURL}rpi4-${VERSION}.tar.xz;
-		echo "";
-		tar xf rpi4-${VERSION}.tar.xz;
-		cd rpi4-${VERSION};
-		dpkg -i *.deb;
-		cd ~;
-		rm -fdr rpi4-${VERSION}*;
-	else
-		${DOWNLOAD} ${KURL}rpi4-5.15.y.tar.xz
-		echo "";
-		tar xf rpi4-5.15.y.tar.xz;
-		cd rpi4-5.15.y;
-		dpkg -i *.deb;
-		cd ~;
-		rm -fdr rpi4-5.15.y*;
+	if [[ `grep -w "arm64" "/root/soc.txt"` ]]; then
+		if [[ `wget -S --spider ${KURL}rpi4-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+			${DOWNLOAD} ${KURL}rpi4-${VERSION}.tar.xz;
+			echo "";
+			tar xf rpi4-${VERSION}.tar.xz;
+			cd rpi4-${VERSION};
+			dpkg -i *.deb;
+			cd ~;
+			rm -fdr rpi4-${VERSION}*;
+		else
+			${DOWNLOAD} ${KURL}rpi4-5.15.y.tar.xz
+			echo "";
+			tar xf rpi4-5.15.y.tar.xz;
+			cd rpi4-5.15.y;
+			dpkg -i *.deb;
+			cd ~;
+			rm -fdr rpi4-5.15.y*;
+		fi
 	fi
 else
-	if [[ `grep -w "bcm2711v7" "/root/soc.txt"` ]]; then
-		if [[ `wget -S --spider ${KURL}rpi4v7-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
-			${DOWNLOAD} ${KURL}rpi4v7-${VERSION}.tar.xz;
-			echo "";
-			tar xf rpi4v7-${VERSION}.tar.xz;
-			cd rpi4v7-${VERSION};
-			dpkg -i *.deb;
-			cd ~;
-			rm -fdr rpi4v7-${VERSION}*;
-		else
-			${DOWNLOAD} ${KURL}rpi4v7-5.15.y.tar.xz
-			echo "";
-			tar xf rpi4v7-5.15.y.tar.xz;
-			cd rpi4v7-5.15.y;
-			dpkg -i *.deb;
-			cd ~;
-			rm -fdr rpi4v7-5.15.y*;
+	if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
+		if [[ `grep -w "arm" "soc.txt"` ]]; then
+			if [[ `wget -S --spider ${KURL}rpi4v7-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+				${DOWNLOAD} ${KURL}rpi4v7-${VERSION}.tar.xz;
+				echo "";
+				tar xf rpi4v7-${VERSION}.tar.xz;
+				cd rpi4v7-${VERSION};
+				dpkg -i *.deb;
+				cd ~;
+				rm -fdr rpi4v7-${VERSION}*;
+			else
+				${DOWNLOAD} ${KURL}rpi4v7-5.15.y.tar.xz
+				echo "";
+				tar xf rpi4v7-5.15.y.tar.xz;
+				cd rpi4v7-5.15.y;
+				dpkg -i *.deb;
+				cd ~;
+				rm -fdr rpi4v7-5.15.y*;
+			fi
 		fi
 	else
 		if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
