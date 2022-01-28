@@ -18,14 +18,12 @@ done
 }
 
 if [ -f "$UD" ]; then
-    echo ""
-    :;
-else 
-    userdata
+	echo ""
+	:;
+else
+	userdata;
 fi
-
 validation
-
 if [[ `grep -w 'DISTRO="debian"' "userdata.txt"` ]]; then
 	make debianos;
 else

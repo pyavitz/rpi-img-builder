@@ -135,16 +135,14 @@ fi
 }
 
 stage1_kernel(){
-if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
-	if [[ `grep -w "arm64" "soc.txt"` ]]; then
-		if [[ `ls output/bcm2711/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}` ]] > /dev/null 2>&1; then
-			cp output/bcm2711/*.deb p2/root;
-		fi
-	else
-		if [[ `grep -w "arm" "soc.txt"` ]]; then
-			if [[ `ls output/bcm2711v7/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}` ]] > /dev/null 2>&1; then
-				cp output/bcm2711v7/*.deb p2/root;
-			fi
+if [[ `grep -w "bcm2711" "soc.txt"` ]]; [[ `grep -w "arm64" "soc.txt"` ]]; then
+	if [[ `ls output/bcm2711/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}` ]] > /dev/null 2>&1; then
+		cp output/bcm2711/*.deb p2/root;
+	fi
+else
+	if [[ `grep -w "bcm2711" "soc.txt"` ]]; [[ `grep -w "arm" "soc.txt"` ]]; then
+		if [[ `ls output/bcm2711v7/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}` ]] > /dev/null 2>&1; then
+			cp output/bcm2711v7/*.deb p2/root;
 		fi
 	fi
 fi

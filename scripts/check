@@ -2,7 +2,7 @@
 # depends: curl
 source lib/function/echoes
 
-echo "Example: 5.10"
+echo "Example: 5.15"
 echo
 echo -e -n "${RED}Select branch: ${FIN}"
 read branch

@@ -27,8 +27,8 @@ done
 
 if [ -f "$UD" ]; then
 	:;
-else 
-	userdata
+else
+	userdata;
 fi
 validation
 if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then

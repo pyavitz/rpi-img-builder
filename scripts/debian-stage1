@@ -21,12 +21,11 @@ done
 }
 
 if [ -f "$UD" ]; then
-    echo ""
-    :;
-else 
-    userdata
+	echo ""
+	:;
+else
+	userdata;
 fi
-
 if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
 	set -eux -o pipefail;
 else

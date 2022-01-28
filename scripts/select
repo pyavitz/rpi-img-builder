@@ -17,9 +17,10 @@ fi
 done
 }
 
-if [ -f "$UD" ]; then :
-else 
-    userdata
+if [ -f "$UD" ]; then
+	:;
+else
+	userdata;
 fi
 
 select_arch(){
