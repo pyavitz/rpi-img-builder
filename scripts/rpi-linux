@@ -61,12 +61,14 @@ fi
 extract
 
 ### Setup
-if [[ `grep -w "bcm2711" "../soc.txt"` ]]; [[ `grep -w "arm64" "../soc.txt"` ]]; then
-	armv8_setup
-	rpi4_firmware;
-else
-	armv7_setup
-	rpi4_firmware;
+if [[ `grep -w "bcm2711" "../soc.txt"` ]]; then
+	if [[ `grep -w "arm64" "../soc.txt"` ]]; then
+		armv8_setup
+		rpi4_firmware;
+	else
+		armv7_setup
+		rpi4_firmware;
+	fi
 fi
 if [[ `grep -w "bcm2710" "../soc.txt"` ]]; then
 	armv8_setup
@@ -85,10 +87,12 @@ fi
 patching
 
 ### Defconfig
-if [[ `grep -w "bcm2711" "../../soc.txt"` ]]; [[ `grep -w "arm64" "../../soc.txt"` ]]; then
-	choose_rpi4_defconfig;
-else
-	choose_rpi4v7_defconfig;
+if [[ `grep -w "bcm2711" "../../soc.txt"` ]]; then
+	if [[ `grep -w "arm64" "../../soc.txt"` ]]; then
+		choose_rpi4_defconfig;
+	else
+		choose_rpi4v7_defconfig;
+	fi
 fi
 if [[ `grep -w "bcm2710" "../../soc.txt"` ]]; then
 	choose_rpi3_defconfig;
@@ -101,10 +105,12 @@ if [[ `grep -w "bcm2708" "../../soc.txt"` ]]; then
 fi
 
 ### Menuconfig
-if [[ `grep -w "bcm2711" "../../soc.txt"` ]]; [[ `grep -w "arm64" "../../soc.txt"` ]]; then
-	choose_v8_menuconfig;
-else
-	choose_v7_menuconfig;
+if [[ `grep -w "bcm2711" "../../soc.txt"` ]]; then
+	if [[ `grep -w "arm64" "../../soc.txt"` ]]; then
+		choose_v8_menuconfig;
+	else
+		choose_v7_menuconfig;
+	fi
 fi
 if [[ `grep -w "bcm2710" "../../soc.txt"` ]]; then
 	choose_v8_menuconfig;
@@ -117,10 +123,12 @@ if [[ `grep -w "bcm2708" "../../soc.txt"` ]]; then
 fi
 
 ### Build deb
-if [[ `grep -w "bcm2711" "../../soc.txt"` ]]; [[ `grep -w "arm64" "../../soc.txt"` ]]; then
-	choose_v8_compile;
-else
-	choose_v7_compile;
+if [[ `grep -w "bcm2711" "../../soc.txt"` ]]; then
+	if [[ `grep -w "arm64" "../../soc.txt"` ]]; then
+		choose_v8_compile;
+	else
+		choose_v7_compile;
+	fi
 fi
 if [[ `grep -w "bcm2710" "../../soc.txt"` ]]; then
 	choose_v8_compile;
@@ -136,14 +144,16 @@ cd ..
 rm -f linux-libc-dev*.deb
 rm -f *.buildinfo
 rm -f *.changes
-if [[ `grep -w "bcm2711" "../soc.txt"` ]]; [[ `grep -w "arm64" "../soc.txt"` ]]; then
-	bcm2711_check
-	mkdir -p ${OUT4}
-	mv -f *.deb ${OUT4}/;
-else
-	bcm2711v7_check
-	mkdir -p ${OUT4v7}
-	mv -f *.deb ${OUT4v7}/;
+if [[ `grep -w "bcm2711" "../soc.txt"` ]]; then
+	if [[ `grep -w "arm64" "../soc.txt"` ]]; then
+		bcm2711_check
+		mkdir -p ${OUT4}
+		mv -f *.deb ${OUT4}/;
+	else
+		bcm2711v7_check
+		mkdir -p ${OUT4v7}
+		mv -f *.deb ${OUT4v7}/;
+	fi
 fi
 if [[ `grep -w "bcm2710" "../soc.txt"` ]]; then
 	bcm2710_check
