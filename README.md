@@ -30,8 +30,8 @@ make ncompile	# Install native dependencies
 #### Menu interface
 
 ```sh
-make config     # Create user data file (Foundation Kernel)
-make mlconfig   # Create user data file (Mainline Kernel)
+make config     # Create user data file
+make mlconfig	# Create user data file (Mainline)
 make menu       # Open menu interface
 make dialogrc   # Set builder theme (optional)
 ```
@@ -43,44 +43,19 @@ make dialogrc   # Set builder theme (optional)
 Username:       # Your username
 Password:       # Your password
 Enable root:	# 1 to enable (set root password to `toor`)
-
+```
+* Foundation
+```sh
 Linux kernel
 Branch:         # Supported: 5.15.y and above
-Menuconfig:     # 1 to run kernel menuconfig
-Crosscompile:   # 1 to cross compile | 0 to native compile
-
-Compiler        WARNING: Only one may be selected
-Version:        # Defaults at gcc-10
-GCC:            # 1 to select (default)
-Ccache:         # 1 to select
-Clang:          # 1 to select (Supported: Jammy Jellyfish)
-
-Distribution
-Distro:		# Supported: debian, devuan and ubuntu
-Release:	# Debian: bullseye, bookworm, testing, unstable and sid
-		# Devuan: chimaera, daedalus, testing, unstable and ceres
-		# Ubuntu: focal, impish and jammy
-
-Filesystem
-ext4:		# 1 to select (default)
-btrfs:		# 1 to select
-xfs:		# 1 to select
-
-Customize (user defconfig)
-Defconfig:	# 1 to enable
-Name:		# Name of _defconfig (Must be placed in defconfig dir.)
 ```
-
-#### Mainline Config Menu (RPi4B ONLY)
-
+* Mainline
 ```sh
-Username:       # Your username
-Password:       # Your password
-Enable root:	# 1 to enable (set root password to `toor`)
-
 Linux kernel
 Branch:         # Selected kernel branch
 RC:             # 1 for kernel x.y-rc above stable
+```
+```sh
 Menuconfig:     # 1 to run kernel menuconfig
 Crosscompile:   # 1 to cross compile | 0 to native compile
 
@@ -105,11 +80,6 @@ Customize (user defconfig)
 Defconfig:	# 1 to enable
 Name:		# Name of _defconfig (Must be placed in defconfig dir.)
 ```
-
-### Furthermore
-If interested in building a Raspberry Pi 4B image that uses mainline u-boot and linux
-use our other [builder](https://github.com/pyavitz/debian-image-builder).
-
 #### Compiler options
 
 ```sh
