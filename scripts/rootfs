@@ -1,5 +1,5 @@
 #!/bin/bash
-#AARCH64 ROOTFS
+# ROOTFS TARBALLS
 RED="\e[0;31m"
 BRED="\e[1;31m"
 GRN="\e[0;32m"
@@ -7,6 +7,12 @@ YLW="\e[1;33m"
 GRY="\e[0;37m"
 WHT="\e[1;37m"
 FIN="\e[0m"
+if [ -e soc.txt ]; then
+	source soc.txt;
+else
+	echo -e "Please report error ...";
+	exit;
+fi
 source userdata.txt > /dev/null 2>&1;
 source lib/source
 source lib/function/rootfs
@@ -47,7 +53,6 @@ else
 	set -eu -o pipefail;
 fi
 ROOT="sysroot"
-ROOTFS_ARCH="rootfs-aarch64"
 RELEASE=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
 if [ -e $RELEASE ]; then
 	ls $RELEASE
@@ -57,21 +62,48 @@ ubuntu_aarch64
 echo ""
 echo -e "${WHT}Starting debootstrap${FIN} ..."
 echo -e -n ${GRN}
-
 # start debootstrap
 mkdir -p ${ROOT}/usr/bin
-cp $(command -v "qemu-aarch64-static") ${ROOT}/usr/bin
-if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
-	arm64_devuan;
-else
-	arm64_debootstrap;
+if [[ `grep -w 'ROOTFS_ARCH="rootfs-aarch64"' "soc.txt"` ]]; then
+	cp $(command -v "qemu-aarch64-static") ${ROOT}/usr/bin;
+	if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
+		arm64_devuan;
+	else
+		arm64_debootstrap;
+	fi
 fi
-rm -f ${ROOT}/usr/bin/qemu-aarch64-static
+if [[ `grep -w 'ROOTFS_ARCH="rootfs-armhf"' "soc.txt"` ]]; then
+	cp $(command -v "qemu-arm-static") ${ROOT}/usr/bin;
+	if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
+		armhf_devuan;
+	else
+		armhf_debootstrap;
+	fi
+fi
+if [[ `grep -w 'ROOTFS_ARCH="rootfs-armel"' "soc.txt"` ]]; then
+	if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; then
+		echo -e "${YLW}Ubuntu is not supported${FIN}.";
+		echo "";
+		exit;
+	fi
+	cp $(command -v "qemu-arm-static") ${ROOT}/usr/bin;
+	if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
+		armel_devuan;
+	else
+		armel_debootstrap;
+	fi
+fi
+if [ -e ${ROOT}/usr/bin/qemu-aarch64-static ]; then
+	rm -f ${ROOT}/usr/bin/qemu-aarch64-static
+fi
+if [ -e ${ROOT}/usr/bin/qemu-arm-static ]; then
+	rm -f ${ROOT}/usr/bin/qemu-arm-static
+fi
 rm -f ${ROOT}/var/cache/debconf/*
 
 # finish
 echo
-echo -e "${BRED}Archiving root filesystem${FIN} ..."
+echo -e "${WHT}Archiving root filesystem${FIN} ..."
 cd ${ROOT}
 echo -e -n ${WHT}
 XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - * | (pv -terb > ../$RELEASE)

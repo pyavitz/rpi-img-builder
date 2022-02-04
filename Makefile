@@ -6,12 +6,12 @@ ADMIN=./lib/dialog/admin
 DIALOGRC=$(shell cp -f lib/dialogrc ~/.dialogrc)
 
 # rootfs
-RFSV8=./scripts/rootfsv8
-ROOTFSV8=sudo ./scripts/rootfsv8
-RFSV7=./scripts/rootfsv7
-ROOTFSV7=sudo ./scripts/rootfsv7
-RFSV6=./scripts/rootfsv6
-ROOTFSV6=sudo ./scripts/rootfsv6
+RFSV8=./scripts/rootfs
+ROOTFSV8=sudo ./scripts/rootfs
+RFSV7=./scripts/rootfs
+ROOTFSV7=sudo ./scripts/rootfs
+RFSV6=./scripts/rootfs
+ROOTFSV6=sudo ./scripts/rootfs
 
 # kernel
 SELECT=./scripts/select
@@ -170,6 +170,7 @@ all:
 	@chmod +x ${SELECT}
 	@${SELECT}
 	# Creating ROOTFS tarball
+	@ echo ROOTFS_ARCH='"'rootfs-aarch64'"' > soc.txt
 	@chmod +x ${RFSV8}
 	@${ROOTFSV8}
 	# Making bootable image
@@ -208,6 +209,7 @@ allv7:
 	@chmod +x ${SELECT}
 	@${SELECT}
 	# Creating ROOTFS tarball
+	@ echo ROOTFS_ARCH='"'rootfs-armhf'"' > soc.txt
 	@chmod +x ${RFSV7}
 	@${ROOTFSV7}
 	# Making bootable image
@@ -254,6 +256,7 @@ rpi3-all:
 	@chmod +x ${XLINUX}
 	@${LINUX}
 	# Creating ROOTFS tarball
+	@ echo ROOTFS_ARCH='"'rootfs-aarch64'"' > soc.txt
 	@chmod +x ${RFSV8}
 	@${ROOTFSV8}
 	# Making bootable image
@@ -293,6 +296,7 @@ rpi2+3-all:
 	@chmod +x ${XLINUX}
 	@${LINUX}
 	# Creating ROOTFS tarball
+	@ echo ROOTFS_ARCH='"'rootfs-armhf'"' > soc.txt
 	@chmod +x ${RFSV7}
 	@${ROOTFSV7}
 	# Making bootable image
@@ -332,6 +336,7 @@ rpi-all:
 	@chmod +x ${XLINUX}
 	@${LINUX}
 	# Creating ROOTFS tarball
+	@ echo ROOTFS_ARCH='"'rootfs-armel'"' > soc.txt
 	@chmod +x ${RFSV6}
 	@${ROOTFSV6}
 	# Making bootable img
@@ -344,16 +349,19 @@ rpi-all:
 # rootfs
 rootfs:
 	# ROOTFS
+	@ echo ROOTFS_ARCH='"'rootfs-aarch64'"' > soc.txt
 	@chmod +x ${RFSV8}
 	@${ROOTFSV8}
 	
 rootfsv7:
 	# ROOTFS
+	@ echo ROOTFS_ARCH='"'rootfs-armhf'"' > soc.txt
 	@chmod +x ${RFSV7}
 	@${ROOTFSV7}
 
 rootfsv6:
 	# ROOTFS
+	@ echo ROOTFS_ARCH='"'rootfs-armel'"' > soc.txt
 	@chmod +x ${RFSV6}
 	@${ROOTFSV6}
 
