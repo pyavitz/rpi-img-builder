@@ -95,7 +95,7 @@ echo rtl8812au=0 >> tmp0
 echo rtl88x2bu=0 >> tmp0
 echo rtl8811cu=0 >> tmp0
 echo admin=1 >> tmp0
-echo builder=4.1 >> tmp0
+echo builder=4.2 >> tmp0
 echo '"' >> tmp2
 echo '"' >> tmp2
 echo >> tmp2

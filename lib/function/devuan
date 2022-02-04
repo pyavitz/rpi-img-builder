@@ -36,323 +36,9 @@ fi
 }
 
 # STAGE 2
-# USER CONFIG
-bcm2708_user(){
-echo -n 'bcm2708' > /etc/hostname
-sed -i '1 a 127.0.1.1	bcm2708' /etc/hosts
-adduser ${user} --gecos ${user^} --disabled-password
-}
-
-bcm2709_user(){
-echo -n 'bcm2709' > /etc/hostname
-sed -i '1 a 127.0.1.1	bcm2709' /etc/hosts
-adduser ${user} --gecos ${user^} --disabled-password
-}
-
-bcm2710_user(){
-echo -n 'bcm2710' > /etc/hostname
-sed -i '1 a 127.0.1.1	bcm2710' /etc/hosts
-adduser ${user} --gecos ${user^} --disabled-password
-}
-
-bcm2711_user(){
-echo -n 'bcm2711' > /etc/hostname
-sed -i '1 a 127.0.1.1	bcm2711' /etc/hosts
-adduser ${user} --gecos ${user^} --disabled-password
-}
-
-user_config(){
-if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
-	bcm2711_user;
-fi
-if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
-	bcm2710_user;
-fi
-if [[ `grep -w "bcm2709" "/root/soc.txt"` ]]; then
-	bcm2709_user;
-fi
-if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
-	bcm2708_user;
-fi
-
-echo "${user}:${passwd}" | chpasswd
-adduser ${user} sudo
-adduser ${user} audio
-adduser ${user} dialout
-adduser ${user} video
-adduser ${user} disk
-adduser ${user} plugdev
-adduser ${user} netdev
-adduser ${user} bluetooth
-adduser ${user} input
-adduser ${user} tty
-if [[ `grep -w "spi" "/etc/group"` ]]; then
-	adduser ${user} spi;
-else
-	groupadd spi;
-	adduser ${user} spi;
-fi
-if [[ `grep -w "i2c" "/etc/group"` ]]; then
-	adduser ${user} i2c;
-else
-	groupadd i2c;
-	adduser ${user} i2c;
-fi
-if [[ `grep -w "gpio" "/etc/group"` ]]; then
-	adduser ${user} gpio;
-else
-	groupadd gpio;
-	adduser ${user} gpio;
-fi
-if [[ `grep -w "kvm" "/etc/group"` ]]; then
-	:;
-else
-	addgroup --gid 125 kvm;
-fi
-
-echo
-echo Adding mc skins.
-sleep 1s
-mkdir -p /usr/share/mc/skins
-mv -f darkgreen.ini /usr/share/mc/skins/darkgreen.ini
-mv -f darkred.ini /usr/share/mc/skins/darkred.ini
-echo Done.
-echo
-echo Adding mc ini and nanorc.
-sleep 1s
-mkdir -p /root/.config/mc
-mv -f root-ini /root/.config/mc/ini
-mv -f nanorc-root /root/.nanorc
-mkdir -p /home/${user}/.config/mc
-mv -f user-ini /home/${user}/.config/mc/ini
-mv -f nanorc-user /home/${user}/.nanorc
-chown -R root:root /root
-chown -R ${user}:${user} /home/${user}
-echo Done.
-
-echo
-echo Creating sudoers file.
-sleep 1s
-rm -f /etc/sudoers.d/010_pi-nopasswd
-tee /etc/sudoers.d/010_${user}-nopasswd <<EOF
-${user} ALL=(ALL) NOPASSWD: ALL
-EOF
-echo Done.
-
-rm -f username.txt
-rm -f whogoesthere
-chown -R ${user}:${user} /home/${user}
-}
-
-# ADMIN CONFIG
-bcm2708_admin(){
-echo -n 'bcm2708' > /etc/hostname
-sed -i '1 a 127.0.1.1	bcm2708' /etc/hosts
-}
-
-bcm2709_admin(){
-echo -n 'bcm2709' > /etc/hostname
-sed -i '1 a 127.0.1.1	bcm2709' /etc/hosts
-}
-
-bcm2710_admin(){
-echo -n 'bcm2710' > /etc/hostname
-sed -i '1 a 127.0.1.1	bcm2710' /etc/hosts
-}
-
-bcm2711_admin(){
-echo -n 'bcm2711' > /etc/hostname
-sed -i '1 a 127.0.1.1	bcm2711' /etc/hosts
-}
-
-admin_config(){
-if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
-	bcm2711_admin;
-fi
-if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
-	bcm2710_admin;
-fi
-if [[ `grep -w "bcm2709" "/root/soc.txt"` ]]; then
-	bcm2709_admin;
-fi
-if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
-	bcm2708_admin;
-fi
-
-if [[ `grep -w "spi" "/etc/group"` ]]; then
-	:;
-else
-	groupadd spi;
-fi
-if [[ `grep -w "i2c" "/etc/group"` ]]; then
-	:;
-else
-	groupadd i2c;
-fi
-if [[ `grep -w "gpio" "/etc/group"` ]]; then
-	:;
-else
-	groupadd gpio;
-fi
-if [[ `grep -w "kvm" "/etc/group"` ]]; then
-	:;
-else
-	addgroup --gid 125 kvm;
-fi
-
-echo
-echo Adding mc skins.
-sleep 1s
-mkdir -p /usr/share/mc/skins
-mv -f darkgreen.ini /usr/share/mc/skins/darkgreen.ini
-mv -f darkred.ini /usr/share/mc/skins/darkred.ini
-echo Done.
-echo
-echo Adding mc ini and nanorc.
-sleep 1s
-mkdir -p /root/.config/mc
-mv -f root-ini /root/.config/mc/ini
-mv -f nanorc-root /root/.nanorc
-mv -f user-ini /etc/opt/user-ini
-mv -f nanorc-user /etc/opt/nanorc-user
-chown -R root:root /root
-echo Done.
-
-mv -f username.txt /boot/
-mv -f whogoesthere /usr/local/bin/
-chmod +x /usr/local/bin/whogoesthere
-chown -R root:root /usr/local/bin/whogoesthere
-}
-
-bcm2711_network(){
-echo
-echo Adding network configs and rules.
-sleep 1s
-rm -f /etc/network/interfaces
-ln -sr /etc/network/if-up.d/00check-network-cable /etc/network/if-pre-up.d/00check-network-cable
-sed -i 's/#CONFIGURE_INTERFACES=yes/CONFIGURE_INTERFACES=yes/g' /etc/default/networking
-sed -i 's/#WAIT_ONLINE_METHOD=ifup/WAIT_ONLINE_METHOD=ifup/g' /etc/default/networking
-sed -i 's/#WAIT_ONLINE_TIMEOUT=300/WAIT_ONLINE_TIMEOUT=10/g' /etc/default/networking
-if [ -e /etc/default/network-test ]; then
-	sed -i 's/DO_ARPING=${DO_ARPING:-yes}/DO_ARPING=${DO_ARPING:-no}/g' /etc/default/network-test
-	sed -i 's/DO_SYSLOG=${DO_SYSLOG:-yes}/DO_SYSLOG=${DO_SYSLOG:-no}/g' /etc/default/network-test
-fi
-mv -f credentials.txt /boot/rename_to_credentials.txt
-cp -f soc.txt /etc/opt/
-chown root:root /etc/opt/soc.txt
-
-tee /etc/opt/interfaces.manual <<EOF
-### Interfaces
-source /etc/network/interfaces.d/*
-
-### Loopback network interface
-auto lo
-iface lo inet loopback
-
-### Ethernet
-allow-hotplug eth0
-iface eth0 inet dhcp
-    #address 10.0.0.10
-    #netmask 255.255.255.0
-    #gateway 10.0.0.1
-    #dns-nameservers 8.8.8.8 8.8.4.4
-
-### Mobile tether
-#allow-hotplug usb0
-#iface usb0 inet dhcp
-
-### Wifi
-allow-hotplug wlan0
-iface wlan0 inet dhcp
-	wireless-power off
-	#address 10.0.0.10
-	#netmask 255.255.255.0
-	#gateway 10.0.0.1
-	#dns-nameservers 8.8.8.8 8.8.4.4
-	wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
-
-EOF
-
-tee /etc/opt/interfaces <<EOF
-### Interfaces
-source /etc/network/interfaces.d/*
-
-### Loopback network interface
-auto lo
-iface lo inet loopback
-
-### Ethernet
-allow-hotplug eth0
-iface eth0 inet dhcp
-    #address 10.0.0.10
-    #netmask 255.255.255.0
-    #gateway 10.0.0.1
-    #dns-nameservers 8.8.8.8 8.8.4.4
-
-### Mobile tether
-#allow-hotplug usb0
-#iface usb0 inet dhcp
-
-### Wifi
-allow-hotplug wlan0
-iface wlan0 inet dhcp
-	wireless-power off
-	wlan_address 10.0.0.10
-	wlan_netmask 255.255.255.0
-	wlan_gateway 10.0.0.1
-	wlan_dns-nameservers 8.8.8.8 8.8.4.4
-	wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
-
-EOF
-
-tee /etc/opt/wpa_supplicant.manual <<EOF
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-update_config=1
-country=US
-
-network={
-	ssid="mywifissid"
-	scan_ssid=1
-	key_mgmt=WPA-PSK
-	psk="wifipasskey"
-}
-EOF
-
-tee /etc/opt/wpa_supplicant.conf <<EOF
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-update_config=1
-country=
-
-network={
-	name=
-	scan_ssid=1
-	key_mgmt=WPA-PSK
-	password=
-}
-EOF
-echo Done.
-}
-
-bcm2710_network(){
-echo
-echo Adding network configs and rules.
-sleep 1s
-rm -f /etc/network/interfaces
-ln -sr /etc/network/if-up.d/00check-network-cable /etc/network/if-pre-up.d/00check-network-cable
-sed -i 's/#CONFIGURE_INTERFACES=yes/CONFIGURE_INTERFACES=yes/g' /etc/default/networking
-sed -i 's/#WAIT_ONLINE_METHOD=ifup/WAIT_ONLINE_METHOD=ifup/g' /etc/default/networking
-sed -i 's/#WAIT_ONLINE_TIMEOUT=300/WAIT_ONLINE_TIMEOUT=10/g' /etc/default/networking
-if [ -e /etc/default/network-test ]; then
-	sed -i 's/DO_ARPING=${DO_ARPING:-yes}/DO_ARPING=${DO_ARPING:-no}/g' /etc/default/network-test
-	sed -i 's/DO_SYSLOG=${DO_SYSLOG:-yes}/DO_SYSLOG=${DO_SYSLOG:-no}/g' /etc/default/network-test
-fi
-mv -f credentials.txt /boot/rename_to_credentials.txt
-cp -f soc.txt /etc/opt/
-chown root:root /etc/opt/soc.txt
-
+eth_udev-rule(){
 tee /etc/udev/rules.d/80-net-setup-link.rules <<EOF
 # raspberry pi 3b eth interface
-
 SUBSYSTEM!="net", GOTO="net_setup_link_end"
 
 IMPORT{builtin}="path_id"
@@ -365,106 +51,24 @@ NAME=="", ENV{ID_NET_NAME}!="", NAME="eth0"
 
 LABEL="net_setup_link_end"
 EOF
-
-tee /etc/opt/interfaces.manual <<EOF
-### Interfaces
-source /etc/network/interfaces.d/*
-
-### Loopback network interface
-auto lo
-iface lo inet loopback
-
-### Ethernet
-allow-hotplug eth0
-iface eth0 inet dhcp
-    #address 10.0.0.10
-    #netmask 255.255.255.0
-    #gateway 10.0.0.1
-    #dns-nameservers 8.8.8.8 8.8.4.4
-
-### Mobile tether
-#allow-hotplug usb0
-#iface usb0 inet dhcp
-
-### Wifi
-allow-hotplug wlan0
-iface wlan0 inet dhcp
-	wireless-power off
-	#address 10.0.0.10
-	#netmask 255.255.255.0
-	#gateway 10.0.0.1
-	#dns-nameservers 8.8.8.8 8.8.4.4
-	wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
-EOF
-
-tee /etc/opt/interfaces <<EOF
-### Interfaces
-source /etc/network/interfaces.d/*
-
-### Loopback network interface
-auto lo
-iface lo inet loopback
-
-### Ethernet
-allow-hotplug eth0
-iface eth0 inet dhcp
-    #address 10.0.0.10
-    #netmask 255.255.255.0
-    #gateway 10.0.0.1
-    #dns-nameservers 8.8.8.8 8.8.4.4
-
-### Mobile tether
-#allow-hotplug usb0
-#iface usb0 inet dhcp
-
-### Wifi
-allow-hotplug wlan0
-iface wlan0 inet dhcp
-	wireless-power off
-	wlan_address 10.0.0.10
-	wlan_netmask 255.255.255.0
-	wlan_gateway 10.0.0.1
-	wlan_dns-nameservers 8.8.8.8 8.8.4.4
-	wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
-EOF
-
-tee /etc/opt/wpa_supplicant.manual <<EOF
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-update_config=1
-country=US
-
-network={
-	ssid="mywifissid"
-	scan_ssid=1
-	key_mgmt=WPA-PSK
-	psk="wifipasskey"
-}
-EOF
-
-tee /etc/opt/wpa_supplicant.conf <<EOF
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-update_config=1
-country=
-
-network={
-	name=
-	scan_ssid=1
-	key_mgmt=WPA-PSK
-	password=
-}
-EOF
-echo Done.
 }
 
-bcm2708_network(){
-echo
-echo Adding network configs and rules.
-sleep 1s
+btrfs_udev-rule(){
+if [ -e /lib/udev/rules.d/64-btrfs.rules ]; then
+	sed -i 's/${exec_prefix}//g' /lib/udev/rules.d/64-btrfs.rules;
+fi
+}
+
+network_setup(){
 rm -f /etc/network/interfaces
-ln -sr /etc/network/if-up.d/00check-network-cable /etc/network/if-pre-up.d/00check-network-cable
-sed -i 's/#CONFIGURE_INTERFACES=yes/CONFIGURE_INTERFACES=yes/g' /etc/default/networking
-sed -i 's/#WAIT_ONLINE_METHOD=ifup/WAIT_ONLINE_METHOD=ifup/g' /etc/default/networking
-sed -i 's/#WAIT_ONLINE_TIMEOUT=300/WAIT_ONLINE_TIMEOUT=10/g' /etc/default/networking
+if [ -e /etc/network/if-up.d/00check-network-cable ]; then
+	ln -sr /etc/network/if-up.d/00check-network-cable /etc/network/if-pre-up.d/00check-network-cable
+fi
+if [ -e /etc/default/networking ]; then
+	sed -i 's/#CONFIGURE_INTERFACES=yes/CONFIGURE_INTERFACES=yes/g' /etc/default/networking
+	sed -i 's/#WAIT_ONLINE_METHOD=ifup/WAIT_ONLINE_METHOD=ifup/g' /etc/default/networking
+	sed -i 's/#WAIT_ONLINE_TIMEOUT=300/WAIT_ONLINE_TIMEOUT=10/g' /etc/default/networking
+fi
 if [ -e /etc/default/network-test ]; then
 	sed -i 's/DO_ARPING=${DO_ARPING:-yes}/DO_ARPING=${DO_ARPING:-no}/g' /etc/default/network-test
 	sed -i 's/DO_SYSLOG=${DO_SYSLOG:-yes}/DO_SYSLOG=${DO_SYSLOG:-no}/g' /etc/default/network-test
@@ -473,6 +77,10 @@ mv -f credentials.txt /boot/rename_to_credentials.txt
 cp -f soc.txt /etc/opt/
 chown root:root /etc/opt/soc.txt
 
+if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
+	eth_udev-rule;
+fi
+
 tee /etc/opt/interfaces.manual <<EOF
 ### Interfaces
 source /etc/network/interfaces.d/*
@@ -488,6 +96,10 @@ iface eth0 inet dhcp
     #netmask 255.255.255.0
     #gateway 10.0.0.1
     #dns-nameservers 8.8.8.8 8.8.4.4
+
+### Mobile tether
+#allow-hotplug usb0
+#iface usb0 inet dhcp
 
 ### Wifi
 allow-hotplug wlan0
@@ -516,6 +128,10 @@ iface eth0 inet dhcp
     #netmask 255.255.255.0
     #gateway 10.0.0.1
     #dns-nameservers 8.8.8.8 8.8.4.4
+
+### Mobile tether
+#allow-hotplug usb0
+#iface usb0 inet dhcp
 
 ### Wifi
 allow-hotplug wlan0
@@ -554,7 +170,6 @@ network={
 	password=
 }
 EOF
-echo Done.
 }
 
 enable_services(){
@@ -573,11 +188,4 @@ update-rc.d leds defaults 2
 update-rc.d bthelper defaults 2
 update-rc.d zramswap defaults 2
 update-rc.d credentials defaults 2
-}
-
-btrfs_udevrule(){
-echo
-echo Fixing btrfs udev rule.
-sed -i 's/${exec_prefix}//g' /lib/udev/rules.d/64-btrfs.rules
-echo Done.
 }

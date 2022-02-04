@@ -12,10 +12,10 @@ CORES=`nproc`
 KERNEL="linux-rpi"
 MLKERNEL="linux"
 KBUSER="marvin"
-KBHOST="rpi-img-builder"
+KBHOST="martian"
 
 validation(){
-if [[ `grep -w "builder=4.1" "userdata.txt"` ]]; then
+if [[ `grep -w "builder=4.2" "userdata.txt"` ]]; then
 	:;
 else
 	echo -e "${YLW}Userdata file is old! Please create a new one${FIN}."
@@ -28,42 +28,17 @@ EXT4="3000MB"
 BTRFS="2650MB"
 XFS="2650MB"
 
-# debian
-DEBIAN1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
+# packages
+PKG1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	fonty-rg patch curl wget apt-transport-https dirmngr cmake rsync \
-	psmisc parted pv zip unzip aria2 libell0 i2c-tools"
+	psmisc parted pv zip unzip aria2 libell0 fdisk i2c-tools"
 
-DEBIAN2="cpu hwinfo haveged resolvconf git build-essential net-tools ifplugd \
-	fuse wpasupplicant wireless-tools usbutils alsa-utils gettext crda \
+PKG2="cpu hwinfo haveged git build-essential net-tools ifplugd crda \
+	fuse3 wpasupplicant wireless-tools usbutils alsa-utils gettext \
 	bison flex mc nano figlet toilet dialog python3 python3-setuptools \
-	openssh-client openssh-server ntfs-3g bc zram-tools libncursesw5-dev \
-	libssl-dev autopoint autoconf automake pkg-config libtool fake-hwclock \
-	avahi-utils distro-info-data lsb-release liblzo2-2 bluetooth bluez bluez-tools"
-
-# devuan
-DEVUAN1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
-	fonty-rg patch curl wget apt-transport-https dirmngr cmake rsync \
-	psmisc parted pv zip unzip aria2 libell0 i2c-tools"
-
-DEVUAN2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
-	fuse wpasupplicant wireless-tools usbutils alsa-utils gettext crda \
-	bison flex mc nano figlet toilet dialog python3 python3-setuptools \
-	libssl-dev autopoint autoconf automake pkg-config libtool fake-hwclock \
-	ntp ifupdown-extra avahi-utils distro-info-data lsb-release liblzo2-2 \
-	ntfs-3g bc zram-tools libncursesw5-dev bluetooth bluez bluez-tools"
-
-# ubuntu
-UBUNTU1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
-	fonty-rg patch curl wget apt-transport-https dirmngr cmake rsync \
-	psmisc parted pv zip unzip aria2 fdisk i2c-tools"
-
-UBUNTU2="cpu hwinfo haveged openresolv git build-essential net-tools ifplugd \
-	wpasupplicant wireless-tools usbutils alsa-utils gettext crda \
-	bison flex mc nano figlet toilet dialog python3 python3-setuptools \
-	openssh-client openssh-server ntfs-3g bc zram-tools libncursesw5-dev \
-	libssl-dev autopoint autoconf automake pkg-config libtool fake-hwclock \
-	network-manager avahi-utils distro-info-data lsb-release liblzo2-2 \
-	bluetooth bluez bluez-tools"
+	ntfs-3g bc zram-tools libncursesw5-dev libssl-dev autopoint autoconf \
+	automake pkg-config libtool fake-hwclock avahi-utils distro-info-data \
+	lsb-release liblzo2-2 bluetooth bluez bluez-tools"
 
 # firmware
 FIRMWARE="firmware-linux-nonfree firmware-linux firmware-misc-nonfree \

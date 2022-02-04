@@ -8,23 +8,23 @@ FIN="\e[0m"
 
 # ECHOES
 echo_extract(){
-echo -e "${RED}Extracting archive${FIN}."
+echo -e "${WHT}Extracting archive${FIN} ..."
 }
 
 echo_compress(){
-echo -e "${RED}Compressing image${FIN}."
+echo -e "${WHT}Compressing image${FIN} ..."
 }
 
 echo_shrink(){
-echo -e "${RED}Shrinking image${FIN}."
+echo -e "${WHT}Shrinking image${FIN} ..."
 }
 
 echo_patch(){
-echo -e "${RED}Applying patches${FIN}."
+echo -e "${WHT}Applying patches${FIN} ..."
 }
 
 echo_done(){
-echo -e "${RED}Done${FIN}."
+echo -e "${WHT}Done${FIN}."
 }
 
 echo_ok(){
@@ -44,37 +44,37 @@ echo -e "${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
 }
 
 echo_kernel(){
-echo -e "${RED}Downloading kernel${FIN}."
+echo -e "${WHT}Downloading kernel${FIN} ..."
 }
 
 echo_firm(){
-echo -e "${RED}Downloading firmware${FIN}."
+echo -e "${WHT}Downloading firmware${FIN} ..."
 }
 
 echo_stable(){
-echo -e "${RED}Downloading stable linux${FIN}."
+echo -e "${WHT}Downloading stable linux${FIN} ..."
 }
 
 echo_mainline(){
-echo -e "${RED}Downloading mainline linux${FIN}."
+echo -e "${WHT}Downloading mainline linux${FIN} ..."
 }
 
 echo_cconfig(){
-echo -e "${RED}Making ${MYCONFIG}${FIN}."
+echo -e "${WHT}Making ${MYCONFIG}${FIN} ..."
 }
 
 echo_fconfig(){
-echo -e "${RED}Making foundation defconfig${FIN}."
+echo -e "${WHT}Making foundation defconfig${FIN} ..."
 }
 
 echo_bconfig(){
-echo -e "${RED}Making builder defconfig${FIN}."
+echo -e "${WHT}Making builder defconfig${FIN} ..."
 }
 
 echo_menuconfig(){
-echo -e "${RED}Opening menuconfig${FIN}."
+echo -e "${WHT}Opening menuconfig${FIN} ..."
 }
 
 echo_build(){
-echo -e "${RED}--- Building deb packages${FIN}."
+echo -e "${WHT}--- Building deb packages${FIN} ..."
 }

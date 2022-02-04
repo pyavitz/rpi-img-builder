@@ -1,9 +1,20 @@
 #!/usr/bin/env bash
-source /root/debian.txt
+if [ -e /root/debian.txt ]; then
+	source /root/debian.txt;
+fi
+if [ -e /root/devuan.txt ]; then
+	source /root/devuan.txt;
+fi
+if [ -e /root/ubuntu.txt ]; then
+	source /root/ubuntu.txt;
+fi
+if [ -e /root/services.txt ]; then
+	source /root/services.txt;
+fi
 source /root/universal.txt
-source /root/services.txt
 source /root/source.txt
 source /root/userdata.txt
+UNMINIMIZE=/usr/local/sbin/unminimize
 URL="https://raw.githubusercontent.com/pyavitz/scripts/master/"
 
 set -o errexit
@@ -29,6 +40,13 @@ set_timezone
 
 apt upgrade -y
 apt dist-upgrade -y
+if [[ `grep -w 'DISTRO="ubuntu"' "/root/userdata.txt"` ]]; then
+	if [ -f "$UNMINIMIZE" ]; then
+		echo 'y' | unminimize;
+	fi
+	apt_preferences;
+	echo "";
+fi
 if [[ `grep -w "ext4=1" "/root/userdata.txt"` ]]; then
 	apt install -y e2fsprogs;
 else
@@ -40,45 +58,65 @@ else
 		fi
 	fi
 fi
-apt install -y ${DEBIAN1} ${DEBIAN2} ${FIRMWARE}
+if [[ `grep -w 'DISTRO="debian"' "/root/userdata.txt"` ]]; then
+	apt install -y ${PKG1} ${PKG2} ${FIRMWARE} resolvconf openssh-client openssh-server;
+else
+	if [[ `grep -w 'DISTRO="devuan"' "/root/userdata.txt"` ]]; then
+		apt install -y openssh-client openssh-server --no-install-recommends;
+		apt install -y ${PKG1} ${PKG2} ${FIRMWARE} openresolv ntp ifupdown-extra;
+	else
+		if [[ `grep -w 'DISTRO="ubuntu"' "/root/userdata.txt"` ]]; then
+			apt install -y ${PKG1} ${PKG2} openresolv network-manager openssh-client openssh-server;
+		fi
+	fi
+fi
 apt -y clean
 apt -y autoclean
 
 ### Scripts
-echo
-echo Moving scripts.
+echo ""
+echo "Moving scripts ..."
 sleep 1s
 cd ~
 mkdir -p /usr/local/bin
 mkdir -p /usr/local/sbin
-# Scripts
 if  [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
 	wget -cq --show-progress ${URL}write2usb
 	wget -cq --show-progress ${URL}deb-eeprom
 	mv -f {write2usb,deb-eeprom} /usr/local/bin/;
 fi
-mv -f growpart /usr/bin/
 wget -cq --show-progress ${URL}swh
 wget -cq --show-progress ${URL}fetch
 wget -cq --show-progress ${URL}governor
-mv -f {swh,fetch,governor,run-setup,sysinfo,smon,credentials} /usr/local/bin/
+mv -f {swh,fetch,governor,run-setup,sysinfo,smon} /usr/local/bin/
 if [[ `grep -w "userscripts=1" "/root/userdata.txt"` ]]; then
 	uscripts_stage2;
 fi
 initrd_script
-# Service
+mv -f credentials.sh /usr/local/bin/credentials;
 mv -f firstboot.sh /usr/local/sbin/firstboot
+if [[ `grep -w 'DISTRO="devuan"' "/root/userdata.txt"` ]]; then
+	# Inits
+	mv -f firstboot.init /etc/init.d/firstboot
+	mv -f leds.init /etc/init.d/leds
+	mv -f governor.init /etc/init.d/governor
+	mv -f bthelper /etc/init.d/
+	mv -f zramswap /etc/init.d/
+	mv -f network /etc/init.d/
+	mv -f credentials /etc/init.d/
+fi
+mv -f growpart /usr/bin/
 chmod +x /usr/bin/growpart
 chown root:root /usr/bin/growpart
 chmod +x /usr/local/bin/*
 chmod +x /usr/local/sbin/*
 chown -R root:root /usr/local/bin/
 chown -R root:root /usr/local/sbin/
-echo Done.
+echo "Done."
 
 ### MOTD
-echo
-echo Adding motd.
+echo ""
+echo "Adding motd ..."
 sleep 1s
 mkdir -p /etc/update-motd.d
 tee /etc/update-motd.d/15-brand <<EOF
@@ -88,46 +126,46 @@ toilet -f small --filter metal '${BRAND}'
 echo 
 EOF
 mv -f 20-sysinfo /etc/update-motd.d/20-sysinfo
+if [ -e /etc/update-motd.d/10-help-text ]; then
+	rm -f /etc/update-motd.d/10-help-text;
+fi
 chmod +x /etc/update-motd.d/*
 chown root:root /etc/update-motd.d/15-brand
 chown root:root /etc/update-motd.d/20-sysinfo
-echo Done.
+echo "Done."
 
 ### Extra firmware
 extra_firmware
 
-###
-echo
-echo Bluetooth udev rule.
-sleep 1s
-mkdir -p /lib/udev/rules.d/
-mv -f 99-com.rules /lib/udev/rules.d/99-com.rules
-echo Done.
+### Udev rule
+if [ -e /root/99-com.rules ]; then
+	cd ~
+	mkdir -p /lib/udev/rules.d/
+	mv -f 99-com.rules /lib/udev/rules.d/
+fi
 
 ### Network Setup
-echo
-echo Creating network configs.
-sleep 1s
-network_setup > /dev/null 2>&1
-echo Done.
+if [[ `grep -w 'DISTRO="debian"' "/root/userdata.txt"` ]]; then
+	network_setup > /dev/null 2>&1;
+else
+	if [[ `grep -w 'DISTRO="devuan"' "/root/userdata.txt"` ]]; then
+		network_setup > /dev/null 2>&1;
+	else
+		if [[ `grep -w 'DISTRO="ubuntu"' "/root/userdata.txt"` ]]; then
+			network_manager;
+		fi
+	fi
+fi
 
 ### ZSWAP
-echo
-echo Adjusting zramswap config.
-sleep 1s
 zramswap_config
-echo Done.
 
 ### MOTD instructions
-echo
-echo Adding motd first boot.
-sleep 1s
 rm -f /etc/motd
 mv -f motd /etc/motd
 mv -f new.motd /etc/new.motd
 chown root:root /etc/motd
 chown root:root /etc/new.motd
-echo Done.
 
 ### Wireless regdb
 wireless_regdb
@@ -136,24 +174,28 @@ wireless_regdb
 raspberrypi_sys_mods
 
 ### Pi Bluetooth
-echo
-echo Building pi bluetooth package.
+echo ""
+echo "Installing pi-bluetooth ..."
 sleep 1s
-git clone https://github.com/pyavitz/pi-bluetooth.git
+if [[ `grep -w 'DISTRO="ubuntu"' "/root/userdata.txt"` ]]; then
+	git clone https://github.com/pyavitz/pi-bluetooth.git -b ubuntu;
+else
+	git clone https://github.com/pyavitz/pi-bluetooth.git;
+fi
 cd pi-bluetooth
 chmod +x debian/rules
 dpkg-buildpackage -us -uc
 cd ~
 dpkg -i pi-bluetooth_*.deb
 rm -fdR pi-bluetooth*
-echo Done.
+echo "Done."
 
 ###  Raspi userland
 rpi_userland
 
 ### Adding eeprom
 if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
-	bcm2711_eeprom
+	bcm2711_eeprom;
 fi
 
 ### Kernel
@@ -177,6 +219,7 @@ fi
 if [[ `grep -w "admin=1" "/root/userdata.txt"` ]]; then
 	admin_config;
 else
+	echo ""
 	user_config;
 fi
 if [[ `grep -w "rootpasswd=1" "/root/userdata.txt"` ]]; then
@@ -203,33 +246,35 @@ echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' > /etc/udev/rules.d/10-vchiq
 echo 'SUBSYSTEM=="vcio",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
 echo 'SUBSYSTEM=="vc-mem",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
 
-# First boot service
-firstboot_service > /dev/null 2>&1
+if [[ `grep -w 'DISTRO="devuan"' "/root/userdata.txt"` ]]; then
+	if [[ `grep -w "btrfs=1" "/root/userdata.txt"` ]]; then
+		btrfs_udev-rule;
+	fi
+fi
 
-# Credentials service
-credentials_service > /dev/null 2>&1
-
-# Governor service
-governor_service > /dev/null 2>&1
-
-# Led service
-led_script > /dev/null 2>&1;
-led_service > /dev/null 2>&1;
-
-# Create RC.LOCAL
-rc-local_service > /dev/null 2>&1
-
-# Enable services
-echo
-echo Enabling Services.
+echo ""
+echo "Checking Services ..."
 sleep 1s
-enable_services > /dev/null 2>&1
-echo Done.
+if [[ `grep -w 'DISTRO="devuan"' "/root/userdata.txt"` ]]; then
+	echo "== Sysvinit";
+	led_script > /dev/null 2>&1;
+	enable_services > /dev/null 2>&1;
+else
+	echo "== Systemd";
+	firstboot_service > /dev/null 2>&1;
+	credentials_service > /dev/null 2>&1;
+	governor_service > /dev/null 2>&1;
+	led_script > /dev/null 2>&1;
+	led_service > /dev/null 2>&1;
+	rc-local_service > /dev/null 2>&1;
+	enable_services > /dev/null 2>&1;
+fi
+echo "Done."
 
 # Finish
-echo
-echo Moving out of stage2 and creating image.
-echo
-sleep 2s
+echo ""
+echo "Finalizing ..."
+echo ""
+sleep 1s
 
 umount /proc /sys

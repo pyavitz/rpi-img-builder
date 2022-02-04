@@ -102,7 +102,7 @@ echo "}" >> tmp0
 echo 'NAMESERVER1="8.8.8.8"' >> tmp0
 echo 'NAMESERVER2="8.8.4.4"' >> tmp0
 echo devuser=1 >> tmp0
-echo builder=4.1 >> tmp0
+echo builder=4.2 >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
 echo >> tmp2

@@ -1,6 +1,16 @@
 #!/bin/bash
+if [[ `grep -w 'DISTRO="debian"' "userdata.txt"` ]]; then
+	source lib/function/debian;
+else
+	if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
+		source lib/function/devuan;
+	else
+		if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; then
+			source lib/function/ubuntu;
+		fi
+	fi
+fi
 source lib/function/universal
-source lib/function/devuan
 source lib/function/boot
 source lib/function/echoes
 source lib/source
@@ -10,12 +20,12 @@ UD=userdata.txt
 userdata(){
 echo ""
 echo "Please create a userdata.txt file"
-while [ true ] ; do
-read -t 20 -n 1
-if [ $? = 0 ] ; then
-exit ;
+while [ true ]; do
+	read -t 20 -n 1
+if [ $? = 0 ]; then
+	exit;
 else
-echo "run make config"
+	echo "run make config"
 fi
 done
 }
@@ -31,7 +41,17 @@ if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
 else
 	set -eu -o pipefail;
 fi
-devuan_banner
+if [[ `grep -w 'DISTRO="debian"' "userdata.txt"` ]]; then
+	debian_banner;
+else
+	if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
+		devuan_banner;
+	else
+		if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; then
+			ubuntu_banner;
+		fi
+	fi
+fi
 RAM=0
 PROXY=""
 IMAGE_FOLDER="img/"
@@ -159,30 +179,45 @@ EOF
 fi
 
 # setup stage2
-cp scripts/devuan-stage2 p2/root
-cp lib/function/devuan p2/root/devuan.txt
+cp scripts/stage2 p2/root
+if [[ `grep -w 'DISTRO="debian"' "userdata.txt"` ]]; then
+	cp lib/function/debian p2/root/debian.txt
+	cp lib/function/services p2/root/services.txt
+	cp files/debian/misc/* p2/root
+	cp files/debian/patches/* p2/root
+	cp files/debian/scripts/* p2/root
+fi
+if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
+	cp lib/function/devuan p2/root/devuan.txt
+	cp files/devuan/misc/* p2/root
+	cp files/devuan/patches/* p2/root
+	cp files/devuan/scripts/* p2/root
+fi
+if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; then
+	cp lib/function/ubuntu p2/root/ubuntu.txt
+	cp lib/function/services p2/root/services.txt
+	cp files/ubuntu/misc/* p2/root
+	cp files/ubuntu/patches/* p2/root
+	cp files/ubuntu/scripts/* p2/root
+fi
 cp lib/function/universal p2/root/universal.txt
 cp lib/source p2/root/source.txt
 cp userdata.txt p2/root
 cp soc.txt p2/root
-stage1_kernel # universal
-cp files/devuan/misc/* p2/root
-cp files/devuan/patches/* p2/root
-cp files/devuan/rules/* p2/root
-cp files/devuan/scripts/* p2/root
 cp files/misc/* p2/root
 cp files/scripts/* p2/root
 cp files/users/* p2/root
-cp firmware/{fw-0a5c_21e8.hcd,UPDATE.mem} p2/root
-if [[ `grep -Fx "userscripts=1" "userdata.txt"` ]]; then
+if [[ `grep -w "userscripts=1" "userdata.txt"` ]]; then
 	uscripts_stage1;
 fi
-echo -e "${RED}Starting chroot${FIN} ..."
+cp firmware/{fw-0a5c_21e8.hcd,UPDATE.mem} p2/root
+stage1_kernel # universal
+echo -e "${WHT}Starting chroot${FIN} ..."
 # Mount and chroot
 mount -o bind p1 p2/boot
 mount -o bind /dev p2/dev
 mount -o bind /dev/pts p2/dev/pts
-chroot p2 /root/devuan-stage2
+chroot p2 /root/stage2;
 # unmount
 umount p2/dev/pts
 umount p2/dev
@@ -197,7 +232,7 @@ else
 	fi
 fi
 cp -f p2/root/kernel.txt .
-rm p2/root/devuan-stage2
+rm p2/root/stage2
 rm -f p2/root/*.txt
 rm -f p2/var/cache/debconf/*
 
@@ -227,7 +262,7 @@ else
 fi
 
 if [[ `grep -w "admin=1" "userdata.txt"` ]]; then
-	echo
+	echo ""
 	echo_compress
 	compress_image
 	echo_done;

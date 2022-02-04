@@ -169,34 +169,198 @@ fi
 }
 
 # Stage 2
+# USER CONFIG
+bcm2708_user(){
+echo -n 'bcm2708' > /etc/hostname
+sed -i '1 a 127.0.1.1	bcm2708' /etc/hosts
+adduser ${user} --gecos ${user^} --disabled-password
+}
+
+bcm2709_user(){
+echo -n 'bcm2709' > /etc/hostname
+sed -i '1 a 127.0.1.1	bcm2709' /etc/hosts
+adduser ${user} --gecos ${user^} --disabled-password
+}
+
+bcm2710_user(){
+echo -n 'bcm2710' > /etc/hostname
+sed -i '1 a 127.0.1.1	bcm2710' /etc/hosts
+adduser ${user} --gecos ${user^} --disabled-password
+}
+
+bcm2711_user(){
+echo -n 'bcm2711' > /etc/hostname
+sed -i '1 a 127.0.1.1	bcm2711' /etc/hosts
+adduser ${user} --gecos ${user^} --disabled-password
+}
+
+user_config(){
+if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
+	bcm2711_user;
+fi
+if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
+	bcm2710_user;
+fi
+if [[ `grep -w "bcm2709" "/root/soc.txt"` ]]; then
+	bcm2709_user;
+fi
+if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
+	bcm2708_user;
+fi
+
+echo "${user}:${passwd}" | chpasswd
+adduser ${user} sudo
+adduser ${user} audio
+adduser ${user} dialout
+adduser ${user} video
+adduser ${user} disk
+adduser ${user} plugdev
+adduser ${user} netdev
+adduser ${user} bluetooth
+adduser ${user} input
+adduser ${user} tty
+if [[ `grep -w "spi" "/etc/group"` ]]; then
+	adduser ${user} spi;
+else
+	groupadd spi;
+	adduser ${user} spi;
+fi
+if [[ `grep -w "i2c" "/etc/group"` ]]; then
+	adduser ${user} i2c;
+else
+	groupadd i2c;
+	adduser ${user} i2c;
+fi
+if [[ `grep -w "gpio" "/etc/group"` ]]; then
+	adduser ${user} gpio;
+else
+	groupadd gpio;
+	adduser ${user} gpio;
+fi
+if [[ `grep -w 'DISTRO="devuan"' "/root/userdata.txt"` ]]; then
+	if [[ `grep -w "kvm" "/etc/group"` ]]; then
+		:;
+	else
+		addgroup --gid 125 kvm;
+	fi
+fi
+
+mkdir -p /usr/share/mc/skins
+mv -f darkgreen.ini /usr/share/mc/skins/darkgreen.ini
+mv -f darkred.ini /usr/share/mc/skins/darkred.ini
+mkdir -p /root/.config/mc
+mv -f root-ini /root/.config/mc/ini
+mv -f nanorc-root /root/.nanorc
+mkdir -p /home/${user}/.config/mc
+mv -f user-ini /home/${user}/.config/mc/ini
+mv -f nanorc-user /home/${user}/.nanorc
+chown -R root:root /root
+chown -R ${user}:${user} /home/${user}
+rm -f /etc/sudoers.d/010_pi-nopasswd
+tee /etc/sudoers.d/010_${user}-nopasswd <<EOF
+${user} ALL=(ALL) NOPASSWD: ALL
+EOF
+rm -f username.txt
+rm -f whogoesthere
+chown -R ${user}:${user} /home/${user}
+}
+
+# ADMIN CONFIG
+bcm2708_admin(){
+echo -n 'bcm2708' > /etc/hostname
+sed -i '1 a 127.0.1.1	bcm2708' /etc/hosts
+}
+
+bcm2709_admin(){
+echo -n 'bcm2709' > /etc/hostname
+sed -i '1 a 127.0.1.1	bcm2709' /etc/hosts
+}
+
+bcm2710_admin(){
+echo -n 'bcm2710' > /etc/hostname
+sed -i '1 a 127.0.1.1	bcm2710' /etc/hosts
+}
+
+bcm2711_admin(){
+echo -n 'bcm2711' > /etc/hostname
+sed -i '1 a 127.0.1.1	bcm2711' /etc/hosts
+}
+
+admin_config(){
+if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
+	bcm2711_admin;
+fi
+if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
+	bcm2710_admin;
+fi
+if [[ `grep -w "bcm2709" "/root/soc.txt"` ]]; then
+	bcm2709_admin;
+fi
+if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
+	bcm2708_admin;
+fi
+
+if [[ `grep -w "spi" "/etc/group"` ]]; then
+	:;
+else
+	groupadd spi;
+fi
+if [[ `grep -w "i2c" "/etc/group"` ]]; then
+	:;
+else
+	groupadd i2c;
+fi
+if [[ `grep -w "gpio" "/etc/group"` ]]; then
+	:;
+else
+	groupadd gpio;
+fi
+if [[ `grep -w 'DISTRO="devuan"' "/root/userdata.txt"` ]]; then
+	if [[ `grep -w "kvm" "/etc/group"` ]]; then
+		:;
+	else
+		addgroup --gid 125 kvm;
+	fi
+fi
+
+mkdir -p /usr/share/mc/skins
+mv -f darkgreen.ini /usr/share/mc/skins/darkgreen.ini
+mv -f darkred.ini /usr/share/mc/skins/darkred.ini
+mkdir -p /root/.config/mc
+mv -f root-ini /root/.config/mc/ini
+mv -f nanorc-root /root/.nanorc
+mv -f user-ini /etc/opt/user-ini
+mv -f nanorc-user /etc/opt/nanorc-user
+chown -R root:root /root
+mv -f username.txt /boot/
+mv -f whogoesthere /usr/local/bin/
+chmod +x /usr/local/bin/whogoesthere
+chown -R root:root /usr/local/bin/whogoesthere
+}
+
 root_password(){
 echo "root:toor" | chpasswd
 }
 
 wireless_regdb(){
-echo
-echo Adding regdb.
-sleep 1s
-if cat /etc/os-release | grep Ubuntu > /dev/null 2>&1;
-	then echo 'KERNEL=="regulatory*", ACTION=="change", SUBSYSTEM=="platform", RUN+="/sbin/crda"' > /etc/udev/rules.d/60-regdb.rules;
+echo ""
+echo "Adding regdb ..."
+if [[ `grep -w "Ubuntu" "/etc/os-release"` ]]; then
+	echo 'KERNEL=="regulatory*", ACTION=="change", SUBSYSTEM=="platform", RUN+="/sbin/crda"' > /etc/udev/rules.d/60-regdb.rules;
 fi
 git clone https://kernel.googlesource.com/pub/scm/linux/kernel/git/sforshee/wireless-regdb
-echo
-echo Moving db files.
-sleep 1s
 cd wireless-regdb
 cp -f regulatory.db /lib/firmware/regulatory.db
 cp -f regulatory.db.p7s /lib/firmware/regulatory.db.p7s
 cd ~
 rm -fdr wireless-regdb
-echo Done.
+echo "Done."
 }
 
 # SYS-MODS
 raspberrypi_sys_mods(){
-echo
-echo Building raspi-sys-mods package.
-sleep 1s
+echo ""
+echo "Installing raspi-sys-mods ..."
 apt update
 apt install -y debhelper d-shlibs rfkill dosfstools psmisc
 git clone https://github.com/RPi-Distro/raspberrypi-sys-mods.git
@@ -221,7 +385,7 @@ fi
 if [ -e /etc/apt/preferences.d/3rd_parties.pref ]; then
 	rm -f /etc/apt/preferences.d/3rd_parties.pref;
 fi
-echo Done.
+echo "Done."
 }
 
 # EEPROM
@@ -252,12 +416,10 @@ wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz
 bcm2711_eeprom(){
 ERURL="https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/"
 CHANGELOG="https://raw.githubusercontent.com/raspberrypi/rpi-eeprom/debian/bullseye/debian/changelog"
-echo
+echo ""
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-echo Installing rpi-eeprom.
-sleep 1s
+echo "Installing rpi-eeprom ..."
 apt install help2man rsync pciutils -y
-###
 mkdir -p ~/eeprom
 mv -f rpi-eeprom-update.patch /root/eeprom/
 mv -f rpi-eeprom-control.patch /root/eeprom/
@@ -279,19 +441,18 @@ cd ..
 dpkg -i *.deb
 cd ..
 rm -fdr eeprom
-echo Done.
+echo "Done."
 }
 
 # Userland
 rpi_userland(){
-echo
-echo Adding raspi userland.
+echo ""
+echo "Installing userland ..."
 rm -f /etc/profile
 mv -f profile /etc/profile
 mv rpi-vc.conf /etc/ld.so.conf.d/rpi-vc.conf
 chown root:root /etc/profile
 chown root:root /etc/ld.so.conf.d/rpi-vc.conf
-sleep 1s
 mkdir -p /opt
 git clone https://github.com/raspberrypi/userland.git
 mv -f userland-remove-hi-pi.patch /root/userland/
@@ -300,19 +461,19 @@ patch -p1 < userland-remove-hi-pi.patch
 rm -f userland-remove-hi-pi.patch
 if [[ `grep -w "arm64" "/root/soc.txt"` ]]; then
 	echo -e "\e[1;37m== ARM64\e[0m"
-	sleep 2s
+	sleep 1s
 	./buildme --aarch64;
 else
 	if [[ `grep -w "arm" "/root/soc.txt"` ]]; then
 		echo -e "\e[1;37m== ARM\e[0m"
-		sleep 2s
+		sleep 1s
 		./buildme;
 	fi
 fi
 cd ~
 rm -f -d -R userland
 ldconfig
-echo Done.
+echo "Done."
 }
 
 # Modules
@@ -471,8 +632,8 @@ fi
 
 # Kernel
 stage2_kernel(){
-echo
-echo Installing kernel.
+echo ""
+echo "Installing kernel ..."
 apt update
 apt upgrade -y
 apt -y clean
@@ -485,7 +646,7 @@ if [[ `ls /root/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}`
 else
 	download_kernel;
 fi
-echo Done.
+echo "Done."
 sleep 1s
 fetch_version
 }
@@ -529,9 +690,8 @@ echo
 
 # Firmware
 extra_firmware(){
-echo
-echo Adding extra firmware.
-sleep 1s
+echo ""
+echo "Adding firmware ..."
 mkdir -p /lib/firmware/brcm
 mkdir -p /lib/firmware/updates
 git clone https://github.com/pyavitz/firmware.git /lib/firmware/updates/brcm
@@ -552,18 +712,18 @@ else
 	:;
 fi
 cd ~
-echo Done.
+echo "Done."
 }
 
 # Initrd script
 initrd_script(){
 cd ~
-echo
-echo Adding initrd script.
-mkdir -p /etc/initramfs/post-update.d/
-mv -f 99-initrd /etc/initramfs/post-update.d/
-chmod +x /etc/initramfs/post-update.d/99-initrd
-chown root:root /etc/initramfs/post-update.d/99-initrd
+if [ -e /root/99-initrd ]; then
+	mkdir -p /etc/initramfs/post-update.d/
+	mv -f 99-initrd /etc/initramfs/post-update.d/
+	chmod +x /etc/initramfs/post-update.d/99-initrd
+	chown root:root /etc/initramfs/post-update.d/99-initrd
+fi
 }
 
 ### Finish
@@ -584,7 +744,7 @@ fi
 
 # Shrink
 ext4_shrink(){
-echo
+echo ""
 echo_shrink
 chmod +x scripts/shrink
 scripts/shrink -s ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img

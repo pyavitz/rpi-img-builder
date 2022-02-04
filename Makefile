@@ -25,20 +25,9 @@ XCOMMIT=./scripts/rpi-commit
 COMMIT=sudo ./scripts/rpi-commit
 
 # stages
-DEB=./scripts/debian-stage1
-DEBIAN=sudo ./scripts/debian-stage1
-DEBSTG2=./scripts/debian-stage2
-
-DEV=./scripts/devuan-stage1
-DEVUAN=sudo ./scripts/devuan-stage1
-DEVSTG2=./scripts/devuan-stage2
-
-UBU=./scripts/ubuntu-stage1
-UBUNTU=sudo ./scripts/ubuntu-stage1
-UBUSTG2=./scripts/ubuntu-stage2
-
-# choose distribution
-CHOOSE=./scripts/choose
+STG1=./scripts/stage1
+STG2=./scripts/stage2
+STAGE=sudo ./scripts/stage1
 
 # clean
 CLN=./scripts/clean
@@ -170,14 +159,12 @@ image:
 	# Making bootable image
 	@ echo bcm2711 > soc.txt
 	@ echo arm64 >> soc.txt
-	@chmod +x ${CHOOSE}
-	@${CHOOSE}
+	@chmod +x ${STG1}
+	@chmod +x ${STG2}
+	@${STAGE}
 
 all:
 	# Raspberry Pi 4
-	# - - - - - - - -
-	#
-	# Building linux
 	@ echo bcm2711 > soc.txt
 	@ echo arm64 >> soc.txt
 	@chmod +x ${SELECT}
@@ -188,8 +175,9 @@ all:
 	# Making bootable image
 	@ echo bcm2711 > soc.txt
 	@ echo arm64 >> soc.txt
-	@chmod +x ${CHOOSE}
-	@${CHOOSE}
+	@chmod +x ${STG1}
+	@chmod +x ${STG2}
+	@${STAGE}
 
 kernelv7:
 	# Linux
@@ -209,14 +197,12 @@ imagev7:
 	# Making bootable image
 	@ echo bcm2711 > soc.txt
 	@ echo arm >> soc.txt
-	@chmod +x ${CHOOSE}
-	@${CHOOSE}
+	@chmod +x ${STG1}
+	@chmod +x ${STG2}
+	@${STAGE}
 
 allv7:
 	# Raspberry Pi 4
-	# - - - - - - - -
-	#
-	# Building linux
 	@ echo bcm2711 > soc.txt
 	@ echo arm >> soc.txt
 	@chmod +x ${SELECT}
@@ -227,8 +213,9 @@ allv7:
 	# Making bootable image
 	@ echo bcm2711 > soc.txt
 	@ echo arm >> soc.txt
-	@chmod +x ${CHOOSE}
-	@${CHOOSE}
+	@chmod +x ${STG1}
+	@chmod +x ${STG2}
+	@${STAGE}
 
 mainline:
 	# Mainline Linux
@@ -256,14 +243,12 @@ rpi3-image:
 	# Making bootable image
 	@ echo bcm2710 > soc.txt
 	@ echo arm64 >> soc.txt
-	@chmod +x ${CHOOSE}
-	@${CHOOSE}
+	@chmod +x ${STG1}
+	@chmod +x ${STG2}
+	@${STAGE}
 
 rpi3-all:
 	# Raspberry Pi 3
-	# - - - - - - - -
-	#
-	# Building linux
 	@ echo bcm2710 > soc.txt
 	@ echo arm64 >> soc.txt
 	@chmod +x ${XLINUX}
@@ -274,8 +259,9 @@ rpi3-all:
 	# Making bootable image
 	@ echo bcm2710 > soc.txt
 	@ echo arm64 >> soc.txt
-	@chmod +x ${CHOOSE}
-	@${CHOOSE}
+	@chmod +x ${STG1}
+	@chmod +x ${STG2}
+	@${STAGE}
 	
 # Raspberry Pi 2+3
 rpi2+3-kernel:
@@ -296,14 +282,12 @@ rpi2+3-image:
 	# Making bootable image
 	@ echo bcm2709 > soc.txt
 	@ echo arm >> soc.txt
-	@chmod +x ${CHOOSE}
-	@${CHOOSE}
+	@chmod +x ${STG1}
+	@chmod +x ${STG2}
+	@${STAGE}
 
 rpi2+3-all:
 	# Raspberry Pi 2+3
-	# - - - - - - - -
-	#
-	# Building linux
 	@ echo bcm2709 > soc.txt
 	@ echo arm >> soc.txt
 	@chmod +x ${XLINUX}
@@ -314,8 +298,9 @@ rpi2+3-all:
 	# Making bootable image
 	@ echo bcm2709 > soc.txt
 	@ echo arm >> soc.txt
-	@chmod +x ${CHOOSE}
-	@${CHOOSE}
+	@chmod +x ${STG1}
+	@chmod +x ${STG2}
+	@${STAGE}
 
 # Raspberry Pi
 rpi-kernel:
@@ -336,14 +321,12 @@ rpi-image:
 	# Make bootable image
 	@ echo bcm2708 > soc.txt
 	@ echo arm >> soc.txt
-	@chmod +x ${CHOOSE}
-	@${CHOOSE}
+	@chmod +x ${STG1}
+	@chmod +x ${STG2}
+	@${STAGE}
 
 rpi-all:
 	# Raspberry Pi
-	# - - - - - - - -
-	#
-	# Building linux
 	@ echo bcm2708 > soc.txt
 	@ echo arm >> soc.txt
 	@chmod +x ${XLINUX}
@@ -354,8 +337,9 @@ rpi-all:
 	# Making bootable img
 	@ echo bcm2708 > soc.txt
 	@ echo arm >> soc.txt
-	@chmod +x ${CHOOSE}
-	@${CHOOSE}
+	@chmod +x ${STG1}
+	@chmod +x ${STG2}
+	@${STAGE}
 
 # rootfs
 rootfs:
@@ -387,63 +371,6 @@ purge-all:
 	# Removing source and output directory
 	@${PURGEALL}
 
-# menu
-menu:
-	# User menu interface
-	@chmod +x ${MENU}
-	@${MENU}
-
-config:
-	# User config menu
-	@chmod go=rx files/scripts/*
-	@chmod go=rx files/debian/scripts/*
-	@chmod go=rx files/devuan/scripts/*
-	@chmod go=rx files/ubuntu/scripts/*
-	@chmod go=r files/misc/*
-	@chmod go=r files/debian/misc/*
-	@chmod go=r files/devuan/misc/*
-	@chmod go=r files/ubuntu/misc/*
-	@chmod go=r files/debian/rules/*
-	@chmod go=r files/devuan/rules/*
-	@chmod go=r files/ubuntu/rules/*
-	@chmod go=r files/users/*
-	@chmod +x ${CONF}
-	@${CONF}
-
-mlconfig:
-	# User config menu
-	@chmod go=rx files/scripts/*
-	@chmod go=rx files/debian/scripts/*
-	@chmod go=rx files/devuan/scripts/*
-	@chmod go=rx files/ubuntu/scripts/*
-	@chmod go=r files/misc/*
-	@chmod go=r files/debian/misc/*
-	@chmod go=r files/devuan/misc/*
-	@chmod go=r files/ubuntu/misc/*
-	@chmod go=r files/debian/rules/*
-	@chmod go=r files/devuan/rules/*
-	@chmod go=r files/ubuntu/rules/*
-	@chmod go=r files/users/*
-	@chmod +x ${MLCONF}
-	@${MLCONF}
-
-admin:
-	# User config menu
-	@chmod go=rx files/scripts/*
-	@chmod go=rx files/debian/scripts/*
-	@chmod go=rx files/devuan/scripts/*
-	@chmod go=rx files/ubuntu/scripts/*
-	@chmod go=r files/misc/*
-	@chmod go=r files/debian/misc/*
-	@chmod go=r files/devuan/misc/*
-	@chmod go=r files/ubuntu/misc/*
-	@chmod go=r files/debian/rules/*
-	@chmod go=r files/devuan/rules/*
-	@chmod go=r files/ubuntu/rules/*
-	@chmod go=r files/users/*
-	@chmod +x ${ADMIN}
-	@${ADMIN}
-
 # miscellaneous
 dialogrc:
 	# Builder theme set
@@ -460,25 +387,6 @@ select:
 	@chmod +x ${SELECT}
 	@${SELECT}
 
-# distros
-debianos:
-	# Debian
-	@chmod +x ${DEB}
-	@chmod +x ${DEBSTG2}
-	@${DEBIAN}
-
-devuanos:
-	# Devuan
-	@chmod +x ${DEV}
-	@chmod +x ${DEVSTG2}
-	@${DEVUAN}
-
-ubuntuos:
-	# Ubuntu
-	@chmod +x ${UBU}
-	@chmod +x ${UBUSTG2}
-	@${UBUNTU}
-
 # kernel run
 run:
 	@chmod +x ${XRUN}
@@ -487,3 +395,51 @@ run:
 compress:
 	@chmod +x ${XCOMP}
 	@${COMP}
+
+# menu
+menu:
+	# User menu interface
+	@chmod +x ${MENU}
+	@${MENU}
+
+config:
+	# User config menu
+	@chmod go=rx files/scripts/*
+	@chmod go=rx files/debian/scripts/*
+	@chmod go=rx files/devuan/scripts/*
+	@chmod go=rx files/ubuntu/scripts/*
+	@chmod go=r files/misc/*
+	@chmod go=r files/debian/misc/*
+	@chmod go=r files/devuan/misc/*
+	@chmod go=r files/ubuntu/misc/*
+	@chmod go=r files/users/*
+	@chmod +x ${CONF}
+	@${CONF}
+
+mlconfig:
+	# User config menu
+	@chmod go=rx files/scripts/*
+	@chmod go=rx files/debian/scripts/*
+	@chmod go=rx files/devuan/scripts/*
+	@chmod go=rx files/ubuntu/scripts/*
+	@chmod go=r files/misc/*
+	@chmod go=r files/debian/misc/*
+	@chmod go=r files/devuan/misc/*
+	@chmod go=r files/ubuntu/misc/*
+	@chmod go=r files/users/*
+	@chmod +x ${MLCONF}
+	@${MLCONF}
+
+admin:
+	# User config menu
+	@chmod go=rx files/scripts/*
+	@chmod go=rx files/debian/scripts/*
+	@chmod go=rx files/devuan/scripts/*
+	@chmod go=rx files/ubuntu/scripts/*
+	@chmod go=r files/misc/*
+	@chmod go=r files/debian/misc/*
+	@chmod go=r files/devuan/misc/*
+	@chmod go=r files/ubuntu/misc/*
+	@chmod go=r files/users/*
+	@chmod +x ${ADMIN}
+	@${ADMIN}
