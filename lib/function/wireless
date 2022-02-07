@@ -1,7 +1,7 @@
 # RTL8812AU
 rtl8812au_download(){
 echo
-echo -e "${RED}Downloading rtl88XXau wifi module${FIN}."
+echo -e "${WHT}Downloading rtl88XXau wifi module${FIN}."
 if [ -e rtl8812au ]; then
 	echo -e "${YLW}rtl88XXau found${FIN}."
 	cd rtl8812au
@@ -48,7 +48,7 @@ fi
 # RTL8811CU
 rtl8811cu_download(){
 echo
-echo -e "${RED}Downloading rtl88XXcu wifi module${FIN}."
+echo -e "${WHT}Downloading rtl88XXcu wifi module${FIN}."
 if [ -e rtl8811cu ]; then
 	echo -e "${YLW}rtl88XXcu found${FIN}."
 	cd rtl8811cu
@@ -102,7 +102,7 @@ fi
 # https://github.com/EntropicEffect/rtl8822bu
 rtl88x2bu_download(){
 echo
-echo -e "${RED}Downloading rtl88X2bu wifi module${FIN}."
+echo -e "${WHT}Downloading rtl88X2bu wifi module${FIN}."
 if [ -e rtl88x2bu ]; then
 	echo -e "${YLW}rtl88X2bu found${FIN}."
 	cd rtl88x2bu
