@@ -81,15 +81,14 @@ Defconfig:	# 1 to enable
 Name:		# Name of _defconfig (Must be placed in defconfig dir.)
 ```
 #### Compiler options
+* GCC flags: [fm4dd](https://gist.github.com/fm4dd/c663217935dc17f0fc73c9c81b0aa845) / [valvers](https://www.valvers.com/open-software/raspberry-pi/bare-metal-programming-in-c-part-1)
+* Clang flags: [#34](https://github.com/pyavitz/rpi-img-builder/issues/34)
 
 ```sh
 nano userdata.txt
 ### COMPILER TUNING
 CFLAGS=""
 ```
-GCC flags: [fm4dd](https://gist.github.com/fm4dd/c663217935dc17f0fc73c9c81b0aa845) / [valvers](https://www.valvers.com/open-software/raspberry-pi/bare-metal-programming-in-c-part-1)
-
-Clang flags: [#34](https://github.com/pyavitz/rpi-img-builder/issues/34)
 ```sh
 ### CLANG/LLVM
 CLANG_LLVM="LLVM=1 LLVM_IAS=1"
