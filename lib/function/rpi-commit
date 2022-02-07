@@ -376,7 +376,7 @@ echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm/configs/bcmrp
 }
 
 rpi4_fconfig(){
-echo -e "${RED}Making bcm2711 defconfig${FIN}."
+echo -e "${WHT}Making bcm2711 defconfig${FIN}."
 module_sig
 rtl8812au_module
 rtl88x2bu_module
@@ -393,7 +393,7 @@ echo_done
 }
 
 rpi4v7_fconfig(){
-echo -e "${RED}Making bcm2711 defconfig${FIN}."
+echo -e "${WHT}Making bcm2711 defconfig${FIN}."
 module_sig
 rtl8812au_module
 rtl88x2bu_module
@@ -407,7 +407,7 @@ echo_done
 }
 
 rpi3_fconfig(){
-echo -e "${RED}Making bcmrpi3 defconfig${FIN}."
+echo -e "${WHT}Making bcmrpi3 defconfig${FIN}."
 module_sig
 rtl8812au_module
 rtl88x2bu_module
@@ -424,7 +424,7 @@ echo_done
 }
 
 rpi2+3_fconfig(){
-echo -e "${RED}Making bcm2709 defconfig${FIN}."
+echo -e "${WHT}Making bcm2709 defconfig${FIN}."
 module_sig
 rtl8812au_module
 rtl88x2bu_module
@@ -438,7 +438,7 @@ echo_done
 }
 
 rpi_fconfig(){
-echo -e "${RED}Making bcmrpi defconfig${FIN}."
+echo -e "${WHT}Making bcmrpi defconfig${FIN}."
 module_sig
 rtl8812au_module
 rtl88x2bu_module
