@@ -56,7 +56,7 @@ EOF
 governor_service(){
 tee /etc/systemd/system/governor.service <<EOF
 [Unit]
-Description=Set Governor
+Description=Governor
 ConditionPathExists=/usr/local/bin/governor
 
 [Service]
