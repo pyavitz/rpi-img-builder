@@ -362,7 +362,8 @@ echo_done
 echo
 }
 
-module_sig(){
+edit_defconfig(){
+# module sig
 echo CONFIG_MODULE_SIG=y >> arch/arm64/configs/bcm2711_defconfig
 echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm64/configs/bcm2711_defconfig
 echo CONFIG_MODULE_SIG=y >> arch/arm/configs/bcm2711_defconfig
@@ -373,11 +374,38 @@ echo CONFIG_MODULE_SIG=y >> arch/arm/configs/bcm2709_defconfig
 echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm/configs/bcm2709_defconfig
 echo CONFIG_MODULE_SIG=y >> arch/arm/configs/bcmrpi_defconfig
 echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm/configs/bcmrpi_defconfig
+# cifs posix
+if [[ `grep -w "CONFIG_CIFS_POSIX=y" "arch/arm64/configs/bcm2711_defconfig"` ]]; then
+	:;
+else
+	echo "CONFIG_CIFS_POSIX=y" >> arch/arm64/configs/bcm2711_defconfig;
+fi
+if [[ `grep -w "CONFIG_CIFS_POSIX=y" "arch/arm64/configs/bcmrpi3_defconfig"` ]]; then
+	:;
+else
+	echo "CONFIG_CIFS_POSIX=y" >> arch/arm64/configs/bcmrpi3_defconfig;
+fi
+if [[ `grep -w "CONFIG_CIFS_POSIX=y" "arch/arm/configs/bcm2711_defconfig"` ]]; then
+	:;
+else
+	echo "CONFIG_CIFS_POSIX=y" >> arch/arm/configs/bcm2711_defconfig;
+fi
+if [[ `grep -w "CONFIG_CIFS_POSIX=y" "arch/arm/configs/bcm2709_defconfig"` ]]; then
+	:;
+else
+	echo "CONFIG_CIFS_POSIX=y" >> arch/arm/configs/bcm2709_defconfig;
+fi
+if [[ `grep -w "CONFIG_CIFS_POSIX=y" "arch/arm/configs/bcmrpi_defconfig"` ]]; then
+	:;
+else
+	echo "CONFIG_CIFS_POSIX=y" >> arch/arm/configs/bcmrpi_defconfig;
+fi
 }
+
 
 rpi4_fconfig(){
 echo -e "${WHT}Making bcm2711 defconfig${FIN}."
-module_sig
+edit_defconfig
 rtl8812au_module
 rtl88x2bu_module
 rtl8811cu_module
@@ -394,7 +422,7 @@ echo_done
 
 rpi4v7_fconfig(){
 echo -e "${WHT}Making bcm2711 defconfig${FIN}."
-module_sig
+edit_defconfig
 rtl8812au_module
 rtl88x2bu_module
 rtl8811cu_module
@@ -408,7 +436,7 @@ echo_done
 
 rpi3_fconfig(){
 echo -e "${WHT}Making bcmrpi3 defconfig${FIN}."
-module_sig
+edit_defconfig
 rtl8812au_module
 rtl88x2bu_module
 rtl8811cu_module
@@ -425,7 +453,7 @@ echo_done
 
 rpi2+3_fconfig(){
 echo -e "${WHT}Making bcm2709 defconfig${FIN}."
-module_sig
+edit_defconfig
 rtl8812au_module
 rtl88x2bu_module
 rtl8811cu_module
@@ -439,7 +467,7 @@ echo_done
 
 rpi_fconfig(){
 echo -e "${WHT}Making bcmrpi defconfig${FIN}."
-module_sig
+edit_defconfig
 rtl8812au_module
 rtl88x2bu_module
 rtl8811cu_module
