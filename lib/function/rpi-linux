@@ -364,16 +364,31 @@ echo
 
 edit_defconfig(){
 # module sig
-echo CONFIG_MODULE_SIG=y >> arch/arm64/configs/bcm2711_defconfig
-echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm64/configs/bcm2711_defconfig
-echo CONFIG_MODULE_SIG=y >> arch/arm/configs/bcm2711_defconfig
-echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm/configs/bcm2711_defconfig
-echo CONFIG_MODULE_SIG=y >> arch/arm64/configs/bcmrpi3_defconfig
-echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm64/configs/bcmrpi3_defconfig
-echo CONFIG_MODULE_SIG=y >> arch/arm/configs/bcm2709_defconfig
-echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm/configs/bcm2709_defconfig
-echo CONFIG_MODULE_SIG=y >> arch/arm/configs/bcmrpi_defconfig
-echo CONFIG_MODULE_SIG_KEY='"'certs/signing_key.pem'"' >> arch/arm/configs/bcmrpi_defconfig
+if [[ `grep -w "CONFIG_MODULE_SIG=y" "arch/arm64/configs/bcm2711_defconfig"` ]]; then
+	:;
+else
+	echo "CONFIG_MODULE_SIG=y" >> arch/arm64/configs/bcm2711_defconfig;
+fi
+if [[ `grep -w "CONFIG_MODULE_SIG=y" "arch/arm/configs/bcm2711_defconfig"` ]]; then
+	:;
+else
+	echo "CONFIG_MODULE_SIG=y" >> arch/arm/configs/bcm2711_defconfig;
+fi
+if [[ `grep -w "CONFIG_MODULE_SIG=y" "arch/arm64/configs/bcmrpi3_defconfig"` ]]; then
+	:;
+else
+	echo "CONFIG_MODULE_SIG=y" >> arch/arm64/configs/bcmrpi3_defconfig;
+fi
+if [[ `grep -w "CONFIG_MODULE_SIG=y" "arch/arm/configs/bcm2709_defconfig"` ]]; then
+	:;
+else
+	echo "CONFIG_MODULE_SIG=y" >> arch/arm/configs/bcm2709_defconfig;
+fi
+if [[ `grep -w "CONFIG_MODULE_SIG=y" "arch/arm/configs/bcmrpi_defconfig"` ]]; then
+	:;
+else
+	echo "CONFIG_MODULE_SIG=y" >> arch/arm/configs/bcmrpi_defconfig;
+fi
 # cifs posix
 if [[ `grep -w "CONFIG_CIFS_POSIX=y" "arch/arm64/configs/bcm2711_defconfig"` ]]; then
 	:;
@@ -401,6 +416,7 @@ else
 	echo "CONFIG_CIFS_POSIX=y" >> arch/arm/configs/bcmrpi_defconfig;
 fi
 }
+
 
 rpi4_fconfig(){
 echo -e "${WHT}Making bcm2711 defconfig${FIN}."
