@@ -417,7 +417,6 @@ else
 fi
 }
 
-
 rpi4_fconfig(){
 echo -e "${WHT}Making bcm2711 defconfig${FIN}."
 edit_defconfig
