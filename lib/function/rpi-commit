@@ -151,9 +151,7 @@ fi
 extract(){
 echo
 echo_extract
-echo -e -n "${WHT}"
 pv ${MLKERNEL}-$commit.tar.gz | tar -xzf - -C .
-echo -e -n "${FIN}"
 }
 
 # armv6l
@@ -362,61 +360,6 @@ echo_done
 echo
 }
 
-edit_defconfig(){
-# module sig
-if [[ `grep -w "CONFIG_MODULE_SIG=y" "arch/arm64/configs/bcm2711_defconfig"` ]]; then
-	:;
-else
-	echo "CONFIG_MODULE_SIG=y" >> arch/arm64/configs/bcm2711_defconfig;
-fi
-if [[ `grep -w "CONFIG_MODULE_SIG=y" "arch/arm/configs/bcm2711_defconfig"` ]]; then
-	:;
-else
-	echo "CONFIG_MODULE_SIG=y" >> arch/arm/configs/bcm2711_defconfig;
-fi
-if [[ `grep -w "CONFIG_MODULE_SIG=y" "arch/arm64/configs/bcmrpi3_defconfig"` ]]; then
-	:;
-else
-	echo "CONFIG_MODULE_SIG=y" >> arch/arm64/configs/bcmrpi3_defconfig;
-fi
-if [[ `grep -w "CONFIG_MODULE_SIG=y" "arch/arm/configs/bcm2709_defconfig"` ]]; then
-	:;
-else
-	echo "CONFIG_MODULE_SIG=y" >> arch/arm/configs/bcm2709_defconfig;
-fi
-if [[ `grep -w "CONFIG_MODULE_SIG=y" "arch/arm/configs/bcmrpi_defconfig"` ]]; then
-	:;
-else
-	echo "CONFIG_MODULE_SIG=y" >> arch/arm/configs/bcmrpi_defconfig;
-fi
-# cifs posix
-if [[ `grep -w "CONFIG_CIFS_POSIX=y" "arch/arm64/configs/bcm2711_defconfig"` ]]; then
-	:;
-else
-	echo "CONFIG_CIFS_POSIX=y" >> arch/arm64/configs/bcm2711_defconfig;
-fi
-if [[ `grep -w "CONFIG_CIFS_POSIX=y" "arch/arm64/configs/bcmrpi3_defconfig"` ]]; then
-	:;
-else
-	echo "CONFIG_CIFS_POSIX=y" >> arch/arm64/configs/bcmrpi3_defconfig;
-fi
-if [[ `grep -w "CONFIG_CIFS_POSIX=y" "arch/arm/configs/bcm2711_defconfig"` ]]; then
-	:;
-else
-	echo "CONFIG_CIFS_POSIX=y" >> arch/arm/configs/bcm2711_defconfig;
-fi
-if [[ `grep -w "CONFIG_CIFS_POSIX=y" "arch/arm/configs/bcm2709_defconfig"` ]]; then
-	:;
-else
-	echo "CONFIG_CIFS_POSIX=y" >> arch/arm/configs/bcm2709_defconfig;
-fi
-if [[ `grep -w "CONFIG_CIFS_POSIX=y" "arch/arm/configs/bcmrpi_defconfig"` ]]; then
-	:;
-else
-	echo "CONFIG_CIFS_POSIX=y" >> arch/arm/configs/bcmrpi_defconfig;
-fi
-}
-
 rpi4_fconfig(){
 echo -e "${WHT}Making bcm2711 defconfig${FIN}."
 edit_defconfig
@@ -424,7 +367,7 @@ rtl8812au_module
 rtl88x2bu_module
 rtl8811cu_module
 if [[ `grep -w "lto_clang_thin=1" "../../userdata.txt"` ]]; then
-	echo CONFIG_LTO_CLANG_THIN=y >> arch/arm64/configs/bcm2711_defconfig;
+	echo "CONFIG_LTO_CLANG_THIN=y" >> arch/arm64/configs/bcm2711_defconfig;
 fi
 if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
 	make -j${CORES} ARCH=arm64 ${ARM64_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=aarch64-linux-gnu- bcm2711_defconfig;
@@ -455,7 +398,7 @@ rtl8812au_module
 rtl88x2bu_module
 rtl8811cu_module
 if [[ `grep -w "lto_clang_thin=1" "../../userdata.txt"` ]]; then
-	echo CONFIG_LTO_CLANG_THIN=y >> arch/arm64/configs/bcmrpi3_defconfig;
+	echo "CONFIG_LTO_CLANG_THIN=y" >> arch/arm64/configs/bcmrpi3_defconfig;
 fi
 if [[ `grep -w "crosscompile=1" "../../userdata.txt"` ]]; then
 	make -j${CORES} ARCH=arm64 ${ARM64_CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=aarch64-linux-gnu- bcmrpi3_defconfig;

@@ -1,0 +1,55 @@
+# insert modules
+edit_defconfig(){
+# module sig
+if [[ `grep -w "CONFIG_MODULE_SIG=y" "arch/arm64/configs/bcm2711_defconfig"` ]]; then
+	:;
+else
+	echo "CONFIG_MODULE_SIG=y" >> arch/arm64/configs/bcm2711_defconfig;
+fi
+if [[ `grep -w "CONFIG_MODULE_SIG=y" "arch/arm/configs/bcm2711_defconfig"` ]]; then
+	:;
+else
+	echo "CONFIG_MODULE_SIG=y" >> arch/arm/configs/bcm2711_defconfig;
+fi
+if [[ `grep -w "CONFIG_MODULE_SIG=y" "arch/arm64/configs/bcmrpi3_defconfig"` ]]; then
+	:;
+else
+	echo "CONFIG_MODULE_SIG=y" >> arch/arm64/configs/bcmrpi3_defconfig;
+fi
+if [[ `grep -w "CONFIG_MODULE_SIG=y" "arch/arm/configs/bcm2709_defconfig"` ]]; then
+	:;
+else
+	echo "CONFIG_MODULE_SIG=y" >> arch/arm/configs/bcm2709_defconfig;
+fi
+if [[ `grep -w "CONFIG_MODULE_SIG=y" "arch/arm/configs/bcmrpi_defconfig"` ]]; then
+	:;
+else
+	echo "CONFIG_MODULE_SIG=y" >> arch/arm/configs/bcmrpi_defconfig;
+fi
+# cifs posix
+if [[ `grep -w "CONFIG_CIFS_POSIX=y" "arch/arm64/configs/bcm2711_defconfig"` ]]; then
+	:;
+else
+	echo "CONFIG_CIFS_POSIX=y" >> arch/arm64/configs/bcm2711_defconfig;
+fi
+if [[ `grep -w "CONFIG_CIFS_POSIX=y" "arch/arm64/configs/bcmrpi3_defconfig"` ]]; then
+	:;
+else
+	echo "CONFIG_CIFS_POSIX=y" >> arch/arm64/configs/bcmrpi3_defconfig;
+fi
+if [[ `grep -w "CONFIG_CIFS_POSIX=y" "arch/arm/configs/bcm2711_defconfig"` ]]; then
+	:;
+else
+	echo "CONFIG_CIFS_POSIX=y" >> arch/arm/configs/bcm2711_defconfig;
+fi
+if [[ `grep -w "CONFIG_CIFS_POSIX=y" "arch/arm/configs/bcm2709_defconfig"` ]]; then
+	:;
+else
+	echo "CONFIG_CIFS_POSIX=y" >> arch/arm/configs/bcm2709_defconfig;
+fi
+if [[ `grep -w "CONFIG_CIFS_POSIX=y" "arch/arm/configs/bcmrpi_defconfig"` ]]; then
+	:;
+else
+	echo "CONFIG_CIFS_POSIX=y" >> arch/arm/configs/bcmrpi_defconfig;
+fi
+}

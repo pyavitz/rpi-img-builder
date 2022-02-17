@@ -9,12 +9,12 @@ UD=userdata.txt
 userdata(){
 echo ""
 echo -e "You have ${RED}not${FIN} created a ${RED}userdata.txt${FIN} file."
-while [ true ] ; do
+while [ true ]; do
 read -t 3 -n 1
-if [ $? = 0 ] ; then
-exit ;
+if [ $? = 0 ]; then
+	exit;
 else
-dialog --infobox "Please review the README.md or run make mlconfig." 3 53
+	dialog --infobox "Please review the README.md or run make mlconfig." 3 53;
 fi
 done
 }
@@ -24,23 +24,19 @@ if [ -f "$UD" ]; then
 else
 	userdata;
 fi
-
-case `grep -Fx "rpiuser=1" "userdata.txt" >/dev/null; echo $?` in
-  0)
-    echo ""
-    echo -e "${RED}Wrong userdata file${FIN}!"
-    echo ""
-    while [ true ] ; do
-    read -t 2 -n 1
-    if [ $? = 0 ] ; then
-    exit ;
-    else
-    dialog --infobox "Please review the README.md or run make mlconfig." 3 53
-    fi
-    done
-    ;;
-esac
-
+if [[ `grep -w "rpiuser=1" "userdata.txt"` ]]; then
+	echo ""
+	echo -e "${RED}Wrong userdata file${FIN}!"
+	echo ""
+	while [ true ]; do
+	read -t 2 -n 1
+	if [ $? = 0 ]; then
+		exit;
+	else
+		dialog --infobox "Please review the README.md or run make mlconfig." 3 53;
+	fi
+	done
+fi
 # prep
 validation
 compiler

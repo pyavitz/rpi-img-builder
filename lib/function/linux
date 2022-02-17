@@ -85,9 +85,7 @@ else
 fi
 echo
 echo_extract
-echo -e -n "${WHT}"
 pv ${MLKERNEL}-${VERSION}.tar.gz | tar -xzf - -C .
-echo -e -n "${FIN}"
 cd ${MLKERNEL}-${VERSION}
 rpi4_firmware
 export ARCH=arm64
@@ -104,9 +102,7 @@ else
 fi
 echo
 echo_extract
-echo -e -n "${WHT}"
 pv ${MLKERNEL}-${VERSION}.tar.xz | tar -xJ ${MLKERNEL}-${VERSION}
-echo -e -n "${FIN}"
 cd ${MLKERNEL}-${VERSION}
 rpi4_firmware
 export ARCH=arm64
