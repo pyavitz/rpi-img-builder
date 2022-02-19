@@ -56,7 +56,7 @@ if [ -e rtl8811cu ]; then
 	git pull
 	cd ..;
 else
-	git clone https://github.com/morrownr/8821cu.git rtl8811cu;
+	git clone https://github.com/morrownr/8821cu-20210118.git rtl8811cu;
 fi
 echo_done
 }
