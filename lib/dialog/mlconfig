@@ -87,6 +87,7 @@ echo userscripts=0 >> tmp0
 echo verbose=0 >> tmp0
 echo CLANG_LLVM='"'LLVM=1 LLVM_IAS=1'"' >> tmp0
 echo lto_clang_thin=0 >> tmp0
+echo CORES=\`nproc\` >> tmp0
 echo CFLAGS='"''"' >> tmp0
 echo "set_locales(){" >> tmp0
 echo "apt install -y locales" >> tmp0
@@ -102,7 +103,7 @@ echo "}" >> tmp0
 echo 'NAMESERVER1="8.8.8.8"' >> tmp0
 echo 'NAMESERVER2="8.8.4.4"' >> tmp0
 echo devuser=1 >> tmp0
-echo builder=4.2 >> tmp0
+echo builder=4.3 >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
 echo >> tmp2
@@ -132,10 +133,10 @@ sed -i '17i### FILESYSTEM' userdata.txt
 sed -i '21i### CUSTOM' userdata.txt
 sed -i '26i### CLANG/LLVM' userdata.txt
 sed -i '29i### COMPILER TUNING' userdata.txt
-sed -i '31i### LOCALES' userdata.txt
-sed -i '39i### TIMEZONE' userdata.txt
-sed -i '44i### NAME SERVER' userdata.txt
-sed -i '47i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '32i### LOCALES' userdata.txt
+sed -i '40i### TIMEZONE' userdata.txt
+sed -i '45i### NAME SERVER' userdata.txt
+sed -i '48i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # clear screen
 clear

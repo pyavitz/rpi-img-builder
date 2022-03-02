@@ -127,10 +127,11 @@ verbose=0
 CLANG_LLVM="LLVM=1 LLVM_IAS=1"
 lto_clang_thin=0
 ### COMPILER TUNING
+CORES=\`nproc\`
 CFLAGS=""
 ### DO NOT EDIT BELOW THIS LINE
 admin=1
-builder=4.2
+builder=4.3
 EOF
 }
 

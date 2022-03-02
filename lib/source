@@ -8,14 +8,13 @@ OUT2="../output/bcm2709"
 OUT="../output/bcm2708"
 SRC="source"
 
-CORES=`nproc`
 KERNEL="linux-rpi"
 MLKERNEL="linux"
 KBUSER="marvin"
 KBHOST="martian"
 
 validation(){
-if [[ `grep -w "builder=4.2" "userdata.txt"` ]]; then
+if [[ `grep -w "builder=4.3" "userdata.txt"` ]]; then
 	:;
 else
 	echo -e "${YLW}Userdata file is old! Please create a new one${FIN}."

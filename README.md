@@ -87,6 +87,7 @@ Name:		# Name of _defconfig (Must be placed in defconfig dir.)
 ```sh
 nano userdata.txt
 ### COMPILER TUNING
+CORES=`nproc`
 CFLAGS=""
 ```
 ```sh

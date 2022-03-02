@@ -77,6 +77,7 @@ echo userscripts=0 >> tmp0
 echo verbose=0 >> tmp0
 echo CLANG_LLVM='"'LLVM=1 LLVM_IAS=1'"' >> tmp0
 echo lto_clang_thin=0 >> tmp0
+echo CORES=\`nproc\` >> tmp0
 echo CFLAGS='"''"' >> tmp0
 echo "set_locales(){" >> tmp0
 echo "apt install -y locales" >> tmp0
@@ -95,7 +96,7 @@ echo rtl8812au=0 >> tmp0
 echo rtl88x2bu=0 >> tmp0
 echo rtl8811cu=0 >> tmp0
 echo admin=1 >> tmp0
-echo builder=4.2 >> tmp0
+echo builder=4.3 >> tmp0
 echo '"' >> tmp2
 echo '"' >> tmp2
 echo >> tmp2
@@ -122,11 +123,11 @@ sed -i '14i### FILESYSTEM' userdata.txt
 sed -i '18i### CUSTOM' userdata.txt
 sed -i '23i### CLANG/LLVM' userdata.txt
 sed -i '26i### COMPILER TUNING' userdata.txt
-sed -i '28i### LOCALES' userdata.txt
-sed -i '36i### TIMEZONE' userdata.txt
-sed -i '41i### NAME SERVER' userdata.txt
-sed -i '44i### EXTRA WIRELESS' userdata.txt
-sed -i '48i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '29i### LOCALES' userdata.txt
+sed -i '37i### TIMEZONE' userdata.txt
+sed -i '42i### NAME SERVER' userdata.txt
+sed -i '45i### EXTRA WIRELESS' userdata.txt
+sed -i '49i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # clear screen
 clear
