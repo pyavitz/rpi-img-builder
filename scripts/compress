@@ -63,26 +63,36 @@ echo "Done."
 echo -en "Running check and cleaning ... "
 if [ -e rpi-$release.tar.xz ]; then
 	rm -fdr rpi-$release;
+	sha256sum rpi-$release.tar.xz > rpi-$release.sha256;
+	sha256sum --check rpi-$release.sha256;
 else
 	:;
 fi
 if [ -e rpi2-$release.tar.xz ]; then
 	rm -fdr rpi2-$release;
+	sha256sum rpi2-$release.tar.xz > rpi2-$release.sha256;
+	sha256sum --check rpi2-$release.sha256;
 else
 	:;
 fi
 if [ -e rpi3-$release.tar.xz ]; then
 	rm -fdr rpi3-$release;
+	sha256sum rpi3-$release.tar.xz > rpi3-$release.sha256;
+	sha256sum --check rpi3-$release.sha256;
 else
 	:;
 fi
 if [ -e rpi4-$release.tar.xz ]; then
 	rm -fdr rpi4-$release;
+	sha256sum rpi4-$release.tar.xz > rpi4-$release.sha256;
+	sha256sum --check rpi4-$release.sha256;
 else
 	:;
 fi
 if [ -e rpi4v7-$release.tar.xz ]; then
 	rm -fdr rpi4v7-$release;
+	sha256sum rpi4v7-$release.tar.xz > rpi4v7-$release.sha256;
+	sha256sum --check rpi4v7-$release.sha256;
 else
 	:;
 fi
