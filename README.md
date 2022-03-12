@@ -254,7 +254,7 @@ Upon install please run 'deb-eeprom -u' before using this script.
 Fetch, Linux kernel installer for the Raspberry Pi Image Builder
 Usage:
 
-   -1       Linux 5.10.y LTS
+   -1       Linux 5.15.y LTS
    -2       Linux Stable Branch
    -f       Update Wifi/BT Firmware
    -U       Update Raspberry Pi Userland
