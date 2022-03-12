@@ -27,7 +27,7 @@ echo -e "${WHT}"
 echo -ne "Select release:${FIN} "
 read release
 echo -e ""
-echo -en "Creating $release archives ... "
+echo -en "Creating $release archives: "
 if [ -e bcm2708 ]; then
 	mv -f bcm2708 rpi-$release;
 	XZ_DEFAULTS="--threads=${CORES}";tar cfJ rpi-$release.tar.xz rpi-$release;
@@ -58,9 +58,10 @@ if [ -e bcm2711v7 ]; then
 else
 	:;
 fi
-echo "Done."
+echo "[done]"
 
-echo -e "Running check and cleaning ... "
+echo ""
+echo -e "Running checks: "
 if [ -e rpi-$release.tar.xz ]; then
 	rm -fdr rpi-$release;
 	sha256sum rpi-$release.tar.xz > rpi-$release.sha256;
@@ -96,7 +97,6 @@ if [ -e rpi4v7-$release.tar.xz ]; then
 else
 	:;
 fi
-echo "Done."
 echo -e ""
 cd ..
 
