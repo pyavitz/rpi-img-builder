@@ -60,7 +60,7 @@ else
 fi
 echo "Done."
 
-echo -en "Running check and cleaning ... "
+echo -e "Running check and cleaning ... "
 if [ -e rpi-$release.tar.xz ]; then
 	rm -fdr rpi-$release;
 	sha256sum rpi-$release.tar.xz > rpi-$release.sha256;
