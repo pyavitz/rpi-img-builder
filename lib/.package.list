@@ -59,7 +59,7 @@ sudo apt install -y build-essential bison bc git dialog patch dosfstools \
 	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-11-arm-linux-gnueabi \
 	gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf gcc-11-arm-linux-gnueabihf \
 	gcc-9 gcc-10 gcc-11 gcc-12 debian-keyring make libelf-dev xfsprogs fdisk \
-	gcc-12-arm-linux-gnueabi gcc-12-arm-linux-gnueabihf gcc-12-aarch64-linux-gnu
+	gcc-12-arm-linux-gnueabi gcc-12-arm-linux-gnueabihf
 
 ### Native Dependencies for Debian Bullseye ( ARM )
 sudo apt install -y build-essential bison bc git dialog patch fdisk \
