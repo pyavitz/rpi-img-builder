@@ -28,7 +28,8 @@ sudo apt install -y build-essential bison bc git dialog patch fdisk distro-info-
 	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-11-arm-linux-gnueabi \
 	gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf gcc-11-arm-linux-gnueabihf \
 	gcc-9-aarch64-linux-gnu gcc-10-aarch64-linux-gnu gcc-11-aarch64-linux-gnu \
-	gcc-9 gcc-10 gcc-11 debian-archive-keyring debian-keyring make libelf-dev
+	gcc-9 gcc-10 gcc-11 gcc-12 debian-archive-keyring debian-keyring make libelf-dev \
+	gcc-12-arm-linux-gnueabi gcc-12-arm-linux-gnueabihf gcc-12-aarch64-linux-gnu
 
 ### Cross Dependencies for Debian Bullseye ( ARM64 )
 sudo apt install -y build-essential bison bc git dialog patch kpartx zstd \
@@ -57,7 +58,8 @@ sudo apt install -y build-essential bison bc git dialog patch dosfstools \
 	debian-archive-keyring crossbuild-essential-armel crossbuild-essential-armhf \
 	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-11-arm-linux-gnueabi \
 	gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf gcc-11-arm-linux-gnueabihf \
-	gcc-9 gcc-10 gcc-11 debian-keyring make libelf-dev xfsprogs fdisk
+	gcc-9 gcc-10 gcc-11 gcc-12 debian-keyring make libelf-dev xfsprogs fdisk \
+	gcc-12-arm-linux-gnueabi gcc-12-arm-linux-gnueabihf gcc-12-aarch64-linux-gnu
 
 ### Native Dependencies for Debian Bullseye ( ARM )
 sudo apt install -y build-essential bison bc git dialog patch fdisk \
@@ -80,4 +82,4 @@ sudo apt install -y build-essential bison bc git dialog patch \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
 	aria2 pv toilet figlet distro-info-data lsb-release xz-utils curl \
 	e2fsprogs btrfs-progs kpartx xfsprogs fdisk debian-archive-keyring \
-	debian-keyring make libelf-dev gcc-9 gcc-10 gcc-11
+	debian-keyring make libelf-dev gcc-9 gcc-10 gcc-11 gcc-12
