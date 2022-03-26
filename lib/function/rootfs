@@ -82,6 +82,28 @@ else
 fi
 }
 
+dpkg_check(){
+if [[ `uname -m | grep "x86_64"` ]]; then
+	MACHINE="amd64";
+fi
+if [[ `uname -m | grep "aarch64"` ]]; then
+	MACHINE="arm64";
+fi
+if [[ `grep -w "Ubuntu" "/etc/os-release"` ]]; [[ `grep -w "VERSION_CODENAME=jammy" "/etc/os-release"` ]]; then
+	:;
+else
+	if [[ `apt show dpkg | grep "Version: 1.21"` ]] > /dev/null 2>&1; then
+		:;
+	else
+		wget -cq https://github.com/pyavitz/debian-image-builder/releases/download/dpkg/dpkg_1.21.2_$MACHINE.deb;
+		wget -cq http://ftp.us.debian.org/debian/pool/main/d/debootstrap/debootstrap_1.0.126+nmu1_all.deb;
+		sudo dpkg -i *.deb;
+		rm -f *.deb;
+		echo "";
+	fi
+fi
+}
+
 # arm64
 arm64_debootstrap(){
 debootstrap --arch arm64 --foreign ${DISTRO_VERSION} ${ROOT}

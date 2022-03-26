@@ -7,7 +7,7 @@
 * **Raspberry Pi 0/W/B/+** (*Debian and Devuan*)
 * [Raspberry Pi Hardware](https://www.raspberrypi.org/documentation/hardware/raspberrypi)
 
-## Dependencies for Debian Bullseye and Ubuntu Focal / Jammy Jellyfish
+## Dependencies for Debian Bullseye and Jammy Jellyfish
 * **Recommended host:** Debian Bullseye
 
 **Install options:**

@@ -11,10 +11,6 @@ echo_nok(){
 echo -e -n "${PNK}[${FIN}${GRN}OK${FIN}${PNK}]${FIN}"
 }
 
-echo_focal(){
-echo -e -n "${PNK}[${FIN}${GRN}Ubuntu Focal${FIN}${PNK}]${FIN}"
-}
-
 echo_jammy(){
 echo -e -n "${PNK}[${FIN}${GRN}Ubuntu Jammy Jellyfish${FIN}${PNK}]${FIN}"
 }
@@ -71,23 +67,18 @@ fi
 distro_check(){
 echo -e -n "${WHT}Checking Host Machine:${FIN} "
 sleep 1s
-if [[ `grep -w "focal" "/etc/os-release"` ]]; then
-	echo_focal
-	echo ""
+if [[ `grep -w "jammy" "/etc/os-release"` ]]; then
+	echo_jammy
+	echo "";
 else
-	if [[ `grep -w "jammy" "/etc/os-release"` ]]; then
-		echo_jammy
+	if [[ `grep -w "bullseye" "/etc/os-release"` ]]; then
+		echo_bullseye
 		echo "";
 	else
-		if [[ `grep -w "bullseye" "/etc/os-release"` ]]; then
-			echo_bullseye
-			echo "";
-		else
-			echo_fail
-			echo ""
-			derror
-			exit > /dev/null 2>&1;
-		fi
+		echo_fail
+		echo ""
+		derror
+		exit > /dev/null 2>&1;
 	fi
 fi
 }
