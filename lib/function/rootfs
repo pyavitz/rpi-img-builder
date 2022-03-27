@@ -20,69 +20,11 @@ else
 fi
 }
 
-ubuntu_keyring(){
-URL0="http://ftp.us.debian.org/debian/pool/main/d/debootstrap/"
-URL1="http://ftp.us.debian.org/debian/pool/main/u/ubuntu-keyring/"
-FILE0="debootstrap_1.0.126_all.deb"
+ubuntu_setup(){
 FILE1="ubuntu-keyring_2020.06.17.1-1_all.deb"
 FILE2="ubuntu-archive-keyring_2020.06.17.1-1_all.deb"
 FILE3="ubuntu-cloud-keyring_2020.06.17.1-1_all.deb"
 FILE4="ubuntu-dbgsym-keyring_2020.06.17.1-1_all.deb"
-if [ -e /usr/share/keyrings/ubuntu-archive-keyring.gpg ]; then
-	:;
-else
-	wget -cq --show-progress $URL0$FILE0
-	wget -cq --show-progress $URL1$FILE1
-	wget -cq --show-progress $URL1$FILE2
-	wget -cq --show-progress $URL1$FILE3
-	wget -cq --show-progress $URL1$FILE4
-	sudo dpkg -i *.deb
-	rm -f *.deb
-	ubuntu_dbs_links;
-fi
-}
-
-ubuntu_dbs_links(){
-if [ -e /usr/share/debootstrap/scripts/impish ]; then
-	:;
-else
-	ln -sr /usr/share/debootstrap/scripts/gutsy /usr/share/debootstrap/scripts/impish;
-fi
-if [ -e /usr/share/debootstrap/scripts/jammy ]; then
-	:;
-else
-	ln -sr /usr/share/debootstrap/scripts/gutsy /usr/share/debootstrap/scripts/jammy;
-fi
-}
-
-ubuntu_rootfs(){
-DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
-TBURL="https://github.com/pyavitz/rootfs-tarballs/releases/download/rootfs/"
-if [[ `grep -w "Ubuntu" "/etc/os-release"` ]]; [[ `grep -w "VERSION_CODENAME=impish" "/etc/os-release"` ]]; then
-	:;
-else
-	if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; [[ `grep -w 'DISTRO_VERSION="impish"' "userdata.txt"` ]]; then
-		echo ""
-		echo -e "${WHT}Downloading${FIN} ..."
-		${DOWNLOAD} ${TBURL}ubuntu-impish-${ROOTFS_ARCH}.tar.xz
-		echo -e "[${WHT}done${FIN}]"
-		exit;
-	fi
-fi
-if [[ `grep -w "Ubuntu" "/etc/os-release"` ]]; [[ `grep -w "VERSION_CODENAME=jammy" "/etc/os-release"` ]]; then
-	:;
-else
-	if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; [[ `grep -w 'DISTRO_VERSION="jammy"' "userdata.txt"` ]]; then
-		echo ""
-		echo -e "${WHT}Downloading${FIN} ..."
-		${DOWNLOAD} ${TBURL}ubuntu-jammy-${ROOTFS_ARCH}.tar.xz
-		echo -e "[${WHT}done${FIN}]"
-		exit;
-	fi
-fi
-}
-
-dpkg_check(){
 if [[ `uname -m | grep "x86_64"` ]]; then
 	MACHINE="amd64";
 fi
@@ -99,7 +41,26 @@ else
 		wget -cq http://ftp.us.debian.org/debian/pool/main/d/debootstrap/debootstrap_1.0.126+nmu1_all.deb;
 		sudo dpkg -i *.deb;
 		rm -f *.deb;
-		echo "";
+	fi
+fi
+if [ -e /usr/share/keyrings/ubuntu-archive-keyring.gpg ]; then
+	:;
+else
+	wget -cq --show-progress http://ftp.us.debian.org/debian/pool/main/u/ubuntu-keyring/$FILE1
+	wget -cq --show-progress http://ftp.us.debian.org/debian/pool/main/u/ubuntu-keyring/$FILE2
+	wget -cq --show-progress http://ftp.us.debian.org/debian/pool/main/u/ubuntu-keyring/$FILE3
+	wget -cq --show-progress http://ftp.us.debian.org/debian/pool/main/u/ubuntu-keyring/$FILE4
+	sudo dpkg -i *.deb
+	rm -f *.deb
+	if [ -e /usr/share/debootstrap/scripts/impish ]; then
+		:;
+	else
+		ln -sr /usr/share/debootstrap/scripts/gutsy /usr/share/debootstrap/scripts/impish;
+	fi
+	if [ -e /usr/share/debootstrap/scripts/jammy ]; then
+		:;
+	else
+		ln -sr /usr/share/debootstrap/scripts/gutsy /usr/share/debootstrap/scripts/jammy;
 	fi
 fi
 }
