@@ -212,7 +212,7 @@ files, whilst leaving rename_to_credentials.txt untouched.
 /etc/opt/wpa_supplicant.manual
 
 If you want use ethernet instead of wifi,
-use command: 'swh -d' to disable wifi after booting to os
+use command: 'swh -d' to disable wifi after booting to OS.
 ```
 
 ### Ubuntu
