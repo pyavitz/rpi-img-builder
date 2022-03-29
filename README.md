@@ -210,6 +210,9 @@ files, whilst leaving rename_to_credentials.txt untouched.
 
 /etc/opt/interfaces.manual
 /etc/opt/wpa_supplicant.manual
+
+If you want use ethernet instead of wifi,
+use command: 'swh -d' to disable wifi after booting to OS.
 ```
 
 ### Ubuntu
@@ -239,7 +242,7 @@ For headless use: ssh user@ipaddress
 
 ```sh
 Raspberry Pi 4B EEPROM Helper Script
-Usage:
+deb-eeprom -h
 
    -U       Upgrade eeprom package
    -w       Transfer to USB	# Supported: EXT4, BTRFS and F2FS
@@ -252,7 +255,7 @@ Upon install please run 'deb-eeprom -u' before using this script.
 #### Using fetch ([initrd support](https://github.com/pyavitz/rpi-img-builder/pull/26))
 ```sh
 Fetch, Linux kernel installer for the Raspberry Pi Image Builder
-Usage:
+fetch -h
 
    -1       Linux 5.15.y LTS
    -2       Linux Stable Branch
@@ -266,7 +269,7 @@ fetch -u will list available options and kernel revisions
 
 #### Simple wifi helper (Debian / Devuan)
 ```sh
-Usage:
+swh -h
 
    -s       Scan for SSID's
    -u       Bring up interface
@@ -278,7 +281,7 @@ Usage:
 
 #### CPU frequency scaling
 ```sh
-Usage:
+governor -h
 
    -c       Conservative
    -o       Ondemand
