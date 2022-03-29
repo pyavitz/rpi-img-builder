@@ -1,14 +1,12 @@
 #!/bin/bash
 if [[ `grep -w 'DISTRO="debian"' "userdata.txt"` ]]; then
 	source lib/function/debian;
-else
-	if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
-		source lib/function/devuan;
-	else
-		if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; then
-			source lib/function/ubuntu;
-		fi
-	fi
+fi
+if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
+	source lib/function/devuan;
+fi
+if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; then
+	source lib/function/ubuntu;
 fi
 source lib/function/universal
 source lib/function/boot
@@ -43,32 +41,27 @@ else
 fi
 if [[ `grep -w 'DISTRO="debian"' "userdata.txt"` ]]; then
 	debian_banner;
-else
-	if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
-		devuan_banner;
-	else
-		if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; then
-			ubuntu_banner;
-		fi
-	fi
+fi
+if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
+	devuan_banner;
+fi
+if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; then
+	ubuntu_banner;
 fi
 RAM=0
 PROXY=""
 IMAGE_FOLDER="img/"
 if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
 	DEVICE_SOC="rpi-4";
-else
-	if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
-		DEVICE_SOC="rpi-3";
-	else
-		if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
-			DEVICE_SOC="rpi-2+3";
-		else
-			if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
-				DEVICE_SOC="rpi";
-			fi
-		fi
-	fi
+fi
+if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
+	DEVICE_SOC="rpi-3";
+fi
+if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
+	DEVICE_SOC="rpi-2+3";
+fi
+if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
+	DEVICE_SOC="rpi";
 fi
 IMAGE_DATE="$(date +%F)"
 IMAGE_FILE_NAME="${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img"
@@ -81,10 +74,10 @@ if [ $RAM -ne 0 ]; then
 fi
 
 if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
-	image_size
+	partitions
 	partition_uuid;
 else
-	image_size > /dev/null 2>&1
+	partitions > /dev/null 2>&1
 	partition_uuid > /dev/null 2>&1;
 fi
 
@@ -105,18 +98,15 @@ fi
 ### config dot txt
 if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
 	bcm2711_config > /dev/null 2>&1;
-else
-	if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
-		bcm2710_config > /dev/null 2>&1;
-	else
-		if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
-			bcm2709_config > /dev/null 2>&1;
-		else
-			if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
-				bcm2708_config > /dev/null 2>&1;
-			fi
-		fi
-	fi
+fi
+if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
+	bcm2710_config > /dev/null 2>&1;
+fi
+if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
+	bcm2709_config > /dev/null 2>&1;
+fi
+if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
+	bcm2708_config > /dev/null 2>&1;
 fi
 if [ -e p1/config.txt ]; then
 	echo
@@ -130,38 +120,33 @@ else
 	echo_fail
 	exit;
 fi
-bcm2711_config_arch
-bcm2708_initrd
-### extract rootfs
 if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
 	if [[ `grep -w "arm64" "soc.txt"` ]]; then
-		aarch64_rootfs;
+		:;
 	else
-		armhf_rootfs;
+		sed -i '1d' p1/config.txt;
+		sed -i 's/kernel=kernel8.img/kernel=kernel7l.img/g' p1/config.txt;
 	fi
 fi
-if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
-	aarch64_rootfs;
-else
-	if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
-		armhf_rootfs;
-	else
-		if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
-			armel_rootfs;
-		fi
+if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
+	if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
+		sed -i 's/initramfs initrd.gz followkernel/#initramfs initrd.gz followkernel/g' p1/config.txt;
 	fi
 fi
+### extract rootfs
+extract_rootfs
 
 mkdir -p p2/etc/apt/apt.conf.d p2/etc/dpkg/dpkg.cfg.d
 echo "force-unsafe-io" > "p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
 
 # qemu static
 if [[ `grep -w "arm64" "soc.txt"` ]]; then
-	qemu_arm64;
-else
-	if [[ `grep -w "arm" "soc.txt"` ]]; then
-		qemu_arm;
-	fi
+	mkdir -p p2/usr/bin;
+	cp $(command -v "qemu-aarch64-static") p2/usr/bin;
+fi
+if [[ `grep -w "arm" "soc.txt"` ]]; then
+	mkdir -p p2/usr/bin;
+	cp $(command -v "qemu-arm-static") p2/usr/bin;
 fi
 
 if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
@@ -224,12 +209,11 @@ umount p2/dev
 umount p2/boot
 
 # qemu remove static
-if [[ `grep -w "arm64" "soc.txt"` ]]; then
-	qemu_arm64_remove;
-else
-	if [[ `grep -w "arm" "soc.txt"` ]]; then
-		qemu_arm_remove;
-	fi
+if [ -e p2/usr/bin/qemu-aarch64-static ]; then
+	rm -f p2/usr/bin/qemu-aarch64-static;
+fi
+if [ -e p2/usr/bin/qemu-arm-static ]; then
+	rm -f p2/usr/bin/qemu-arm-static;
 fi
 cp -f p2/root/kernel.txt .
 rm p2/root/stage2

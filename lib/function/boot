@@ -1,19 +1,13 @@
-image_size(){
+partitions(){
 if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
 	truncate -s ${EXT4} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
-else
-	if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
-		truncate -s ${BTRFS} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
-	else
-		if [[ `grep -w "xfs=1" "userdata.txt"` ]]; then
-			truncate -s ${XFS} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
-		fi
-	fi
 fi
-partitions
-}
-
-partitions(){
+if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
+	truncate -s ${BTRFS} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+fi
+if [[ `grep -w "xfs=1" "userdata.txt"` ]]; then
+	truncate -s ${XFS} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+fi
 fdisk "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" <<EOF
 o
 n
@@ -41,14 +35,12 @@ partprobe "${IMAGE_LOOP_DEV}"
 mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
 if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
 	mkfs.ext4 -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}";
-else
-	if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
-		mkfs.btrfs -f -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}";
-	else
-		if [[ `grep -Fx "xfs=1" "userdata.txt"` ]]; then
-			mkfs.xfs -f -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}";
-		fi
-	fi
+fi
+if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
+	mkfs.btrfs -f -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}";
+fi
+if [[ `grep -Fx "xfs=1" "userdata.txt"` ]]; then
+	mkfs.xfs -f -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}";
 fi
 mkdir -p p1 p2
 mount "${IMAGE_LOOP_DEV_BOOT}" p1
@@ -60,51 +52,28 @@ sync
 umount p2
 if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
 	mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2;
-else
-	if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
-		mount -o compress=lzo,noatime,subvol=@ "${IMAGE_LOOP_DEV_ROOTFS}" p2;
-	else
-		if [[ `grep -w "xfs=1" "userdata.txt"` ]]; then
-			mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2;
-		fi
-	fi
+fi
+if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
+	mount -o compress=lzo,noatime,subvol=@ "${IMAGE_LOOP_DEV_ROOTFS}" p2;
+fi
+if [[ `grep -w "xfs=1" "userdata.txt"` ]]; then
+	mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2;
 fi
 }
 
 create_fstab(){
 if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
-	ext4_fstab;
-else
-	if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
-		btrfs_fstab;
-	else
-		if [[ `grep -w "xfs=1" "userdata.txt"` ]]; then
-			xfs_fstab;
-		fi
-	fi
+	FSTYPE="ext4	defaults,noatime,nodiratime,commit=600,errors=remount-ro 0 1"
 fi
-}
-
-btrfs_fstab(){
+if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
+	FSTYPE="btrfs	defaults,compress=lzo,noatime,subvol=@ 0 1";
+fi
+if [[ `grep -w "xfs=1" "userdata.txt"` ]]; then
+	FSTYPE="xfs	defaults,noatime 0 1"
+fi
 tee p2/etc/fstab <<EOF
-UUID=${BOOT_UUID}	/boot		vfat    defaults 0 2
-UUID=${ROOT_UUID}	/		btrfs	defaults,compress=lzo,noatime,subvol=@ 0 1
-tmpfs	/tmp		tmpfs	defaults,nosuid 0 0
-EOF
-}
-
-ext4_fstab(){
-tee p2/etc/fstab <<EOF
-UUID=${BOOT_UUID}	/boot		vfat    defaults 0 2
-UUID=${ROOT_UUID}	/		ext4	defaults,noatime,nodiratime,commit=600,errors=remount-ro 0 1
-tmpfs	/tmp		tmpfs	defaults,nosuid 0 0
-EOF
-}
-
-xfs_fstab(){
-tee p2/etc/fstab <<EOF
-UUID=${BOOT_UUID}	/boot		vfat    defaults 0 2
-UUID=${ROOT_UUID}	/		xfs	defaults,noatime 0 1
+UUID=${BOOT_UUID}	/boot	vfat	defaults 0 2
+UUID=${ROOT_UUID}	/	${FSTYPE}
 tmpfs	/tmp		tmpfs	defaults,nosuid 0 0
 EOF
 }
@@ -123,33 +92,16 @@ source part-uuid.txt
 
 cmdline(){
 if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
-	cmdline_ext4;
-else
-	if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
-		cmdline_btrfs;
-	else
-		if [[ `grep -w "xfs=1" "userdata.txt"` ]]; then
-			cmdline_xfs;
-		fi
-	fi
+	ROOTFSTYPE="rootfstype=ext4";
 fi
-}
-
-cmdline_ext4(){
+if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
+	ROOTFSTYPE="rootfstype=btrfs rootflags=subvol=@";
+fi
+if [[ `grep -w "xfs=1" "userdata.txt"` ]]; then
+	ROOTFSTYPE="rootfstype=xfs";
+fi
 tee p1/cmdline.txt <<EOF
-console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=ext4 fsck.repair=yes logo.nologo net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm rootwait
-EOF
-}
-
-cmdline_btrfs(){
-tee p1/cmdline.txt <<EOF
-console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=btrfs rootflags=subvol=@ fsck.repair=yes logo.nologo net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm rootwait
-EOF
-}
-
-cmdline_xfs(){
-tee p1/cmdline.txt <<EOF
-console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=xfs fsck.repair=yes logo.nologo net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm rootwait
+console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} ${ROOTFSTYPE} fsck.repair=yes logo.nologo net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm rootwait
 EOF
 }
 

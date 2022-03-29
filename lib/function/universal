@@ -1,97 +1,35 @@
 # Stage1
-qemu_arm64(){
-mkdir -p p2/usr/bin
-cp $(command -v "qemu-aarch64-static") p2/usr/bin
-}
-
-qemu_arm(){
-mkdir -p p2/usr/bin
-cp $(command -v "qemu-arm-static") p2/usr/bin
-}
-
-qemu_arm64_remove(){
-rm p2/usr/bin/qemu-aarch64-static
-}
-
-qemu_arm_remove(){
-rm p2/usr/bin/qemu-arm-static
-}
-
-bcm2711_config_arch(){
-if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
-	if [[ `grep -w "arm64" "soc.txt"` ]]; then
-		:;
-	else
-		sed -i '1d' p1/config.txt;
-		sed -i 's/kernel=kernel8.img/kernel=kernel7l.img/g' p1/config.txt;
-	fi
-fi
-}
-
-bcm2708_initrd(){
-if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
-	if [[ `grep -Fx "ext4=1" "userdata.txt"` ]]; then
-		sed -i 's/initramfs initrd.gz followkernel/#initramfs initrd.gz followkernel/g' p1/config.txt;
-	fi
-fi
-}
 
 # rootfs
-aarch64_extract(){
-tar -xf ${DISTRO}-${DISTRO_VERSION}-rootfs-aarch64.tar.xz -C p2/
-}
-
-armhf_extract(){
-tar -xf ${DISTRO}-${DISTRO_VERSION}-rootfs-armhf.tar.xz -C p2/
-}
-
-armel_extract(){
-tar -xf ${DISTRO}-${DISTRO_VERSION}-rootfs-armel.tar.xz -C p2/
-}
-
-aarch64_rootfs(){
-if [ -e ${DISTRO}-${DISTRO_VERSION}-rootfs-aarch64.tar.xz ]; then
-	echo
+extract_rootfs(){
+if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
+	if [[ `grep -w "arm64" "soc.txt"` ]]; then
+		ROOTFS_ARCH="rootfs-aarch64";
+	else
+		ROOTFS_ARCH="rootfs-armhf";
+	fi
+fi
+if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
+	ROOTFS_ARCH="rootfs-aarch64";
+fi
+if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
+	ROOTFS_ARCH="rootfs-armhf";
+fi
+if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
+	ROOTFS_ARCH="rootfs-armel";
+fi
+if [ -e ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz ]; then
+	echo ""
 	echo -n "Extracting rootfs "
-	aarch64_extract
+	tar -xf ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz -C p2/
 	echo_bdone;
 else
-	echo
+	echo ""
 	echo -e "${YLW}Missing rootfs tarball${FIN}!"
 	make cleanup
 	exit;
 fi
-echo
-}
-
-armhf_rootfs(){
-if [ -e ${DISTRO}-${DISTRO_VERSION}-rootfs-armhf.tar.xz ]; then
-	echo
-	echo -n "Extracting rootfs "
-	armhf_extract
-	echo_bdone;
-else
-	echo
-	echo -e "${YLW}Missing rootfs tarball${FIN}!"
-	make cleanup
-	exit;
-fi
-echo
-}
-
-armel_rootfs(){
-if [ -e ${DISTRO}-${DISTRO_VERSION}-rootfs-armel.tar.xz ]; then
-	echo
-	echo -n "Extracting rootfs "
-	armel_extract
-	echo_bdone;
-else
-	echo
-	echo -e "${YLW}Missing rootfs tarball${FIN}!"
-	make cleanup
-	exit;
-fi
-echo
+echo ""
 }
 
 # banners
@@ -745,14 +683,8 @@ fi
 # Shrink
 ext4_shrink(){
 echo ""
-echo_shrink
 chmod +x scripts/shrink
 scripts/shrink -s ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img
-fix_cmdline
-echo_done
-}
-
-fix_cmdline(){
 echo 'LOOP1="/dev/mapper/' > kpart1
 echo 'LOOP2="/dev/mapper/' >> kpart1
 IMAGE_FILE="${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img"
@@ -769,22 +701,17 @@ mkdir -p p1
 sleep 1s
 mount "${BOOT}" p1
 rm -f p1/cmdline.txt
-new_partuuid
+rm -f part-uuid.txt
+ROOTFS="${LOOP2}"
+ROOT_PARTUUID=$(blkid -o export -- ${ROOTFS} | sed -ne 's/^PARTUUID=//p')
+echo ROOT_PARTUUID='"'$ROOT_PARTUUID'"' > part-uuid.txt
+source part-uuid.txt
 cmdline
 sleep 1s
 umount p1
 rm -fdr p1
 kpartx -d ${IMAGE_FILE}
 rm -f kpart.txt
-}
-
-new_partuuid(){
-rm -f part-uuid.txt
-ROOTFS="${LOOP2}"
-ROOT_PARTUUID=$(blkid -o export -- ${ROOTFS} | sed -ne 's/^PARTUUID=//p')
-echo ROOT_PARTUUID='"'$ROOT_PARTUUID'"' > part-uuid.txt
-
-source part-uuid.txt
 }
 
 # Rename and compress

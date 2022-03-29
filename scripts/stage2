@@ -49,26 +49,22 @@ if [[ `grep -w 'DISTRO="ubuntu"' "/root/userdata.txt"` ]]; then
 fi
 if [[ `grep -w "ext4=1" "/root/userdata.txt"` ]]; then
 	apt install -y e2fsprogs;
-else
-	if [[ `grep -w "btrfs=1" "/root/userdata.txt"` ]]; then
-		apt install -y btrfs-progs;
-	else
-		if [[ `grep -w "xfs=1" "/root/userdata.txt"` ]]; then
-			apt install -y xfsprogs;
-		fi
-	fi
+fi
+if [[ `grep -w "btrfs=1" "/root/userdata.txt"` ]]; then
+	apt install -y btrfs-progs;
+fi
+if [[ `grep -w "xfs=1" "/root/userdata.txt"` ]]; then
+	apt install -y xfsprogs;
 fi
 if [[ `grep -w 'DISTRO="debian"' "/root/userdata.txt"` ]]; then
 	apt install -y ${PKG1} ${PKG2} ${FIRMWARE} resolvconf openssh-client openssh-server;
-else
-	if [[ `grep -w 'DISTRO="devuan"' "/root/userdata.txt"` ]]; then
-		apt install -y openssh-client openssh-server --no-install-recommends;
-		apt install -y ${PKG1} ${PKG2} ${FIRMWARE} openresolv ntp ifupdown-extra;
-	else
-		if [[ `grep -w 'DISTRO="ubuntu"' "/root/userdata.txt"` ]]; then
-			apt install -y ${PKG1} ${PKG2} openresolv network-manager openssh-client openssh-server;
-		fi
-	fi
+fi
+if [[ `grep -w 'DISTRO="devuan"' "/root/userdata.txt"` ]]; then
+	apt install -y openssh-client openssh-server --no-install-recommends;
+	apt install -y ${PKG1} ${PKG2} ${FIRMWARE} openresolv ntp ifupdown-extra;
+fi
+if [[ `grep -w 'DISTRO="ubuntu"' "/root/userdata.txt"` ]]; then
+	apt install -y ${PKG1} ${PKG2} openresolv network-manager openssh-client openssh-server;
 fi
 apt -y clean
 apt -y autoclean
@@ -147,14 +143,12 @@ fi
 ### Network Setup
 if [[ `grep -w 'DISTRO="debian"' "/root/userdata.txt"` ]]; then
 	network_setup > /dev/null 2>&1;
-else
-	if [[ `grep -w 'DISTRO="devuan"' "/root/userdata.txt"` ]]; then
-		network_setup > /dev/null 2>&1;
-	else
-		if [[ `grep -w 'DISTRO="ubuntu"' "/root/userdata.txt"` ]]; then
-			network_manager;
-		fi
-	fi
+fi
+if [[ `grep -w 'DISTRO="devuan"' "/root/userdata.txt"` ]]; then
+	network_setup > /dev/null 2>&1;
+fi
+if [[ `grep -w 'DISTRO="ubuntu"' "/root/userdata.txt"` ]]; then
+	network_manager;
 fi
 
 ### ZSWAP
