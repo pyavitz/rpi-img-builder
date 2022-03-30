@@ -17,54 +17,31 @@ rm -f root1 root2 root3
 }
 
 create_cmdline(){
-if [[ `blkid | grep -w "ext4"` ]]; then
-	cmdline_ext4 > /dev/null 2>&1;
-else
-	if [[ `blkid | grep -w "btrfs"` ]]; then
-		cmdline_btrfs > /dev/null 2>&1;
-	else
-		if [[ `blkid | grep -w "xfs"` ]]; then
-			cmdline_xfs > /dev/null 2>&1;
-		fi
-	fi
+if [[ `findmnt -v -n -o FSTYPE / | grep -w "ext4"` ]]; then
+	ROOTFSTYPE="rootfstype=ext4";
 fi
-}
-
-cmdline_btrfs(){
+if [[ `findmnt -v -n -o FSTYPE / | grep -w "btrfs"` ]]; then
+	ROOTFSTYPE="rootfstype=btrfs rootflags=subvol=@";
+fi
+if [[ `findmnt -v -n -o FSTYPE / | grep -w "xfs"` ]]; then
+	ROOTFSTYPE="rootfstype=xfs";
+fi
 source /etc/opt/root-pid.txt
 rm -f /boot/cmdline.txt
 tee /boot/cmdline.txt <<EOF
-console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=btrfs rootflags=subvol=@ fsck.repair=yes logo.nologo net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm rootwait
-EOF
-rm -f /etc/opt/root-pid.txt
-}
-
-cmdline_ext4(){
-source /etc/opt/root-pid.txt
-rm -f /boot/cmdline.txt
-tee /boot/cmdline.txt <<EOF
-console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=ext4 fsck.repair=yes logo.nologo net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm rootwait
-EOF
-rm -f /etc/opt/root-pid.txt
-}
-
-cmdline_xfs(){
-source /etc/opt/root-pid.txt
-rm -f /boot/cmdline.txt
-tee /boot/cmdline.txt <<EOF
-console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} rootfstype=xfs fsck.repair=yes logo.nologo net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm rootwait
+console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} ${ROOTFSTYPE} fsck.repair=yes logo.nologo net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm rootwait
 EOF
 rm -f /etc/opt/root-pid.txt
 }
 
 disable_bthelper(){
-if [[ `dmesg | grep -w "Raspberry\ Pi\ 2"` ]]; then
+if [[ `grep -w "Raspberry\ Pi\ 2" "/proc/cpuinfo"` ]]; then
 	update-rc.d -f bthelper remove;
 fi
-if [[ `dmesg | grep -w "Raspberry\ Pi\ Model\ B\ Rev\ 1"` ]]; then
+if [[ `grep -w "Raspberry\ Pi\ Model\ B\ Rev\ 1" "/proc/cpuinfo"` ]]; then
 	update-rc.d -f bthelper remove;
 fi
-if [[ `dmesg | grep -w "Raspberry\ Pi\ Model\ B\ Rev\ 2"` ]]; then
+if [[ `grep -w "Raspberry\ Pi\ Model\ B\ Rev\ 2" "/proc/cpuinfo"` ]]; then
 	update-rc.d -f bthelper remove;
 fi
 }
@@ -84,13 +61,13 @@ if [[ `findmnt -v -n -o SOURCE / | grep "sd"` ]]; then
 	bash growpart $GROW_SD > /dev/null 2>&1;
 fi
 sleep 1s
-if [[ `blkid | grep -w "ext4"` ]]; then
+if [[ `findmnt -v -n -o FSTYPE / | grep -w "ext4"` ]]; then
 	resize2fs $ROOTFS > /dev/null 2>&1;
 else
-	if [[ `blkid | grep -w "btrfs"` ]]; then
+	if [[ `findmnt -v -n -o FSTYPE / | grep -w "btrfs"` ]]; then
 		btrfs filesystem resize max / > /dev/null 2>&1;
 	else
-		if [[ `blkid | grep -w "xfs"` ]]; then
+		if [[ `findmnt -v -n -o FSTYPE / | grep -w "xfs"` ]]; then
 			xfs_growfs -d / > /dev/null 2>&1;
 		fi
 	fi

@@ -1,8 +1,9 @@
 #!/bin/bash
-COL="\033[1m"
+WHT="\033[1m"
 FIN="\033[0m"
 
-echo -e "${COL}Running System Setup${FIN} ..."
+echo ""
+echo -e "${WHT}Running System Setup${FIN} ..."
 sleep 1s
 sudo dpkg-reconfigure locales tzdata keyboard-configuration
 sleep 1s
@@ -15,5 +16,7 @@ fi
 sleep 1s
 sudo update-ca-certificates -f
 echo ""
-echo -e "${COL}System is ready to go${FIN}."
-sudo rm -f /usr/local/bin/run-setup
+echo -e "${WHT}System is ready to go${FIN}."
+if [ -e /usr/local/bin/run-setup ]; then
+	sudo rm -f /usr/local/bin/run-setup;
+fi
