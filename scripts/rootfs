@@ -37,6 +37,11 @@ else
 	userdata;
 fi
 validation
+if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
+	set -eux -o pipefail;
+else
+	set -eu -o pipefail;
+fi
 if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
 	devuan_keyring;
 fi
@@ -46,11 +51,6 @@ else
 	if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; then
 		ubuntu_setup;
 	fi
-fi
-if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
-	set -eux -o pipefail;
-else
-	set -eu -o pipefail;
 fi
 ROOT="sysroot"
 RELEASE=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz

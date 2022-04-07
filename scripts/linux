@@ -39,6 +39,11 @@ if [[ `grep -w "rpiuser=1" "userdata.txt"` ]]; then
 fi
 # prep
 validation
+if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
+	set -eux -o pipefail;
+else
+	set -eu -o pipefail;
+fi
 compiler
 source_dir
 mainline_clean

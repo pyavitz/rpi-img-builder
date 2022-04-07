@@ -84,7 +84,7 @@ fi
 wget -cq --show-progress ${URL}swh
 wget -cq --show-progress ${URL}fetch
 wget -cq --show-progress ${URL}governor
-mv -f {swh,fetch,governor,run-setup,sysinfo,smon} /usr/local/bin/
+mv -f {swh,fetch,governor,setup,sysinfo,smon} /usr/local/bin/
 if [[ `grep -w "userscripts=1" "/root/userdata.txt"` ]]; then
 	uscripts_stage2;
 fi

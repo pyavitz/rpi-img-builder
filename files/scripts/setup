@@ -1,0 +1,52 @@
+#!/bin/bash
+WHT="\033[1m"
+FIN="\033[0m"
+
+run(){
+echo ""
+echo -e "${WHT}Running System Setup${FIN} ..."
+sleep 1s
+sudo dpkg-reconfigure locales tzdata keyboard-configuration
+sleep 1s
+if [ -e /etc/new.motd ]; then
+	sudo rm -f /etc/motd
+	sudo mv -f /etc/new.motd /etc/motd;
+else
+	:;
+fi
+sleep 1s
+sudo update-ca-certificates -f
+echo ""
+echo -e "${WHT}System is ready to go${FIN}."
+if [ -e /usr/local/bin/setup ]; then
+	sudo rm -f /usr/local/bin/setup;
+fi
+}
+
+if [ $# -eq 0 ]; then
+	echo -e "\e[0;31mMissing options!${FIN}"
+	echo "(run $0 -h for help)"
+	echo ""
+	exit 0
+fi
+
+ECHO="false"
+
+while getopts "rh" OPTION; do
+	case $OPTION in
+
+		r)
+			ECHO="RUN"
+			;;
+		h)                       
+			echo ""
+			echo -e "   -r        Run"
+			echo ""
+			exit 0
+			;;
+	esac
+done
+
+if [ $ECHO = "RUN" ]; then
+	run;
+fi

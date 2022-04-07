@@ -4,4 +4,6 @@ umount -l p1 p2 > /dev/null 2>&1
 rm -fdr p1 p2 img sysroot > /dev/null 2>&1
 rm -f {part-uuid.txt,soc.txt,kernel.txt,kpart*,gcc.txt,ccache.txt,clang.txt}
 losetup -d /dev/loop* > /dev/null 2>&1
+sleep 1s
+losetup -d /dev/loop* > /dev/null 2>&1
 echo Done.
