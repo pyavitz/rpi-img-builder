@@ -690,7 +690,12 @@ echo 'LOOP2="/dev/mapper/' >> kpart1
 IMAGE_FILE="${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img"
 kpartx="$(kpartx -av $IMAGE_FILE)"
 echo "$kpartx"
-grep -o 'loop.p.' <<<"$kpartx" > kpart2
+if [[ `grep -w "VERSION_CODENAME=jammy" "/etc/os-release"` ]]; then
+	# snapd woes; grep for higher loop numbers
+	grep -o 'loop[0-9]\+p.' <<<"$kpartx" > kpart2;
+else
+	grep -o 'loop.p.' <<<"$kpartx" > kpart2;
+fi
 echo '"' > kpart3
 echo '"' >> kpart3
 paste -d '\0' kpart1 kpart2 kpart3 > kpart.txt
