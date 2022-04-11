@@ -69,7 +69,7 @@ Distribution
 Distro:		# Supported: debian, devuan and ubuntu
 Release:	# Debian: bullseye, bookworm, testing, unstable and sid
 		# Devuan: chimaera, daedalus, testing, unstable and ceres
-		# Ubuntu: focal, impish and jammy
+		# Ubuntu: focal and jammy
 
 Filesystem
 ext4:		# 1 to select (default)

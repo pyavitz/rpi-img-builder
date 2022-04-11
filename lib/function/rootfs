@@ -21,10 +21,13 @@ fi
 }
 
 ubuntu_setup(){
-FILE1="ubuntu-keyring_2020.06.17.1-1_all.deb"
-FILE2="ubuntu-archive-keyring_2020.06.17.1-1_all.deb"
-FILE3="ubuntu-cloud-keyring_2020.06.17.1-1_all.deb"
-FILE4="ubuntu-dbgsym-keyring_2020.06.17.1-1_all.deb"
+URL="https://github.com/pyavitz/debian-image-builder/releases/download/dpkg/"
+FILE1="dpkg_1.21.2_$MACHINE.deb"
+FILE2="debootstrap_1.0.126+nmu1_all.deb"
+FILE3="ubuntu-keyring_2020.06.17.1-1_all.deb"
+FILE4="ubuntu-archive-keyring_2020.06.17.1-1_all.deb"
+FILE5="ubuntu-cloud-keyring_2020.06.17.1-1_all.deb"
+FILE6="ubuntu-dbgsym-keyring_2020.06.17.1-1_all.deb"
 if [[ `uname -m | grep "x86_64"` ]]; then
 	MACHINE="amd64";
 fi
@@ -37,8 +40,8 @@ else
 	if [[ `apt show dpkg | grep "Version: 1.21"` ]] > /dev/null 2>&1; then
 		:;
 	else
-		wget -cq https://github.com/pyavitz/debian-image-builder/releases/download/dpkg/dpkg_1.21.2_$MACHINE.deb;
-		wget -cq http://ftp.us.debian.org/debian/pool/main/d/debootstrap/debootstrap_1.0.126+nmu1_all.deb;
+		wget -cq $URL$FILE1;
+		wget -cq $URL$FILE2;
 		sudo dpkg -i *.deb;
 		rm -f *.deb;
 	fi
@@ -46,10 +49,10 @@ fi
 if [ -e /usr/share/keyrings/ubuntu-archive-keyring.gpg ]; then
 	:;
 else
-	wget -cq --show-progress http://ftp.us.debian.org/debian/pool/main/u/ubuntu-keyring/$FILE1
-	wget -cq --show-progress http://ftp.us.debian.org/debian/pool/main/u/ubuntu-keyring/$FILE2
-	wget -cq --show-progress http://ftp.us.debian.org/debian/pool/main/u/ubuntu-keyring/$FILE3
-	wget -cq --show-progress http://ftp.us.debian.org/debian/pool/main/u/ubuntu-keyring/$FILE4
+	wget -cq --show-progress $URL$FILE3
+	wget -cq --show-progress $URL$FILE4
+	wget -cq --show-progress $URL$FILE5
+	wget -cq --show-progress $URL$FILE6
 	sudo dpkg -i *.deb
 	rm -f *.deb
 	if [ -e /usr/share/debootstrap/scripts/impish ]; then
