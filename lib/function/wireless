@@ -25,22 +25,13 @@ sed -i '/source "drivers\/net\/wireless\/ti\/Kconfig"/a source "drivers\/net\/wi
 }
 
 rtl8812au_select(){
-if [ -e arch/arm64/configs/bcm2711_defconfig ]; then
-	echo CONFIG_88XXAU=m >> arch/arm64/configs/bcm2711_defconfig;
-fi
-if [ -e arch/arm64/configs/bcmrpi3_defconfig ]; then
-	echo CONFIG_88XXAU=m >> arch/arm64/configs/bcmrpi3_defconfig;
-fi
-if [ -e arch/arm/configs/bcm2709_defconfig ]; then
-	echo CONFIG_88XXAU=m >> arch/arm/configs/bcm2709_defconfig;
-fi
-if [ -e arch/arm/configs/bcmrpi_defconfig ]; then
-	echo CONFIG_88XXAU=m >> arch/arm/configs/bcmrpi_defconfig;
+if [ -e arch/${ARCH}/configs/${LINUX_DEFCONFIG} ]; then
+	echo CONFIG_88XXAU=m >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
 fi
 }
 
 rtl8812au_module(){
-if [[ `grep -w "rtl8812au=1" "../../userdata.txt"` ]]; then
+if [ $rtl8812au -eq 1 ]; then
 	rtl8812au_select;
 fi
 }
@@ -75,22 +66,13 @@ sed -i '/source "drivers\/net\/wireless\/ti\/Kconfig"/a source "drivers\/net\/wi
 }
 
 rtl8811cu_select(){
-if [ -e arch/arm64/configs/bcm2711_defconfig ]; then
-	echo CONFIG_RTL8821CU=m >> arch/arm64/configs/bcm2711_defconfig;
-fi
-if [ -e arch/arm64/configs/bcmrpi3_defconfig ]; then
-	echo CONFIG_RTL8821CU=m >> arch/arm64/configs/bcmrpi3_defconfig;
-fi
-if [ -e arch/arm/configs/bcm2709_defconfig ]; then
-	echo CONFIG_RTL8821CU=m >> arch/arm/configs/bcm2709_defconfig;
-fi
-if [ -e arch/arm/configs/bcmrpi_defconfig ]; then
-	echo CONFIG_RTL8821CU=m >> arch/arm/configs/bcmrpi_defconfig;
+if [ -e arch/${ARCH}/configs/${LINUX_DEFCONFIG} ]; then
+	echo CONFIG_RTL8821CU=m >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
 fi
 }
 
 rtl8811cu_module(){
-if [[ `grep -w "rtl8811cu=1" "../../userdata.txt"` ]]; then
+if [ $rtl8811cu -eq 1 ]; then
 	rtl8811cu_select;
 fi
 }
@@ -130,22 +112,13 @@ drivers/net/wireless/Kconfig
 }
 
 rtl88x2bu_select(){
-if [ -e arch/arm64/configs/bcm2711_defconfig ]; then
-	echo CONFIG_RTL8822BU=m >> arch/arm64/configs/bcm2711_defconfig;
-fi
-if [ -e arch/arm64/configs/bcmrpi3_defconfig ]; then
-	echo CONFIG_RTL8822BU=m >> arch/arm64/configs/bcmrpi3_defconfig;
-fi
-if [ -e arch/arm/configs/bcm2709_defconfig ]; then
-	echo CONFIG_RTL8822BU=m >> arch/arm/configs/bcm2709_defconfig;
-fi
-if [ -e arch/arm/configs/bcmrpi_defconfig ]; then
-	echo CONFIG_RTL8822BU=m >> arch/arm/configs/bcmrpi_defconfig;
+if [ -e arch/${ARCH}/configs/${LINUX_DEFCONFIG} ]; then
+	echo CONFIG_RTL8822BU=m >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
 fi
 }
 
 rtl88x2bu_module(){
-if [[ `grep -w "rtl88x2bu=1" "../../userdata.txt"` ]]; then
+if [ $rtl88x2bu -eq 1 ]; then
 	rtl88x2bu_select;
 fi
 }

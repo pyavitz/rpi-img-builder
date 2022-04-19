@@ -102,6 +102,7 @@ fi
 userdata(){
 tee userdata.txt <<EOF
 ### LINUX KERNEL
+admin=1
 VERSION="$branch.y"
 BUILD_VERSION="$build"
 menuconfig=0
@@ -130,8 +131,7 @@ lto_clang_thin=0
 CORES=\`nproc\`
 CFLAGS=""
 ### DO NOT EDIT BELOW THIS LINE
-admin=1
-builder=4.3
+builder=4.4
 EOF
 }
 
@@ -180,7 +180,7 @@ echo "Build number: $build" >> log.txt
 echo "GCC Version:  $version" >> log.txt
 echo "" >> log.txt
 echo "Results:" >> log.txt
-make kernel
+make kernel board=bcm2711
 if [[ `ls output/bcm2711/*.deb` ]] > /dev/null 2>&1; then
 	echo "bcm2711" >> log.txt;
 	ls output/bcm2711/*.deb >> log.txt;
@@ -189,7 +189,7 @@ else
 	echo -e "Build 2711 failed!";
 	exit > /dev/null 2>&1;
 fi
-make rpi3-kernel
+make kernel board=bcm2710
 if [[ `ls output/bcm2710/*.deb` ]] > /dev/null 2>&1; then
 	echo "bcm2710" >> log.txt;
 	ls output/bcm2710/*.deb >> log.txt;
@@ -203,7 +203,7 @@ if [[ `grep -w "crosscompile=0" "userdata.txt"` ]]; then
 	sed -i 's/crosscompile=0/crosscompile=1/g' userdata.txt;
 fi
 sleep 1s
-make kernelv7
+make kernel board=bcm2711v7
 if [[ `ls output/bcm2711v7/*.deb` ]] > /dev/null 2>&1; then
 	echo "bcm2711 v7" >> log.txt;
 	ls output/bcm2711v7/*.deb >> log.txt;
@@ -212,7 +212,7 @@ else
 	echo -e "Build 2711v7 failed!";
 	exit > /dev/null 2>&1;
 fi
-make rpi2+3-kernel
+make kernel board=bcm2709
 if [[ `ls output/bcm2709/*.deb` ]] > /dev/null 2>&1; then
 	echo "bcm2709" >> log.txt;
 	ls output/bcm2709/*.deb >> log.txt;
@@ -221,7 +221,7 @@ else
 	echo -e "Build 2709 failed!";
 	exit > /dev/null 2>&1;
 fi
-make rpi-kernel
+make kernel board=bcm2708
 if [[ `ls output/bcm2708/*.deb` ]] > /dev/null 2>&1; then
 	echo "bcm2708" >> log.txt;
 	ls output/bcm2708/*.deb >> log.txt;

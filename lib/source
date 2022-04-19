@@ -1,23 +1,18 @@
 DEF="../defconfig"
 PAT="../patches"
 UP="../patches/userpatches"
-OUT4="../output/bcm2711"
-OUT4v7="../output/bcm2711v7"
-OUT3="../output/bcm2710"
-OUT2="../output/bcm2709"
-OUT="../output/bcm2708"
 SRC="source"
 
 KERNEL="linux-rpi"
-MLKERNEL="linux"
+CKERNEL="linux"
 KBUSER="marvin"
 KBHOST="martian"
 
 validation(){
-if [[ `grep -w "builder=4.3" "userdata.txt"` ]]; then
+if [[ `grep -w "builder=4.4" "userdata.txt"` ]]; then
 	:;
 else
-	echo -e "${YLW}Userdata file is old! Please create a new one${FIN}."
+	echo -e "${YLW}The userdata.txt file has expired. Please create a new one.${FIN}"
 	exit;
 fi
 }
@@ -42,6 +37,3 @@ PKG2="cpu hwinfo haveged git build-essential net-tools ifplugd wireless-regdb \
 # firmware
 FIRMWARE="firmware-linux-nonfree firmware-linux firmware-misc-nonfree \
           firmware-realtek firmware-ralink"
-
-# motd
-BRAND="Raspberry Pi"

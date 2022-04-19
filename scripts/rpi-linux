@@ -1,5 +1,6 @@
 #!/bin/bash
-source userdata.txt
+source board.txt > /dev/null 2>&1
+source userdata.txt > /dev/null 2>&1
 source lib/source
 source lib/function/echoes
 source lib/function/compiler
@@ -24,28 +25,19 @@ done
 if [ -f "$UD" ]; then
 	:;
 else
-	userdata
+	userdata;
 fi
-if [[ `grep -w "devuser=1" "userdata.txt"` ]]; then
-	echo ""
-	echo -e "${RED}Wrong userdata file${FIN}!"
-	echo ""
-	while [ true ]; do
-	read -t 2 -n 1
-	if [ $? = 0 ]; then
-		exit;
-	else
-		dialog --infobox "Please review the README.md or run make config." 3 51;
-	fi
-	done
-fi
+
 # prep
 validation
+if [ $verbose -eq 1 ]; then
+	set -x;
+fi
 compiler
 source_dir
 clean_source
 
-### Download kernel
+# Download kernel
 if [[ `wget -S --spider https://raw.githubusercontent.com/raspberrypi/linux/rpi-${VERSION}/Makefile 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
 	download;
 else
@@ -54,117 +46,47 @@ else
 	exit > /dev/null 2>&1;
 fi
 
-### Extract
+# Extract
 extract
 
-### Setup
-if [[ `grep -w "bcm2711" "../soc.txt"` ]]; then
-	if [[ `grep -w "arm64" "../soc.txt"` ]]; then
-		armv8_setup
-		rpi4_firmware;
-	else
-		armv7_setup
-		rpi4_firmware;
-	fi
-fi
-if [[ `grep -w "bcm2710" "../soc.txt"` ]]; then
-	armv8_setup
-	rpi_firmware;
-fi
-if [[ `grep -w "bcm2709" "../soc.txt"` ]]; then
-	armv7_setup
-	rpi_firmware;
-fi
-if [[ `grep -w "bcm2708" "../soc.txt"` ]]; then
-	armv6_setup
+# Setup
+setup
+if [[ "$BOARD" == "bcm2711" ]]; then
+	rpi4_firmware;
+else
 	rpi_firmware;
 fi
 
-### Patching
+# Patching
 patching
 
-### Defconfig
-if [[ `grep -w "bcm2711" "../../soc.txt"` ]]; then
-	if [[ `grep -w "arm64" "../../soc.txt"` ]]; then
-		choose_rpi4_defconfig;
-	else
-		choose_rpi4v7_defconfig;
-	fi
-fi
-if [[ `grep -w "bcm2710" "../../soc.txt"` ]]; then
-	choose_rpi3_defconfig;
-fi
-if [[ `grep -w "bcm2709" "../../soc.txt"` ]]; then
-	choose_rpi2+3_defconfig;
-fi
-if [[ `grep -w "bcm2708" "../../soc.txt"` ]]; then
-	choose_rpi_defconfig;
+# Defconfig
+if [ $custom_defconfig -eq 1 ]; then
+	cconfig;
+else
+	fconfig;
 fi
 
-### Menuconfig
-if [[ `grep -w "bcm2711" "../../soc.txt"` ]]; then
-	if [[ `grep -w "arm64" "../../soc.txt"` ]]; then
-		choose_v8_menuconfig;
-	else
-		choose_v7_menuconfig;
-	fi
-fi
-if [[ `grep -w "bcm2710" "../../soc.txt"` ]]; then
-	choose_v8_menuconfig;
-fi
-if [[ `grep -w "bcm2709" "../../soc.txt"` ]]; then
-	choose_v7_menuconfig;
-fi
-if [[ `grep -w "bcm2708" "../../soc.txt"` ]]; then
-	choose_v6_menuconfig;
+# Menuconfig
+if [ $menuconfig -eq 1 ]; then
+	menuconfig;
 fi
 
-### Build deb
-if [[ `grep -w "bcm2711" "../../soc.txt"` ]]; then
-	if [[ `grep -w "arm64" "../../soc.txt"` ]]; then
-		choose_v8_compile;
-	else
-		choose_v7_compile;
-	fi
+# Builddeb
+if [ $crosscompile -eq 1 ]; then
+	ccompile;
+else
+	ncompile;
 fi
-if [[ `grep -w "bcm2710" "../../soc.txt"` ]]; then
-	choose_v8_compile;
-fi
-if [[ `grep -w "bcm2709" "../../soc.txt"` ]]; then
-	choose_v7_compile;
-fi
-if [[ `grep -w "bcm2708" "../../soc.txt"` ]]; then
-	choose_v6_compile;
-fi
-echo
+
+# Finish
+echo ""
 cd ..
-rm -f linux-libc-dev*.deb
-rm -f *.buildinfo
-rm -f *.changes
-if [[ `grep -w "bcm2711" "../soc.txt"` ]]; then
-	if [[ `grep -w "arm64" "../soc.txt"` ]]; then
-		bcm2711_check
-		mkdir -p ${OUT4}
-		mv -f *.deb ${OUT4}/;
-	else
-		bcm2711v7_check
-		mkdir -p ${OUT4v7}
-		mv -f *.deb ${OUT4v7}/;
-	fi
+rm -f {linux-libc-dev*.deb,*.buildinfo,*.changes}
+if [[ `ls ../${OUTPUT}/*.deb` ]] > /dev/null 2>&1; then
+	mkdir -p ../${OUTPUT}/tmp;
+	mv -f ../${OUTPUT}/*.deb ../${OUTPUT}/tmp/;
 fi
-if [[ `grep -w "bcm2710" "../soc.txt"` ]]; then
-	bcm2710_check
-	mkdir -p ${OUT3}
-	mv -f *.deb ${OUT3}/;
-fi
-if [[ `grep -w "bcm2709" "../soc.txt"` ]]; then
-	bcm2709_check
-	mkdir -p ${OUT2}
-	mv -f *.deb ${OUT2}/;
-fi
-if [[ `grep -w "bcm2708" "../soc.txt"` ]]; then
-	bcm2708_check
-	mkdir -p ${OUT}
-	mv -f *.deb ${OUT}/;
-fi
+mkdir -p ../${OUTPUT}
+mv -f *.deb ../${OUTPUT}/
 echo_done

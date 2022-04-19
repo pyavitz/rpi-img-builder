@@ -1,23 +1,20 @@
 gcc_compiler(){
 echo NATIVE='"'CC=/usr/bin/${GCC_VERSION}'"' > gcc.txt
-echo ARMV6_CROSS='"'CC=/usr/bin/arm-linux-gnueabi-${GCC_VERSION}'"' >> gcc.txt
-echo ARMV7_CROSS='"'CC=/usr/bin/arm-linux-gnueabihf-${GCC_VERSION}'"' >> gcc.txt
-echo ARM64_CROSS='"'CC=/usr/bin/aarch64-linux-gnu-${GCC_VERSION}'"' >> gcc.txt
+echo CROSS='"'CC=/usr/bin/${CROSS_COMPILE}${GCC_VERSION}'"' >> gcc.txt
 source gcc.txt
 }
 
 ccache_compiler(){
 echo NATIVE='"'CC=/usr/lib/ccache/${GCC_VERSION}'"' > ccache.txt
-echo ARMV6_CROSS='"'CC=/usr/lib/ccache/arm-linux-gnueabi-${GCC_VERSION}'"' >> ccache.txt
-echo ARMV7_CROSS='"'CC=/usr/lib/ccache/arm-linux-gnueabihf-${GCC_VERSION}'"' >> ccache.txt
-echo ARM64_CROSS='"'CC=/usr/lib/ccache/aarch64-linux-gnu-${GCC_VERSION}'"' >> ccache.txt
+echo CROSS='"'CC=/usr/lib/ccache/${CROSS_COMPILE}${GCC_VERSION}'"' >> ccache.txt
 source ccache.txt
 }
 
 clang_compiler(){
 echo NATIVE='"'${CLANG_LLVM}'"' > clang.txt
-echo ARMV6_CROSS='"'CC=/usr/bin/clang-13'"' >> clang.txt
-echo ARMV7_CROSS='"'${CLANG_LLVM}'"' >> clang.txt
-echo ARM64_CROSS='"'${CLANG_LLVM}'"' >> clang.txt
+if [[ "$BOARD" == "bcm2708" ]]; then
+	echo CROSS='"'CC=/usr/bin/clang-13'"' >> clang.txt
+fi
+echo CROSS='"'${CLANG_LLVM}'"' >> clang.txt
 source clang.txt
 }

@@ -1,11 +1,11 @@
 partitions(){
-if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
+if [ $ext4 -eq 1 ]; then
 	truncate -s ${EXT4} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
 fi
-if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
+if [ $btrfs -eq 1 ]; then
 	truncate -s ${BTRFS} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
 fi
-if [[ `grep -w "xfs=1" "userdata.txt"` ]]; then
+if [ $xfs -eq 1 ]; then
 	truncate -s ${XFS} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
 fi
 fdisk "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" <<EOF
@@ -33,13 +33,13 @@ IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
 IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
 partprobe "${IMAGE_LOOP_DEV}"
 mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
-if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
+if [ $ext4 -eq 1 ]; then
 	mkfs.ext4 -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}";
 fi
-if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
+if [ $btrfs -eq 1 ]; then
 	mkfs.btrfs -f -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}";
 fi
-if [[ `grep -Fx "xfs=1" "userdata.txt"` ]]; then
+if [ $xfs -eq 1 ]; then
 	mkfs.xfs -f -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}";
 fi
 mkdir -p p1 p2
@@ -50,25 +50,25 @@ if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
 fi
 sync
 umount p2
-if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
+if [ $ext4 -eq 1 ]; then
 	mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2;
 fi
-if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
+if [ $btrfs -eq 1 ]; then
 	mount -o compress=lzo,noatime,subvol=@ "${IMAGE_LOOP_DEV_ROOTFS}" p2;
 fi
-if [[ `grep -w "xfs=1" "userdata.txt"` ]]; then
+if [ $xfs -eq 1 ]; then
 	mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2;
 fi
 }
 
 create_fstab(){
-if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
+if [ $ext4 -eq 1 ]; then
 	FSTYPE="ext4	defaults,noatime,nodiratime,commit=600,errors=remount-ro 0 1"
 fi
-if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
+if [ $btrfs -eq 1 ]; then
 	FSTYPE="btrfs	defaults,compress=lzo,noatime,subvol=@ 0 1";
 fi
-if [[ `grep -w "xfs=1" "userdata.txt"` ]]; then
+if [ $xfs -eq 1 ]; then
 	FSTYPE="xfs	defaults,noatime 0 1"
 fi
 tee p2/etc/fstab <<EOF
@@ -91,17 +91,17 @@ source part-uuid.txt
 }
 
 cmdline(){
-if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
+if [ $ext4 -eq 1 ]; then
 	ROOTFSTYPE="rootfstype=ext4";
 fi
-if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
+if [ $btrfs -eq 1 ]; then
 	ROOTFSTYPE="rootfstype=btrfs rootflags=subvol=@";
 fi
-if [[ `grep -w "xfs=1" "userdata.txt"` ]]; then
+if [ $xfs -eq 1 ]; then
 	ROOTFSTYPE="rootfstype=xfs";
 fi
 tee p1/cmdline.txt <<EOF
-console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} ${ROOTFSTYPE} fsck.repair=yes logo.nologo net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm rootwait
+${CONSOLE} root=PARTUUID=${ROOT_PARTUUID} ${ROOTFSTYPE} fsck.repair=yes ${EXTRA} rootwait
 EOF
 }
 

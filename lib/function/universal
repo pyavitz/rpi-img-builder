@@ -2,22 +2,6 @@
 
 # rootfs
 extract_rootfs(){
-if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
-	if [[ `grep -w "arm64" "soc.txt"` ]]; then
-		ROOTFS_ARCH="rootfs-aarch64";
-	else
-		ROOTFS_ARCH="rootfs-armhf";
-	fi
-fi
-if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
-	ROOTFS_ARCH="rootfs-aarch64";
-fi
-if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
-	ROOTFS_ARCH="rootfs-armhf";
-fi
-if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
-	ROOTFS_ARCH="rootfs-armel";
-fi
 if [ -e ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz ]; then
 	echo ""
 	echo -n "Extracting rootfs "
@@ -32,119 +16,18 @@ fi
 echo ""
 }
 
-# banners
-debian_banner(){
-if [ -e /usr/bin/toilet ]; [ -e /usr/share/figlet/small.flf ]; then
-	toilet -f small --filter metal 'Debian';
-else
-	echo "${WHT}You are missing depends?${FIN}"
-	sleep 1s
-	sudo apt update
-	sudo apt install -y toilet figlet
-	echo ""
-	toilet -f small --filter metal 'Debian';
-fi
-}
-
-devuan_banner(){
-if [ -e /usr/bin/toilet ]; [ -e /usr/share/figlet/small.flf ]; then
-	toilet -f small --filter metal 'Devuan';
-else
-	echo "${WHT}You are missing depends?${FIN}"
-	sleep 1s
-	sudo apt update
-	sudo apt install -y toilet figlet
-	echo ""
-	toilet -f small --filter metal 'Devuan';
-fi
-}
-
-ubuntu_banner(){
-if [ -e /usr/bin/toilet ]; [ -e /usr/share/figlet/small.flf ]; then
-	toilet -f small --filter metal 'Ubuntu';
-else
-	echo "${WHT}You are missing depends?${FIN}"
-	sleep 1s
-	sudo apt update
-	sudo apt install -y toilet figlet
-	echo ""
-	toilet -f small --filter metal 'Ubuntu';
-fi
-}
-
 stage1_kernel(){
-if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
-	if [[ `grep -w "arm64" "soc.txt"` ]]; then
-		if [[ `ls output/bcm2711/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}` ]] > /dev/null 2>&1; then
-			cp output/bcm2711/*.deb p2/root;
-		fi
-	fi
-fi
-if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
-	if [[ `grep -w "arm" "soc.txt"` ]]; then
-		if [[ `ls output/bcm2711v7/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}` ]] > /dev/null 2>&1; then
-			cp output/bcm2711v7/*.deb p2/root;
-		fi
-	fi
-fi
-if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
-	if [[ `ls output/bcm2710/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}` ]] > /dev/null 2>&1; then
-		cp output/bcm2710/*.deb p2/root;
-	fi
-else
-	if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
-		if [[ `ls output/bcm2709/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}` ]] > /dev/null 2>&1; then
-			cp output/bcm2709/*.deb p2/root;
-		fi
-	else
-		if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
-			if [[ `ls output/bcm2708/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}` ]] > /dev/null 2>&1; then
-				cp output/bcm2708/*.deb p2/root;
-			fi
-		fi
-	fi
+if [[ `ls ${OUTPUT}/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}` ]] > /dev/null 2>&1; then
+		cp ${OUTPUT}/*.deb p2/root;
 fi
 }
 
 # Stage 2
 # USER CONFIG
-bcm2708_user(){
-echo -n 'bcm2708' > /etc/hostname
-sed -i '1 a 127.0.1.1	bcm2708' /etc/hosts
-adduser ${user} --gecos ${user^} --disabled-password
-}
-
-bcm2709_user(){
-echo -n 'bcm2709' > /etc/hostname
-sed -i '1 a 127.0.1.1	bcm2709' /etc/hosts
-adduser ${user} --gecos ${user^} --disabled-password
-}
-
-bcm2710_user(){
-echo -n 'bcm2710' > /etc/hostname
-sed -i '1 a 127.0.1.1	bcm2710' /etc/hosts
-adduser ${user} --gecos ${user^} --disabled-password
-}
-
-bcm2711_user(){
-echo -n 'bcm2711' > /etc/hostname
-sed -i '1 a 127.0.1.1	bcm2711' /etc/hosts
-adduser ${user} --gecos ${user^} --disabled-password
-}
-
 user_config(){
-if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
-	bcm2711_user;
-fi
-if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
-	bcm2710_user;
-fi
-if [[ `grep -w "bcm2709" "/root/soc.txt"` ]]; then
-	bcm2709_user;
-fi
-if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
-	bcm2708_user;
-fi
+echo -n "${BOARD}" > /etc/hostname
+sed -i "1 a 127.0.1.1	${BOARD}" /etc/hosts
+adduser ${user} --gecos ${user^} --disabled-password
 
 echo "${user}:${passwd}" | chpasswd
 adduser ${user} sudo
@@ -175,7 +58,7 @@ else
 	groupadd gpio;
 	adduser ${user} gpio;
 fi
-if [[ `grep -w 'DISTRO="devuan"' "/root/userdata.txt"` ]]; then
+if [[ "$DISTRO" == "devuan" ]]; then
 	if [[ `grep -w "kvm" "/etc/group"` ]]; then
 		:;
 	else
@@ -204,39 +87,9 @@ chown -R ${user}:${user} /home/${user}
 }
 
 # ADMIN CONFIG
-bcm2708_admin(){
-echo -n 'bcm2708' > /etc/hostname
-sed -i '1 a 127.0.1.1	bcm2708' /etc/hosts
-}
-
-bcm2709_admin(){
-echo -n 'bcm2709' > /etc/hostname
-sed -i '1 a 127.0.1.1	bcm2709' /etc/hosts
-}
-
-bcm2710_admin(){
-echo -n 'bcm2710' > /etc/hostname
-sed -i '1 a 127.0.1.1	bcm2710' /etc/hosts
-}
-
-bcm2711_admin(){
-echo -n 'bcm2711' > /etc/hostname
-sed -i '1 a 127.0.1.1	bcm2711' /etc/hosts
-}
-
 admin_config(){
-if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
-	bcm2711_admin;
-fi
-if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
-	bcm2710_admin;
-fi
-if [[ `grep -w "bcm2709" "/root/soc.txt"` ]]; then
-	bcm2709_admin;
-fi
-if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
-	bcm2708_admin;
-fi
+echo -n "${BOARD}" > /etc/hostname
+sed -i "1 a 127.0.1.1	${BOARD}" /etc/hosts
 
 if [[ `grep -w "spi" "/etc/group"` ]]; then
 	:;
@@ -253,7 +106,7 @@ if [[ `grep -w "gpio" "/etc/group"` ]]; then
 else
 	groupadd gpio;
 fi
-if [[ `grep -w 'DISTRO="devuan"' "/root/userdata.txt"` ]]; then
+if [[ "DISTRO" = "devuan" ]]; then
 	if [[ `grep -w "kvm" "/etc/group"` ]]; then
 		:;
 	else
@@ -283,7 +136,7 @@ echo "root:toor" | chpasswd
 wireless_regdb(){
 echo ""
 echo "Adding regdb ..."
-if [[ `grep -w "Ubuntu" "/etc/os-release"` ]]; then
+if [[ "$DISTRO" == "ubuntu" ]]; then
 	echo 'KERNEL=="regulatory*", ACTION=="change", SUBSYSTEM=="platform", RUN+="/sbin/crda"' > /etc/udev/rules.d/60-regdb.rules;
 fi
 git clone https://kernel.googlesource.com/pub/scm/linux/kernel/git/sforshee/wireless-regdb
@@ -397,19 +250,17 @@ mv -f userland-remove-hi-pi.patch /root/userland/
 cd userland
 patch -p1 < userland-remove-hi-pi.patch
 rm -f userland-remove-hi-pi.patch
-if [[ `grep -w "arm64" "/root/soc.txt"` ]]; then
+if [[ "$ARCH" == "arm64" ]]; then
 	echo -e "\e[1;37m== ARM64\e[0m"
 	sleep 1s
 	./buildme --aarch64;
 else
-	if [[ `grep -w "arm" "/root/soc.txt"` ]]; then
-		echo -e "\e[1;37m== ARM\e[0m"
-		sleep 1s
-		./buildme;
-	fi
+	echo -e "\e[1;37m== ARM\e[0m"
+	sleep 1s
+	./buildme;
 fi
 cd ~
-rm -f -d -R userland
+rm -fdr userland
 ldconfig
 echo "Done."
 }
@@ -467,8 +318,8 @@ DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-i
 KURL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"
 echo -e -n "\e[1;37mSearching\e[0m ...";
 sleep 1s;
-if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
-	if [[ `grep -w "arm64" "/root/soc.txt"` ]]; then
+if [[ "$BOARD" == "bcm2711" ]]; then
+	if [[ "$ARCH" == "arm64" ]]; then
 		if [[ `wget -S --spider ${KURL}rpi4-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
 			${DOWNLOAD} ${KURL}rpi4-${VERSION}.tar.xz;
 			echo "";
@@ -488,8 +339,8 @@ if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
 		fi
 	fi
 fi
-if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
-	if [[ `grep -w "arm" "/root/soc.txt"` ]]; then
+if [[ "$BOARD" == "bcm2711" ]]; then
+	if [[ "$ARCH" == "arm" ]]; then
 		if [[ `wget -S --spider ${KURL}rpi4v7-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
 			${DOWNLOAD} ${KURL}rpi4v7-${VERSION}.tar.xz;
 			echo "";
@@ -509,7 +360,7 @@ if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
 		fi
 	fi
 fi
-if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
+if [[ "$BOARD" == "bcm2710" ]]; then
 	if [[ `wget -S --spider ${KURL}rpi3-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
 		${DOWNLOAD} ${KURL}rpi3-${VERSION}.tar.xz;
 		echo "";
@@ -528,7 +379,7 @@ if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
 		rm -fdr rpi3-5.15.y*;
 	fi
 fi
-if [[ `grep -w "bcm2709" "/root/soc.txt"` ]]; then
+if [[ "$BOARD" == "bcm2709" ]]; then
 	if [[ `wget -S --spider ${KURL}rpi2-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
 		${DOWNLOAD} ${KURL}rpi2-${VERSION}.tar.xz;
 		echo "";
@@ -547,7 +398,7 @@ if [[ `grep -w "bcm2709" "/root/soc.txt"` ]]; then
 		rm -fdr rpi2-5.15.y*;
 	fi
 fi
-if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
+if [[ "$BOARD" == "bcm2708" ]]; then
 	if [[ `wget -S --spider ${KURL}rpi-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
 		${DOWNLOAD} ${KURL}rpi-${VERSION}.tar.xz;
 		echo "";
@@ -596,13 +447,13 @@ cat /usr/src/linux-headers*/include/config/kernel.release > /root/kernel2
 echo '"' > /root/kernel3
 paste -d '\0' kernel1 kernel2 kernel3  > /root/kernel.txt
 rm -f kernel1 kernel2 kernel3
-if [[ `grep -w "ext4=1" "/root/userdata.txt"` ]]; then
+if [ $ext4 -eq 1 ]; then
 	echo FSTYPE='"'ext4'"' >> /root/kernel.txt;
 fi
-if [[ `grep -w "btrfs=1" "/root/userdata.txt"` ]]; then
+if [ $btrfs -eq 1 ]; then
 	echo FSTYPE='"'btrfs'"' >> /root/kernel.txt;
 fi
-if [[ `grep -w "xfs=1" "/root/userdata.txt"` ]]; then
+if [ $xfs -eq 1 ]; then
 	echo FSTYPE='"'xfs'"' >> /root/kernel.txt;
 fi
 }
@@ -667,13 +518,13 @@ fi
 ### Finish
 # Defrag
 defrag_p2(){
-if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
+if [ $ext4 -eq 1 ]; then
 	e4defrag -c p2;
 else
-	if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
+	if [ $btrfs -eq 1 ]; then
 		btrfs filesystem defragment -f -r p2;
 	else
-		if [[ `grep -w "xfs=1" "userdata.txt"` ]]; then
+		if [ $xfs -eq 1 ]; then
 			xfs_fsr p2;
 		fi
 	fi
@@ -684,10 +535,10 @@ fi
 ext4_shrink(){
 echo ""
 chmod +x scripts/shrink
-scripts/shrink -s ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img
+scripts/shrink -s ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img
 echo 'LOOP1="/dev/mapper/' > kpart1
 echo 'LOOP2="/dev/mapper/' >> kpart1
-IMAGE_FILE="${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img"
+IMAGE_FILE="${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img"
 kpartx="$(kpartx -av $IMAGE_FILE)"
 echo "$kpartx"
 if [[ `grep -w "VERSION_CODENAME=jammy" "/etc/os-release"` ]]; then
@@ -722,13 +573,13 @@ rm -f kpart.txt
 # Rename and compress
 rename_image(){
 source kernel.txt
-mv -f ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${FSTYPE}-${IMAGE_DATE}.img
+mv -f ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${FSTYPE}-${IMAGE_DATE}.img
 }
 
 compress_image(){
 source kernel.txt
-mv -f ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${FSTYPE}-${IMAGE_DATE}.img
-xz -zev --threads=${CORES} ${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${FSTYPE}-${IMAGE_DATE}.img
+mv -f ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${FSTYPE}-${IMAGE_DATE}.img
+xz -zev --threads=${CORES} ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${FSTYPE}-${IMAGE_DATE}.img
 }
 
 # LED script

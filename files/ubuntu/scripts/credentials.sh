@@ -6,9 +6,11 @@ fi
 ### Functions
 change_hostname(){
 sed -i "s/bcm2711/${HOSTNAME}/g" /etc/hostname
+sed -i "s/bcm2711v7/${HOSTNAME}/g" /etc/hostname
 sed -i "s/bcm2710/${HOSTNAME}/g" /etc/hostname
 sed -i "s/bcm2709/${HOSTNAME}/g" /etc/hostname
 sed -i "s/bcm2711/${HOSTNAME}/g" /etc/hosts
+sed -i "s/bcm2711v7/${HOSTNAME}/g" /etc/hosts
 sed -i "s/bcm2710/${HOSTNAME}/g" /etc/hosts
 sed -i "s/bcm2709/${HOSTNAME}/g" /etc/hosts
 }

@@ -1,0 +1,27 @@
+# architecture
+ARCH="arm64"
+ARCH_EXT="arm64"
+DEBARCH=""
+CROSS_COMPILE="aarch64-linux-gnu-"
+ROOTFS_ARCH="rootfs-${ARCH_EXT}"
+STATIC="qemu-aarch64-static"
+
+# misc
+FAMILY="broadcom"
+FAMILY_EXT=""
+
+# default config
+LINUX_DEFCONFIG="bcm2711_defconfig"
+
+# output
+BOARD="bcm2711"
+BOARD_EXT="rpi-4"
+OUTPUT="output/${BOARD}"
+IMG_EXP="${BOARD_EXT}-*.img*"
+
+# cmdline
+CONSOLE="console=serial0,115200 console=tty1"
+EXTRA="logo.nologo net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm"
+
+# motd
+MOTD="Raspberry Pi"

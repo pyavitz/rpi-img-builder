@@ -113,8 +113,8 @@ systemctl enable bluetooth
 systemctl enable firstboot
 systemctl enable credentials
 systemctl enable governor
-if [[ `grep -w 'DISTRO_VERSION="bullseye"' "/root/userdata.txt"` ]]; then
-	if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
+if [[ "$DISTRO_VERSION" == "bullseye" ]]; then
+	if [[ "$BOARD" == "bcm2708" ]]; then
 		mkdir -p /etc/systemd/system/haveged.service.d
 		echo -e '[Service]\nSystemCallFilter=uname' > /etc/systemd/system/haveged.service.d/fix.conf
 		systemctl daemon-reload
@@ -124,7 +124,7 @@ fi
 if [ -e /etc/systemd/system/multi-user.target.wants/ondemand.service ]; then
 	systemctl disable ondemand;
 fi
-if [[ `grep -w 'DISTRO="debian"' "/root/userdata.txt"` ]]; then
+if [[ "$DISTRO" == "debian" ]]; then
 	systemctl enable resolvconf;
 fi
 #systemctl enable serial-getty@ttyUSB0.service

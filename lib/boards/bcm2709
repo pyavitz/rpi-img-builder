@@ -1,0 +1,28 @@
+# architecture
+ARCH="arm"
+ARCH_EXT="armhf"
+DEBARCH=""
+KERNEL_VAR="kernel7"
+CROSS_COMPILE="arm-linux-gnueabihf-"
+ROOTFS_ARCH="rootfs-${ARCH_EXT}"
+STATIC="qemu-arm-static"
+
+# misc
+FAMILY="broadcom"
+FAMILY_EXT=""
+
+# default config
+LINUX_DEFCONFIG="bcm2709_defconfig"
+
+# output
+BOARD="bcm2709"
+BOARD_EXT="rpi-2+3"
+OUTPUT="output/${BOARD}"
+IMG_EXP="${BOARD_EXT}-*.img*"
+
+# cmdline
+CONSOLE="console=serial0,115200 console=tty1"
+EXTRA="logo.nologo net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm"
+
+# motd
+MOTD="Raspberry Pi"

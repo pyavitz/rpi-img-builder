@@ -83,7 +83,7 @@ bash fsck.fat -trawl $BOOT > /dev/null 2>&1
 sleep 1s
 mount /boot
 sleep 1s
-if [[ `grep -w "arm" "/etc/opt/soc.txt"` ]]; then
+if [[ `grep -w "ARCH=arm" "/etc/opt/board.txt"` ]]; then
 	partition_uuid;
 	sleep 1s;
 	create_cmdline;

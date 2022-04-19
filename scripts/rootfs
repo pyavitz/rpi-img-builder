@@ -7,13 +7,8 @@ YLW="\e[1;33m"
 GRY="\e[0;37m"
 WHT="\e[1;37m"
 FIN="\e[0m"
-if [ -e soc.txt ]; then
-	source soc.txt;
-else
-	echo -e "Please report error ...";
-	exit;
-fi
-source userdata.txt > /dev/null 2>&1;
+source board.txt > /dev/null 2>&1
+source userdata.txt > /dev/null 2>&1
 source lib/source
 source lib/function/rootfs
 UD=userdata.txt
@@ -37,18 +32,25 @@ else
 	userdata;
 fi
 validation
-if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
+if [[ "$ROOTFS_ARCH" == "rootfs-armel" ]]; then
+	if [[ "$DISTRO" == "ubuntu" ]]; then
+		echo -e "${YLW}Ubuntu is not supported${FIN}.";
+		echo "";
+		exit;
+	fi
+fi
+if [ $verbose -eq 1 ]; then
 	set -eux -o pipefail;
 else
 	set -eu -o pipefail;
 fi
-if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
+if [[ "$DISTRO" == "devuan" ]]; then
 	devuan_keyring;
 fi
 if [[ `grep -w "Ubuntu" "/etc/os-release"` ]]; then
 	:;
 else
-	if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; then
+	if [[ "$DISTRO" == "ubuntu" ]]; then
 		ubuntu_setup;
 	fi
 fi
@@ -63,40 +65,14 @@ echo -e "${WHT}Starting debootstrap${FIN} ..."
 echo -e -n ${GRN}
 # start debootstrap
 mkdir -p ${ROOT}/usr/bin
-if [[ `grep -w 'ROOTFS_ARCH="rootfs-aarch64"' "soc.txt"` ]]; then
-	cp $(command -v "qemu-aarch64-static") ${ROOT}/usr/bin;
-	if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
-		arm64_devuan;
-	else
-		arm64_debootstrap;
-	fi
+cp $(command -v "${STATIC}") ${ROOT}/usr/bin;
+if [[ "$DISTRO" == "devuan" ]]; then
+	devuan_debootstrap;
+else
+	run_debootstrap;
 fi
-if [[ `grep -w 'ROOTFS_ARCH="rootfs-armhf"' "soc.txt"` ]]; then
-	cp $(command -v "qemu-arm-static") ${ROOT}/usr/bin;
-	if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
-		armhf_devuan;
-	else
-		armhf_debootstrap;
-	fi
-fi
-if [[ `grep -w 'ROOTFS_ARCH="rootfs-armel"' "soc.txt"` ]]; then
-	if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; then
-		echo -e "${YLW}Ubuntu is not supported${FIN}.";
-		echo "";
-		exit;
-	fi
-	cp $(command -v "qemu-arm-static") ${ROOT}/usr/bin;
-	if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
-		armel_devuan;
-	else
-		armel_debootstrap;
-	fi
-fi
-if [ -e ${ROOT}/usr/bin/qemu-aarch64-static ]; then
-	rm -f ${ROOT}/usr/bin/qemu-aarch64-static
-fi
-if [ -e ${ROOT}/usr/bin/qemu-arm-static ]; then
-	rm -f ${ROOT}/usr/bin/qemu-arm-static
+if [ -e ${ROOT}/usr/bin/${STATIC} ]; then
+	rm -f ${ROOT}/usr/bin/${STATIC}
 fi
 rm -f ${ROOT}/var/cache/debconf/*
 
@@ -104,7 +80,7 @@ rm -f ${ROOT}/var/cache/debconf/*
 echo
 echo -e "${WHT}Archiving root filesystem${FIN} ..."
 cd ${ROOT}
-echo -e -n ${WHT}
+echo -en ${WHT}
 XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - * | (pv -terb > ../$RELEASE)
 echo -e -n ${FIN}
 cd ..

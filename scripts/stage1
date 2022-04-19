@@ -1,18 +1,11 @@
 #!/bin/bash
-if [[ `grep -w 'DISTRO="debian"' "userdata.txt"` ]]; then
-	source lib/function/debian;
-fi
-if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
-	source lib/function/devuan;
-fi
-if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; then
-	source lib/function/ubuntu;
-fi
 source lib/function/universal
-source lib/function/boot
+source lib/function/staging
 source lib/function/echoes
 source lib/source
+source board.txt > /dev/null 2>&1
 source userdata.txt > /dev/null 2>&1
+source lib/function/${DISTRO}
 UD=userdata.txt
 
 userdata(){
@@ -28,43 +21,29 @@ fi
 done
 }
 
+# user data file
 if [ -f "$UD" ]; then
-	echo ""
 	:;
 else
 	userdata;
 fi
-if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
+
+# verbose
+if [ $verbose -eq 1 ]; then
 	set -eux -o pipefail;
 else
 	set -eu -o pipefail;
 fi
-if [[ `grep -w 'DISTRO="debian"' "userdata.txt"` ]]; then
-	debian_banner;
-fi
-if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
-	devuan_banner;
-fi
-if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; then
-	ubuntu_banner;
-fi
+
+CAP_DISTRO=`echo "${DISTRO}" | sed -e "s/\b\(.\)/\u\1/g"`
+CAP_RELEASE=`echo "${DISTRO_VERSION}" | sed -e "s/\b\(.\)/\u\1/g"`
+echo ""
+echo -e "${WHT}Distribution${FIN} ${PNK}[${FIN}${GRN}${CAP_DISTRO} ${CAP_RELEASE}${FIN}${PNK}]${FIN}"
 RAM=0
 PROXY=""
 IMAGE_FOLDER="img/"
-if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
-	DEVICE_SOC="rpi-4";
-fi
-if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
-	DEVICE_SOC="rpi-3";
-fi
-if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
-	DEVICE_SOC="rpi-2+3";
-fi
-if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
-	DEVICE_SOC="rpi";
-fi
 IMAGE_DATE="$(date +%F)"
-IMAGE_FILE_NAME="${DEVICE_SOC}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img"
+IMAGE_FILE_NAME="${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img"
 if [ $RAM -ne 0 ]; then
 	IMAGE_FOLDER="ram/"
 fi
@@ -73,7 +52,7 @@ if [ $RAM -ne 0 ]; then
 	mount -t tmpfs -o size=3G tmpfs $IMAGE_FOLDER
 fi
 
-if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
+if [ $verbose -eq 1 ]; then
 	partitions
 	partition_uuid;
 else
@@ -96,17 +75,10 @@ else
 	exit;
 fi
 ### config dot txt
-if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
+if [[ "$BOARD_EXT" == "rpi-4" ]]; then
 	bcm2711_config > /dev/null 2>&1;
-fi
-if [[ `grep -w "bcm2710" "soc.txt"` ]]; then
-	bcm2710_config > /dev/null 2>&1;
-fi
-if [[ `grep -w "bcm2709" "soc.txt"` ]]; then
-	bcm2709_config > /dev/null 2>&1;
-fi
-if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
-	bcm2708_config > /dev/null 2>&1;
+else
+	${BOARD}_config > /dev/null 2>&1;	
 fi
 if [ -e p1/config.txt ]; then
 	echo
@@ -120,19 +92,16 @@ else
 	echo_fail
 	exit;
 fi
-if [[ `grep -w "bcm2711" "soc.txt"` ]]; then
-	if [[ `grep -w "arm64" "soc.txt"` ]]; then
-		:;
-	else
-		sed -i '1d' p1/config.txt;
-		sed -i 's/kernel=kernel8.img/kernel=kernel7l.img/g' p1/config.txt;
-	fi
+if [[ "$BOARD" == "bcm2711v7" ]]; then
+	sed -i '1d' p1/config.txt;
+	sed -i 's/kernel=kernel8.img/kernel=kernel7l.img/g' p1/config.txt;
 fi
-if [[ `grep -w "bcm2708" "soc.txt"` ]]; then
-	if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
+if [[ "$BOARD" == "bcm2708" ]]; then
+	if [ $ext4 -eq 1 ]; then
 		sed -i 's/initramfs initrd.gz followkernel/#initramfs initrd.gz followkernel/g' p1/config.txt;
 	fi
 fi
+
 ### extract rootfs
 extract_rootfs
 
@@ -140,16 +109,10 @@ mkdir -p p2/etc/apt/apt.conf.d p2/etc/dpkg/dpkg.cfg.d
 echo "force-unsafe-io" > "p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
 
 # qemu static
-if [[ `grep -w "arm64" "soc.txt"` ]]; then
-	mkdir -p p2/usr/bin;
-	cp $(command -v "qemu-aarch64-static") p2/usr/bin;
-fi
-if [[ `grep -w "arm" "soc.txt"` ]]; then
-	mkdir -p p2/usr/bin;
-	cp $(command -v "qemu-arm-static") p2/usr/bin;
-fi
+mkdir -p p2/usr/bin;
+cp $(command -v "${STATIC}") p2/usr/bin;
 
-if [[ `grep -w "verbose=1" "userdata.txt"` ]]; then
+if [ $verbose -eq 1 ]; then
 	distro_release
 	create_fstab;
 else
@@ -165,34 +128,23 @@ fi
 
 # setup stage2
 cp scripts/stage2 p2/root
-if [[ `grep -w 'DISTRO="debian"' "userdata.txt"` ]]; then
-	cp lib/function/debian p2/root/debian.txt
-	cp lib/function/services p2/root/services.txt
-	cp files/debian/misc/* p2/root
-	cp files/debian/patches/* p2/root
-	cp files/debian/scripts/* p2/root
+cp lib/function/${DISTRO} p2/root/${DISTRO}.txt
+if [[ "$DISTRO" == "devuan" ]]; then
+	:;
+else
+	cp lib/function/services p2/root/services.txt;
 fi
-if [[ `grep -w 'DISTRO="devuan"' "userdata.txt"` ]]; then
-	cp lib/function/devuan p2/root/devuan.txt
-	cp files/devuan/misc/* p2/root
-	cp files/devuan/patches/* p2/root
-	cp files/devuan/scripts/* p2/root
-fi
-if [[ `grep -w 'DISTRO="ubuntu"' "userdata.txt"` ]]; then
-	cp lib/function/ubuntu p2/root/ubuntu.txt
-	cp lib/function/services p2/root/services.txt
-	cp files/ubuntu/misc/* p2/root
-	cp files/ubuntu/patches/* p2/root
-	cp files/ubuntu/scripts/* p2/root
-fi
+cp files/${DISTRO}/misc/* p2/root
+cp files/${DISTRO}/patches/* p2/root
+cp files/${DISTRO}/scripts/* p2/root
 cp lib/function/universal p2/root/universal.txt
 cp lib/source p2/root/source.txt
 cp userdata.txt p2/root
-cp soc.txt p2/root
+cp board.txt p2/root
 cp files/misc/* p2/root
 cp files/scripts/* p2/root
 cp files/users/* p2/root
-if [[ `grep -w "userscripts=1" "userdata.txt"` ]]; then
+if [ $userscripts -eq 1 ]; then
 	uscripts_stage1;
 fi
 cp firmware/{fw-0a5c_21e8.hcd,UPDATE.mem} p2/root
@@ -209,11 +161,8 @@ umount p2/dev
 umount p2/boot
 
 # qemu remove static
-if [ -e p2/usr/bin/qemu-aarch64-static ]; then
-	rm -f p2/usr/bin/qemu-aarch64-static;
-fi
-if [ -e p2/usr/bin/qemu-arm-static ]; then
-	rm -f p2/usr/bin/qemu-arm-static;
+if [ -e p2/usr/bin/${STATIC} ]; then
+	rm -f p2/usr/bin/${STATIC};
 fi
 cp -f p2/root/kernel.txt .
 rm p2/root/stage2
@@ -239,13 +188,13 @@ fi
 rmdir "${IMAGE_FOLDER}"
 rmdir p1 p2
 
-if [[ `grep -w "ext4=1" "userdata.txt"` ]]; then
+if [ $ext4 -eq 1 ]; then
 	ext4_shrink;
 else
 	:;
 fi
 
-if [[ `grep -w "admin=1" "userdata.txt"` ]]; then
+if [ $admin -eq 1 ]; then
 	echo ""
 	echo_compress
 	compress_image
@@ -253,4 +202,4 @@ if [[ `grep -w "admin=1" "userdata.txt"` ]]; then
 else
 	rename_image;
 fi
-rm -f {part-uuid.txt,soc.txt,kernel.txt}
+rm -f {part-uuid.txt,board.txt,kernel.txt}

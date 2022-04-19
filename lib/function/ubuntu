@@ -1,83 +1,25 @@
 # STAGE 1
-focal_sources(){
+${DISTRO_VERSION_release(){
 rm -f p2/etc/apt/sources.list
 tee p2/etc/apt/sources.list <<EOF
-deb http://ports.ubuntu.com/ubuntu-ports/ focal main restricted
-deb http://ports.ubuntu.com/ubuntu-ports/ focal-updates main restricted
-deb http://ports.ubuntu.com/ubuntu-ports/ focal universe
-deb http://ports.ubuntu.com/ubuntu-ports/ focal-updates universe
-deb http://ports.ubuntu.com/ubuntu-ports/ focal multiverse
-deb http://ports.ubuntu.com/ubuntu-ports/ focal-updates multiverse
-deb http://ports.ubuntu.com/ubuntu-ports/ focal-backports main restricted universe multiverse
-deb http://ports.ubuntu.com/ubuntu-ports/ focal-security main restricted
-deb http://ports.ubuntu.com/ubuntu-ports/ focal-security universe
-deb http://ports.ubuntu.com/ubuntu-ports/ focal-security multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION} main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-updates main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION} universe
+deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-updates universe
+deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION} multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-updates multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-backports main restricted universe multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-security main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-security universe
+deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-security multiverse
 
 ## Uncomment the following two lines to add software from Canonical's
 ## 'partner' repository.
 ## This software is not part of Ubuntu, but is offered by Canonical and the
 ## respective vendors as a service to Ubuntu users.
-# deb http://archive.canonical.com/ubuntu focal partner
-# deb-src http://archive.canonical.com/ubuntu focal partner
+# deb http://archive.canonical.com/ubuntu ${DISTRO_VERSION} partner
+# deb-src http://archive.canonical.com/ubuntu ${DISTRO_VERSION} partner
 EOF
-}
-
-impish_sources(){
-rm -f p2/etc/apt/sources.list
-tee p2/etc/apt/sources.list <<EOF
-deb http://ports.ubuntu.com/ubuntu-ports/ impish main restricted
-deb http://ports.ubuntu.com/ubuntu-ports/ impish-updates main restricted
-deb http://ports.ubuntu.com/ubuntu-ports/ impish universe
-deb http://ports.ubuntu.com/ubuntu-ports/ impish-updates universe
-deb http://ports.ubuntu.com/ubuntu-ports/ impish multiverse
-deb http://ports.ubuntu.com/ubuntu-ports/ impish-updates multiverse
-deb http://ports.ubuntu.com/ubuntu-ports/ impish-backports main restricted universe multiverse
-deb http://ports.ubuntu.com/ubuntu-ports/ impish-security main restricted
-deb http://ports.ubuntu.com/ubuntu-ports/ impish-security universe
-deb http://ports.ubuntu.com/ubuntu-ports/ impish-security multiverse
-
-## Uncomment the following two lines to add software from Canonical's
-## 'partner' repository.
-## This software is not part of Ubuntu, but is offered by Canonical and the
-## respective vendors as a service to Ubuntu users.
-# deb http://archive.canonical.com/ubuntu impish partner
-# deb-src http://archive.canonical.com/ubuntu impish partner
-EOF
-}
-
-jammy_sources(){
-rm -f p2/etc/apt/sources.list
-tee p2/etc/apt/sources.list <<EOF
-deb http://ports.ubuntu.com/ubuntu-ports/ jammy main restricted
-deb http://ports.ubuntu.com/ubuntu-ports/ jammy-updates main restricted
-deb http://ports.ubuntu.com/ubuntu-ports/ jammy universe
-deb http://ports.ubuntu.com/ubuntu-ports/ jammy-updates universe
-deb http://ports.ubuntu.com/ubuntu-ports/ jammy multiverse
-deb http://ports.ubuntu.com/ubuntu-ports/ jammy-updates multiverse
-deb http://ports.ubuntu.com/ubuntu-ports/ jammy-backports main restricted universe multiverse
-deb http://ports.ubuntu.com/ubuntu-ports/ jammy-security main restricted
-deb http://ports.ubuntu.com/ubuntu-ports/ jammy-security universe
-deb http://ports.ubuntu.com/ubuntu-ports/ jammy-security multiverse
-
-## Uncomment the following two lines to add software from Canonical's
-## 'partner' repository.
-## This software is not part of Ubuntu, but is offered by Canonical and the
-## respective vendors as a service to Ubuntu users.
-# deb http://archive.canonical.com/ubuntu jammy partner
-# deb-src http://archive.canonical.com/ubuntu jammy partner
-EOF
-}
-
-distro_release(){
-if [[ `grep -w 'DISTRO_VERSION="focal"' "userdata.txt"` ]]; then
-	focal_sources;
-fi
-if [[ `grep -w 'DISTRO_VERSION="impish"' "userdata.txt"` ]]; then
-	impish_sources;
-fi
-if [[ `grep -w 'DISTRO_VERSION="jammy"' "userdata.txt"` ]]; then
-	jammy_sources;
-fi
 }
 
 # STAGE 2
@@ -105,6 +47,7 @@ if [ -e /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf ]; then
 	sed -i 's/wifi.powersave = 3/wifi.powersave = 2/g' /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf;
 fi
 mv -f credentials.txt /boot/rename_to_credentials.txt
-cp -f soc.txt /etc/opt/
-chown root:root /etc/opt/soc.txt
+cp -f board.txt /etc/opt/
+ln -sr /etc/opt/board.txt /etc/opt/soc.txt
+chown root:root /etc/opt/board.txt
 }

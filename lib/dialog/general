@@ -1,0 +1,62 @@
+#!/bin/bash
+### DO NOT EDIT
+source lib/boards/$1
+source userdata.txt
+MAKE_OUTPUT="output/$1"
+TITLE=`echo "$1" | sed -e 's/\(.*\)/\U\1/'`
+DIALOG_CANCEL=1
+DIALOG_ESC=255
+HEIGHT=0
+WIDTH=0
+
+while true; do
+	exec 3>&1
+	selection=$(dialog \
+	--backtitle "Raspberry Pi Image Builder" \
+	--title "$TITLE" \
+	--clear \
+	--cancel-label "Exit" \
+	--menu "Select:" $HEIGHT $WIDTH 2 \
+	"1" "Make All" \
+	"2" "Make Kernel" \
+	"3" "Make ROOTFS" \
+	"4" "Make Image" \
+	2>&1 1>&3)
+	exit_status=$?
+	exec 3>&-;
+case $exit_status in
+	$DIALOG_CANCEL)
+		clear
+		echo "Program terminated."
+		exit
+		;;
+	$DIALOG_ESC)
+		clear
+		echo "Program aborted." >&2
+		exit 1
+		;;
+esac
+case $selection in
+	0 )
+		clear
+		echo "Program terminated."
+		;;
+	1 )
+		make "all" "board=$1"
+		dialog --prgbox "Results:" "ls $IMG_EXP *$ARCH_EXT* $MAKE_OUTPUT/" 30 75
+		exit 0
+		;;
+	2 )
+		make "kernel" "board=$1"
+		dialog --prgbox "Results:" "ls $MAKE_OUTPUT/*.deb" 30 75
+		;;
+	3 )
+		make "rootfs" "board=$1"
+		dialog --prgbox "Results:" "ls *$ARCH_EXT*" 30 75
+		;;
+	4 )
+		make "image" "board=$1"
+		dialog --prgbox "Results:" "ls $IMG_EXP" 30 75
+		;;
+esac
+done

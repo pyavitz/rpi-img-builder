@@ -31,7 +31,6 @@ make ncompile	# Install native dependencies
 
 ```sh
 make config     # Create user data file
-make mlconfig	# Create user data file (Mainline)
 make menu       # Open menu interface
 make dialogrc   # Set builder theme (optional)
 ```
@@ -40,22 +39,15 @@ make dialogrc   # Set builder theme (optional)
 * Review the userdata.txt file for further options: locales, timezone, nameserver(s) and extra wireless support
 
 ```sh
+Administrator:  # Create user during first boot; auto compress img to img.xz
+
 Username:       # Your username
 Password:       # Your password
 Enable root:	# 1 to enable (set root password to `toor`)
-```
-* Foundation
-```sh
+
 Linux kernel
 Branch:         # Supported: 5.15.y and above
-```
-* Mainline
-```sh
-Linux kernel
-Branch:         # Selected kernel branch
-RC:             # 1 for kernel x.y-rc above stable
-```
-```sh
+Build:          # Kernel build version number
 Menuconfig:     # 1 to run kernel menuconfig
 Crosscompile:   # 1 to cross compile | 0 to native compile
 
@@ -107,8 +99,7 @@ in the userdata.txt file.
 #### User patches
 
 ```sh
-Patches "-p1" placed in patches/userpatches are applied during
-compilation. This works for both Foundation and Mainline kernels.
+Patches "-p1" placed in patches/userpatches are applied during compilation.
 ```
 
 #### User scripts
@@ -121,53 +112,16 @@ userscripts=0	# 1 to enable
 
 ## Command list
 
-#### Raspberry Pi 4B/400 (ARM64)
+* Raspberry Pi 4b/400 = bcm2711 (arm64) / bcm2711v7 (armhf)
+* Raspberry Pi 2/3/a/b/w/+ = bcm2710 (arm64) / bcm2709 (armhf)
+* Raspberry Pi 0/1/w = bcm2708 (armel)
 
 ```sh
-make all	# kernel > rootfs > image (run at own risk)
-make kernel	# Foundation
-make mainline	# Mainline
-make image
-```
-
-#### Raspberry Pi 4B/400 (ARMHF)
-
-```sh
-make allv7	# kernel > rootfs > image (run at own risk)
-make kernelv7
-make imagev7
-```
-
-#### Raspberry Pi 3/A/B/+ (ARM64)
-
-```sh
-make rpi3-all	# kernel > rootfs > image (run at own risk)
-make rpi3-kernel
-make rpi3-image
-```
-
-#### Raspberry Pi 2/3/A/B/+ (ARMHF)
-
-```sh
-make rpi2+3-all	# kernel > rootfs > image (run at own risk)
-make rpi2+3-kernel
-make rpi2+3-image
-```
-
-#### Raspberry Pi 0/0W/B/+ (ARMEL)
-
-```sh
-make rpi-all	# kernel > rootfs > image (run at own risk)
-make rpi-kernel
-make rpi-image
-```
-
-#### Root Filesystems
-
-```sh
-make rootfs     # arm64
-make rootfsv7   # armhf
-make rootfsv6   # armel
+make all board=XXX	# kernel > rootfs > image (run at own risk)
+make kernel board=XXX
+make commit board=XXX	# Kernel package built from commmit
+make rootfs board=XXX
+make image board=XXX
 ```
 
 #### Miscellaneous

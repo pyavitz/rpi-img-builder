@@ -1,19 +1,15 @@
 #!/usr/bin/env bash
-if [ -e /root/debian.txt ]; then
-	source /root/debian.txt;
-fi
-if [ -e /root/devuan.txt ]; then
-	source /root/devuan.txt;
-fi
-if [ -e /root/ubuntu.txt ]; then
-	source /root/ubuntu.txt;
-fi
 if [ -e /root/services.txt ]; then
 	source /root/services.txt;
 fi
 source /root/universal.txt
 source /root/source.txt
-source /root/userdata.txt
+source /root/board.txt > /dev/null 2>&1
+source /root/userdata.txt > /dev/null 2>&1
+if [ $verbose -eq 1 ]; then
+	set -x;
+fi
+source /root/${DISTRO}.txt
 UNMINIMIZE=/usr/local/sbin/unminimize
 URL="https://raw.githubusercontent.com/pyavitz/scripts/master/"
 
@@ -40,30 +36,31 @@ set_timezone
 
 apt upgrade -y
 apt dist-upgrade -y
-if [[ `grep -w 'DISTRO="ubuntu"' "/root/userdata.txt"` ]]; then
+apt autoremove -y
+if [[ "$DISTRO" == "ubuntu" ]]; then
 	if [ -f "$UNMINIMIZE" ]; then
 		echo 'y' | unminimize;
 	fi
 	apt_preferences;
 	echo "";
 fi
-if [[ `grep -w "ext4=1" "/root/userdata.txt"` ]]; then
+if [ $ext4 -eq 1 ]; then
 	apt install -y e2fsprogs;
 fi
-if [[ `grep -w "btrfs=1" "/root/userdata.txt"` ]]; then
+if [ $btrfs -eq 1 ]; then
 	apt install -y btrfs-progs;
 fi
-if [[ `grep -w "xfs=1" "/root/userdata.txt"` ]]; then
+if [ $xfs -eq 1 ]; then
 	apt install -y xfsprogs;
 fi
-if [[ `grep -w 'DISTRO="debian"' "/root/userdata.txt"` ]]; then
+if [[ "$DISTRO" == "debian" ]]; then
 	apt install -y ${PKG1} ${PKG2} ${FIRMWARE} resolvconf openssh-client openssh-server;
 fi
-if [[ `grep -w 'DISTRO="devuan"' "/root/userdata.txt"` ]]; then
+if [[ "$DISTRO" == "devuan" ]]; then
 	apt install -y openssh-client openssh-server --no-install-recommends;
 	apt install -y ${PKG1} ${PKG2} ${FIRMWARE} openresolv ntp ifupdown-extra;
 fi
-if [[ `grep -w 'DISTRO="ubuntu"' "/root/userdata.txt"` ]]; then
+if [[ "$DISTRO" == "devuan" ]]; then
 	apt install -y ${PKG1} ${PKG2} openresolv network-manager openssh-client openssh-server;
 fi
 apt -y clean
@@ -76,30 +73,30 @@ sleep 1s
 cd ~
 mkdir -p /usr/local/bin
 mkdir -p /usr/local/sbin
-if  [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
-	wget -cq --show-progress ${URL}write2usb
-	wget -cq --show-progress ${URL}deb-eeprom
+if [[ "$BOARD_EXT" == "rpi-4" ]]; then
+	wget -cq --show-progress ${URL}write2usb;
+	wget -cq --show-progress ${URL}deb-eeprom;
 	mv -f {write2usb,deb-eeprom} /usr/local/bin/;
 fi
 wget -cq --show-progress ${URL}swh
 wget -cq --show-progress ${URL}fetch
 wget -cq --show-progress ${URL}governor
 mv -f {swh,fetch,governor,setup,sysinfo,smon} /usr/local/bin/
-if [[ `grep -w "userscripts=1" "/root/userdata.txt"` ]]; then
+if [ $userscripts -eq 1 ]; then
 	uscripts_stage2;
 fi
 initrd_script
-mv -f credentials.sh /usr/local/bin/credentials;
+mv -f credentials.sh /usr/local/bin/credentials
 mv -f firstboot.sh /usr/local/sbin/firstboot
-if [[ `grep -w 'DISTRO="devuan"' "/root/userdata.txt"` ]]; then
+if [[ "$DISTRO" == "devuan" ]]; then
 	# Inits
-	mv -f firstboot.init /etc/init.d/firstboot
-	mv -f leds.init /etc/init.d/leds
-	mv -f governor.init /etc/init.d/governor
-	mv -f bthelper /etc/init.d/
-	mv -f zramswap /etc/init.d/
-	mv -f network /etc/init.d/
-	mv -f credentials /etc/init.d/
+	mv -f firstboot.init /etc/init.d/firstboot;
+	mv -f leds.init /etc/init.d/leds;
+	mv -f governor.init /etc/init.d/governor;
+	mv -f bthelper /etc/init.d/;
+	mv -f zramswap /etc/init.d/;
+	mv -f network /etc/init.d/;
+	mv -f credentials /etc/init.d/;
 fi
 mv -f growpart /usr/bin/
 chmod +x /usr/bin/growpart
@@ -118,7 +115,7 @@ mkdir -p /etc/update-motd.d
 tee /etc/update-motd.d/15-brand <<EOF
 #!/bin/bash
 echo
-toilet -f small --filter metal '${BRAND}'
+toilet -f small --filter metal '${MOTD}'
 echo 
 EOF
 mv -f 20-sysinfo /etc/update-motd.d/20-sysinfo
@@ -136,19 +133,15 @@ extra_firmware
 ### Udev rule
 if [ -e /root/99-com.rules ]; then
 	cd ~
-	mkdir -p /lib/udev/rules.d/
-	mv -f 99-com.rules /lib/udev/rules.d/
+	mkdir -p /lib/udev/rules.d/;
+	mv -f 99-com.rules /lib/udev/rules.d/;
 fi
 
 ### Network Setup
-if [[ `grep -w 'DISTRO="debian"' "/root/userdata.txt"` ]]; then
-	network_setup > /dev/null 2>&1;
-fi
-if [[ `grep -w 'DISTRO="devuan"' "/root/userdata.txt"` ]]; then
-	network_setup > /dev/null 2>&1;
-fi
-if [[ `grep -w 'DISTRO="ubuntu"' "/root/userdata.txt"` ]]; then
+if [[ "$DISTRO" == "ubuntu" ]]; then
 	network_manager;
+else
+	network_setup > /dev/null 2>&1;
 fi
 
 ### ZSWAP
@@ -171,7 +164,7 @@ raspberrypi_sys_mods
 echo ""
 echo "Installing pi-bluetooth ..."
 sleep 1s
-if [[ `grep -w 'DISTRO="ubuntu"' "/root/userdata.txt"` ]]; then
+if [[ "$DISTRO" == "ubuntu" ]]; then
 	git clone https://github.com/pyavitz/pi-bluetooth.git -b ubuntu;
 else
 	git clone https://github.com/pyavitz/pi-bluetooth.git;
@@ -188,7 +181,7 @@ echo "Done."
 rpi_userland
 
 ### Adding eeprom
-if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
+if [[ "$BOARD_EXT" == "rpi-4" ]]; then
 	bcm2711_eeprom;
 fi
 
@@ -196,27 +189,27 @@ fi
 stage2_kernel
 
 ### Modules
-if [[ `grep -w "bcm2711" "/root/soc.txt"` ]]; then
+if [[ "$BOARD_EXT" == "rpi-4" ]]; then
 	bcm_modules > /dev/null 2>&1;
 fi
-if [[ `grep -w "bcm2710" "/root/soc.txt"` ]]; then
+if [[ "$BOARD" == "bcm2710" ]]; then
 	bcm2710_modules > /dev/null 2>&1;
 fi
-if [[ `grep -w "bcm2709" "/root/soc.txt"` ]]; then
+if [[ "$BOARD" == "bcm2709" ]]; then
 	bcm2710_modules > /dev/null 2>&1;
 fi
-if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
+if [[ "$BOARD" == "bcm2708" ]]; then
 	bcm_modules > /dev/null 2>&1;
 fi
 
 ### Admin or user
-if [[ `grep -w "admin=1" "/root/userdata.txt"` ]]; then
+if [ $admin -eq 1 ]; then
 	admin_config;
 else
 	echo ""
 	user_config;
 fi
-if [[ `grep -w "rootpasswd=1" "/root/userdata.txt"` ]]; then
+if [ $rootpasswd -eq 1 ]; then
 	root_password;
 fi
 
@@ -224,12 +217,12 @@ fi
 rm -f {*.patch,*led*,*eeprom*}
 
 ### RPi Hack
-if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
-	ln -s /lib/ld-linux.so.3 /lib/ld-linux-armhf.so.3
+if [[ "$BOARD" == "bcm2708" ]]; then
+	ln -s /lib/ld-linux.so.3 /lib/ld-linux-armhf.so.3;
 fi
 
 ### Flush runtime journal
-if [[ `grep -w "bcm2708" "/root/soc.txt"` ]]; then
+if [[ "$BOARD" == "bcm2708" ]]; then
 	:;
 else
 	systemd_journald;
@@ -240,8 +233,8 @@ echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' > /etc/udev/rules.d/10-vchiq
 echo 'SUBSYSTEM=="vcio",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
 echo 'SUBSYSTEM=="vc-mem",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
 
-if [[ `grep -w 'DISTRO="devuan"' "/root/userdata.txt"` ]]; then
-	if [[ `grep -w "btrfs=1" "/root/userdata.txt"` ]]; then
+if [[ "$DISTRO" == "devuan" ]]; then
+	if [ $btrfs -eq 1 ]; then
 		btrfs_udev-rule;
 	fi
 fi
@@ -249,7 +242,7 @@ fi
 echo ""
 echo "Checking Services ..."
 sleep 1s
-if [[ `grep -w 'DISTRO="devuan"' "/root/userdata.txt"` ]]; then
+if [[ "$DISTRO" == "devuan" ]]; then
 	echo "== Sysvinit";
 	led_script > /dev/null 2>&1;
 	enable_services > /dev/null 2>&1;

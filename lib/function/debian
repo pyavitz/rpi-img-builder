@@ -18,19 +18,9 @@ EOF
 }
 
 distro_release(){
-if [[ `grep -w 'DISTRO_VERSION="bullseye"' "userdata.txt"` ]]; then
+if [[ "$DISTRO_VERSION" == "bullseye" ]]; then
 	stable_sources;
-fi
-if [[ `grep -w 'DISTRO_VERSION="bookworm"' "userdata.txt"` ]]; then
-	unstable_sources;
-fi
-if [[ `grep -w 'DISTRO_VERSION="testing"' "userdata.txt"` ]]; then
-	unstable_sources;
-fi
-if [[ `grep -w 'DISTRO_VERSION="sid"' "userdata.txt"` ]]; then
-	unstable_sources;
-fi
-if [[ `grep -w 'DISTRO_VERSION="unstable"' "userdata.txt"` ]]; then
+else
 	unstable_sources;
 fi
 }
@@ -39,8 +29,9 @@ fi
 network_setup(){
 rm -f /etc/network/interfaces
 mv -f credentials.txt /boot/rename_to_credentials.txt
-cp -f soc.txt /etc/opt/
-chown root:root /etc/opt/soc.txt
+cp -f board.txt /etc/opt/
+ln -sr /etc/opt/board.txt /etc/opt/soc.txt
+chown root:root /etc/opt/board.txt
 
 tee /etc/opt/interfaces.manual <<EOF
 ### Interfaces
