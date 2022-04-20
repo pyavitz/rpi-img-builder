@@ -155,7 +155,7 @@ echo "Installing raspi-sys-mods ..."
 apt update
 apt install -y debhelper d-shlibs rfkill dosfstools psmisc
 git clone https://github.com/RPi-Distro/raspberrypi-sys-mods.git
-if [[ `grep -w 'DISTRO="devuan"' "/root/userdata.txt"` ]]; then
+if [[ "$DISTRO" == "devuan" ]]; then
 	mv -f raspberrypi-sys-mods-control.patch raspberrypi-sys-mods/
 	cd raspberrypi-sys-mods
 	patch -p1 < raspberrypi-sys-mods-control.patch
