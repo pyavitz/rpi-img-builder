@@ -13,7 +13,7 @@ source ccache.txt
 clang_compiler(){
 echo NATIVE='"'${CLANG_LLVM}'"' > clang.txt
 if [[ "$BOARD" == "bcm2708" ]]; then
-	echo CROSS='"'CC=/usr/bin/clang-13'"' >> clang.txt
+	echo CROSS='"'CC=/usr/bin/clang-14'"' >> clang.txt
 else
 	echo CROSS='"'${CLANG_LLVM}'"' >> clang.txt
 fi

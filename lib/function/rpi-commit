@@ -26,13 +26,13 @@ else
 	fi
 fi
 if [ $clang -eq 1 ]; then
-	if [[ `command -v clang-13` ]]; then
+	if [[ `command -v clang-14` ]]; then
 	rm -f {gcc.txt,ccache.txt,clang.txt}
 	clang_compiler;
 else
 	sudo apt update
 	sudo apt upgrade -y
-	sudo apt install -y clang clang-13 lld lld-13 llvm
+	sudo apt install -y clang clang-14 lld lld-14 llvm
 	sleep 1s
 	rm -f {gcc.txt,ccache.txt,clang.txt}
 	clang_compiler;
