@@ -144,7 +144,7 @@ cp board.txt p2/root
 cp files/misc/* p2/root
 cp files/scripts/* p2/root
 cp files/users/* p2/root
-if [ $userscripts -eq 1 ]; then
+if [ $uscripts -eq 1 ]; then
 	uscripts_stage1;
 fi
 cp firmware/{fw-0a5c_21e8.hcd,UPDATE.mem} p2/root

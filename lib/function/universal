@@ -462,19 +462,25 @@ fi
 uscripts_stage1(){
 mkdir -p p2/root/userscripts
 cp -f files/userscripts/* p2/root/userscripts/
-rm -f p2/root/userscripts/README.md
+if [ -f p2/root/userscripts/README.md ]; then
+	rm -f p2/root/userscripts/README.md;
+fi
+if [[ `grep -w "run_function1" "files/userscripts/uscripts"` ]]; then
+	source files/userscripts/uscripts;
+	run_function1;
+fi
 }
 
 uscripts_stage2(){
-echo
-echo -e "\e[1;33mAdding user scripts\e[0m."
-mkdir -p /usr/local/bin
-cp -f userscripts/* /usr/local/bin/
-rm -fdr userscripts 
-chmod +x /usr/local/bin/*
-sleep 1s
+echo -e "\e[1;33mRunning user scripts\e[0m ..."
+if [ -f /root/userscripts/uscripts ]; then
+	source /root/userscripts/uscripts;
+	run_function2;
+	if [ -e /root/userscripts ]; then
+		rm -fdr /root/userscripts;
+	fi
+fi
 echo -e "\e[1;33mDone\e[0m."
-echo
 }
 
 # Firmware

@@ -29,7 +29,7 @@ exec 3>&1
 VALUES=$(dialog --ok-label "Submit" --no-cancel \
 	  --backtitle "Raspberry Pi Image Builder" \
 	  --title "Config Menu" \
-	  --form "Choose:" \
+	  --form "" \
 0 36 0 \
 	"Administrator:" 1 1	"$admin"  		1 16 2 0 \
 	""		2 1	""	 		2 14 0 0 \
@@ -87,7 +87,7 @@ echo btrfs= >> tmp0
 echo xfs= >> tmp0
 echo custom_defconfig= >> tmp0
 echo MYCONFIG='"' >> tmp0
-echo userscripts=0 >> tmp0
+echo uscripts=0 >> tmp0
 echo verbose=0 >> tmp0
 echo CLANG_LLVM='"'LLVM=1 LLVM_IAS=1'"' >> tmp0
 echo lto_clang_thin=0 >> tmp0
@@ -109,7 +109,7 @@ echo 'NAMESERVER2="8.8.4.4"' >> tmp0
 echo rtl8812au=0 >> tmp0
 echo rtl88x2bu=0 >> tmp0
 echo rtl8811cu=0 >> tmp0
-echo builder=4.4 >> tmp0
+echo builder=4.5 >> tmp0
 echo > tmp2
 echo '"' >> tmp2
 echo '"' >> tmp2

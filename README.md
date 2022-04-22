@@ -106,8 +106,8 @@ Patches "-p1" placed in patches/userpatches are applied during compilation.
 
 ```sh
 nano userdata.txt
-# place scripts in files/userscripts directory
-userscripts=0	# 1 to enable
+# review the README in the files/userscripts directory
+uscripts=0	# 1 to enable
 ``` 
 
 ## Command list
