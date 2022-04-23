@@ -67,10 +67,7 @@ sed -i 's/packageversion=$version-$revision/packageversion=$version-$revision~rp
 
 userpatches(){
 if [[ `ls ../../${USERPATCHES}/*.patch` ]] > /dev/null 2>&1; then
-	echo ""
-	echo -e "${WHT}Applying user patches${FIN} ..."
 	for i in ../../${USERPATCHES}/*.patch; do patch -p1 < $i; done;
-	echo_done;
 fi
 }
 

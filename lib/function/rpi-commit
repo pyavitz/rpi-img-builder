@@ -66,11 +66,8 @@ sed -i 's/packageversion=$version-$revision/packageversion=$version-$revision~rp
 }
 
 userpatches(){
-if
-ls ../${UP}/*.patch > /dev/null 2>&1;
-then echo -e "${GRN}Applying user patches${FIN}." &&
-for i in ../${UP}/*.patch; do patch -p1 < $i; done ;
-else echo -e "${YLW}No user patches found${FIN}." 
+if [[ `ls ../../${USERPATCHES}/*.patch` ]] > /dev/null 2>&1; then
+	for i in ../../${USERPATCHES}/*.patch; do patch -p1 < $i; done;
 fi
 }
 
