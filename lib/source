@@ -1,6 +1,6 @@
 DEF="../defconfig"
 PAT="../patches"
-UP="../patches/userpatches"
+USERPATCHES="patches/userpatches"
 SRC="source"
 
 KERNEL="linux-rpi"
