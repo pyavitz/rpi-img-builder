@@ -3,7 +3,7 @@ temp=$(/opt/vc/bin/vcgencmd measure_temp | egrep -o '[0-9]*\.[0-9]*')
 COL="\033[1m"
 FIN="\033[0m"
 echo -e "${COL}== DISK USAGE${FIN}"
-df -h | egrep '(Filesystem)|(/dev/mmc)|(/dev/root)|(/dev/sd)'
+df -h | egrep '(Filesystem)|(/dev/mmc)|(/dev/root)|(/dev/sd)|(/dev/nvme)'
 echo ""
 echo -e "${COL}== SYSTEM STATUS${FIN}"
 echo -e "${COL}CPU Temp:${FIN} " $temp°C
