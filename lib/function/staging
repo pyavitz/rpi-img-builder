@@ -8,8 +8,7 @@ fi
 if [ $xfs -eq 1 ]; then
 	truncate -s ${XFS} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
 fi
-fdisk "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" <<EOF
-o
+echo -e "o
 n
 p
 1
@@ -25,9 +24,7 @@ p
 524288
 
 p
-w
-
-EOF
+w" | fdisk "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
 IMAGE_LOOP_DEV="$(losetup --show -P -f ${IMAGE_FOLDER}${IMAGE_FILE_NAME})"
 IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
 IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"

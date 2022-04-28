@@ -1,5 +1,4 @@
 # Systemd services
-
 led_service(){
 tee /etc/systemd/system/leds.service <<EOF
 [Unit]
@@ -113,13 +112,11 @@ systemctl enable bluetooth
 systemctl enable firstboot
 systemctl enable credentials
 systemctl enable governor
-if [[ "$DISTRO_VERSION" == "bullseye" ]]; then
-	if [[ "$BOARD" == "bcm2708" ]]; then
-		mkdir -p /etc/systemd/system/haveged.service.d
-		echo -e '[Service]\nSystemCallFilter=uname' > /etc/systemd/system/haveged.service.d/fix.conf
-		systemctl daemon-reload
-		systemctl restart haveged;
-	fi
+if [[ "$DISTRO_VERSION" == "bullseye" ]] && [[ "$BOARD" == "bcm2708" ]]; then
+	mkdir -p /etc/systemd/system/haveged.service.d;
+	echo -e '[Service]\nSystemCallFilter=uname' > /etc/systemd/system/haveged.service.d/fix.conf;
+	systemctl daemon-reload;
+	systemctl restart haveged;
 fi
 if [ -e /etc/systemd/system/multi-user.target.wants/ondemand.service ]; then
 	systemctl disable ondemand;

@@ -1,5 +1,4 @@
 # Stage1
-
 # rootfs
 extract_rootfs(){
 if [ -e ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz ]; then
@@ -316,106 +315,39 @@ fi
 download_kernel(){
 DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
 KURL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"
-echo -e -n "\e[1;37mSearching\e[0m ...";
-sleep 1s;
 if [[ "$BOARD" == "bcm2711" ]]; then
-	if [[ "$ARCH" == "arm64" ]]; then
-		if [[ `wget -S --spider ${KURL}rpi4-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
-			${DOWNLOAD} ${KURL}rpi4-${VERSION}.tar.xz;
-			echo "";
-			tar xf rpi4-${VERSION}.tar.xz;
-			cd rpi4-${VERSION};
-			dpkg -i *.deb;
-			cd ~;
-			rm -fdr rpi4-${VERSION}*;
-		else
-			${DOWNLOAD} ${KURL}rpi4-5.15.y.tar.xz
-			echo "";
-			tar xf rpi4-5.15.y.tar.xz;
-			cd rpi4-5.15.y;
-			dpkg -i *.deb;
-			cd ~;
-			rm -fdr rpi4-5.15.y*;
-		fi
-	fi
+	RPI="rpi4";
 fi
-if [[ "$BOARD" == "bcm2711" ]]; then
-	if [[ "$ARCH" == "arm" ]]; then
-		if [[ `wget -S --spider ${KURL}rpi4v7-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
-			${DOWNLOAD} ${KURL}rpi4v7-${VERSION}.tar.xz;
-			echo "";
-			tar xf rpi4v7-${VERSION}.tar.xz;
-			cd rpi4v7-${VERSION};
-			dpkg -i *.deb;
-			cd ~;
-			rm -fdr rpi4v7-${VERSION}*;
-		else
-			${DOWNLOAD} ${KURL}rpi4v7-5.15.y.tar.xz
-			echo "";
-			tar xf rpi4v7-5.15.y.tar.xz;
-			cd rpi4v7-5.15.y;
-			dpkg -i *.deb;
-			cd ~;
-			rm -fdr rpi4v7-5.15.y*;
-		fi
-	fi
+if [[ "$BOARD" == "bcm2711v7" ]]; then
+	RPI="rpi4v7";
 fi
 if [[ "$BOARD" == "bcm2710" ]]; then
-	if [[ `wget -S --spider ${KURL}rpi3-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
-		${DOWNLOAD} ${KURL}rpi3-${VERSION}.tar.xz;
-		echo "";
-		tar xf rpi3-${VERSION}.tar.xz;
-		cd rpi3-${VERSION};
-		dpkg -i *.deb;
-		cd ~;
-		rm -fdr rpi3-${VERSION}*;
-	else
-		${DOWNLOAD} ${KURL}rpi3-5.15.y.tar.xz
-		echo "";
-		tar xf rpi3-5.15.y.tar.xz;
-		cd rpi3-5.15.y;
-		dpkg -i *.deb;
-		cd ~;
-		rm -fdr rpi3-5.15.y*;
-	fi
+	RPI="rpi3";
 fi
 if [[ "$BOARD" == "bcm2709" ]]; then
-	if [[ `wget -S --spider ${KURL}rpi2-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
-		${DOWNLOAD} ${KURL}rpi2-${VERSION}.tar.xz;
-		echo "";
-		tar xf rpi2-${VERSION}.tar.xz;
-		cd rpi2-${VERSION};
-		dpkg -i *.deb;
-		cd ~;
-		rm -fdr rpi2-${VERSION}*;
-	else
-		${DOWNLOAD} ${KURL}rpi2-5.15.y.tar.xz
-		echo "";
-		tar xf rpi2-5.15.y.tar.xz;
-		cd rpi2-5.15.y;
-		dpkg -i *.deb;
-		cd ~;
-		rm -fdr rpi2-5.15.y*;
-	fi
+	RPI="rpi2";
 fi
 if [[ "$BOARD" == "bcm2708" ]]; then
-	if [[ `wget -S --spider ${KURL}rpi-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
-		${DOWNLOAD} ${KURL}rpi-${VERSION}.tar.xz;
-		echo "";
-		tar xf rpi-${VERSION}.tar.xz;
-		cd rpi-${VERSION};
-		dpkg -i *.deb;
-		cd ~;
-		rm -fdr rpi-${VERSION}*;
-	else
-		${DOWNLOAD} ${KURL}rpi-5.15.y.tar.xz
-		echo "";
-		tar xf rpi-5.15.y.tar.xz;
-		cd rpi-5.15.y;
-		dpkg -i *.deb;
-		cd ~;
-		rm -fdr rpi-5.15.y*;
-	fi
+	RPI="rpi";
+fi
+echo -e -n "\e[1;37mSearching\e[0m ...";
+sleep 1s;
+if [[ `wget -S --spider ${KURL}${RPI}-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+	${DOWNLOAD} ${KURL}${RPI}-${VERSION}.tar.xz;
+	echo "";
+	tar xf ${RPI}-${VERSION}.tar.xz;
+	cd ${RPI}-${VERSION};
+	dpkg -i *.deb;
+	cd ~;
+	rm -fdr ${RPI}-${VERSION}*;
+else
+	${DOWNLOAD} ${KURL}${RPI}-5.15.y.tar.xz
+	echo "";
+	tar xf ${RPI}-5.15.y.tar.xz;
+	cd ${RPI}-5.15.y;
+	dpkg -i *.deb;
+	cd ~;
+	rm -fdr ${RPI}-5.15.y*;
 fi
 }
 
@@ -497,14 +429,14 @@ chown root:root /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd
 install -Dm644 UPDATE.mem /lib/firmware/updates/renesas_usb_fw.mem
 rm -f UPDATE.mem
 ln -sr /lib/firmware /etc/firmware
-mkdir -p /lib/firmware/updates/rtl_nic
-cd /lib/firmware/updates/rtl_nic
-wget -cq https://kernel.googlesource.com/pub/scm/linux/kernel/git/firmware/linux-firmware.git/+archive/refs/heads/main/rtl_nic.tar.gz
-if [ -e rtl_nic.tar.gz ]; then
-	tar xf rtl_nic.tar.gz
-	rm -f rtl_nic.tar.gz;
-else
-	:;
+if [[ `wget -S --spider https://kernel.googlesource.com/pub/scm/linux/kernel/git/firmware/linux-firmware.git/+archive/refs/heads/main/rtl_nic.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+	mkdir -p /lib/firmware/updates/rtl_nic;
+	cd /lib/firmware/updates/rtl_nic;
+	wget -cq https://kernel.googlesource.com/pub/scm/linux/kernel/git/firmware/linux-firmware.git/+archive/refs/heads/main/rtl_nic.tar.gz;
+	if [ -e rtl_nic.tar.gz ]; then
+		tar xf rtl_nic.tar.gz;
+		rm -f rtl_nic.tar.gz;
+	fi
 fi
 cd ~
 echo "Done."
@@ -526,14 +458,12 @@ fi
 defrag_p2(){
 if [ $ext4 -eq 1 ]; then
 	e4defrag -c p2;
-else
-	if [ $btrfs -eq 1 ]; then
-		btrfs filesystem defragment -f -r p2;
-	else
-		if [ $xfs -eq 1 ]; then
-			xfs_fsr p2;
-		fi
-	fi
+fi
+if [ $btrfs -eq 1 ]; then
+	btrfs filesystem defragment -f -r p2;
+fi
+if [ $xfs -eq 1 ]; then
+	xfs_fsr p2;
 fi
 }
 
