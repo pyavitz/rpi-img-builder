@@ -231,7 +231,7 @@ cp -R ../${PAT}/builddeb scripts/package/
 cp -R ../${PAT}/mkdebian scripts/package/
 chmod +x scripts/package/builddeb
 chmod +x scripts/package/mkdebian
-if [[ "$BOARD" == "bcm2711" ]]; then
+if [[ "$BOARD_EXT" == "rpi-4" ]]; then
 	patch -p1 < ../${PAT}/rpi4-packaging.patch
 	rpi4;
 fi
