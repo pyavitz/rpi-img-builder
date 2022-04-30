@@ -37,25 +37,26 @@ make dialogrc   # Set builder theme (optional)
 
 #### Config Menu
 * Review the userdata.txt file for further options: locales, timezone, nameserver(s) and extra wireless support
+* 1 active | 0 inactive
 ```sh
-User service:	# 1 to enable (create user during first boot}
+User service:	# Create user during first boot (bypass the user information below)
 
-Name		# Your name
-Username:       # Your username
-Password:       # Your password
-Enable root:	# 1 to enable (set root password to `toor`)
+Name:		# Your name
+Username:	# Your username
+Password:	# Your password
+Enable root:	# Set root password to `toor`
 
 Linux kernel
-Branch:         # Supported: 5.15.y and above
-Build:          # Kernel build version number
-Menuconfig:     # 1 to run kernel menuconfig
-Crosscompile:   # 1 to cross compile | 0 to native compile
+Branch:		# Supported: 5.15.y and above
+Build:		# Kernel build version number
+Menuconfig:	# Kernel menuconfig
+Crosscompile:	# 1 to cross compile | 0 to native compile
 
 Compiler        WARNING: Only one may be selected
-Version:        # Defaults at gcc-10
-GCC:            # 1 to select (default)
-Ccache:         # 1 to select
-Clang:          # 1 to select (Supported: Jammy Jellyfish)
+Version:	# Defaults at gcc-10
+GCC:		# Default compiler
+Ccache:		#
+Clang:		# Supported: Jammy Jellyfish
 
 Distribution
 Distro:		# Supported: debian, devuan and ubuntu
@@ -64,16 +65,16 @@ Release:	# Debian: bullseye, bookworm, testing, unstable and sid
 		# Ubuntu: focal and jammy
 
 Filesystem
-ext4:		# 1 to select (default)
-btrfs:		# 1 to select
-xfs:		# 1 to select
+ext4:		# Default fstype
+btrfs:		#
+xfs:		#
 
-Customize (user defconfig)
-Defconfig:	# 1 to enable
+Customize
+Defconfig:	# User defconfig
 Name:		# Name of _defconfig (Must be placed in defconfig dir.)
 
 Options
-Compress img:	# 1 to enable (auto compress img to img.xz)
+Compress img:	# Auto compress img > img.xz
 ```
 #### Compiler options
 * GCC flags: [fm4dd](https://gist.github.com/fm4dd/c663217935dc17f0fc73c9c81b0aa845) / [valvers](https://www.valvers.com/open-software/raspberry-pi/bare-metal-programming-in-c-part-1)
