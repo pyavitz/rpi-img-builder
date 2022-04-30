@@ -51,7 +51,7 @@ extract
 
 # Setup
 setup
-if [[ "$BOARD" == "bcm2711" ]]; then
+if [[ "$BOARD_EXT" == "rpi-4" ]]; then
 	rpi4_firmware;
 else
 	rpi_firmware;
