@@ -1,5 +1,5 @@
 # STAGE 1
-${DISTRO_VERSION_release(){
+distro_release(){
 rm -f p2/etc/apt/sources.list
 tee p2/etc/apt/sources.list <<EOF
 deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION} main restricted

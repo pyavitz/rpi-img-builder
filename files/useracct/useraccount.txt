@@ -1,0 +1,6 @@
+# HEADLESS: rename file to useraccount.txt and fill in the variables below
+# HEADFUL: if the file is not renamed, you will be prompted to create a user account
+
+NAME=""
+USERNAME=""
+PASSWORD=""

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-if [ -e /root/services.txt ]; then
+if [ -f /root/services.txt ]; then
 	source /root/services.txt;
 fi
 source /root/universal.txt
@@ -28,10 +28,10 @@ export DEBIAN_FRONTEND="noninteractive"
 apt-get update
 apt-get install -y apt-utils
 
-### Locales
+# Locales
 set_locales
 
-### Timezone
+# Timezone
 set_timezone
 
 apt upgrade -y
@@ -66,11 +66,79 @@ fi
 apt -y clean
 apt -y autoclean
 
-### Scripts
+# Scripts
 if [ $uscripts -eq 1 ]; then
 	echo ""
 	uscripts_stage2;
 fi
+echo -n "${BOARD}" > /etc/hostname;
+sed -i "1 a 127.0.1.1	${BOARD}" /etc/hosts;
+if [ $useracct -eq 0 ]; then
+	echo "";
+	adduser ${USERNAME} --gecos ${NAME} --disabled-password
+	echo "${USERNAME}:${PASSWORD}" | chpasswd
+	adduser ${USERNAME} sudo
+	adduser ${USERNAME} audio
+	adduser ${USERNAME} dialout
+	adduser ${USERNAME} video
+	adduser ${USERNAME} disk
+	adduser ${USERNAME} plugdev
+	adduser ${USERNAME} netdev
+	adduser ${USERNAME} bluetooth
+	adduser ${USERNAME} input
+	adduser ${USERNAME} tty
+	adduser ${USERNAME} i2c
+	groupadd gpio
+	groupadd spi
+	adduser ${USERNAME} gpio
+	adduser ${USERNAME} spi
+	if [[ "$DISTRO" == "devuan" ]] && [[ `grep -w "kvm" "/etc/group"` ]]; then
+		:;
+	else
+		addgroup --gid 125 kvm;
+	fi
+fi
+if [ $useracct -eq 1 ]; then
+	mkdir -p /boot;
+	mkdir -p /usr/local/sbin;
+	mv -f /root/useracct/useraccount /usr/local/sbin/;
+	chmod +x /usr/local/sbin/useraccount;
+	mv -f /root/{nanorc-user,user-ini} /etc/opt/;
+	mv -f /root/useracct/useraccount.txt /boot/rename_to_useraccount.txt;
+	if [[ "$DISTRO" == "devuan" ]]; then
+		mkdir -p /etc/init.d;
+		mv -f /root/useracct/useraccount.init /etc/init.d/useraccount;
+		chmod +x /etc/init.d/useraccount;
+		update-rc.d useraccount defaults 5;
+		rm -fdr /root/useracct;
+	else
+		mkdir -p /etc/systemd/system/;
+		mv -f /root/useracct/useraccount.service /etc/systemd/system/;
+		systemctl enable useraccount > /dev/null 2>&1;
+		rm -fdr /root/useracct;
+	fi
+fi
+if [ $rootpasswd -eq 1 ]; then
+	root_password;
+fi
+
+# Skins
+cd ~
+mkdir -p /usr/share/mc/skins
+mv -f darkgreen.ini /usr/share/mc/skins/darkgreen.ini
+mv -f darkred.ini /usr/share/mc/skins/darkred.ini
+mkdir -p /root/.config/mc
+mv -f root-ini /root/.config/mc/ini
+mv -f nanorc-root /root/.nanorc
+chown -R root:root /root
+if [ $useracct -eq 0 ]; then
+	mkdir -p /home/${USERNAME}/.config/mc;
+	mv -f user-ini /home/${USERNAME}/.config/mc/ini;
+	mv -f nanorc-user /home/${USERNAME}/.nanorc;
+	chown -R ${USERNAME}:${USERNAME} /home/${USERNAME};
+fi
+
+# Scripts
 echo ""
 echo "Moving scripts ..."
 sleep 1s
@@ -108,7 +176,7 @@ chown -R root:root /usr/local/bin/
 chown -R root:root /usr/local/sbin/
 echo "Done."
 
-### MOTD
+# MOTD
 echo ""
 echo "Adding motd ..."
 sleep 1s
@@ -128,40 +196,51 @@ chown root:root /etc/update-motd.d/15-brand
 chown root:root /etc/update-motd.d/20-sysinfo
 echo "Done."
 
-### Extra firmware
+# Extra firmware
 extra_firmware
 
-### Udev rule
+# Udev rule
 if [ -e /root/99-com.rules ]; then
 	cd ~
 	mkdir -p /lib/udev/rules.d/;
 	mv -f 99-com.rules /lib/udev/rules.d/;
 fi
 
-### Network Setup
+# Network Setup
 if [[ "$DISTRO" == "ubuntu" ]]; then
 	network_manager;
 else
 	network_setup > /dev/null 2>&1;
 fi
 
-### ZSWAP
+# ZSWAP
 zramswap_config
 
-### MOTD instructions
+# MOTD instructions
 rm -f /etc/motd
 mv -f motd /etc/motd
 mv -f new.motd /etc/new.motd
 chown root:root /etc/motd
 chown root:root /etc/new.motd
 
-### Wireless regdb
+# Wireless regdb
 wireless_regdb
 
-### Adding sys-mods
+# Adding sys-mods
 raspberrypi_sys_mods
 
-### Pi Bluetooth
+# Sudoers file
+if [ -f /etc/sudoers.d/010_pi-nopasswd ]; then
+	rm -f /etc/sudoers.d/010_pi-nopasswd;
+fi
+if [ $useracct -eq 0 ]; then
+	echo "";
+	tee /etc/sudoers.d/010_${USERNAME}-nopasswd <<EOF
+${USERNAME} ALL=(ALL) NOPASSWD: ALL
+EOF
+fi
+
+# Pi Bluetooth
 echo ""
 echo "Installing pi-bluetooth ..."
 sleep 1s
@@ -178,18 +257,18 @@ dpkg -i pi-bluetooth_*.deb
 rm -fdR pi-bluetooth*
 echo "Done."
 
-###  Raspi userland
+#  Raspi userland
 rpi_userland
 
-### Adding eeprom
+# Adding eeprom
 if [[ "$BOARD_EXT" == "rpi-4" ]]; then
 	bcm2711_eeprom;
 fi
 
-### Kernel
+# Kernel
 stage2_kernel
 
-### Modules
+# Modules
 if [[ "$BOARD_EXT" == "rpi-4" ]]; then
 	bcm_modules > /dev/null 2>&1;
 fi
@@ -203,33 +282,22 @@ if [[ "$BOARD" == "bcm2708" ]]; then
 	bcm_modules > /dev/null 2>&1;
 fi
 
-### Admin or user
-if [ $admin -eq 1 ]; then
-	admin_config;
-else
-	echo ""
-	user_config;
-fi
-if [ $rootpasswd -eq 1 ]; then
-	root_password;
-fi
-
-### Clean misc files
+# Clean misc files
 rm -f {*.patch,*led*,*eeprom*}
 
-### RPi Hack
+# RPi Hack
 if [[ "$BOARD" == "bcm2708" ]]; then
 	ln -s /lib/ld-linux.so.3 /lib/ld-linux-armhf.so.3;
 fi
 
-### Flush runtime journal
+# Flush runtime journal
 if [[ "$BOARD" == "bcm2708" ]]; then
 	:;
 else
 	systemd_journald;
 fi
 
-### Vchiq permissions
+# Vchiq permissions
 echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' > /etc/udev/rules.d/10-vchiq-permissions.rules
 echo 'SUBSYSTEM=="vcio",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
 echo 'SUBSYSTEM=="vc-mem",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules

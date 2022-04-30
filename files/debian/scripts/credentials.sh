@@ -1,9 +1,9 @@
 #!/bin/bash
-if [ -e /boot/credentials.txt ]; then
+if [ -f /boot/credentials.txt ]; then
 	source /boot/credentials.txt;
 fi
 
-### Functions
+# Functions
 change_hostname(){
 sed -i "s/bcm2711/${HOSTNAME}/g" /etc/hostname
 sed -i "s/bcm2711v7/${HOSTNAME}/g" /etc/hostname
@@ -65,7 +65,7 @@ ifup wlan0
 }
 
 connect_wifi(){
-if [[ `grep -Fx "MANUAL=y" "/boot/credentials.txt"` ]]; then
+if [[ "$MANUAL" == "y" ]]; then
 	static;
 else
 	dhcp;
@@ -73,10 +73,10 @@ fi
 }
 
 hostname_branding(){
-if [[ `grep -Fx "CHANGE=y" "/boot/credentials.txt"` ]]; then
-	change_hostname
-	change_branding
-	hostnamectl set-hostname ${HOSTNAME}
+if [[ "$CHANGE" == "y" ]]; then
+	change_hostname;
+	change_branding;
+	hostnamectl set-hostname ${HOSTNAME};
 	systemctl restart avahi-daemon;
 fi
 }
@@ -89,18 +89,18 @@ mv -f /etc/opt/interfaces.manual /etc/network/interfaces
 mv -f /etc/opt/wpa_supplicant.manual /etc/wpa_supplicant/wpa_supplicant.conf
 sleep 2s
 if [[ `grep "1" /sys/class/net/eth0/carrier` ]]; then
-	ifconfig eth0 up
+	ifconfig eth0 up;
 	ifup eth0;
 fi
 if [[ `grep 'mywifissid' /etc/wpa_supplicant/wpa_supplicant.conf` ]]; then
 	:;
 else
-	ifconfig wlan0 up
+	ifconfig wlan0 up;
 	ifup wlan0;
 fi
 }
 
-### Renew ssh keys and machine-id
+# Renew ssh keys and machine-id
 sleep 1s
 rm -f /etc/ssh/ssh_host_*
 dpkg-reconfigure openssh-server
@@ -110,20 +110,15 @@ rm -f /var/lib/dbus/machine-id
 dbus-uuidgen --ensure=/etc/machine-id
 dbus-uuidgen --ensure
 
-### Check Credentials
-if [ -e /boot/username.txt ]; then
-	/usr/local/bin/whogoesthere > /dev/null 2>&1;
-fi
-if [ -e /boot/credentials.txt ]; then
+# Check Credentials
+if [ -f /boot/credentials.txt ]; then
 	hostname_branding;
-fi
-if [ -e /boot/credentials.txt ]; then
 	connect_wifi;
 else
 	remove_wifi;
 fi
 
-### Clean
+# Clean
 rm -f /usr/local/bin/credentials
 rm -f /boot/credentials.txt
 rm -f /etc/opt/{interfaces.manual,wpa_supplicant.manual}

@@ -1,0 +1,19 @@
+[Unit]
+Description=User Account
+After=firstboot.service network.target
+Before=sshd.service systemd-logind.service getty@tty1.service credentials.service
+
+[Service]
+Type=oneshot
+TTYPath=/dev/tty13
+ExecStartPre=/usr/bin/chvt 13
+ExecStart=/usr/local/sbin/useraccount
+ExecStartPost=/usr/bin/chvt 1
+TimeoutStartSec=0
+StandardInput=tty
+TTYVHangup=yes
+TTYVTDisallocate=yes
+
+[Install]
+WantedBy=default.target
+RequiredBy=sshd.service systemd-logind.service getty@tty1.service

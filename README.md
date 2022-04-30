@@ -37,10 +37,10 @@ make dialogrc   # Set builder theme (optional)
 
 #### Config Menu
 * Review the userdata.txt file for further options: locales, timezone, nameserver(s) and extra wireless support
-
 ```sh
-Administrator:  # Create user during first boot; auto compress img to img.xz
+User service:	# 1 to enable (create user during first boot}
 
+Name		# Your name
 Username:       # Your username
 Password:       # Your password
 Enable root:	# 1 to enable (set root password to `toor`)
@@ -71,6 +71,9 @@ xfs:		# 1 to select
 Customize (user defconfig)
 Defconfig:	# 1 to enable
 Name:		# Name of _defconfig (Must be placed in defconfig dir.)
+
+Options
+Compress img:	# 1 to enable (auto compress img to img.xz)
 ```
 #### Compiler options
 * GCC flags: [fm4dd](https://gist.github.com/fm4dd/c663217935dc17f0fc73c9c81b0aa845) / [valvers](https://www.valvers.com/open-software/raspberry-pi/bare-metal-programming-in-c-part-1)
@@ -141,18 +144,18 @@ make check      # Shows latest revision of selected branch
 ```sh
 Rename file to credentials.txt and input your wifi information.
 
-SSID=" "			# Service set identifier
-PASSKEY=" "			# Wifi password
-COUNTRYCODE=" "			# Your country code
+SSID=""				# Service set identifier
+PASSKEY=""			# Wifi password
+COUNTRYCODE=""			# Your country code
 
 # set static ip
-MANUAL=n			# Set to y to enable a static ip
-IPADDR=" "			# Static ip address
-NETMASK=" "			# Your Netmask
-GATEWAY=" "			# Your Gateway
-NAMESERVERS=" "			# Your preferred dns
+MANUAL="n"			# Set to y to enable a static ip
+IPADDR=""			# Static ip address
+NETMASK=""			# Your Netmask
+GATEWAY=""			# Your Gateway
+NAMESERVERS=""			# Your preferred dns
 
-CHANGE=y			# Set to n to disable
+CHANGE="y"			# Set to n to disable
 HOSTNAME="raspberrypi"		# Set the system's host name
 BRANDING="Raspberry Pi"		# Set ASCII text banner
 
@@ -174,17 +177,17 @@ use command: 'swh -d' to disable wifi after booting to OS.
 ```sh
 Rename file to credentials.txt and input your wifi information.
 
-NAME=" "			# Name of the connection
-SSID=" "			# Service set identifier
-PASSKEY=" "			# Wifi password
-COUNTRYCODE=" "			# Your country code
+NAME=""				# Name of the connection
+SSID=""				# Service set identifier
+PASSKEY=""			# Wifi password
+COUNTRYCODE=""			# Your country code
 
-MANUAL=n			# Set to y to enable a static ip
-IPADDR=" "			# Static ip address
-GATEWAY=" "			# Your Gateway
+MANUAL="n"			# Set to y to enable a static ip
+IPADDR=""			# Static ip address
+GATEWAY=""			# Your Gateway
 DNS=""				# Your preferred dns
 
-CHANGE=y			# Set to n to disable
+CHANGE="y"			# Set to n to disable
 HOSTNAME="raspberrypi"		# Set the system's host name
 BRANDING="Raspberry Pi"		# Set ASCII text banner
 

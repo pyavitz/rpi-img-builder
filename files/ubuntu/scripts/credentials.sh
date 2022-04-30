@@ -1,9 +1,9 @@
 #!/bin/bash
-if [ -e /boot/credentials.txt ]; then
+if [ -f /boot/credentials.txt ]; then
 	source /boot/credentials.txt;
 fi
 
-### Functions
+# Functions
 change_hostname(){
 sed -i "s/bcm2711/${HOSTNAME}/g" /etc/hostname
 sed -i "s/bcm2711v7/${HOSTNAME}/g" /etc/hostname
@@ -40,7 +40,7 @@ nmcli c up ${NAME}
 }
 
 connect_wifi(){
-if [[ `grep -Fx "MANUAL=y" "/boot/credentials.txt"` ]]; then
+if [[ "$MANUAL" == "y" ]]; then
 	static;
 else
 	dhcp;
@@ -48,10 +48,10 @@ fi
 }
 
 hostname_branding(){
-if [[ `grep -Fx "CHANGE=y" "/boot/credentials.txt"` ]]; then
-	change_hostname
-	change_branding
-	hostnamectl set-hostname ${HOSTNAME}
+if [[ "$CHANGE" == "y" ]]; then
+	change_hostname;
+	change_branding;
+	hostnamectl set-hostname ${HOSTNAME};
 	systemctl restart avahi-daemon;
 fi
 }
@@ -64,7 +64,7 @@ if [[ `service credentials status | grep "active (running)"` ]]; then
 fi
 }
 
-### Renew ssh keys and machine-id
+# Renew ssh keys and machine-id
 sleep 1s
 rm -f /etc/ssh/ssh_host_*
 dpkg-reconfigure openssh-server
@@ -74,20 +74,15 @@ rm -f /var/lib/dbus/machine-id
 dbus-uuidgen --ensure=/etc/machine-id
 dbus-uuidgen --ensure
 
-### Check Credentials
-if [ -e /boot/username.txt ]; then
-	/usr/local/bin/whogoesthere > /dev/null 2>&1;
-fi
-if [ -e /boot/credentials.txt ]; then
+# Check Credentials
+if [ -f /boot/credentials.txt ]; then
 	hostname_branding;
-fi
-if [ -e /boot/credentials.txt ]; then
 	connect_wifi;
 else
 	remove_wifi;
 fi
 
-### Clean
+# Clean
 if [[ `service credentials status | grep "inactive (dead)"` ]]; then
 	:;
 else

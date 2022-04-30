@@ -144,6 +144,10 @@ cp board.txt p2/root
 cp files/misc/* p2/root
 cp files/scripts/* p2/root
 cp files/users/* p2/root
+if [ $useracct -eq 1 ]; then
+	mkdir -p p2/root/useracct;
+	cp -r files/useracct/* p2/root/useracct;
+fi
 if [ $uscripts -eq 1 ]; then
 	uscripts_stage1;
 fi
@@ -194,7 +198,7 @@ else
 	:;
 fi
 
-if [ $admin -eq 1 ]; then
+if [ $compress_img -eq 1 ]; then
 	echo ""
 	echo_compress
 	compress_image
