@@ -119,7 +119,7 @@ uscripts=0	# 1 to enable
 ```sh
 make all board=XXX	# kernel > rootfs > image (run at own risk)
 make kernel board=XXX
-make commit board=XXX	# Kernel package built from commmit
+make commit board=XXX	# linux source pulled from commmit
 make rootfs board=XXX
 make image board=XXX
 ```
