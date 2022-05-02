@@ -92,11 +92,6 @@ if [ $useracct -eq 0 ]; then
 	groupadd spi
 	adduser ${USERNAME} gpio
 	adduser ${USERNAME} spi
-	if [[ "$DISTRO" == "devuan" ]] && [[ `grep -w "kvm" "/etc/group"` ]]; then
-		:;
-	else
-		addgroup --gid 125 kvm;
-	fi
 fi
 if [ $useracct -eq 1 ]; then
 	mkdir -p /boot;
