@@ -286,27 +286,31 @@ fi
 
 # User scripts
 uscripts_stage1(){
-mkdir -p p2/root/userscripts
-cp -f files/userscripts/* p2/root/userscripts/
-if [ -f p2/root/userscripts/README.md ]; then
-	rm -f p2/root/userscripts/README.md;
-fi
-if [[ `grep -w "run_function1" "files/userscripts/uscripts"` ]]; then
-	source files/userscripts/uscripts;
-	run_function1;
+if [ -f files/userscripts/uscripts ]; then
+	mkdir -p p2/root/userscripts;
+	cp -f files/userscripts/* p2/root/userscripts/;
+	if [ -f p2/root/userscripts/README.md ]; then
+		rm -f p2/root/userscripts/README.md;
+	fi
+	if [[ `grep -w "run_function1" "files/userscripts/uscripts"` ]]; then
+		source files/userscripts/uscripts;
+		run_function1;
+	fi
 fi
 }
 
 uscripts_stage2(){
-echo -e "\e[1;33mRunning user scripts\e[0m ..."
 if [ -f /root/userscripts/uscripts ]; then
-	source /root/userscripts/uscripts;
-	run_function2;
-	if [ -e /root/userscripts ]; then
-		rm -fdr /root/userscripts;
+	if [[ `grep -w "run_function2" "/root/userscripts/uscripts"` ]]; then
+		echo -e "\e[1;33mRunning user scripts\e[0m.";
+		source /root/userscripts/uscripts;
+		run_function2;
+		if [ -e /root/userscripts ]; then
+			rm -fdr /root/userscripts;
+		fi
+		echo -e "\e[1;33mDone\e[0m.";
 	fi
 fi
-echo -e "\e[1;33mDone\e[0m."
 }
 
 # Firmware
