@@ -139,6 +139,14 @@ make check      # Shows latest revision of selected branch
 ```
 
 ## Usage
+#### /boot/rename_to_useraccount.txt
+* Headless: rename file to useraccount.txt and fill in the variables
+* Headful: don't rename file & get prompted to create a user account
+```sh
+NAME=""
+USERNAME=""
+PASSWORD=""
+```
 
 ### Debian / Devuan
 #### /boot/rename_to_credentials.txt
