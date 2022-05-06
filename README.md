@@ -74,6 +74,7 @@ Name:		# Name of _defconfig (Must be placed in defconfig dir.)
 Options
 Verbosity:	# Verbose
 Compress img:	# Auto compress img > img.xz
+User scripts:	# review the README in the files/userscripts directory
 User service:	# Create user during first boot (bypass the user information above)
 ```
 #### Compiler options
@@ -105,15 +106,6 @@ in the userdata.txt file.
 ```sh
 Patches "-p1" placed in patches/userpatches are applied during compilation.
 ```
-
-#### User scripts
-
-```sh
-nano userdata.txt
-# review the README in the files/userscripts directory
-uscripts=0	# 1 to enable
-``` 
-
 ## Command list
 
 * Raspberry Pi 4b/400 = bcm2711 (arm64) / bcm2711v7 (armhf)
