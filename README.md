@@ -74,7 +74,7 @@ Name:		# Name of _defconfig (Must be placed in defconfig dir.)
 User options
 Verbosity:	# Verbose
 Compress img:	# Auto compress img > img.xz
-User scripts:	# review the README in the files/userscripts directory
+User scripts:	# Review the README in the files/userscripts directory
 User service:	# Create user during first boot (bypass the user information above)
 ```
 #### Compiler options
