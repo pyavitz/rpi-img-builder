@@ -97,7 +97,7 @@ fi
 userdata(){
 tee userdata.txt <<EOF
 ### LINUX KERNEL
-admin=1
+NAME=""
 VERSION="$branch.y"
 BUILD_VERSION="$build"
 menuconfig=0
@@ -117,8 +117,9 @@ xfs=0
 ### CUSTOM
 custom_defconfig=0
 MYCONFIG="_defconfig"
-userscripts=0
 verbose=0
+userscripts=0
+useracct=0
 ### CLANG/LLVM
 CLANG_LLVM="LLVM=1 LLVM_IAS=1"
 lto_clang_thin=0
