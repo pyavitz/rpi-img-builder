@@ -22,7 +22,10 @@ btrfs="0"
 xfs="0"
 custom_defconfig="0"
 MYCONFIG=""
+verbose="0"
 compress_img="0"
+uscripts="0"
+useracct="0"
 
 # open fd
 exec 3>&1
@@ -33,40 +36,41 @@ VALUES=$(dialog --ok-label "Submit" --no-cancel \
 	  --title "Config Menu" \
 	  --form "" \
 0 36 0 \
-	"User Service:" 1 1	"$useracct"		1 16 2 0 \
-	""		2 1	""	 		2 14 0 0 \
-	"Name:"		3 1	"$NAME" 		3 11 14 0 \
-	"Username:"	4 1	"$USERNAME" 		4 11 14 0 \
-	"Password:"	5 1	"$PASSWORD"  		5 11 14 0 \
-	"Enable root:"	6 1	"$rootpasswd"  		6 14 2 0 \
-	""		7 1	""	 		7 14 0 0 \
-	"Linux kernel"	8 1	""	 		8 14 0 0 \
-        "Branch:"   	9 1     "$VERSION"        	9 9 7 0 \
-        "Build:"   	10 1     "$BUILD_VERSION"       10 8 4 0 \
-	"Menuconfig:"	11 1	"$menuconfig"  		11 13 2 0 \
-	"Crosscompile:" 12 1	"$crosscompile" 	12 15 2 0 \
-	""		13 1	""	 		13 14 0 0 \
-	"Compiler"	14 1	""	 		14 14 0 0 \
-	"Version:"	15 1	"$GCC_VERSION"	 	15 10 8 0 \
-	"GCC:"		16 1	"$gcc"		 	16 9 2 0 \
-	"Ccache:"	17 1	"$ccache"	 	17 9 2 0 \
-	"Clang:"	18 1	"$clang"	 	18 9 2 0 \
-	""		19 1	""	 		19 14 0 0 \
-	"Distribution"	20 1	""	 		20 14 0 0 \
-	"Distro:"	21 1	"$DISTRO"	  	21 10 15 0 \
-	"Release:"	22 1	"$DISTRO_VERSION"  	22 10 15 0 \
-	""		23 1	""	 		23 14 0 0 \
-	"Filesystem"	24 1	""	 		24 14 0 0 \
-	"ext4:"		25 1	"$ext4"		 	25 8 2 0 \
-	"btrfs:"	26 1	"$btrfs"	 	26 8 2 0 \
-	"xfs:"		27 1	"$xfs"		 	27 8 2 0 \
-	""		28 1	""	 		28 14 0 0 \
-	"Customize"	29 1	""	 		29 14 0 0 \
-	"Defconfig:"	30 1	"$custom_defconfig" 	30 12 2 0 \
-	"Name:"		31 1	"$MYCONFIG"	  	31 7 20 0 \
-	""		32 1	""	 		32 14 0 0 \
-	"Options"	33 1	""	 		33 14 0 0 \
-	"Compress img:"	34 1	"$compress_img" 	34 15 2 0 \
+	"Name:"		1 1	"$NAME" 		1 7 23 0 \
+	"Username:"	2 1	"$USERNAME" 		2 11 19 0 \
+	"Password:"	3 1	"$PASSWORD"  		3 11 19 0 \
+	"Enable root:"	4 1	"$rootpasswd"  		4 14 2 0 \
+	""		5 1	""	 		5 14 0 0 \
+	"Linux kernel"	6 1	""	 		6 14 0 0 \
+        "Branch:"   	7 1     "$VERSION"        	7 9 7 0 \
+        "Build:"   	8 1     "$BUILD_VERSION"        8 8 4 0 \
+	"Menuconfig:"	9 1	"$menuconfig"  		9 13 2 0 \
+	"Crosscompile:" 10 1	"$crosscompile" 	10 15 2 0 \
+	""		11 1	""	 		11 14 0 0 \
+	"Compiler"	12 1	""	 		12 14 0 0 \
+	"Version:"	13 1	"$GCC_VERSION"	 	13 10 8 0 \
+	"GCC:"		14 1	"$gcc"		 	14 9 2 0 \
+	"Ccache:"	15 1	"$ccache"	 	15 9 2 0 \
+	"Clang:"	16 1	"$clang"	 	16 9 2 0 \
+	""		17 1	""	 		17 14 0 0 \
+	"Distribution"	18 1	""	 		18 14 0 0 \
+	"Distro:"	19 1	"$DISTRO"	  	19 10 15 0 \
+	"Release:"	20 1	"$DISTRO_VERSION"  	20 10 15 0 \
+	""		21 1	""	 		21 14 0 0 \
+	"Filesystem"	22 1	""	 		22 14 0 0 \
+	"ext4:"		23 1	"$ext4"		 	23 8 2 0 \
+	"btrfs:"	24 1	"$btrfs"	 	24 8 2 0 \
+	"xfs:"		25 1	"$xfs"		 	25 8 2 0 \
+	""		26 1	""	 		26 14 0 0 \
+	"Customize"	27 1	""	 		27 14 0 0 \
+	"Defconfig:"	28 1	"$custom_defconfig" 	28 12 2 0 \
+	"Name:"		29 1	"$MYCONFIG"	  	29 7 23 0 \
+	""		30 1	""	 		30 14 0 0 \
+	"User Options"	31 1	""	 		31 14 0 0 \
+	"Verbosity:"	32 1	"$verbose"		32 12 2 0 \
+	"Compress img:"	33 1	"$compress_img" 	33 15 2 0 \
+	"User scripts:"	34 1	"$uscripts"		34 15 2 0 \
+	"User Service:" 35 1	"$useracct"		35 15 2 0 \
 2>&1 1>&3)
 
 # close fd
@@ -74,8 +78,7 @@ exec 3>&-
 
 # convert into vars
 echo "$VALUES" > tmp1
-echo useracct= > tmp0
-echo NAME='"' >> tmp0
+echo NAME='"' > tmp0
 echo USERNAME='"' >> tmp0
 echo PASSWORD='"' >> tmp0
 echo rootpasswd= >> tmp0
@@ -94,9 +97,10 @@ echo btrfs= >> tmp0
 echo xfs= >> tmp0
 echo custom_defconfig= >> tmp0
 echo MYCONFIG='"' >> tmp0
+echo verbose= >> tmp0
 echo compress_img= >> tmp0
-echo uscripts=0 >> tmp0
-echo verbose=0 >> tmp0
+echo uscripts= >> tmp0
+echo useracct= >> tmp0
 echo CLANG_LLVM='"'LLVM=1 LLVM_IAS=1'"' >> tmp0
 echo lto_clang_thin=0 >> tmp0
 echo CORES=\`nproc\` >> tmp0
@@ -117,9 +121,8 @@ echo 'NAMESERVER2="8.8.4.4"' >> tmp0
 echo rtl8812au=0 >> tmp0
 echo rtl88x2bu=0 >> tmp0
 echo rtl8811cu=0 >> tmp0
-echo builder=4.6 >> tmp0
-echo > tmp2
-echo '"' >> tmp2
+echo builder=4.7 >> tmp0
+echo '"' > tmp2
 echo '"' >> tmp2
 echo '"' >> tmp2
 echo >> tmp2
@@ -142,11 +145,11 @@ paste -d '\0' tmp0 tmp1 tmp2  > userdata.txt
 rm -f tmp0 tmp1 tmp2
 
 # categories
-sed -i '6i### LINUX KERNEL' userdata.txt
-sed -i '11i### COMPILER' userdata.txt
-sed -i '16i### DISTRIBUTION' userdata.txt
-sed -i '19i### FILESYSTEM' userdata.txt
-sed -i '24i### CUSTOM' userdata.txt
+sed -i '5i### LINUX KERNEL' userdata.txt
+sed -i '10i### COMPILER' userdata.txt
+sed -i '15i### DISTRIBUTION' userdata.txt
+sed -i '18i### FILESYSTEM' userdata.txt
+sed -i '22i### CUSTOM' userdata.txt
 sed -i '29i### CLANG/LLVM' userdata.txt
 sed -i '32i### COMPILER TUNING' userdata.txt
 sed -i '35i### LOCALES' userdata.txt

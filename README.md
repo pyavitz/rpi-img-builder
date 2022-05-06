@@ -39,8 +39,6 @@ make dialogrc   # Set builder theme (optional)
 * Review the userdata.txt file for further options: locales, timezone, nameserver(s) and extra wireless support
 * 1 active | 0 inactive
 ```sh
-User service:	# Create user during first boot (bypass the user information below)
-
 Name:		# Your name
 Username:	# Your username
 Password:	# Your password
@@ -74,7 +72,9 @@ Defconfig:	# User defconfig
 Name:		# Name of _defconfig (Must be placed in defconfig dir.)
 
 Options
+Verbosity:	# Verbose
 Compress img:	# Auto compress img > img.xz
+User service:	# Create user during first boot (bypass the user information above)
 ```
 #### Compiler options
 * GCC flags: [fm4dd](https://gist.github.com/fm4dd/c663217935dc17f0fc73c9c81b0aa845) / [valvers](https://www.valvers.com/open-software/raspberry-pi/bare-metal-programming-in-c-part-1)

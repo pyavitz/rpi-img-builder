@@ -9,7 +9,7 @@ KBUSER="marvin"
 KBHOST="martian"
 
 validation(){
-if [[ `grep -w "builder=4.6" "userdata.txt"` ]]; then
+if [[ `grep -w "builder=4.7" "userdata.txt"` ]]; then
 	:;
 else
 	echo -e "${YLW}The userdata.txt file has expired. Please create a new one.${FIN}"
