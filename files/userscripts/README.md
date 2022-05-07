@@ -7,7 +7,7 @@ If found, it runs at the start of stage1.
 * run_function1
 ```sh
 If found, it runs in the middle of stage1. This can be used to make edits to the
-$P_VALUE directory before chroot.
+p2 directory before chroot.
 ```
 
 * run_function2
