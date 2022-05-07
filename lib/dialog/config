@@ -77,7 +77,7 @@ VALUES=$(dialog --ok-label "Submit" --no-cancel \
 	"Verbosity:"	32 1	"$verbose"		32 12 2 0 \
 	"Compress img:"	33 1	"$compress_img" 	33 15 2 0 \
 	"User scripts:"	34 1	"$uscripts"		34 15 2 0 \
-	"User Service:" 35 1	"$useracct"		35 15 2 0 \
+	"User service:" 35 1	"$useracct"		35 15 2 0 \
 2>&1 1>&3)
 
 # close fd
