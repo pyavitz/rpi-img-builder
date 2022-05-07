@@ -285,6 +285,15 @@ fi
 }
 
 # User scripts
+uscripts_pre-stage1(){
+if [ -f files/userscripts/uscripts ]; then
+	if [[ `grep -w "run_function0" "files/userscripts/uscripts"` ]]; then
+		source files/userscripts/uscripts;
+		run_function0;
+	fi
+fi
+}
+
 uscripts_stage1(){
 if [ -f files/userscripts/uscripts ]; then
 	mkdir -p p2/root/userscripts;
@@ -293,7 +302,12 @@ if [ -f files/userscripts/uscripts ]; then
 		rm -f p2/root/userscripts/README.md;
 	fi
 	if [[ `grep -w "run_function1" "files/userscripts/uscripts"` ]]; then
-		source files/userscripts/uscripts;
+		if [[ `grep -w "run_function0" "files/userscripts/uscripts"` ]]; then
+			# file already sourced
+			:;
+		else
+			source files/userscripts/uscripts;
+		fi
 		run_function1;
 	fi
 fi
@@ -305,11 +319,11 @@ if [ -f /root/userscripts/uscripts ]; then
 		echo -e "\e[1;33mRunning user scripts\e[0m.";
 		source /root/userscripts/uscripts;
 		run_function2;
-		if [ -e /root/userscripts ]; then
-			rm -fdr /root/userscripts;
-		fi
 		echo -e "\e[1;33mDone\e[0m.";
 	fi
+fi
+if [ -e /root/userscripts ]; then
+	rm -fdr /root/userscripts;
 fi
 }
 

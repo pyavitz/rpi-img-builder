@@ -1,10 +1,13 @@
 #!/bin/bash
+source userdata.txt > /dev/null 2>&1
 source lib/function/universal
+if [ $uscripts -eq 1 ]; then
+	uscripts_pre-stage1;
+fi
 source lib/function/staging
 source lib/function/echoes
 source lib/source
 source board.txt > /dev/null 2>&1
-source userdata.txt > /dev/null 2>&1
 source lib/function/${DISTRO}
 UD=userdata.txt
 
