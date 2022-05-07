@@ -2,10 +2,17 @@
 ### DO NOT EDIT
 RED="\e[0;31m"
 FIN="\e[0m"
-useracct="0"
-NAME=""
-USERNAME=""
-PASSWORD=""
+if [ -e profile.txt ]; then
+	source profile.txt;
+else
+	NAME="";
+	USERNAME="";
+	PASSWORD="";
+	LOCALE="en_US.UTF-8";
+	TIMEZONE="America/New_York";
+	USER_NAMESERVER1="8.8.8.8";
+	USER_NAMESERVER2="8.8.4.4";
+fi
 rootpasswd="0"
 VERSION="5.15.y"
 BUILD_VERSION="1"
@@ -54,8 +61,8 @@ VALUES=$(dialog --ok-label "Submit" --no-cancel \
 	"Clang:"	16 1	"$clang"	 	16 9 2 0 \
 	""		17 1	""	 		17 14 0 0 \
 	"Distribution"	18 1	""	 		18 14 0 0 \
-	"Distro:"	19 1	"$DISTRO"	  	19 10 15 0 \
-	"Release:"	20 1	"$DISTRO_VERSION"  	20 10 15 0 \
+	"Distro:"	19 1	"$DISTRO"	  	19 9 21 0 \
+	"Release:"	20 1	"$DISTRO_VERSION"  	20 10 20 0 \
 	""		21 1	""	 		21 14 0 0 \
 	"Filesystem"	22 1	""	 		22 14 0 0 \
 	"ext4:"		23 1	"$ext4"		 	23 8 2 0 \
@@ -66,7 +73,7 @@ VALUES=$(dialog --ok-label "Submit" --no-cancel \
 	"Defconfig:"	28 1	"$custom_defconfig" 	28 12 2 0 \
 	"Name:"		29 1	"$MYCONFIG"	  	29 7 23 0 \
 	""		30 1	""	 		30 14 0 0 \
-	"User Options"	31 1	""	 		31 14 0 0 \
+	"User options"	31 1	""	 		31 14 0 0 \
 	"Verbosity:"	32 1	"$verbose"		32 12 2 0 \
 	"Compress img:"	33 1	"$compress_img" 	33 15 2 0 \
 	"User scripts:"	34 1	"$uscripts"		34 15 2 0 \
@@ -107,17 +114,17 @@ echo CORES=\`nproc\` >> tmp0
 echo CFLAGS='"''"' >> tmp0
 echo "set_locales(){" >> tmp0
 echo "apt install -y locales" >> tmp0
-echo "export LANGUAGE=en_US.UTF-8" >> tmp0
-echo "export LANG=en_US.UTF-8" >> tmp0
+echo "export LANGUAGE=${LOCALE}" >> tmp0
+echo "export LANG=${LOCALE}" >> tmp0
 echo "export LC_ALL=C.UTF-8" >> tmp0
-echo "locale-gen en_US.UTF-8" >> tmp0
+echo "locale-gen ${LOCALE}" >> tmp0
 echo "}" >> tmp0
 echo "set_timezone(){" >> tmp0
-echo "ln -snf /usr/share/zoneinfo/America/New_York /etc/localtime" >> tmp0
-echo "echo -n 'America/New_York' > /etc/timezone" >> tmp0
+echo "ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime" >> tmp0
+echo "echo -n '${TIMEZONE}' > /etc/timezone" >> tmp0
 echo "}" >> tmp0
-echo 'NAMESERVER1="8.8.8.8"' >> tmp0
-echo 'NAMESERVER2="8.8.4.4"' >> tmp0
+echo NAMESERVER1='"'${USER_NAMESERVER1}'"' >> tmp0
+echo NAMESERVER2='"'${USER_NAMESERVER2}'"' >> tmp0
 echo rtl8812au=0 >> tmp0
 echo rtl88x2bu=0 >> tmp0
 echo rtl8811cu=0 >> tmp0
