@@ -25,14 +25,16 @@ XFS="2650MB"
 # packages
 PKG1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	fonty-rg patch curl wget apt-transport-https dirmngr cmake rsync \
-	psmisc parted pv zip unzip aria2 libell0 fdisk i2c-tools"
-
-PKG2="cpu hwinfo haveged git build-essential net-tools ifplugd wireless-regdb \
+	psmisc parted pv zip unzip aria2 libell0 fdisk i2c-tools cpu hwinfo"
+	haveged git build-essential net-tools ifplugd wireless-regdb \
 	fuse3 wpasupplicant wireless-tools usbutils alsa-utils gettext iw \
 	bison flex mc nano figlet toilet dialog python3 python3-setuptools \
 	ntfs-3g bc zram-tools libncursesw5-dev libssl-dev autopoint autoconf \
 	automake pkg-config libtool fake-hwclock avahi-utils distro-info-data \
 	lsb-release liblzo2-2 bluetooth bluez bluez-tools gpiod python3-libgpiod"
+
+# sys-mods
+SYSMODS="debhelper d-shlibs rfkill dosfstools psmisc"
 
 # firmware
 FIRMWARE="firmware-linux-nonfree firmware-linux firmware-misc-nonfree \

@@ -45,8 +45,6 @@ echo "Done."
 raspberrypi_sys_mods(){
 echo ""
 echo "Installing raspi-sys-mods ..."
-apt update
-apt install -y debhelper d-shlibs rfkill dosfstools psmisc
 git clone https://github.com/RPi-Distro/raspberrypi-sys-mods.git
 if [[ "$DISTRO" == "devuan" ]]; then
 	mv -f raspberrypi-sys-mods-control.patch raspberrypi-sys-mods/

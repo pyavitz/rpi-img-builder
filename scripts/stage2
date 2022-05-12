@@ -54,14 +54,14 @@ if [ $xfs -eq 1 ]; then
 	apt install -y xfsprogs;
 fi
 if [[ "$DISTRO" == "debian" ]]; then
-	apt install -y ${PKG1} ${PKG2} ${FIRMWARE} resolvconf openssh-client openssh-server;
+	apt install -y ${PKG1} ${SYSMODS} ${FIRMWARE} resolvconf openssh-client openssh-server;
 fi
 if [[ "$DISTRO" == "devuan" ]]; then
 	apt install -y openssh-client openssh-server --no-install-recommends;
-	apt install -y ${PKG1} ${PKG2} ${FIRMWARE} openresolv ntp ifupdown-extra;
+	apt install -y ${PKG1} ${SYSMODS} ${FIRMWARE} openresolv ntp ifupdown-extra;
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
-	apt install -y ${PKG1} ${PKG2} openresolv network-manager openssh-client openssh-server;
+	apt install -y ${PKG1} ${SYSMODS} openresolv network-manager openssh-client openssh-server;
 fi
 apt -y clean
 apt -y autoclean
