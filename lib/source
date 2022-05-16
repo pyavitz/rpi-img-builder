@@ -18,10 +18,6 @@ fi
 }
 # do not edit above this line
 
-EXT4="3000MB"
-BTRFS="2650MB"
-XFS="2650MB"
-
 # packages
 PKG1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	fonty-rg patch curl wget apt-transport-https dirmngr cmake rsync \
