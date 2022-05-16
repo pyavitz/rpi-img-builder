@@ -1,6 +1,0 @@
-##################################
-# create a username and password #
-##################################
-
-user="pi"
-passwd="board"
