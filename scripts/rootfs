@@ -62,7 +62,6 @@ if [ -e $RELEASE ]; then
 fi
 echo ""
 echo -e "${WHT}Starting debootstrap${FIN} ..."
-echo -e -n ${GRN}
 # start debootstrap
 mkdir -p ${ROOT}/usr/bin
 cp $(command -v "${STATIC}") ${ROOT}/usr/bin;
@@ -82,7 +81,7 @@ echo -e "${WHT}Archiving root filesystem${FIN} ..."
 cd ${ROOT}
 echo -en ${WHT}
 XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - * | (pv -terb > ../$RELEASE)
-echo -e -n ${FIN}
+echo -en ${FIN}
 cd ..
 
 rm -fdr ${ROOT}
