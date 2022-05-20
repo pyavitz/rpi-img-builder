@@ -260,6 +260,13 @@ if [[ "$BOARD_EXT" == "rpi-4" ]]; then
 	bcm2711_eeprom;
 fi
 
+# Remove zstd compression (not supported by older kernels)
+if [[ "$DISTRO" == "ubuntu" ]] && [[ "$DISTRO_VERSION" == "jammy" ]]; then
+	if [[ `grep -w "COMPRESS=zstd" "/etc/initramfs-tools/initramfs.conf"` ]]; then
+		sed -i 's/COMPRESS=zstd/COMPRESS=xz/g' /etc/initramfs-tools/initramfs.conf;
+	fi
+fi
+
 # Kernel
 stage2_kernel
 
