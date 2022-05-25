@@ -66,11 +66,7 @@ fi
 apt -y clean
 apt -y autoclean
 
-# Scripts
-if [ $uscripts -eq 1 ]; then
-	echo ""
-	uscripts_stage2;
-fi
+# User options
 echo -n "${BOARD}" > /etc/hostname;
 sed -i "1 a 127.0.1.1	${BOARD}" /etc/hosts;
 if [ $useracct -eq 0 ]; then
@@ -115,6 +111,12 @@ if [ $useracct -eq 1 ]; then
 fi
 if [ $rootpasswd -eq 1 ]; then
 	root_password;
+fi
+
+# User script (function 2)
+if [ $uscripts -eq 1 ]; then
+	echo ""
+	uscripts_stage2;
 fi
 
 # Skins
