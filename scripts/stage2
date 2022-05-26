@@ -113,6 +113,14 @@ if [ $rootpasswd -eq 1 ]; then
 	root_password;
 fi
 
+# Sudoers file
+if [ $useracct -eq 0 ]; then
+	echo "";
+	tee /etc/sudoers.d/010_${USERNAME}-nopasswd <<EOF
+${USERNAME} ALL=(ALL) NOPASSWD: ALL
+EOF
+fi
+
 # User script (function 2)
 if [ $uscripts -eq 1 ]; then
 	echo ""
@@ -225,16 +233,8 @@ wireless_regdb
 
 # Adding sys-mods
 raspberrypi_sys_mods
-
-# Sudoers file
 if [ -f /etc/sudoers.d/010_pi-nopasswd ]; then
 	rm -f /etc/sudoers.d/010_pi-nopasswd;
-fi
-if [ $useracct -eq 0 ]; then
-	echo "";
-	tee /etc/sudoers.d/010_${USERNAME}-nopasswd <<EOF
-${USERNAME} ALL=(ALL) NOPASSWD: ALL
-EOF
 fi
 
 # Pi Bluetooth
