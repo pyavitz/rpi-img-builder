@@ -13,11 +13,11 @@ fi
 if [[ "$BOARD" == "bcm2710" ]]; then
 	TITLE=`echo $MOTD $BOARD | sed 's/bcm2710/2\/Zero2W\/3/g'`;
 fi
-if [[ "$BOARD" == "bcm2711v7" ]]; then
-	TITLE=`echo $MOTD $BOARD | sed 's/bcm2711v7/4\/400/g'`;
-fi
 if [[ "$BOARD" == "bcm2711" ]]; then
 	TITLE=`echo $MOTD $BOARD | sed 's/bcm2711/4\/400/g'`;
+fi
+if [[ "$BOARD" == "bcm2711v7" ]]; then
+	TITLE=`echo $MOTD $BOARD | sed 's/bcm2711v7/4\/400/g'`;
 fi
 DIALOG_CANCEL=1
 DIALOG_ESC=255

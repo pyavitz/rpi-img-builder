@@ -24,8 +24,8 @@ validation
 
 # menu list
 while IFS=$'\n' read -r opt; do
-    COUNT=$(( COUNT+1 ))
-    options+=($COUNT "$opt" off)
+	COUNT=$(( COUNT+1 ))
+	options+=($COUNT "$opt" off)
 done < lib/dialog/list
 
 # dialog menu
@@ -34,8 +34,7 @@ choices=($("${cmd[@]}" "${options[@]}" 2>&1 1>/dev/tty))
 
 # selection
 for choice in "${choices[@]}"; do
-	source lib/dialog/names
-	boardnames
+	BOARD=`ls lib/boards | head -n $choice | tail -n 1`
 	chmod +x lib/dialog/general
 	./lib/dialog/general $BOARD
 done
