@@ -74,14 +74,15 @@ if [ -f /boot/useraccount.txt ]; then
 	echo -e "Creating a user account for: \e[1;37m${NAME}\e[0m"
 	create_user > /dev/null 2>&1;
 	create_sudoers > /dev/null 2>&1;
-	rm -f /boot/useraccount.txt
-	sleep 1s
+	rm -f /boot/useraccount.txt;
+	echo "Almost done ...";
+	sleep 1s;
 else
 	# headful
 	account_prompt;
 	create_user > /dev/null 2>&1;
 	create_sudoers > /dev/null 2>&1;
-	rm -f /boot/rename_to_useraccount.txt
+	rm -f /boot/rename_to_useraccount.txt;
 	echo "Almost done ...";
 	sleep 1s;
 fi
