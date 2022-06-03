@@ -1,0 +1,19 @@
+#!/bin/bash
+
+boardnames(){
+if [[ "$choice" == "1" ]]; then
+	BOARD="bcm2708"
+fi
+if [[ "$choice" == "2" ]]; then
+	BOARD="bcm2709"
+fi
+if [[ "$choice" == "3" ]]; then
+	BOARD="bcm2711v7"
+fi
+if [[ "$choice" == "4" ]]; then
+	BOARD="bcm2710"
+fi
+if [[ "$choice" == "5" ]]; then
+	BOARD="bcm2711"
+fi
+}

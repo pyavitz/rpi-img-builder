@@ -1,64 +1,46 @@
 #!/bin/bash
-### DO NOT EDIT
-RED="\e[0;31m"
-FIN="\e[0m"
-DIALOG_CANCEL=1
-DIALOG_ESC=255
-HEIGHT=0
-WIDTH=0
+COUNT=0
 
-source lib/source > /dev/null 2>&1
-UD=userdata.txt > /dev/null 2>&1
+# userdata-txt
+source lib/source
+UD=userdata.txt
 userdata(){
 echo ""
-echo "Please create a userdata.txt file"
+echo "Create a userdata.txt file"
 while [ true ]; do
-read -t 10 -n 1
-if [ $? = 0 ]; then
-	exit;
-else
-	echo "run make config";
-fi
+	read -t 10 -n 1
+	if [ $? = 0 ]; then
+		exit 0;
+	fi
 done
 }
 
 if [ -f "$UD" ]; then
-	echo "";
+	:;
 else 
 	userdata;
 fi
 validation
-menu_items=`ls lib/boards | while read name; do ((count+=1)); echo $count $name | sed -e 's/\(.*\)/\U\1/'; done`
-while true; do
-	exec 3>&1
-	selection=$(dialog \
-	--backtitle "Raspberry Pi Image Builder" \
-	--title "Boards" \
-	--clear \
-	--cancel-label "Exit" \
-	--menu "Select:" $HEIGHT $WIDTH 3 \
-	$menu_items \
- 	2>&1 1>&3)
- 	exit_status=$?
- 	exec 3>&-;
-case $exit_status in
-	$DIALOG_CANCEL)
-		clear -x
-		echo -e "${RED}Program terminated${FIN}."
-		exit
-		;;
-	$DIALOG_ESC)
-		clear -x
-		echo -e "${RED}Program aborted${FIN}." >&2
-		exit 1
-		;;
-esac
-if [ $selection .eq 0 ]; then
-	clear -x;
-	echo -e "${RED}Program terminated${FIN}.";
-else
-	boardName=`ls lib/boards | head -n $selection | tail -n 1`; 
-	chmod +x lib/dialog/general;
-	./lib/dialog/general $boardName;
-fi
+
+# menu list
+while IFS=$'\n' read -r opt; do
+    COUNT=$(( COUNT+1 ))
+    options+=($COUNT "$opt" off)
+done < lib/dialog/list
+
+# dialog menu
+cmd=(dialog --backtitle "Raspberry Pi Image Builder" --title "B O A R D S" --cancel-label "Exit" --radiolist "" 0 0 0)
+choices=($("${cmd[@]}" "${options[@]}" 2>&1 1>/dev/tty))
+
+# selection
+for choice in "${choices[@]}"; do
+	source lib/dialog/names
+	boardnames
+	chmod +x lib/dialog/general
+	./lib/dialog/general $BOARD
 done
+
+# finish
+clear -x
+echo -e "Program terminated."
+exit 0

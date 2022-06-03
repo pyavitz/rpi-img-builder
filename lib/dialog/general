@@ -1,9 +1,24 @@
 #!/bin/bash
-### DO NOT EDIT
+
 source lib/boards/$1
 source userdata.txt
 MAKE_OUTPUT="output/$1"
-TITLE=`echo "$1" | sed -e 's/\(.*\)/\U\1/'`
+BTITLE=`echo $FAMILY: $MOTD: $ARCH_EXT | sed -e 's/\(.*\)/\U\1/'`
+if [[ "$BOARD" == "bcm2708" ]]; then
+	TITLE=`echo $MOTD $BOARD | sed 's/bcm2708/0\/1\/W/g'`;
+fi
+if [[ "$BOARD" == "bcm2709" ]]; then
+	TITLE=`echo $MOTD $BOARD | sed 's/bcm2709/2\/Zero2W\/3/g'`;
+fi
+if [[ "$BOARD" == "bcm2710" ]]; then
+	TITLE=`echo $MOTD $BOARD | sed 's/bcm2710/2\/Zero2W\/3/g'`;
+fi
+if [[ "$BOARD" == "bcm2711v7" ]]; then
+	TITLE=`echo $MOTD $BOARD | sed 's/bcm2711v7/4\/400/g'`;
+fi
+if [[ "$BOARD" == "bcm2711" ]]; then
+	TITLE=`echo $MOTD $BOARD | sed 's/bcm2711/4\/400/g'`;
+fi
 DIALOG_CANCEL=1
 DIALOG_ESC=255
 HEIGHT=0
@@ -12,15 +27,15 @@ WIDTH=0
 while true; do
 	exec 3>&1
 	selection=$(dialog \
-	--backtitle "Raspberry Pi Image Builder" \
+	--backtitle "$BTITLE" \
 	--title "$TITLE" \
 	--clear \
 	--cancel-label "Exit" \
-	--menu "Select:" $HEIGHT $WIDTH 2 \
-	"1" "Make All" \
-	"2" "Make Kernel" \
-	"3" "Make ROOTFS" \
-	"4" "Make Image" \
+	--menu "Select:" $HEIGHT $WIDTH 0 \
+	"1" "Make All (Feeling Lucky?)"\
+	"2" "Make Linux Kernel" \
+	"3" "Make Root Filesystem" \
+	"4" "Make Flashable Image" \
 	2>&1 1>&3)
 	exit_status=$?
 	exec 3>&-;
