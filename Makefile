@@ -75,8 +75,8 @@ endef
 
 help:
 	@echo
-	@echo "\e[1;31m             Raspberry Pi Image Builder\e[0m"
-	@echo "\e[1;37m             **************************"
+	@echo "\t\t\e[1;31mRaspberry Pi Image Builder\e[0m"
+	@echo "\t\t\e[1;37m**************************"
 	@echo "\e[1;37mUsage:\e[0m "
 	@echo
 	@echo "  make ccompile          Install x86-64 cross dependencies"
