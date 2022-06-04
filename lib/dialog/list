@@ -1,5 +1,5 @@
-Raspberry Pi 0/1/W		ARMEL
-Raspberry Pi 2/Zero2W/3		ARMHF
-Raspberry Pi 2/Zero2W/3		ARM64
-Raspberry Pi 4/400		ARM64
-Raspberry Pi 4/400		ARMHF
+Raspberry Pi 0/1/W		BCM2708 / ARMEL
+Raspberry Pi 2/Zero2W/3		BCM2709 / ARMHF
+Raspberry Pi 2/Zero2W/3		BCM2710 / ARM64
+Raspberry Pi 4/400		BCM2711 / ARM64
+Raspberry Pi 4/400		BCM2711 / ARMHF
