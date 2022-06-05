@@ -1,5 +1,5 @@
 #!/bin/bash
-### DO NOT EDIT
+
 RED="\e[0;31m"
 FIN="\e[0m"
 if [ -e profile.txt ]; then
@@ -37,7 +37,7 @@ useracct="0"
 # open fd
 exec 3>&1
 
-# Store data to $VALUES variable
+# store data to $VALUES variable
 VALUES=$(dialog --ok-label "Submit" --no-cancel \
 	  --backtitle "Raspberry Pi Image Builder" \
 	  --title "Config Menu" \

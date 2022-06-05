@@ -3,7 +3,7 @@
 source lib/boards/$1
 source userdata.txt
 MAKE_OUTPUT="output/$1"
-BTITLE=`echo $FAMILY: $MOTD: $BOARD: $ARCH_EXT | sed -e 's/\(.*\)/\U\1/'`
+BTITLE=`echo $FAMILY: $MOTD: $BOARD: $ARCH_EXT | sed 's/bcm2711v7/bcm2711/g' | sed -e 's/\(.*\)/\U\1/'`
 if [[ "$BOARD" == "bcm2708" ]]; then
 	TITLE=`echo $MOTD $BOARD | sed 's/bcm2708/0\/1\/W/g'`;
 fi
@@ -41,19 +41,19 @@ while true; do
 	exec 3>&-;
 case $exit_status in
 	$DIALOG_CANCEL)
-		clear
+		clear -x
 		echo "Program terminated."
 		exit
 		;;
 	$DIALOG_ESC)
-		clear
+		clear -x
 		echo "Program aborted." >&2
 		exit 1
 		;;
 esac
 case $selection in
 	0 )
-		clear
+		clear -x
 		echo "Program terminated."
 		;;
 	1 )

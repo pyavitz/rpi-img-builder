@@ -113,9 +113,9 @@ Patches "-p1" placed in patches/userpatches are applied during compilation.
 * Raspberry Pi 0/1/w = bcm2708 (armel)
 
 ```sh
-make all board=XXX	# kernel > rootfs > image (run at own risk)
+make all board=XXX	# Kernel > Rootfs > Image (run at own risk)
 make kernel board=XXX
-make commit board=XXX	# linux source pulled from commmit
+make commit board=XXX	# Linux source pulled from commmit
 make rootfs board=XXX
 make image board=XXX
 ```
