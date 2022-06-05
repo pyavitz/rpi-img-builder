@@ -58,7 +58,7 @@ if [[ "$DISTRO" == "debian" ]]; then
 fi
 if [[ "$DISTRO" == "devuan" ]]; then
 	apt install -y openssh-client openssh-server --no-install-recommends;
-	apt install -y ${PKG1} ${SYSMODS} ${FIRMWARE} openresolv ntp ifupdown-extra;
+	apt install -y ${PKG1} ${SYSMODS} ${FIRMWARE} openresolv ifupdown-extra;
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
 	apt install -y ${PKG1} ${SYSMODS} openresolv network-manager openssh-client openssh-server;
