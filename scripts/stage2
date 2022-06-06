@@ -63,6 +63,9 @@ fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
 	apt install -y ${PKG1} ${SYSMODS} openresolv network-manager openssh-client openssh-server;
 fi
+#  Fix debconf errors when running tasksel (sudo tasksel --new-install)
+apt-get install --reinstall debconf
+# apt clean
 apt -y clean
 apt -y autoclean
 

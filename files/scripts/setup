@@ -6,7 +6,7 @@ run(){
 echo ""
 echo -e "${WHT}Running System Setup${FIN} ..."
 sleep 1s
-sudo dpkg-reconfigure locales tzdata keyboard-configuration
+sudo dpkg-reconfigure locales tzdata keyboard-configuration tasksel
 sleep 1s
 if [ -e /etc/new.motd ]; then
 	sudo rm -f /etc/motd
