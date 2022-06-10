@@ -56,7 +56,7 @@ governor_service(){
 tee /etc/systemd/system/governor.service <<EOF
 [Unit]
 Description=Governor
-ConditionPathExists=/usr/local/bin/governor
+ConditionPathExists=/sys/devices/system/cpu/online
 
 [Service]
 ExecStart=/usr/local/bin/governor -r &>/dev/null
