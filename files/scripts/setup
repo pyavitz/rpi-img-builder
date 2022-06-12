@@ -6,9 +6,24 @@ run(){
 echo ""
 echo -e "${WHT}Running System Setup${FIN} ..."
 sleep 1s
-sudo dpkg-reconfigure locales tzdata keyboard-configuration tasksel
+sudo dpkg-reconfigure locales tzdata keyboard-configuration
 sleep 1s
-if [ -e /etc/new.motd ]; then
+if [[ `curl -I https://github.com 2>&1 | grep 'HTTP/2 200'` ]]; then
+	echo "";
+	echo "Preparing tasksel ...";
+	if [[ `command -v tasksel` ]]; then
+		:;
+	else
+		sudo apt update;
+		sudo apt install -y tasksel;
+	fi
+	sleep 1s;
+	sudo apt-get update;
+	sudo apt-get install --reinstall debconf;
+	sudo dpkg-reconfigure tasksel;
+	echo "Done.";
+fi
+if [ -f /etc/new.motd ]; then
 	sudo rm -f /etc/motd
 	sudo mv -f /etc/new.motd /etc/motd;
 else
@@ -18,9 +33,7 @@ sleep 1s
 sudo update-ca-certificates -f
 echo ""
 echo -e "${WHT}System is ready to go${FIN}."
-if [ -e /usr/local/bin/setup ]; then
-	sudo rm -f /usr/local/bin/setup;
-fi
+exit 0
 }
 
 if [ $# -eq 0 ]; then
@@ -30,17 +43,15 @@ if [ $# -eq 0 ]; then
 	exit 0
 fi
 
-ECHO="false"
-
 while getopts "rh" OPTION; do
 	case $OPTION in
 
 		r)
 			ECHO="RUN"
 			;;
-		h)                       
+		h)
 			echo ""
-			echo -e "   -r        Run"
+			echo -e "	-r	Run"
 			echo ""
 			exit 0
 			;;
