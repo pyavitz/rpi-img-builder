@@ -2,40 +2,6 @@
 WHT="\033[1m"
 FIN="\033[0m"
 
-run(){
-echo ""
-echo -e "${WHT}Running System Setup${FIN} ..."
-sleep 1s
-sudo dpkg-reconfigure locales tzdata keyboard-configuration
-sleep 1s
-if [[ `curl -I https://github.com 2>&1 | grep 'HTTP/2 200'` ]]; then
-	echo "";
-	echo "Preparing tasksel ...";
-	if [[ `command -v tasksel` ]]; then
-		:;
-	else
-		sudo apt update;
-		sudo apt install -y tasksel;
-	fi
-	sleep 1s;
-	sudo apt-get update;
-	sudo apt-get install --reinstall debconf;
-	sudo dpkg-reconfigure tasksel;
-	echo "Done.";
-fi
-if [ -f /etc/new.motd ]; then
-	sudo rm -f /etc/motd
-	sudo mv -f /etc/new.motd /etc/motd;
-else
-	:;
-fi
-sleep 1s
-sudo update-ca-certificates -f
-echo ""
-echo -e "${WHT}System is ready to go${FIN}."
-exit 0
-}
-
 if [ $# -eq 0 ]; then
 	echo -e "\e[0;31mMissing options!${FIN}"
 	echo "(run $0 -h for help)"
@@ -47,17 +13,42 @@ while getopts "rh" OPTION; do
 	case $OPTION in
 
 		r)
-			ECHO="RUN"
+			echo ""
+			echo -e "${WHT}Running System Setup${FIN} ..."
+			sleep 1s
+			sudo dpkg-reconfigure locales tzdata keyboard-configuration
+			sleep 1s
+			if [[ `curl -I https://github.com 2>&1 | grep 'HTTP/2 200'` ]]; then
+				echo "";
+				echo "Preparing tasksel ...";
+				if [[ `command -v tasksel` ]]; then
+					:;
+				else
+					sudo apt update;
+					sudo apt install -y tasksel;
+				fi
+				sleep 1s;
+				sudo apt-get update;
+				sudo apt-get install --reinstall debconf;
+				sudo dpkg-reconfigure tasksel;
+				echo "Done.";
+			fi
+			if [ -f /etc/motd ]; then
+				sudo rm -f /etc/motd;
+				sudo touch /etc/motd;
+			fi
+			sleep 1s
+			sudo update-ca-certificates -f
+			echo ""
+			echo -e "${WHT}System is ready to go${FIN}."
+			exit 0
 			;;
 		h)
 			echo ""
-			echo -e "	-r	Run"
+			echo -e "	-r	Run setup"
 			echo ""
 			exit 0
 			;;
 	esac
 done
-
-if [ $ECHO = "RUN" ]; then
-	run;
-fi
+exit 0

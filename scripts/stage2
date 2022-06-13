@@ -224,10 +224,10 @@ zramswap_config
 
 # MOTD instructions
 rm -f /etc/motd
-mv -f motd /etc/motd
-mv -f new.motd /etc/new.motd
+echo "" > /etc/motd
+echo "To set Locales, Timezone, Keyboard and Audio. Execute: setup -r" >> /etc/motd
+echo "" >> /etc/motd
 chown root:root /etc/motd
-chown root:root /etc/new.motd
 
 # Wireless regdb
 wireless_regdb

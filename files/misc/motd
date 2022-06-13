@@ -1,5 +1,0 @@
-
-To set Locales, Timezone and Keyboard. Run `setup -r`
-
-Change passwd(s): sudo passwd $USER
-
