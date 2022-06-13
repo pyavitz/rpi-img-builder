@@ -225,7 +225,7 @@ zramswap_config
 # MOTD instructions
 rm -f /etc/motd
 echo "" > /etc/motd
-echo "To set Locales, Timezone, Keyboard and Audio. Execute: setup -r" >> /etc/motd
+echo "To set Locales, Timezone and Keyboard. Execute: setup -r" >> /etc/motd
 echo "" >> /etc/motd
 chown root:root /etc/motd
 
