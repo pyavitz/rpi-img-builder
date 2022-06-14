@@ -395,13 +395,13 @@ tee /usr/local/sbin/leds <<EOF
 #!/bin/bash
 
 if [[ -e /dev/mmcblk0 ]]; then 
-	if [ -f /sys/class/leds/led0/trigger ]; then
+	if [ -e /sys/class/leds/led0/trigger ]; then
 		echo "mmc0" | tee /sys/class/leds/led0/trigger;
 	fi
 fi
 
 if [[ -e /dev/mmcblk1 ]]; then 
-	if [ -f /sys/class/leds/ACT/trigger ]; then
+	if [ -e /sys/class/leds/ACT/trigger ]; then
 		echo "mmc1" | tee /sys/class/leds/ACT/trigger;
 	fi
 fi
@@ -414,10 +414,10 @@ pwr_mainline(){
 sh -c 'echo 0 > /sys/class/leds/PWR/brightness'
 }
 
-if [ -f /sys/class/leds/led1/brightness ]; then
+if [ -e /sys/class/leds/led1/brightness ]; then
 	pwr_default;
 fi
-if [ -f /sys/class/leds/PWR/brightness ]; then
+if [ -e /sys/class/leds/PWR/brightness ]; then
 	pwr_mainline;
 fi
 EOF

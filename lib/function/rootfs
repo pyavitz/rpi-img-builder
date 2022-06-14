@@ -113,7 +113,7 @@ debootstrap --arch ${ARCH_EXT} --foreign ${DISTRO_VERSION} ${ROOT}
 chroot ${ROOT} /debootstrap/debootstrap --second-stage
 }
 
-devuan_debootstrap(){
+run_devuan-debootstrap(){
 KEY="/usr/share/keyrings/devuan-archive-keyring.gpg"
 debootstrap --arch ${ARCH_EXT} --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VERSION} ${ROOT} http://pkgmaster.devuan.org/merged
 chroot ${ROOT} /debootstrap/debootstrap --second-stage
