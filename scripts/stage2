@@ -159,7 +159,7 @@ fi
 wget -cq --show-progress ${URL}swh
 wget -cq --show-progress ${URL}fetch
 wget -cq --show-progress ${URL}governor
-mv -f {swh,fetch,governor,setup,sysinfo,smon} /usr/local/bin/
+mv -f {swh,fetch,governor,setup,sysinfo,smon,menu-config,menu-config-update} /usr/local/bin/
 initrd_script
 mv -f credentials.sh /usr/local/bin/credentials
 mv -f firstboot.sh /usr/local/sbin/firstboot

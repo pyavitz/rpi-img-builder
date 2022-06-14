@@ -1,0 +1,116 @@
+#!/bin/bash
+# Raspberry Pi IMAGE BUILDER: SYSTEM MENU INTERFACE
+if [ -f /etc/opt/board.txt ]; then
+	source /etc/opt/board.txt;
+fi
+
+# functions
+change_password(){
+while true; do
+	export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray';
+	PASSWD1=$(whiptail --backtitle "Menu Interface: User Password" --title "User: $USER" --passwordbox "Enter new password" --nocancel 8 78 3>&1 1>&2 2>&3)
+	PASSWD2=$(whiptail --backtitle "Menu Interface: User Password" --title "User: $USER" --passwordbox "Enter new password (again)" --nocancel 8 78 3>&1 1>&2 2>&3)
+	if [ "$PASSWD1" = "$PASSWD2" ]; then
+		PASSWORD="${PASSWD1}";
+		export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray'
+		if (whiptail --backtitle "Menu Interface: User Password: Confirm" --title "Confirm" --yesno "    Set the new password?" 0 0); then
+			echo "$PASSWORD" | sed 's/.*/\0\n\0/' | sudo passwd -q $USER 2> /dev/null;
+			whiptail --backtitle "Menu Interface: User Password: Confirmation" --title "Confirmation" --msgbox "    Password changed successfully." 0 0;
+		else
+			whiptail --title "Cancelled" --msgbox "    Hit enter to return to menu." 0 0;
+		fi
+	else
+		export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray';
+		whiptail --backtitle "" --msgbox "    Passwords don't match? Try again." 0 0;
+		continue;
+	fi
+	break
+	clear -x
+done
+}
+
+# check releases
+clear -x
+echo -en "Checking Network Connection: "
+if [[ `curl -I https://github.com 2>&1 | grep 'HTTP/2 200'` ]]; then
+	echo -e "Verifying Releases"
+	BANNER="Available Kernel Releases: "
+	VERSION="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/version";
+	ONE=`curl --silent -L $VERSION | sed -n 2p`;
+	TWO=`curl --silent -L $VERSION | sed -n 3p`;
+else
+	BANNER="LIMITED USAGE: "
+	ONE="THE NETWORK "
+	TWO="IS DOWN"
+fi
+
+# main menu
+while [ 1 ]
+do
+CHOICE=$(
+export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray'
+whiptail --backtitle "$BANNER$ONE$TWO" --title "System Menu Config" --menu "" --nocancel 0 25 0 \
+	"F)" "Fetch             Linux kernel installer" \
+	"W)" "Wireless          Configure wireless network interface" \
+	"" "" \
+	"1)" "User Password     Change the default user password" \
+	"2)" "Keyboard          Change keyboard layout" \
+	"3)" "Locales           Change language settings" \
+	"4)" "Timezone          Change regional settings" \
+	"6)" "Governor          Change CPU frequency scaling" \
+	"" "" \
+	"U)" "Update            Menu interface configuration tool" \
+	"Q)" "Quit .." 3>&2 2>&1 1>&3
+)
+case $CHOICE in
+	"F)")
+		fetch -m
+		;;
+	"W)")
+		if [[ `command -v nmtui` ]]; then
+			sudo nmtui;
+		else
+			swh -m;
+		fi
+		;;
+	"")
+		;;
+	"1)")
+		change_password
+		;;
+	"2)")
+		sudo dpkg-reconfigure keyboard-configuration
+		;;
+	"3)")
+		sudo dpkg-reconfigure locales
+		;;
+	"4)")
+		sudo dpkg-reconfigure tzdata
+		;;
+	"6)")
+		governor -m
+		;;
+	"")
+		;;
+	"U)")
+		MCU=`command -v menu-config-update`
+		MENUDIR="/usr/local/bin/"
+		if [ -f $MCU ]; then
+			sudo mv -f $MCU $MCU.orig > /dev/null 2>&1;
+		fi
+		sudo wget -cq https://raw.githubusercontent.com/pyavitz/rpi-img-builder/master/files/scripts/menu-config-update -P $MENUDIR
+		sudo chmod +x $(command -v menu-config-update)
+		if [ -f $MCU ]; then
+			sudo rm -f $MCU.orig;
+		else
+			sudo mv -f $MCU.orig $MCU > /dev/null 2>&1;
+		fi
+		menu-config-update
+		exit 0
+		;;
+	"Q)")
+		clear -x
+		exit 0
+		;;
+	esac
+done

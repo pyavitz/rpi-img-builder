@@ -1,0 +1,23 @@
+#!/bin/bash
+clear -x
+echo -en "Updating menu and scripts "
+fetch -u > /dev/null 2>&1
+governor -u > /dev/null 2>&1
+swh -U > /dev/null 2>&1
+MENU=`command -v menu-config`
+MENUDIR="/usr/local/bin/"
+if [ -f $MENU ]; then
+	sudo mv -f $MENU $MENU.orig;
+fi
+sudo wget -cq https://raw.githubusercontent.com/pyavitz/rpi-img-builder/master/files/scripts/menu-config -P $MENUDIR
+sudo chmod +x $(command -v menu-config)
+if [ -f $MENU ]; then
+	sudo rm -f $MENU.orig;
+else
+	sudo mv -f $MENU.orig $MENU;
+fi
+echo -e "[done]"
+sleep 1s
+clear -x
+menu-config
+exit 0
