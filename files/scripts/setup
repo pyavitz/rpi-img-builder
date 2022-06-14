@@ -35,7 +35,7 @@ while getopts "rh" OPTION; do
 			fi
 			if [ -f /etc/motd ]; then
 				sudo rm -f /etc/motd;
-				sudo touch /etc/motd;
+				sudo sh -c 'echo "" > /etc/motd';
 			fi
 			sleep 1s
 			sudo update-ca-certificates -f
