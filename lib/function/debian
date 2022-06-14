@@ -1,7 +1,9 @@
+#!/bin/bash
+
 # STAGE 1
 stable_sources(){
-rm -f p2/etc/apt/sources.list
-tee p2/etc/apt/sources.list <<EOF
+rm -f ${RELEASE}
+tee ${RELEASE} <<EOF
 deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free
 deb http://deb.debian.org/debian ${DISTRO_VERSION}-updates main contrib non-free
 deb http://deb.debian.org/debian ${DISTRO_VERSION}-proposed-updates main contrib non-free
@@ -11,8 +13,8 @@ EOF
 }
 
 unstable_sources(){
-rm -f p2/etc/apt/sources.list
-tee p2/etc/apt/sources.list <<EOF
+rm -f ${RELEASE}
+tee ${RELEASE} <<EOF
 deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free
 EOF
 }

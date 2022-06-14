@@ -1,3 +1,4 @@
+#!/bin/bash
 partitions(){
 if [ $ext4 -eq 1 ]; then
 	truncate -s ${EXT4} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";

@@ -39,43 +39,44 @@ make dialogrc   # Set builder theme (optional)
 * Review the userdata.txt file for further options: locales, timezone, nameserver(s) and extra wireless support
 * 1 active | 0 inactive
 ```sh
-Name:		# Your name
-Username:	# Your username
-Password:	# Your password
-Enable root:	# Set root password to `toor`
+Name:			# Your name
+Username:		# Your username
+Password:		# Your password
+Enable root:		# Set root password to `toor`
 
 Linux kernel
-Branch:		# Supported: 5.15.y and above
-Build:		# Kernel build version number
-Menuconfig:	# Kernel menuconfig
-Crosscompile:	# 1 to cross compile | 0 to native compile
+Branch:			# Supported: 5.15.y and above
+Build:			# Kernel build version number
+Menuconfig:		# Kernel menuconfig
+Crosscompile:		# 1 to cross compile | 0 to native compile
 
-Compiler        WARNING: Only one may be selected
-Version:	# Defaults at gcc-10
-GCC:		# Default compiler
-Ccache:		#
-Clang:		# Supported: Jammy Jellyfish
+Compiler        	WARNING: Only one may be selected
+Version:		# Defaults at gcc-10
+GCC:			# Default compiler
+Ccache:			#
+Clang:			# Supported: Jammy Jellyfish
 
 Distribution
-Distro:		# Supported: debian, devuan and ubuntu
-Release:	# Debian: bullseye, bookworm, testing, unstable and sid
-		# Devuan: chimaera, daedalus, testing, unstable and ceres
-		# Ubuntu: focal and jammy
+Distro:			# Supported: debian, devuan and ubuntu
+Release:		# Debian: bullseye, bookworm, testing, unstable and sid
+			# Devuan: chimaera, daedalus, testing, unstable and ceres
+			# Ubuntu: focal and jammy
 
 Filesystem
-ext4:		# Default fstype
-btrfs:		#
-xfs:		#
+ext4:			# Default fstype
+btrfs:			#
+xfs:			#
 
 Customize
-Defconfig:	# User defconfig
-Name:		# Name of _defconfig (Must be placed in defconfig dir.)
+Defconfig:		# User defconfig
+Name:			# Name of _defconfig (Must be placed in defconfig dir.)
 
 User options
-Verbosity:	# Verbose
-Compress img:	# Auto compress img > img.xz
-User scripts:	# Review the README in the files/userscripts directory
-User service:	# Create user during first boot (bypass the user information above)
+Verbosity:		# Verbose
+Devel Rootfs:		# Developer rootfs tarball
+Compress img:		# Auto compress img > img.xz
+User scripts:		# Review the README in the files/userscripts directory
+User service:		# Create user during first boot (bypass the user information above)
 ```
 #### Compiler options
 * GCC flags: [fm4dd](https://gist.github.com/fm4dd/c663217935dc17f0fc73c9c81b0aa845) / [valvers](https://www.valvers.com/open-software/raspberry-pi/bare-metal-programming-in-c-part-1)

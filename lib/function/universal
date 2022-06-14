@@ -1,15 +1,16 @@
+#!/bin/bash
+
 # Stage1
-# rootfs
 extract_rootfs(){
-if [ -e ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz ]; then
-	echo ""
-	echo -n "Extracting rootfs "
-	tar -xf ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz -C p2/
+if [ -f ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz ]; then
+	echo "";
+	echo -en "${WHT}Extracting rootfs${FIN} ";
+	tar -xf ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz -C ${P_VALUE}/;
 	echo_bdone;
 else
-	echo ""
-	echo -e "${YLW}Missing rootfs tarball${FIN}!"
-	make cleanup
+	echo "";
+	echo -e "${YLW}Missing rootfs tarball${FIN}!";
+	make cleanup;
 	exit;
 fi
 echo ""
@@ -47,9 +48,9 @@ echo ""
 echo "Installing raspi-sys-mods ..."
 git clone https://github.com/RPi-Distro/raspberrypi-sys-mods.git
 if [[ "$DISTRO" == "devuan" ]]; then
-	mv -f raspberrypi-sys-mods-control.patch raspberrypi-sys-mods/
-	cd raspberrypi-sys-mods
-	patch -p1 < raspberrypi-sys-mods-control.patch
+	mv -f raspberrypi-sys-mods-control.patch raspberrypi-sys-mods/;
+	cd raspberrypi-sys-mods;
+	patch -p1 < raspberrypi-sys-mods-control.patch;
 	rm -f raspberrypi-sys-mods-control.patch;
 else
 	cd raspberrypi-sys-mods;
@@ -57,14 +58,14 @@ fi
 dpkg-buildpackage -us -uc
 cd ~
 dpkg -i raspberrypi-sys-mods*.deb
-rm -fdR raspberrypi-sys-mods*
-if [ -e /etc/apt/sources.list.d/vscode.list ]; then
+rm -fdr raspberrypi-sys-mods*
+if [ -f /etc/apt/sources.list.d/vscode.list ]; then
 	rm -f /etc/apt/sources.list.d/vscode.list;
 fi
-if [ -e /etc/apt/trusted.gpg.d/microsoft.gpg ]; then
+if [ -f /etc/apt/trusted.gpg.d/microsoft.gpg ]; then
 	rm -f /etc/apt/trusted.gpg.d/microsoft.gpg;
 fi
-if [ -e /etc/apt/preferences.d/3rd_parties.pref ]; then
+if [ -f /etc/apt/preferences.d/3rd_parties.pref ]; then
 	rm -f /etc/apt/preferences.d/3rd_parties.pref;
 fi
 echo "Done."
@@ -85,7 +86,7 @@ EEPROM_VERSION=$(curl --silent -L ${CHANGELOG} | awk '{if (NR==10) {print substr
 if [[ `wget -S --spider ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
 	download_eeprom;
 else
-	EEPROM_VERSION="13.3"
+	EEPROM_VERSION="13.12"
 	download_eeprom;
 fi
 }
@@ -142,12 +143,12 @@ cd userland
 patch -p1 < userland-remove-hi-pi.patch
 rm -f userland-remove-hi-pi.patch
 if [[ "$ARCH" == "arm64" ]]; then
-	echo -e "\e[1;37m== ARM64\e[0m"
-	sleep 1s
+	echo -e "\e[1;37m== ARM64\e[0m";
+	sleep 1s;
 	./buildme --aarch64;
 else
-	echo -e "\e[1;37m== ARM\e[0m"
-	sleep 1s
+	echo -e "\e[1;37m== ARM\e[0m";
+	sleep 1s;
 	./buildme;
 fi
 cd ~
@@ -171,38 +172,6 @@ EOF
 chown root:root /etc/modules
 }
 
-bcm2710_modules(){
-rm -f /etc/modules
-tee /etc/modules <<EOF
-# /etc/modules: kernel modules to load at boot time.
-#
-# This file contains the names of kernel modules that should be loaded
-# at boot time, one per line. Lines beginning with "#" are ignored.
-#bcm2835-v4l2
-#i2c-dev
-snd_bcm2835
-
-EOF
-chown root:root /etc/modules
-}
-
-# Zramswap setup
-zramswap_config(){
-sed -i 's/#ALLOCATION=256/ALLOCATION=1024/g' /etc/default/zramswap
-sed -i 's/#SIZE=256/SIZE=1024/g' /etc/default/zramswap
-sed -i 's/#PRIORITY=100/PRIORITY=100/g' /etc/default/zramswap
-}
-
-# Flush runtime journal
-systemd_journald(){
-# system.journal corrupted or uncleanly shut down, renaming and replacing
-if [ -e /etc/systemd/journald.conf ]; then
-	sed -i 's/#Storage=auto/Storage=volatile/g' /etc/systemd/journald.conf;
-	sed -i 's/#SystemMaxFileSize=/SystemMaxFileSize=50M/g' /etc/systemd/journald.conf;
-	sed -i 's/#SystemMaxFiles=100/SystemMaxFiles=5/g' /etc/systemd/journald.conf;
-fi
-}
-
 # Download kernel archive
 download_kernel(){
 DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
@@ -222,7 +191,7 @@ fi
 if [[ "$BOARD" == "bcm2708" ]]; then
 	RPI="rpi";
 fi
-echo -e -n "\e[1;37mSearching\e[0m ...";
+echo -en "\e[1;37mSearching\e[0m ...";
 sleep 1s;
 if [[ `wget -S --spider ${KURL}${RPI}-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
 	${DOWNLOAD} ${KURL}${RPI}-${VERSION}.tar.xz;
@@ -261,16 +230,9 @@ else
 fi
 echo "Done."
 sleep 1s
-fetch_version
-}
-
-# Fetch kernel version
-fetch_version(){
-echo 'INSTALLED_KERNEL="' > /root/kernel1
-cat /usr/src/linux-headers*/include/config/kernel.release > /root/kernel2
-echo '"' > /root/kernel3
-paste -d '\0' kernel1 kernel2 kernel3  > /root/kernel.txt
-rm -f kernel1 kernel2 kernel3
+# take note of linux kernel release
+KERNEL_RELEASE=`cat /usr/src/linux-headers*/include/config/kernel.release`
+echo -e INSTALLED_KERNEL='"'$KERNEL_RELEASE'"' > /root/kernel.txt
 if [ $ext4 -eq 1 ]; then
 	echo FSTYPE='"'ext4'"' >> /root/kernel.txt;
 fi
@@ -343,7 +305,7 @@ if [[ `wget -S --spider https://kernel.googlesource.com/pub/scm/linux/kernel/git
 	mkdir -p /lib/firmware/updates/rtl_nic;
 	cd /lib/firmware/updates/rtl_nic;
 	wget -cq https://kernel.googlesource.com/pub/scm/linux/kernel/git/firmware/linux-firmware.git/+archive/refs/heads/main/rtl_nic.tar.gz;
-	if [ -e rtl_nic.tar.gz ]; then
+	if [ -f rtl_nic.tar.gz ]; then
 		tar xf rtl_nic.tar.gz;
 		rm -f rtl_nic.tar.gz;
 	fi
@@ -355,7 +317,7 @@ echo "Done."
 # Initrd script
 initrd_script(){
 cd ~
-if [ -e /root/99-initrd ]; then
+if [ -f /root/99-initrd ]; then
 	mkdir -p /etc/initramfs/post-update.d/
 	mv -f 99-initrd /etc/initramfs/post-update.d/
 	chmod +x /etc/initramfs/post-update.d/99-initrd
@@ -363,17 +325,16 @@ if [ -e /root/99-initrd ]; then
 fi
 }
 
-### Finish
 # Defrag
 defrag_p2(){
 if [ $ext4 -eq 1 ]; then
-	e4defrag -c p2;
+	e4defrag -c ${P_VALUE};
 fi
 if [ $btrfs -eq 1 ]; then
-	btrfs filesystem defragment -f -r p2;
+	btrfs filesystem defragment -f -r ${P_VALUE};
 fi
 if [ $xfs -eq 1 ]; then
-	xfs_fsr p2;
+	xfs_fsr ${P_VALUE};
 fi
 }
 
@@ -434,13 +395,13 @@ tee /usr/local/sbin/leds <<EOF
 #!/bin/bash
 
 if [[ -e /dev/mmcblk0 ]]; then 
-	if [ -e /sys/class/leds/led0/trigger ]; then
+	if [ -f /sys/class/leds/led0/trigger ]; then
 		echo "mmc0" | tee /sys/class/leds/led0/trigger;
 	fi
 fi
 
 if [[ -e /dev/mmcblk1 ]]; then 
-	if [ -e /sys/class/leds/ACT/trigger ]; then
+	if [ -f /sys/class/leds/ACT/trigger ]; then
 		echo "mmc1" | tee /sys/class/leds/ACT/trigger;
 	fi
 fi
@@ -453,10 +414,10 @@ pwr_mainline(){
 sh -c 'echo 0 > /sys/class/leds/PWR/brightness'
 }
 
-if [ -e /sys/class/leds/led1/brightness ]; then
+if [ -f /sys/class/leds/led1/brightness ]; then
 	pwr_default;
 fi
-if [ -e /sys/class/leds/PWR/brightness ]; then
+if [ -f /sys/class/leds/PWR/brightness ]; then
 	pwr_mainline;
 fi
 EOF

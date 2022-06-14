@@ -17,3 +17,4 @@ curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch
 if [[ `wget -S --spider https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile 2>&1 | grep 'HTTP/1.1 200 OK'` ]];
 	then run_check; else echo && echo -e "${WHT}It appears the branch you selected is not available${FIN}?" && exit;
 fi
+exit 0

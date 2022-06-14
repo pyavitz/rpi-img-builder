@@ -1,7 +1,9 @@
+#!/bin/bash
+
 # STAGE 1
 stable_sources(){
-rm -f p2/etc/apt/sources.list
-tee p2/etc/apt/sources.list <<EOF
+rm -f ${RELEASE}
+tee ${RELEASE} <<EOF
 deb http://deb.devuan.org/merged ${DISTRO_VERSION} main contrib non-free
 deb http://deb.devuan.org/merged ${DISTRO_VERSION}-updates main contrib non-free
 deb http://deb.devuan.org/devuan ${DISTRO_VERSION}-proposed-updates main contrib non-free
@@ -11,8 +13,8 @@ EOF
 }
 
 unstable_sources(){
-rm -f p2/etc/apt/sources.list
-tee p2/etc/apt/sources.list <<EOF
+rm -f ${RELEASE}
+tee ${RELEASE} <<EOF
 deb http://deb.devuan.org/merged ${DISTRO_VERSION} main contrib non-free
 EOF
 }
@@ -44,22 +46,22 @@ EOF
 }
 
 btrfs_udev-rule(){
-if [ -e /lib/udev/rules.d/64-btrfs.rules ]; then
+if [ -f /lib/udev/rules.d/64-btrfs.rules ]; then
 	sed -i 's/${exec_prefix}//g' /lib/udev/rules.d/64-btrfs.rules;
 fi
 }
 
 network_setup(){
 rm -f /etc/network/interfaces
-if [ -e /etc/network/if-up.d/00check-network-cable ]; then
+if [ -f /etc/network/if-up.d/00check-network-cable ]; then
 	ln -sr /etc/network/if-up.d/00check-network-cable /etc/network/if-pre-up.d/00check-network-cable;
 fi
-if [ -e /etc/default/networking ]; then
+if [ -f /etc/default/networking ]; then
 	sed -i 's/#CONFIGURE_INTERFACES=yes/CONFIGURE_INTERFACES=yes/g' /etc/default/networking;
 	sed -i 's/#WAIT_ONLINE_METHOD=ifup/WAIT_ONLINE_METHOD=ifup/g' /etc/default/networking;
 	sed -i 's/#WAIT_ONLINE_TIMEOUT=300/WAIT_ONLINE_TIMEOUT=10/g' /etc/default/networking;
 fi
-if [ -e /etc/default/network-test ]; then
+if [ -f /etc/default/network-test ]; then
 	sed -i 's/DO_ARPING=${DO_ARPING:-yes}/DO_ARPING=${DO_ARPING:-no}/g' /etc/default/network-test;
 	sed -i 's/DO_SYSLOG=${DO_SYSLOG:-yes}/DO_SYSLOG=${DO_SYSLOG:-no}/g' /etc/default/network-test;
 fi

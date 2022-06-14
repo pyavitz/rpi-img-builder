@@ -1,4 +1,4 @@
-# insert modules
+#!/bin/bash
 
 edit_defconfig(){
 # module sig

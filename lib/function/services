@@ -1,8 +1,10 @@
+#!/bin/bash
+
 # Systemd services
 led_service(){
 tee /etc/systemd/system/leds.service <<EOF
 [Unit]
-Description=LED Service
+Description=LEDs
 ConditionPathExists=/usr/local/sbin/leds
 
 [Service]
@@ -57,6 +59,7 @@ tee /etc/systemd/system/governor.service <<EOF
 [Unit]
 Description=Governor
 ConditionPathExists=/sys/devices/system/cpu/online
+After=rc-local.service
 
 [Service]
 ExecStart=/usr/local/bin/governor -r &>/dev/null
@@ -120,7 +123,7 @@ if [[ "$DISTRO_VERSION" == "bullseye" ]]; then
 		systemctl restart haveged;
 	fi
 fi
-if [ -e /etc/systemd/system/multi-user.target.wants/ondemand.service ]; then
+if [ -f /etc/systemd/system/multi-user.target.wants/ondemand.service ]; then
 	systemctl disable ondemand;
 fi
 if [[ "$DISTRO" == "debian" ]]; then

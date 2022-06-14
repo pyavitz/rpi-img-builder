@@ -1,32 +1,13 @@
 #!/bin/bash
-source board.txt > /dev/null 2>&1
-source userdata.txt > /dev/null 2>&1
-source lib/source
 source lib/function/echoes
+source lib/source
+validation
+source board.txt
+source userdata.txt
 source lib/function/compiler
 source lib/function/rpi-linux
 source lib/function/wireless
 source lib/function/modules
-UD=userdata.txt
-
-userdata(){
-echo ""
-echo -e "You have ${RED}not${FIN} created a ${RED}userdata.txt${FIN} file."
-while [ true ]; do
-read -t 3 -n 1
-if [ $? = 0 ]; then
-	exit;
-else
-	dialog --infobox "Please review the README.md or run make config." 3 51;
-fi
-done
-}
-
-if [ -f "$UD" ]; then
-	:;
-else
-	userdata;
-fi
 
 # prep
 validation
@@ -90,3 +71,4 @@ fi
 mkdir -p ../${OUTPUT}
 mv -f *.deb ../${OUTPUT}/
 echo_done
+exit 0

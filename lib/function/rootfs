@@ -1,3 +1,42 @@
+#!/bin/bash
+
+# dev rootfs
+sysroot_partition(){
+truncate -s 2000MB "${ROOTFS_FOLDER}${RELEASE_NAME}"
+echo -e "o
+n
+p
+1
+2048
+a
+t
+b
+3906249
+
+p
+w" | fdisk "${ROOTFS_FOLDER}${RELEASE_NAME}"
+IMAGE_LOOP_DEV="$(losetup --show -P -f ${ROOTFS_FOLDER}${RELEASE_NAME})"
+IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p1"
+partprobe "${IMAGE_LOOP_DEV}"
+mkfs.ext4 -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}"
+mkdir -p ${ROOT}
+mount "${IMAGE_LOOP_DEV_ROOTFS}" ${ROOT}
+sync
+umount ${ROOT}
+mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" ${ROOT}
+}
+
+sysroot_setup(){
+RELEASE="${ROOT}/etc/apt/sources.list"
+mkdir -p ${ROOT}/etc/apt/apt.conf.d ${ROOT}/etc/dpkg/dpkg.cfg.d
+echo "force-unsafe-io" > "${ROOT}/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
+if [ $verbose -eq 1 ]; then
+	distro_release;
+else
+	distro_release > /dev/null 2>&1;
+fi
+}
+
 devuan_keyring(){
 URL="https://pkgmaster.devuan.org/devuan/pool/main/d/devuan-keyring/"
 FILE="devuan-keyring_2017.10.03_all.deb"

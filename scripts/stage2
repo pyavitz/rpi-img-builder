@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
+source /root/source.txt
+source /root/board.txt
+source /root/userdata.txt
+if [ $verbose -eq 1 ]; then
+	set -x;
+fi
 if [ -f /root/services.txt ]; then
 	source /root/services.txt;
 fi
 source /root/universal.txt
-source /root/source.txt
-source /root/board.txt > /dev/null 2>&1
-source /root/userdata.txt > /dev/null 2>&1
-if [ $verbose -eq 1 ]; then
-	set -x;
-fi
 source /root/${DISTRO}.txt
 UNMINIMIZE=/usr/local/sbin/unminimize
 URL="https://raw.githubusercontent.com/pyavitz/scripts/master/"
@@ -54,14 +54,14 @@ if [ $xfs -eq 1 ]; then
 	apt install -y xfsprogs;
 fi
 if [[ "$DISTRO" == "debian" ]]; then
-	apt install -y ${PKG1} ${SYSMODS} ${FIRMWARE} resolvconf openssh-client openssh-server;
+	apt install -y ${PKGS} ${SYSMODS} ${FIRMWARE} resolvconf ifupdown openssh-client openssh-server;
 fi
 if [[ "$DISTRO" == "devuan" ]]; then
 	apt install -y openssh-client openssh-server --no-install-recommends;
-	apt install -y ${PKG1} ${SYSMODS} ${FIRMWARE} openresolv ifupdown-extra;
+	apt install -y ${PKGS} ${SYSMODS} ${FIRMWARE} openresolv ifupdown ifupdown-extra;
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
-	apt install -y ${PKG1} ${SYSMODS} openresolv network-manager openssh-client openssh-server;
+	apt install -y ${PKGS} ${SYSMODS} openresolv network-manager openssh-client openssh-server;
 fi
 # apt clean
 apt -y clean
@@ -191,10 +191,10 @@ tee /etc/update-motd.d/15-brand <<EOF
 #!/bin/bash
 echo
 toilet -f small --filter metal '${MOTD}'
-echo 
+echo
 EOF
 mv -f 20-sysinfo /etc/update-motd.d/20-sysinfo
-if [ -e /etc/update-motd.d/10-help-text ]; then
+if [ -f /etc/update-motd.d/10-help-text ]; then
 	rm -f /etc/update-motd.d/10-help-text;
 fi
 chmod +x /etc/update-motd.d/*
@@ -206,7 +206,7 @@ echo "Done."
 extra_firmware
 
 # Udev rule
-if [ -e /root/99-com.rules ]; then
+if [ -f /root/99-com.rules ]; then
 	cd ~
 	mkdir -p /lib/udev/rules.d/;
 	mv -f 99-com.rules /lib/udev/rules.d/;
@@ -219,8 +219,12 @@ else
 	network_setup > /dev/null 2>&1;
 fi
 
-# ZSWAP
-zramswap_config
+# ZSWAP virtual memory
+if [ -f /etc/default/zramswap ]; then
+	sed -i 's/#ALLOCATION=256/ALLOCATION=1024/g' /etc/default/zramswap;
+	sed -i 's/#SIZE=256/SIZE=1024/g' /etc/default/zramswap;
+	sed -i 's/#PRIORITY=100/PRIORITY=100/g' /etc/default/zramswap;
+fi
 
 # MOTD instructions
 rm -f /etc/motd
@@ -271,20 +275,17 @@ if [[ "$DISTRO" == "ubuntu" ]] && [[ "$DISTRO_VERSION" == "jammy" ]]; then
 fi
 
 # Kernel
-stage2_kernel
+stage2_kernel # universal
 
-# Modules
-if [[ "$BOARD_EXT" == "rpi-4" ]]; then
-	bcm_modules > /dev/null 2>&1;
-fi
+# BCM modules
+bcm_modules > /dev/null 2>&1;
 if [[ "$BOARD" == "bcm2710" ]]; then
-	bcm2710_modules > /dev/null 2>&1;
+	# audio module
+	echo "snd_bcm2835" >> /etc/modules;
 fi
 if [[ "$BOARD" == "bcm2709" ]]; then
-	bcm2710_modules > /dev/null 2>&1;
-fi
-if [[ "$BOARD" == "bcm2708" ]]; then
-	bcm_modules > /dev/null 2>&1;
+	# audio module
+	echo "snd_bcm2835" >> /etc/modules;
 fi
 
 # Clean misc files
@@ -297,9 +298,11 @@ fi
 
 # Flush runtime journal
 if [[ "$BOARD" == "bcm2708" ]]; then
-	:;
-else
-	systemd_journald;
+	if [ -f /etc/systemd/journald.conf ]; then
+		sed -i 's/#Storage=auto/Storage=volatile/g' /etc/systemd/journald.conf;
+		sed -i 's/#SystemMaxFileSize=/SystemMaxFileSize=50M/g' /etc/systemd/journald.conf;
+		sed -i 's/#SystemMaxFiles=100/SystemMaxFiles=5/g' /etc/systemd/journald.conf;
+	fi
 fi
 
 # Vchiq permissions

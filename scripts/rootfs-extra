@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+source /root/source.txt
+source /root/board.txt
+source /root/userdata.txt
+export DEBIAN_FRONTEND="noninteractive"
+
+CAP_DISTRO=`echo "$DISTRO" | sed -e "s/\b\(.\)/\u\1/g"`
+CAP_RELEASE=`echo "$DISTRO_VERSION" | sed -e "s/\b\(.\)/\u\1/g"`
+
+echo ""
+echo -e "\e[1;37mAdding additional packages to $CAP_DISTRO $CAP_RELEASE\e[0m ..."
+
+mount -t proc proc proc/
+mount -t sysfs sys sys/
+
+apt-get update
+apt-get install -y apt-utils
+
+# Locales
+set_locales
+
+# Timezone
+set_timezone
+
+apt upgrade -y
+apt dist-upgrade -y
+if [[ "$DISTRO" == "debian" ]]; then
+	apt install -y ${PKGS} ${SYSMODS} resolvconf openssh-client openssh-server;
+fi
+if [[ "$DISTRO" == "devuan" ]]; then
+	apt install -y openssh-client openssh-server --no-install-recommends;
+	apt install -y ${PKGS} ${SYSMODS} openresolv;
+fi
+if [[ "$DISTRO" == "ubuntu" ]]; then
+	apt install -y ${PKGS} ${SYSMODS} openresolv openssh-client openssh-server;
+fi
+apt -y clean
+apt -y autoclean
+
+umount /proc
+umount /sys

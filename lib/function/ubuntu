@@ -1,7 +1,9 @@
+#!/bin/bash
+
 # STAGE 1
 distro_release(){
-rm -f p2/etc/apt/sources.list
-tee p2/etc/apt/sources.list <<EOF
+rm -f ${RELEASE}
+tee ${RELEASE} <<EOF
 deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION} main restricted
 deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-updates main restricted
 deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION} universe
@@ -40,10 +42,10 @@ mv -f interfaces /etc/network/interfaces
 chown root:root /etc/network/interfaces
 mv -f wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf
 chown root:root /etc/wpa_supplicant/wpa_supplicant.conf
-if [ -e /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf ]; then
+if [ -f /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf ]; then
 	rm -f /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf;
 fi
-if [ -e /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf ]; then
+if [ -f /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf ]; then
 	sed -i 's/wifi.powersave = 3/wifi.powersave = 2/g' /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf;
 fi
 mv -f credentials.txt /boot/rename_to_credentials.txt

@@ -1,3 +1,4 @@
+#!/bin/bash
 gcc_compiler(){
 echo NATIVE='"'CC=/usr/bin/${GCC_VERSION}'"' > gcc.txt
 echo CROSS='"'CC=/usr/bin/${CROSS_COMPILE}${GCC_VERSION}'"' >> gcc.txt

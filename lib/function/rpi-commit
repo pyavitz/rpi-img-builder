@@ -1,3 +1,4 @@
+#!/bin/bash
 DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
 
 source_dir(){
@@ -12,7 +13,7 @@ if [ $gcc -eq 1 ]; then
 	gcc_compiler;
 fi
 if [ $ccache -eq 1 ]; then
-	if [ -e /usr/bin/ccache ]; then
+	if [[ `command -v ccache` ]]; then
 	rm -f {gcc.txt,ccache.txt,clang.txt}
 	ccache_compiler;
 
@@ -42,8 +43,8 @@ fi
 
 clean_source(){
 if [ -e ${CKERNEL}-$commit ]; then
-	echo ""
-	echo -e "${PNK}Cleaning${FIN} ..."
+	echo "";
+	echo -e "${PNK}Cleaning${FIN} ...";
 	rm -fdr ${CKERNEL}-$commit;
 fi
 }
@@ -92,7 +93,7 @@ cd ..
 if ls firmware/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf,LICENCE.broadcom,COPYING.linux} > /dev/null 2>&1; then
 	echo_bdone;
 else
-	echo_fail
+	echo_fail;
 	exit > /dev/null 2>&1;
 fi
 }
@@ -119,7 +120,7 @@ cd ..
 if ls firmware/{bootcode.bin,fixup.dat,fixup_cd.dat,fixup_db.dat,fixup_x.dat,start.elf,start_cd.elf,start_db.elf,start_x.elf,LICENCE.broadcom,COPYING.linux} > /dev/null 2>&1; then
 	echo_bdone;
 else
-	echo_fail
+	echo_fail;
 	exit > /dev/null 2>&1;
 fi
 }
@@ -128,10 +129,10 @@ download(){
 RPIURL="https://github.com/raspberrypi/linux/archive/"
 echo
 echo_kernel
-if [ -e ${CKERNEL}-$commit.tar.gz ]; then
+if [ -f ${CKERNEL}-$commit.tar.gz ]; then
 	echo -e "${YLW}${CKERNEL}-$commit.tar.gz found${FIN}.";
 else
-	${DOWNLOAD} ${RPIURL}$commit.tar.gz
+	${DOWNLOAD} ${RPIURL}$commit.tar.gz;
 	echo_bdone;
 fi
 if [ $rtl8812au -eq 1 ]; then
@@ -232,19 +233,19 @@ cp -R ../${PAT}/mkdebian scripts/package/
 chmod +x scripts/package/builddeb
 chmod +x scripts/package/mkdebian
 if [[ "$BOARD_EXT" == "rpi-4" ]]; then
-	patch -p1 < ../${PAT}/rpi4-packaging.patch
+	patch -p1 < ../${PAT}/rpi4-packaging.patch;
 	rpi4;
 fi
 if [[ "$BOARD" == "bcm2710" ]]; then
-	patch -p1 < ../${PAT}/rpi2+3-packaging.patch
+	patch -p1 < ../${PAT}/rpi2+3-packaging.patch;
 	rpi2+3;
 fi
 if [[ "$BOARD" == "bcm2709" ]]; then
-	patch -p1 < ../${PAT}/rpi2+3-packaging.patch
+	patch -p1 < ../${PAT}/rpi2+3-packaging.patch;
 	rpi2+3;
 fi
 if [[ "$BOARD" == "bcm2708" ]]; then
-	patch -p1 < ../${PAT}/rpi-packaging.patch
+	patch -p1 < ../${PAT}/rpi-packaging.patch;
 	rpi0+1;
 fi
 cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch;

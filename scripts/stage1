@@ -1,35 +1,15 @@
 #!/bin/bash
-source userdata.txt > /dev/null 2>&1
+source lib/function/echoes
+source lib/source
+validation
+source userdata.txt
 source lib/function/universal
 if [ $uscripts -eq 1 ]; then
 	uscripts_pre-stage1;
 fi
+source board.txt
 source lib/function/staging
-source lib/function/echoes
-source lib/source
-source board.txt > /dev/null 2>&1
 source lib/function/${DISTRO}
-UD=userdata.txt
-
-userdata(){
-echo ""
-echo "Please create a userdata.txt file"
-while [ true ]; do
-	read -t 20 -n 1
-if [ $? = 0 ]; then
-	exit;
-else
-	echo "run make config";
-fi
-done
-}
-
-# user data file
-if [ -f "$UD" ]; then
-	:;
-else
-	userdata;
-fi
 
 # verbose
 if [ $verbose -eq 1 ]; then
@@ -65,14 +45,12 @@ fi
 
 ### cmd line
 cmdline > /dev/null 2>&1
-if [ -e p1/cmdline.txt ]; then
-	echo "";
-	echo -n "cmdline.txt ";
+if [ -f p1/cmdline.txt ]; then
+	echo -en "${WHT}cmdline.txt${FIN}  ";
 	sleep 1s;
 	echo_nok;
 else
-	echo ""
-	echo -n "cmdline.txt ";
+	echo -en "${WHT}cmdline.txt${FIN}  ";
 	sleep 1s;
 	echo_fail;
 	exit;
@@ -81,16 +59,16 @@ fi
 if [[ "$BOARD_EXT" == "rpi-4" ]]; then
 	bcm2711_config > /dev/null 2>&1;
 else
-	${BOARD}_config > /dev/null 2>&1;	
+	${BOARD}_config > /dev/null 2>&1;
 fi
 if [ -e p1/config.txt ]; then
 	echo "";
-	echo -n "config.txt  ";
+	echo -en "${WHT}config.txt${FIN}   ";
 	sleep 1s;
 	echo_nok;
 else
 	echo "";
-	echo -n "config.txt  ";
+	echo -en "${WHT}config.txt${FIN}   ";
 	sleep 1s;
 	echo_fail;
 	exit;
@@ -114,7 +92,9 @@ echo "force-unsafe-io" > "p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
 # qemu static
 mkdir -p p2/usr/bin;
 cp $(command -v "${STATIC}") p2/usr/bin;
-
+if [[ ! -z $P_VALUE ]]; then
+	RELEASE="${P_VALUE}/etc/apt/sources.list"
+fi
 if [ $verbose -eq 1 ]; then
 	distro_release;
 	create_fstab;
@@ -210,3 +190,4 @@ else
 	rename_image;
 fi
 rm -f {part-uuid.txt,board.txt,kernel.txt}
+exit 0

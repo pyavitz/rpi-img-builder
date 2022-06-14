@@ -1,3 +1,5 @@
+#!/bin/bash
+
 DEF="../defconfig"
 PAT="../patches"
 USERPATCHES="patches/userpatches"
@@ -8,18 +10,31 @@ CKERNEL="linux"
 KBUSER="marvin"
 KBHOST="martian"
 
+# validate
 validation(){
-if [[ `grep -w "builder=4.7" "userdata.txt"` ]]; then
+UD="userdata.txt"
+if [ -f "$UD" ]; then
+	:;
+else 
+	echo "";
+	echo "Create a $UD file";
+	while [ true ]; do
+		read -t 10 -n 1
+		if [ $? = 0 ]; then
+			exit 0;
+		fi
+	done
+fi
+if [[ `grep -w "builder=4.8" "userdata.txt"` ]]; then
 	:;
 else
-	echo -e "${YLW}The userdata.txt file has expired. Please create a new one.${FIN}"
+	echo -e "The ${WHT}$UD${FIN} file has expired. Please create a new one."
 	exit;
 fi
 }
-# do not edit above this line
 
 # packages
-PKG1="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
+PKGS="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
 	fonty-rg patch curl wget apt-transport-https dirmngr cmake rsync \
 	psmisc parted pv zip unzip aria2 libell0 fdisk i2c-tools cpu hwinfo \
 	haveged git build-essential net-tools ifplugd wireless-regdb chrony \

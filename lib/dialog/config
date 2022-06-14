@@ -1,6 +1,6 @@
 #!/bin/bash
 
-RED="\e[0;31m"
+COL="\e[0;37m"
 FIN="\e[0m"
 if [ -e profile.txt ]; then
 	source profile.txt;
@@ -30,6 +30,7 @@ xfs="0"
 custom_defconfig="0"
 MYCONFIG=""
 verbose="0"
+devrootfs="1"
 compress_img="0"
 uscripts="0"
 useracct="0"
@@ -75,9 +76,10 @@ VALUES=$(dialog --ok-label "Submit" --no-cancel \
 	""		30 1	""	 		30 14 0 0 \
 	"User options"	31 1	""	 		31 14 0 0 \
 	"Verbosity:"	32 1	"$verbose"		32 12 2 0 \
-	"Compress img:"	33 1	"$compress_img" 	33 15 2 0 \
-	"User scripts:"	34 1	"$uscripts"		34 15 2 0 \
-	"User service:" 35 1	"$useracct"		35 15 2 0 \
+	"Dev. Rootfs:"	33 1	"$devrootfs"		33 14 2 0 \
+	"Compress img:"	34 1	"$compress_img" 	34 15 2 0 \
+	"User scripts:"	35 1	"$uscripts"		35 15 2 0 \
+	"User service:" 36 1	"$useracct"		36 15 2 0 \
 2>&1 1>&3)
 
 # close fd
@@ -105,6 +107,7 @@ echo xfs= >> tmp0
 echo custom_defconfig= >> tmp0
 echo MYCONFIG='"' >> tmp0
 echo verbose= >> tmp0
+echo devrootfs= >> tmp0
 echo compress_img= >> tmp0
 echo uscripts= >> tmp0
 echo useracct= >> tmp0
@@ -128,7 +131,7 @@ echo NAMESERVER2='"'${USER_NAMESERVER2}'"' >> tmp0
 echo rtl8812au=0 >> tmp0
 echo rtl88x2bu=0 >> tmp0
 echo rtl8811cu=0 >> tmp0
-echo builder=4.7 >> tmp0
+echo builder=4.8 >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
 echo '"' >> tmp2
@@ -157,16 +160,16 @@ sed -i '10i### COMPILER' userdata.txt
 sed -i '15i### DISTRIBUTION' userdata.txt
 sed -i '18i### FILESYSTEM' userdata.txt
 sed -i '22i### CUSTOM' userdata.txt
-sed -i '29i### CLANG/LLVM' userdata.txt
-sed -i '32i### COMPILER TUNING' userdata.txt
-sed -i '35i### LOCALES' userdata.txt
-sed -i '43i### TIMEZONE' userdata.txt
-sed -i '48i### NAME SERVER' userdata.txt
-sed -i '51i### EXTRA WIRELESS' userdata.txt
-sed -i '55i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '30i### CLANG/LLVM' userdata.txt
+sed -i '33i### COMPILER TUNING' userdata.txt
+sed -i '36i### LOCALES' userdata.txt
+sed -i '44i### TIMEZONE' userdata.txt
+sed -i '49i### NAME SERVER' userdata.txt
+sed -i '52i### EXTRA WIRELESS' userdata.txt
+sed -i '56i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # clear screen
 clear -x
 
 # userdata
-echo -e "${RED}userdata file created${FIN}."
+echo -e "${COL}userdata file created${FIN}."

@@ -237,5 +237,4 @@ echo -e "${FIN}"
 rm -f {userdata.txt,log.txt}
 make cleanup > /dev/null 2>&1
 make compress
-
 exit 0

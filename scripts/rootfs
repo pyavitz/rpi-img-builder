@@ -1,37 +1,11 @@
 #!/bin/bash
-# ROOTFS TARBALLS
-RED="\e[0;31m"
-BRED="\e[1;31m"
-GRN="\e[0;32m"
-YLW="\e[1;33m"
-GRY="\e[0;37m"
-WHT="\e[1;37m"
-FIN="\e[0m"
-source board.txt > /dev/null 2>&1
-source userdata.txt > /dev/null 2>&1
+source lib/function/echoes
 source lib/source
-source lib/function/rootfs
-UD=userdata.txt
-
-userdata(){
-echo ""
-echo -e "Please create a ${WHT}userdata.txt${FIN} file"
-while [ true ]; do
-read -t 10 -n 1
-if [ $? = 0 ]; then
-	exit;
-else
-	echo -e "run make config";
-fi
-done
-}
-
-if [ -f "$UD" ]; then
-	:;
-else
-	userdata;
-fi
 validation
+source board.txt
+source userdata.txt
+source lib/function/rootfs
+
 if [[ "$ROOTFS_ARCH" == "rootfs-armel" ]]; then
 	if [[ "$DISTRO" == "ubuntu" ]]; then
 		echo -e "${YLW}Ubuntu is not supported${FIN}.";
@@ -55,23 +29,61 @@ else
 	fi
 fi
 ROOT="sysroot"
-RELEASE=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
-if [ -e $RELEASE ]; then
-	ls $RELEASE
+RELEASE_TARBALL=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
+if [ -f $RELEASE_TARBALL ]; then
+	ls $RELEASE_TARBALL
 	exit;
 fi
 echo ""
 echo -e "${WHT}Starting debootstrap${FIN} ..."
 # start debootstrap
+if [ $devrootfs -eq 1 ]; then
+	source lib/function/${DISTRO}
+	RAM=0
+	ROOTFS_FOLDER="img/"
+	RELEASE_NAME=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}
+	if [ $RAM -ne 0 ]; then
+		IMAGE_FOLDER="ram/";
+	fi
+	mkdir -p "$ROOTFS_FOLDER"
+	if [ $RAM -ne 0 ]; then
+		mount -t tmpfs -o size=3G tmpfs $ROOTFS_FOLDER;
+	fi
+	if [ $verbose -eq 1 ]; then
+		sysroot_partition;
+	else
+		sysroot_partition > /dev/null 2>&1;
+	fi
+fi
 mkdir -p ${ROOT}/usr/bin
 cp $(command -v "${STATIC}") ${ROOT}/usr/bin;
 if [[ "$DISTRO" == "devuan" ]]; then
-	devuan_debootstrap;
+	run_devuan-debootstrap;
 else
 	run_debootstrap;
 fi
-if [ -e ${ROOT}/usr/bin/${STATIC} ]; then
-	rm -f ${ROOT}/usr/bin/${STATIC}
+
+# creating developer tarball
+if [ $devrootfs -eq 1 ]; then
+	sysroot_setup;
+	mount -o bind /dev ${ROOT}/dev;
+	mount -o bind /dev/pts ${ROOT}/dev/pts;
+	cp -f lib/source ${ROOT}/root/source.txt;
+	cp -f {scripts/rootfs-extra,userdata.txt,board.txt} ${ROOT}/root/;
+	chroot ${ROOT} /root/rootfs-extra;
+	umount ${ROOT}/dev/pts;
+	umount ${ROOT}/dev;
+	rm -f ${ROOT}/root/rootfs-extra;
+	rm -f ${ROOT}/root/*.txt;
+	rm -f ${ROOT}/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io;
+	rm -f ${ROOT}/etc/apt/sources.list
+fi
+# clean up
+if [ -f ${ROOT}/usr/bin/qemu-aarch64-static ]; then
+	rm -f ${ROOT}/usr/bin/qemu-aarch64-static
+fi
+if [ -f ${ROOT}/usr/bin/qemu-arm-static ]; then
+	rm -f ${ROOT}/usr/bin/qemu-arm-static
 fi
 rm -f ${ROOT}/var/cache/debconf/*
 
@@ -79,16 +91,29 @@ rm -f ${ROOT}/var/cache/debconf/*
 echo
 echo -e "${WHT}Archiving root filesystem${FIN} ..."
 cd ${ROOT}
-echo -en ${WHT}
-XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - * | (pv -terb > ../$RELEASE)
-echo -en ${FIN}
+XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - * | (pv -terb > ../$RELEASE_TARBALL)
 cd ..
 
-rm -fdr ${ROOT}
-if [ -e /usr/share/debootstrap/scripts/chimaera ]; then
+if [ $devrootfs -eq 1 ]; then
+	losetup -d "${IMAGE_LOOP_DEV}";
+	rm -f "${ROOTFS_FOLDER}${RELEASE_NAME}";
+	if [ $RAM -ne 0 ]; then
+		umount "${ROOTFS_FOLDER}";
+	fi
+	rmdir "${ROOTFS_FOLDER}";
+	# just in case
+	make cleanup > /dev/null 2>&1;
+fi
+
+if [ -e ${ROOT} ]; then
+	rm -fdr ${ROOT}
+fi
+
+if [ -f /usr/share/debootstrap/scripts/chimaera ]; then
 	rm -f /usr/share/debootstrap/scripts/chimaera;
 fi
-if [ -e /usr/share/debootstrap/scripts/daedalus ]; then
+if [ -f /usr/share/debootstrap/scripts/daedalus ]; then
 	rm -f /usr/share/debootstrap/scripts/daedalus;
 fi
 clear -x
+exit 0
