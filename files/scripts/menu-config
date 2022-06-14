@@ -1,5 +1,5 @@
 #!/bin/bash
-# Raspberry Pi IMAGE BUILDER: SYSTEM MENU INTERFACE
+# RASPBERRY PI IMAGE BUILDER: SYSTEM MENU INTERFACE
 if [ -f /etc/opt/board.txt ]; then
 	source /etc/opt/board.txt;
 fi
@@ -38,10 +38,12 @@ if [[ `curl -I https://github.com 2>&1 | grep 'HTTP/2 200'` ]]; then
 	VERSION="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/version";
 	ONE=`curl --silent -L $VERSION | sed -n 2p`;
 	TWO=`curl --silent -L $VERSION | sed -n 3p`;
+	clear -x
 else
 	BANNER="LIMITED USAGE: "
 	ONE="THE NETWORK "
 	TWO="IS DOWN"
+	clear -x
 fi
 
 # main menu
