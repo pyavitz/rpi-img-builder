@@ -28,145 +28,10 @@ fi
 }
 
 # STAGE 2
-eth_udev-rule(){
-tee /etc/udev/rules.d/80-net-setup-link.rules <<EOF
-# raspberry pi 3b eth interface
-SUBSYSTEM!="net", GOTO="net_setup_link_end"
-
-IMPORT{builtin}="path_id"
-
-ACTION!="add", GOTO="net_setup_link_end"
-
-# IMPORT{builtin}="net_setup_link"
-
-NAME=="", ENV{ID_NET_NAME}!="", NAME="eth0"
-
-LABEL="net_setup_link_end"
-EOF
-}
-
 btrfs_udev-rule(){
 if [ -f /lib/udev/rules.d/64-btrfs.rules ]; then
 	sed -i 's/${exec_prefix}//g' /lib/udev/rules.d/64-btrfs.rules;
 fi
-}
-
-network_setup(){
-rm -f /etc/network/interfaces
-if [ -f /etc/network/if-up.d/00check-network-cable ]; then
-	ln -sr /etc/network/if-up.d/00check-network-cable /etc/network/if-pre-up.d/00check-network-cable;
-fi
-if [ -f /etc/default/networking ]; then
-	sed -i 's/#CONFIGURE_INTERFACES=yes/CONFIGURE_INTERFACES=yes/g' /etc/default/networking;
-	sed -i 's/#WAIT_ONLINE_METHOD=ifup/WAIT_ONLINE_METHOD=ifup/g' /etc/default/networking;
-	sed -i 's/#WAIT_ONLINE_TIMEOUT=300/WAIT_ONLINE_TIMEOUT=10/g' /etc/default/networking;
-fi
-if [ -f /etc/default/network-test ]; then
-	sed -i 's/DO_ARPING=${DO_ARPING:-yes}/DO_ARPING=${DO_ARPING:-no}/g' /etc/default/network-test;
-	sed -i 's/DO_SYSLOG=${DO_SYSLOG:-yes}/DO_SYSLOG=${DO_SYSLOG:-no}/g' /etc/default/network-test;
-fi
-mv -f credentials.txt /boot/rename_to_credentials.txt
-cp -f board.txt /etc/opt/
-ln -sr /etc/opt/board.txt /etc/opt/soc.txt
-chown root:root /etc/opt/board.txt
-
-if [[ "$BOARD" == "bcm2710" ]]; then
-	eth_udev-rule;
-else
-	if [[ "$BOARD" == "bcm2709" ]]; then
-		eth_udev-rule;
-	fi
-fi
-
-tee /etc/opt/interfaces.manual <<EOF
-### Interfaces
-source /etc/network/interfaces.d/*
-
-### Loopback network interface
-auto lo
-iface lo inet loopback
-
-### Ethernet
-allow-hotplug eth0
-iface eth0 inet dhcp
-    #address 10.0.0.10
-    #netmask 255.255.255.0
-    #gateway 10.0.0.1
-    #dns-nameservers 8.8.8.8 8.8.4.4
-
-### Mobile tether
-#allow-hotplug usb0
-#iface usb0 inet dhcp
-
-### Wifi
-allow-hotplug wlan0
-iface wlan0 inet dhcp
-	wireless-power off
-	#address 10.0.0.10
-	#netmask 255.255.255.0
-	#gateway 10.0.0.1
-	#dns-nameservers 8.8.8.8 8.8.4.4
-	wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
-
-EOF
-
-tee /etc/opt/interfaces <<EOF
-### Interfaces
-source /etc/network/interfaces.d/*
-
-### Loopback network interface
-auto lo
-iface lo inet loopback
-
-### Ethernet
-allow-hotplug eth0
-iface eth0 inet dhcp
-    #address 10.0.0.10
-    #netmask 255.255.255.0
-    #gateway 10.0.0.1
-    #dns-nameservers 8.8.8.8 8.8.4.4
-
-### Mobile tether
-#allow-hotplug usb0
-#iface usb0 inet dhcp
-
-### Wifi
-allow-hotplug wlan0
-iface wlan0 inet dhcp
-	wireless-power off
-	wlan_address 10.0.0.10
-	wlan_netmask 255.255.255.0
-	wlan_gateway 10.0.0.1
-	wlan_dns-nameservers 8.8.8.8 8.8.4.4
-	wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
-
-EOF
-
-tee /etc/opt/wpa_supplicant.manual <<EOF
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-update_config=1
-country=US
-
-network={
-	ssid="mywifissid"
-	scan_ssid=1
-	key_mgmt=WPA-PSK
-	psk="wifipasskey"
-}
-EOF
-
-tee /etc/opt/wpa_supplicant.conf <<EOF
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-update_config=1
-country=
-
-network={
-	name=
-	scan_ssid=1
-	key_mgmt=WPA-PSK
-	password=
-}
-EOF
 }
 
 enable_services(){
@@ -175,10 +40,12 @@ chmod +x /etc/init.d/firstboot
 chmod +x /etc/init.d/leds
 chmod +x /etc/init.d/bthelper
 chmod +x /etc/init.d/zramswap
-chmod +x /etc/init.d/network
+if [ $networkmanager -eq 0 ]; then
+	chmod +x /etc/init.d/network;
+	update-rc.d -f networking remove;
+fi
 chmod +x /etc/init.d/credentials
 update-rc.d -f hwclock.sh remove
-update-rc.d -f networking remove
 update-rc.d firstboot defaults S
 update-rc.d governor defaults 2
 update-rc.d leds defaults 2

@@ -112,21 +112,21 @@ fi
 # setup stage2
 cp scripts/stage2 p2/root
 cp lib/function/${DISTRO} p2/root/${DISTRO}.txt
-if [[ "$DISTRO" == "devuan" ]]; then
-	:;
-else
-	cp lib/function/services p2/root/services.txt;
-fi
-cp files/${DISTRO}/misc/* p2/root
-cp files/${DISTRO}/patches/* p2/root
-cp files/${DISTRO}/scripts/* p2/root
 cp lib/function/universal p2/root/universal.txt
+cp lib/function/networking p2/root/networking.txt
 cp lib/source p2/root/source.txt
 cp userdata.txt p2/root
 cp board.txt p2/root
+if [[ "$DISTRO" == "devuan" ]]; then
+	cp files/inits/* p2/root;
+else
+	cp lib/function/services p2/root/services.txt;
+fi
+cp files/patches/* p2/root
 cp files/misc/* p2/root
 cp files/scripts/* p2/root
 cp files/users/* p2/root
+cp files/firmware/* p2/root
 if [ $useracct -eq 1 ]; then
 	mkdir -p p2/root/useracct;
 	cp -r files/useracct/* p2/root/useracct;
@@ -134,7 +134,6 @@ fi
 if [ $uscripts -eq 1 ]; then
 	uscripts_stage1;
 fi
-cp firmware/{fw-0a5c_21e8.hcd,UPDATE.mem} p2/root
 stage1_kernel # universal
 echo -e "${WHT}Starting chroot${FIN} ..."
 # Mount and chroot

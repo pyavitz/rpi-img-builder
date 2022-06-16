@@ -61,6 +61,7 @@ Distro:			# Supported: debian, devuan and ubuntu
 Release:		# Debian: bullseye, bookworm, testing, unstable and sid
 			# Devuan: chimaera, daedalus, testing, unstable and ceres
 			# Ubuntu: focal and jammy
+Network Manager		# Enable nmtui (default: ifupdown)
 
 Filesystem
 ext4:			# Default fstype
@@ -141,7 +142,6 @@ USERNAME=""
 PASSWORD=""
 ```
 
-### Debian / Devuan
 #### /boot/rename_to_credentials.txt
 ```sh
 Rename file to credentials.txt and input your wifi information.
@@ -150,51 +150,22 @@ SSID=""				# Service set identifier
 PASSKEY=""			# Wifi password
 COUNTRYCODE=""			# Your country code
 
-# set static ip
+# set static ip (ifupdown)
 MANUAL="n"			# Set to y to enable a static ip
 IPADDR=""			# Static ip address
 NETMASK=""			# Your Netmask
 GATEWAY=""			# Your Gateway
 NAMESERVERS=""			# Your preferred dns
 
-CHANGE="y"			# Set to n to disable
-HOSTNAME="raspberrypi"		# Set the system's host name
-BRANDING="Raspberry Pi"		# Set ASCII text banner
-
-For headless use: ssh user@ipaddress
-
-Note:
-You can also mount the ROOTFS partition and edit the following
-files, whilst leaving rename_to_credentials.txt untouched.
-
-/etc/opt/interfaces.manual
-/etc/opt/wpa_supplicant.manual
-
-If you want use ethernet instead of wifi,
-use command: 'swh -d' to disable wifi after booting to OS.
-```
-
-### Ubuntu
-#### /boot/rename_to_credentials.txt
-```sh
-Rename file to credentials.txt and input your wifi information.
-
-NAME=""				# Name of the connection
-SSID=""				# Service set identifier
-PASSKEY=""			# Wifi password
-COUNTRYCODE=""			# Your country code
-
+# set static ip (network-manager)
 MANUAL="n"			# Set to y to enable a static ip
 IPADDR=""			# Static ip address
 GATEWAY=""			# Your Gateway
 DNS=""				# Your preferred dns
 
-CHANGE="y"			# Set to n to disable
-HOSTNAME="raspberrypi"		# Set the system's host name
-BRANDING="Raspberry Pi"		# Set ASCII text banner
-
 For headless use: ssh user@ipaddress
 ```
+
 ### System Menu: WIP
 #### `menu-config`
 <img src="https://i.imgur.com/iHPlFRU.png" alt="Main Menu" width="654" height="410" />

@@ -15,13 +15,13 @@
 . /lib/lsb/init-functions
 
 case "$1" in
-  start)
-    log_daemon_msg "LED Service"
-    /usr/local/sbin/leds 2>/dev/null
-    log_end_msg $?
-    ;;
-  *)
-    echo "Usage: $0 start" >&2
-    exit 3
-    ;;
+	start)
+		log_daemon_msg "LED Service"
+		/usr/local/sbin/leds 2>/dev/null
+		log_end_msg $?
+		;;
+	*)
+		echo "Usage: $0 start" >&2
+		exit 3
+		;;
 esac

@@ -1,6 +1,0 @@
-### Interfaces
-source /etc/network/interfaces.d/*
-
-### Loopback network interface
-auto lo
-iface lo inet loopback
