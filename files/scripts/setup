@@ -19,8 +19,7 @@ while getopts "rh" OPTION; do
 			sudo dpkg-reconfigure locales tzdata keyboard-configuration
 			sleep 1s
 			if [[ `curl -I https://github.com 2>&1 | grep 'HTTP/2 200'` ]]; then
-				echo "";
-				echo "Preparing tasksel ...";
+				echo "Updating tasksel ...";
 				if [[ `command -v tasksel` ]]; then
 					:;
 				else
@@ -32,10 +31,7 @@ while getopts "rh" OPTION; do
 				sudo apt-get install --reinstall debconf;
 				sudo dpkg-reconfigure tasksel;
 				echo "Done.";
-			fi
-			if [ -f /etc/motd ]; then
-				sudo rm -f /etc/motd;
-				sudo sh -c 'echo "" > /etc/motd';
+				echo "";
 			fi
 			sleep 1s
 			sudo update-ca-certificates -f
