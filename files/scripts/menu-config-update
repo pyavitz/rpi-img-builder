@@ -10,6 +10,7 @@ if [ -f $MENU ]; then
 	sudo mv -f $MENU $MENU.orig;
 fi
 sudo wget -cq https://raw.githubusercontent.com/pyavitz/rpi-img-builder/master/files/scripts/menu-config -P $MENUDIR
+sleep 1s
 sudo chmod +x $(command -v menu-config)
 if [ -f $MENU ]; then
 	sudo rm -f $MENU.orig;
