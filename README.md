@@ -168,7 +168,7 @@ For headless use: ssh user@ipaddress
 
 ### System Menu: WIP
 #### `menu-config`
-<img src="https://i.imgur.com/iHPlFRU.png" alt="Main Menu" width="654" height="410" />
+<img src="https://i.imgur.com/g6vPI8t.png" alt="Main Menu" width="654" height="410" />
 
 ### Scripts
 #### Using deb-eeprom ([usb_storage.quirks](https://github.com/pyavitz/rpi-img-builder/issues/17))
