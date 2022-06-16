@@ -29,6 +29,29 @@ while true; do
 done
 }
 
+change_hostname(){
+CURRENT=`hostname`
+export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray'
+NEWHOST=$(whiptail --backtitle "Menu Interface: Hostname" --title "Current: $CURRENT" --inputbox "Enter new hostname" --nocancel 8 78 3>&1 1>&2 2>&3)
+HOSTNAME="${NEWHOST}"
+export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray'
+if (whiptail --backtitle "Hostname: Confirm" --title "Confirm" --yesno "    Apply new hostname? ${HOSTNAME}" 0 0); then
+	sudo sh -c "echo '$HOSTNAME' > /etc/hostname";
+	sudo sed -i "2s/.*/127.0.1.1	$HOSTNAME/" /etc/hosts
+	if [[ `grep -w "Devuan" "/etc/os-release"` ]]; then
+		sudo service hostname.sh --full-restart;
+		sudo service avahi-daemon restart;
+	else
+		sudo hostnamectl set-hostname $HOSTNAME;
+		sudo systemctl restart avahi-daemon;
+	fi
+	whiptail --backtitle "Hostname: Confirmation" --title "Confirmation" --msgbox "    ${HOSTNAME} applied successfully." 0 0;
+else
+	whiptail --title "Cancelled" --msgbox "    Hit enter to return to menu." 0 0;
+fi
+clear -x
+}
+
 # check releases
 clear -x
 echo -en "Checking Network Connection: "
@@ -55,11 +78,12 @@ whiptail --backtitle "$BANNER$ONE$TWO" --title "System Menu Config" --menu "" --
 	"F)" "Fetch             Linux kernel installer" \
 	"W)" "Wireless          Configure wireless network interface" \
 	"" "" \
-	"1)" "User Password     Change the default user password" \
-	"2)" "Keyboard          Change keyboard layout" \
-	"3)" "Locales           Change language settings" \
-	"4)" "Timezone          Change regional settings" \
-	"6)" "Governor          Change CPU frequency scaling" \
+	"1)" "Password          Change the default user password" \
+	"2)" "Hostname          Change the default hostname" \
+	"3)" "Keyboard          Change keyboard layout" \
+	"4)" "Locales           Change language settings" \
+	"5)" "Timezone          Change regional settings" \
+	"6)" "Governor          Dynamic frequency scaling" \
 	"" "" \
 	"U)" "Update            Menu interface configuration tool" \
 	"Q)" "Quit .." 3>&2 2>&1 1>&3
@@ -81,12 +105,15 @@ case $CHOICE in
 		change_password
 		;;
 	"2)")
-		sudo dpkg-reconfigure keyboard-configuration
+		change_hostname
 		;;
 	"3)")
-		sudo dpkg-reconfigure locales
+		sudo dpkg-reconfigure keyboard-configuration
 		;;
 	"4)")
+		sudo dpkg-reconfigure locales
+		;;
+	"5)")
 		sudo dpkg-reconfigure tzdata
 		;;
 	"6)")

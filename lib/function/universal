@@ -27,21 +27,6 @@ root_password(){
 echo "root:toor" | chpasswd
 }
 
-wireless_regdb(){
-echo ""
-echo "Adding regdb ..."
-if [[ "$DISTRO" == "ubuntu" ]]; then
-	echo 'KERNEL=="regulatory*", ACTION=="change", SUBSYSTEM=="platform", RUN+="/sbin/crda"' > /etc/udev/rules.d/60-regdb.rules;
-fi
-git clone https://kernel.googlesource.com/pub/scm/linux/kernel/git/sforshee/wireless-regdb
-cd wireless-regdb
-cp -f regulatory.db /lib/firmware/regulatory.db
-cp -f regulatory.db.p7s /lib/firmware/regulatory.db.p7s
-cd ~
-rm -fdr wireless-regdb
-echo "Done."
-}
-
 # SYS-MODS
 raspberrypi_sys_mods(){
 echo ""
@@ -53,6 +38,7 @@ if [[ "$DISTRO" == "devuan" ]]; then
 	patch -p1 < raspberrypi-sys-mods-control.patch;
 	rm -f raspberrypi-sys-mods-control.patch;
 else
+	rm -f raspberrypi-sys-mods-control.patch;
 	cd raspberrypi-sys-mods;
 fi
 dpkg-buildpackage -us -uc
@@ -285,33 +271,6 @@ fi
 if [ -e /root/userscripts ]; then
 	rm -fdr /root/userscripts;
 fi
-}
-
-# Firmware
-extra_firmware(){
-echo ""
-echo "Adding firmware ..."
-mkdir -p /lib/firmware/brcm
-mkdir -p /lib/firmware/updates
-git clone https://github.com/pyavitz/firmware.git /lib/firmware/updates/brcm
-mv fw-0a5c_21e8.hcd /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd
-cp /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd /lib/firmware/brcm/BCM20702A1-0a5c-21e8.hcd
-chown root:root /lib/firmware/brcm/BCM20702A1-0a5c-21e8.hcd
-chown root:root /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd
-install -Dm644 UPDATE.mem /lib/firmware/updates/renesas_usb_fw.mem
-rm -f UPDATE.mem
-ln -sr /lib/firmware /etc/firmware
-if [[ `wget -S --spider https://kernel.googlesource.com/pub/scm/linux/kernel/git/firmware/linux-firmware.git/+archive/refs/heads/main/rtl_nic.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
-	mkdir -p /lib/firmware/updates/rtl_nic;
-	cd /lib/firmware/updates/rtl_nic;
-	wget -cq https://kernel.googlesource.com/pub/scm/linux/kernel/git/firmware/linux-firmware.git/+archive/refs/heads/main/rtl_nic.tar.gz;
-	if [ -f rtl_nic.tar.gz ]; then
-		tar xf rtl_nic.tar.gz;
-		rm -f rtl_nic.tar.gz;
-	fi
-fi
-cd ~
-echo "Done."
 }
 
 # Initrd script

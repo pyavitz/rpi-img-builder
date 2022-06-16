@@ -10,6 +10,7 @@ if [ -f /root/services.txt ]; then
 fi
 source /root/universal.txt
 source /root/${DISTRO}.txt
+source /root/networking.txt
 UNMINIMIZE=/usr/local/sbin/unminimize
 URL="https://raw.githubusercontent.com/pyavitz/scripts/master/"
 
@@ -17,6 +18,17 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
+if [ $networkmanager -eq 0 ]; then
+	if [[ "$DISTRO_VERSION" == "jammy" ]]; then
+		# systemd-resolved breaks static ip when using ifupdown
+		# it will be disabled on jammy jellyfish
+		unlink /etc/resolv.conf;
+		if [ -f /etc/resolv.conf ]; then
+			rm -f /etc/resolv.conf;
+		fi
+		systemctl disable systemd-resolved;
+	fi
+fi
 echo "nameserver ${NAMESERVER1}" > /etc/resolv.conf
 echo "nameserver ${NAMESERVER2}" >> /etc/resolv.conf
 
@@ -44,32 +56,44 @@ if [[ "$DISTRO" == "ubuntu" ]]; then
 	apt_preferences;
 	echo "";
 fi
+# Set network variables
+if [ $networkmanager -eq 1 ]; then
+	NETWORKING="network-manager";
+	if [[ "$DISTRO" == "devuan" ]]; then
+		NETWORKING_EXTRA="";
+	fi
+else
+	NETWORKING="ifupdown";
+	if [[ "$DISTRO" == "devuan" ]]; then
+		NETWORKING_EXTRA="ifupdown-extra";
+	fi
+fi
 if [ $ext4 -eq 1 ]; then
-	apt install -y e2fsprogs;
+	FSPROG="e2fsprogs";
 fi
 if [ $btrfs -eq 1 ]; then
-	apt install -y btrfs-progs;
+	FSPROG="btrfs-progs";
 fi
 if [ $xfs -eq 1 ]; then
-	apt install -y xfsprogs;
+	FSPROG="xfsprogs";
 fi
 if [[ "$DISTRO" == "debian" ]]; then
-	apt install -y ${PKGS} ${SYSMODS} ${FIRMWARE} resolvconf ifupdown openssh-client openssh-server;
+	apt install -y ${PKGS} ${SYSMODS} ${FIRMWARE} resolvconf openssh-client openssh-server ${FSPROG} ${NETWORKING};
 fi
 if [[ "$DISTRO" == "devuan" ]]; then
 	apt install -y openssh-client openssh-server --no-install-recommends;
-	apt install -y ${PKGS} ${SYSMODS} ${FIRMWARE} openresolv ifupdown ifupdown-extra;
+	apt install -y ${PKGS} ${SYSMODS} ${FIRMWARE} openresolv ${FSPROG} ${NETWORKING} ${NETWORKING_EXTRA};
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
-	apt install -y ${PKGS} ${SYSMODS} openresolv network-manager openssh-client openssh-server;
+	apt install -y ${PKGS} ${SYSMODS} openresolv openssh-client openssh-server ${FSPROG} ${NETWORKING};
 fi
 # apt clean
 apt -y clean
 apt -y autoclean
 
 # User options
-echo -n "${BOARD}" > /etc/hostname;
-sed -i "1 a 127.0.1.1	${BOARD}" /etc/hosts;
+echo -n "raspberrypi" > /etc/hostname;
+sed -i "1 a 127.0.1.1	raspberrypi" /etc/hosts;
 if [ $useracct -eq 0 ]; then
 	echo "";
 	adduser ${USERNAME} --gecos ${NAME} --disabled-password
@@ -161,17 +185,20 @@ wget -cq --show-progress ${URL}fetch
 wget -cq --show-progress ${URL}governor
 mv -f {swh,fetch,governor,setup,sysinfo,smon,menu-config,menu-config-update} /usr/local/bin/
 initrd_script
-mv -f credentials.sh /usr/local/bin/credentials
 mv -f firstboot.sh /usr/local/sbin/firstboot
 if [[ "$DISTRO" == "devuan" ]]; then
 	# Inits
 	mv -f firstboot.init /etc/init.d/firstboot;
 	mv -f leds.init /etc/init.d/leds;
 	mv -f governor.init /etc/init.d/governor;
-	mv -f bthelper /etc/init.d/;
-	mv -f zramswap /etc/init.d/;
-	mv -f network /etc/init.d/;
-	mv -f credentials /etc/init.d/;
+	mv -f bthelper.init /etc/init.d/bthelper;
+	mv -f zramswap.init /etc/init.d/zramswap;
+	if [ $networkmanager -eq 1 ]; then
+		rm -f network.init;
+	else
+		mv -f network.init /etc/init.d/network;
+	fi
+	mv -f credentials.init /etc/init.d/credentials;
 fi
 mv -f growpart /usr/bin/
 chmod +x /usr/bin/growpart
@@ -200,6 +227,9 @@ fi
 chmod +x /etc/update-motd.d/*
 chown root:root /etc/update-motd.d/15-brand
 chown root:root /etc/update-motd.d/20-sysinfo
+rm -f /etc/motd
+echo "" > /etc/motd
+chown root:root /etc/motd
 echo "Done."
 
 # Extra firmware
@@ -212,11 +242,23 @@ if [ -f /root/99-com.rules ]; then
 	mv -f 99-com.rules /lib/udev/rules.d/;
 fi
 
+# Wireless regdb
+wireless_regdb
+
 # Network Setup
-if [[ "$DISTRO" == "ubuntu" ]]; then
-	network_manager;
+if [ $networkmanager -eq 1 ]; then
+	networkmanager-setup > /dev/null 2>&1;
+	networkmanager-credentials > /dev/null 2>&1;
 else
-	network_setup > /dev/null 2>&1;
+	ifupdown-setup > /dev/null 2>&1;
+	ifupdown-credentials > /dev/null 2>&1;
+fi
+
+# Board information
+if [ -f /root/board.txt ]; then
+	cp -f /root/board.txt /etc/opt/;
+	ln -sr /etc/opt/board.txt /etc/opt/soc.txt;
+	chown root:root /etc/opt/board.txt;
 fi
 
 # ZSWAP virtual memory
@@ -225,16 +267,6 @@ if [ -f /etc/default/zramswap ]; then
 	sed -i 's/#SIZE=256/SIZE=1024/g' /etc/default/zramswap;
 	sed -i 's/#PRIORITY=100/PRIORITY=100/g' /etc/default/zramswap;
 fi
-
-# MOTD instructions
-rm -f /etc/motd
-echo "" > /etc/motd
-echo "To set Locales, Timezone and Keyboard. Execute: setup -r" >> /etc/motd
-echo "" >> /etc/motd
-chown root:root /etc/motd
-
-# Wireless regdb
-wireless_regdb
 
 # Adding sys-mods
 raspberrypi_sys_mods
@@ -298,6 +330,8 @@ fi
 
 # Flush runtime journal
 if [[ "$BOARD" == "bcm2708" ]]; then
+	:;
+else
 	if [ -f /etc/systemd/journald.conf ]; then
 		sed -i 's/#Storage=auto/Storage=volatile/g' /etc/systemd/journald.conf;
 		sed -i 's/#SystemMaxFileSize=/SystemMaxFileSize=50M/g' /etc/systemd/journald.conf;

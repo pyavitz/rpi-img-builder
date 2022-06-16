@@ -196,14 +196,9 @@ menu:
 
 config:
 	# User config menu
+	@chmod go=rx files/inits/*
 	@chmod go=rx files/scripts/*
-	@chmod go=rx files/debian/scripts/*
-	@chmod go=rx files/devuan/scripts/*
-	@chmod go=rx files/ubuntu/scripts/*
 	@chmod go=r files/misc/*
-	@chmod go=r files/debian/misc/*
-	@chmod go=r files/devuan/misc/*
-	@chmod go=r files/ubuntu/misc/*
 	@chmod go=r files/users/*
 	@chmod +x ${CONF}
 	@${CONF}

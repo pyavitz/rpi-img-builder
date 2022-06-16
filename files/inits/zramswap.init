@@ -1,0 +1,30 @@
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides: zramswap
+# Required-Start:
+# Required-Stop:
+# Default-Start: 2
+# Default-Stop: 0 6
+# Short-Description: Zramswap virtual memory
+# Description:
+### END INIT INFO
+
+# chmod +x /etc/init.d/zramswap
+# update-rc.d zramswap defaults 2
+
+. /lib/lsb/init-functions
+
+case "$1" in
+	start)
+		log_daemon_msg "Mounting zramswap virtual memory"
+		zramswap start 2>/dev/null
+		log_end_msg $?
+		exit 0
+		;;
+	stop)
+		log_daemon_msg "Unmounting zramswap virtual memory"
+		zramswap stop 2>/dev/null
+		log_end_msg $?
+		exit 3
+		;;
+esac
