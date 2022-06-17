@@ -220,13 +220,16 @@ echo
 toilet -f small --filter metal '${MOTD}'
 echo
 EOF
-mv -f 20-sysinfo /etc/update-motd.d/20-sysinfo
 if [ -f /etc/update-motd.d/10-help-text ]; then
 	rm -f /etc/update-motd.d/10-help-text;
 fi
+mv -f {20-sysinfo,90-dynamic-motd} /etc/update-motd.d/
+echo "# DYNAMIC MOTD VARIABLES" > /etc/default/dynamic-motd
+echo 'MENUCONFIG="true"' >> /etc/default/dynamic-motd
 chmod +x /etc/update-motd.d/*
 chown root:root /etc/update-motd.d/15-brand
 chown root:root /etc/update-motd.d/20-sysinfo
+chown root:root /etc/update-motd.d/90-dynamic-motd
 rm -f /etc/motd
 echo "" > /etc/motd
 chown root:root /etc/motd
