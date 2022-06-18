@@ -18,7 +18,6 @@
 ---
 
 ## Instructions
-
 #### Install dependencies
 
 ```sh
@@ -33,6 +32,29 @@ make ncompile	# Install native dependencies
 make config     # Create user data file
 make menu       # Open menu interface
 make dialogrc   # Set builder theme (optional)
+```
+
+#### Command list
+* Raspberry Pi 4B/400 = bcm2711 (arm64) / bcm2711v7 (armhf)
+* Raspberry Pi 2/3/A/B/W/+ = bcm2710 (arm64) / bcm2709 (armhf)
+* Raspberry Pi 0/1/W = bcm2708 (armel)
+
+```sh
+make all board=XXX	# Kernel > Rootfs > Image (run at own risk)
+make kernel board=XXX
+make commit board=XXX	# Linux source pulled from commmit
+make rootfs board=XXX
+make image board=XXX
+```
+
+#### Miscellaneous
+
+```sh
+make cleanup    # Clean up rootfs and image errors
+make purge      # Remove source directory
+make purge-all  # Remove source and output directory
+make commands   # List more commands
+make check      # Shows latest revision of selected branch
 ```
 
 #### Config Menu
@@ -79,22 +101,6 @@ Compress img:		# Auto compress img > img.xz
 User scripts:		# Review the README in the files/userscripts directory
 User service:		# Create user during first boot (bypass the user information above)
 ```
-#### Compiler options
-* GCC flags: [fm4dd](https://gist.github.com/fm4dd/c663217935dc17f0fc73c9c81b0aa845) / [valvers](https://www.valvers.com/open-software/raspberry-pi/bare-metal-programming-in-c-part-1)
-* Clang flags: [#34](https://github.com/pyavitz/rpi-img-builder/issues/34)
-
-```sh
-nano userdata.txt
-### COMPILER TUNING
-CORES=`nproc`
-CFLAGS=""
-```
-```sh
-### CLANG/LLVM
-CLANG_LLVM="LLVM=1 LLVM_IAS=1"
-lto_clang_thin=0	# 1 to enable (Arm64 only)
-```
-
 #### User defconfig
 
 ```sh
@@ -107,29 +113,6 @@ in the userdata.txt file.
 
 ```sh
 Patches "-p1" placed in patches/userpatches are applied during compilation.
-```
-## Command list
-
-* Raspberry Pi 4b/400 = bcm2711 (arm64) / bcm2711v7 (armhf)
-* Raspberry Pi 2/3/a/b/w/+ = bcm2710 (arm64) / bcm2709 (armhf)
-* Raspberry Pi 0/1/w = bcm2708 (armel)
-
-```sh
-make all board=XXX	# Kernel > Rootfs > Image (run at own risk)
-make kernel board=XXX
-make commit board=XXX	# Linux source pulled from commmit
-make rootfs board=XXX
-make image board=XXX
-```
-
-#### Miscellaneous
-
-```sh
-make cleanup    # Clean up rootfs and image errors
-make purge      # Remove source directory
-make purge-all  # Remove source and output directory
-make commands   # List more commands
-make check      # Shows latest revision of selected branch
 ```
 
 ## Usage
@@ -166,79 +149,11 @@ DNS=""				# Your preferred dns
 For headless use: ssh user@ipaddress
 ```
 
-### System Menu: WIP
-#### `menu-config`
+#### System Menu: `menu-config`
 <img src="https://i.imgur.com/g6vPI8t.png" alt="Main Menu" />
-
-### Scripts
-#### Using deb-eeprom ([usb_storage.quirks](https://github.com/pyavitz/rpi-img-builder/issues/17))
-
-```sh
-Raspberry Pi 4B EEPROM Helper Script
-deb-eeprom -h
-
-   -U       Upgrade eeprom package
-   -w       Transfer to USB	# Supported: EXT4, BTRFS and F2FS
-   -u       Update script
-
-Note:
-Upon install please run 'deb-eeprom -u' before using this script.
-```
-
-#### Using fetch ([initrd support](https://github.com/pyavitz/rpi-img-builder/pull/26))
-```sh
-Fetch, Linux kernel installer for the Raspberry Pi Image Builder
-fetch -h
-
-   -1       Linux 5.15.y LTS
-   -2       Linux Stable Branch
-   -f       Update Wifi/BT Firmware
-   -U       Update Raspberry Pi Userland
-
-   -u       Update Fetch
-
-fetch -u will list available options and kernel revisions
-```
-
-#### Simple wifi helper (Debian / Devuan)
-```sh
-swh -h
-
-   -s       Scan for SSID's
-   -u       Bring up interface
-   -d       Bring down interface
-   -r       Restart interface
-   -W       Edit wpa supplicant
-   -I       Edit interfaces
-```
-
-#### CPU frequency scaling
-```sh
-governor -h
-
-   -c       Conservative
-   -o       Ondemand
-   -p       Performance
-   -s       Schedutil
-
-   -r       Run
-   -u       Update
-
-A service runs 'governor -r' during boot.
-```
-
-#### Disable LED service
-```
-# Debian / Ubuntu
-sudo systemctl stop leds
-sudo systemctl disable leds
-
-# Devuan
-sudo update-rc.d -f leds remove
-```
 
 ---
 
-### Support
+## Support
 
 Should you come across any bugs, feel free to either open an issue on GitHub or talk with us directly by joining our channel on Libera; [`#arm-img-builder`](irc://irc.libera.chat/#arm-img-builder) or [Discord](https://discord.gg/mypJ7NW8BG)
