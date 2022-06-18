@@ -116,6 +116,7 @@ Patches "-p1" placed in patches/userpatches are applied during compilation.
 ```
 
 ## Usage
+* Review the [Wiki](https://github.com/pyavitz/rpi-img-builder/wiki/Options-&-Scripts)
 #### /boot/rename_to_useraccount.txt
 * Headless: rename file to useraccount.txt and fill in the variables
 * Headful: don't rename file & get prompted to create a user account
