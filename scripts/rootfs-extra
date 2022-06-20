@@ -26,14 +26,14 @@ set_timezone
 apt upgrade -y
 apt dist-upgrade -y
 if [[ "$DISTRO" == "debian" ]]; then
-	apt install -y ${PKGS} ${SYSMODS} resolvconf openssh-client openssh-server;
+	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} resolvconf openssh-client openssh-server;
 fi
 if [[ "$DISTRO" == "devuan" ]]; then
 	apt install -y openssh-client openssh-server --no-install-recommends;
-	apt install -y ${PKGS} ${SYSMODS} openresolv;
+	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} openresolv;
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
-	apt install -y ${PKGS} ${SYSMODS} openresolv openssh-client openssh-server;
+	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} openresolv openssh-client openssh-server;
 fi
 apt -y clean
 apt -y autoclean

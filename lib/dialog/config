@@ -2,7 +2,7 @@
 
 COL="\e[0;37m"
 FIN="\e[0m"
-if [ -e profile.txt ]; then
+if [ -f profile.txt ]; then
 	source profile.txt;
 else
 	NAME="";
@@ -114,6 +114,7 @@ echo devrootfs= >> tmp0
 echo compress_img= >> tmp0
 echo uscripts= >> tmp0
 echo useracct= >> tmp0
+echo USER_PKGS='"''"' >> tmp0
 echo CLANG_LLVM='"'LLVM=1 LLVM_IAS=1'"' >> tmp0
 echo lto_clang_thin=0 >> tmp0
 echo CORES=\`nproc\` >> tmp0
@@ -134,7 +135,7 @@ echo NAMESERVER2='"'${USER_NAMESERVER2}'"' >> tmp0
 echo rtl8812au=0 >> tmp0
 echo rtl88x2bu=0 >> tmp0
 echo rtl8811cu=0 >> tmp0
-echo builder=4.9 >> tmp0
+echo builder=4.10 >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
 echo '"' >> tmp2
@@ -164,13 +165,13 @@ sed -i '10i### COMPILER' userdata.txt
 sed -i '15i### DISTRIBUTION' userdata.txt
 sed -i '19i### FILESYSTEM' userdata.txt
 sed -i '23i### CUSTOM' userdata.txt
-sed -i '31i### CLANG/LLVM' userdata.txt
-sed -i '34i### COMPILER TUNING' userdata.txt
-sed -i '37i### LOCALES' userdata.txt
-sed -i '45i### TIMEZONE' userdata.txt
-sed -i '50i### NAME SERVER' userdata.txt
-sed -i '53i### EXTRA WIRELESS' userdata.txt
-sed -i '57i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '32i### CLANG/LLVM' userdata.txt
+sed -i '35i### COMPILER TUNING' userdata.txt
+sed -i '38i### LOCALES' userdata.txt
+sed -i '46i### TIMEZONE' userdata.txt
+sed -i '51i### NAME SERVER' userdata.txt
+sed -i '54i### EXTRA WIRELESS' userdata.txt
+sed -i '58i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # clear screen
 clear -x

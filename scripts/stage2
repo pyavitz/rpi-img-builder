@@ -78,14 +78,14 @@ if [ $xfs -eq 1 ]; then
 	FSPROG="xfsprogs";
 fi
 if [[ "$DISTRO" == "debian" ]]; then
-	apt install -y ${PKGS} ${SYSMODS} ${FIRMWARE} resolvconf openssh-client openssh-server ${FSPROG} ${NETWORKING};
+	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} resolvconf openssh-client openssh-server ${FSPROG} ${NETWORKING};
 fi
 if [[ "$DISTRO" == "devuan" ]]; then
 	apt install -y openssh-client openssh-server --no-install-recommends;
-	apt install -y ${PKGS} ${SYSMODS} ${FIRMWARE} openresolv ${FSPROG} ${NETWORKING} ${NETWORKING_EXTRA};
+	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} openresolv ${FSPROG} ${NETWORKING} ${NETWORKING_EXTRA};
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
-	apt install -y ${PKGS} ${SYSMODS} openresolv openssh-client openssh-server ${FSPROG} ${NETWORKING};
+	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} openresolv openssh-client openssh-server ${FSPROG} ${NETWORKING};
 fi
 # apt clean
 apt -y clean
