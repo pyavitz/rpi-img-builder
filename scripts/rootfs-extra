@@ -11,6 +11,9 @@ CAP_RELEASE=`echo "$DISTRO_VERSION" | sed -e "s/\b\(.\)/\u\1/g"`
 echo ""
 echo -e "\e[1;37mAdding additional packages to $CAP_DISTRO $CAP_RELEASE\e[0m ..."
 
+echo "nameserver ${NAMESERVER1}" > /etc/resolv.conf
+echo "nameserver ${NAMESERVER2}" >> /etc/resolv.conf
+
 mount -t proc proc proc/
 mount -t sysfs sys sys/
 
