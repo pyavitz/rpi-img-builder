@@ -13,6 +13,7 @@ adduser ${USERNAME} plugdev
 adduser ${USERNAME} netdev
 adduser ${USERNAME} bluetooth
 adduser ${USERNAME} input
+adduser ${USERNAME} render
 adduser ${USERNAME} tty
 adduser ${USERNAME} i2c
 if [[ `grep -w "gpio" "/etc/group"` ]]; then

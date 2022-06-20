@@ -107,6 +107,7 @@ if [ $useracct -eq 0 ]; then
 	adduser ${USERNAME} netdev
 	adduser ${USERNAME} bluetooth
 	adduser ${USERNAME} input
+	adduser ${USERNAME} render
 	adduser ${USERNAME} tty
 	adduser ${USERNAME} i2c
 	groupadd gpio
