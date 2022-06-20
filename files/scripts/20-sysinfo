@@ -6,6 +6,9 @@ CPU=`lscpu | grep "Model name" | sed -n 1p | sed 's/Model name://g' | sed -r '1s
 CPUM=`lscpu | grep "CPU max MHz" | sed -n 1p | sed 's/CPU max MHz://g' | sed -r '1s/\s+//g' | sed 's/.0000//g'`
 COL="\033[1m"
 FIN="\033[0m"
+NETWORK=$(ip -o -4 -br a | grep -v '^lo'| sed 's/^/ /' | sed 's/\/..//' | sed -r '1s/\s+/ /g' | sed -r '2s/\s+/ /g')
+ETH0=`echo -e ${COL}Wired:${FIN}`
+WLAN0=`echo -e ${COL}Wireless:${FIN}`
 
 # function
 mem_hwinfo(){
@@ -15,10 +18,14 @@ unset meminfo;
 }
 
 # display
-echo -e "${COL}== DISK USAGE${FIN}"
+echo -e "${COL}== DISK${FIN}"
 df -h | egrep '(Filesystem)|(/dev/mmc)|(/dev/root)|(/dev/sd)|(/dev/nvme)'
 echo ""
-echo -e "${COL}== SYSTEM STATUS${FIN}"
+echo -e "${COL}== NETWORK${FIN}"
+echo -e "${COL}Hostname:${FIN}    $(hostname)"
+echo -e "$NETWORK" | sed "s/^[ \t]*//" | sed "s/eth0/$ETH0       eth0/g" | sed "s/wlan0/$WLAN0    wlan0/g"
+echo ""
+echo -e "${COL}== SYSTEM${FIN}"
 if [[ -f "/sys/devices/system/cpu/present" ]]; then
 	echo -en "${COL}Processor${FIN}:  " $CPU; echo -en " @ $CPUM"; echo -e "MHz $CPUT°C";
 else
