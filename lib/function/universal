@@ -243,7 +243,7 @@ fi
 uscripts_stage1(){
 if [ -f files/userscripts/uscripts ]; then
 	mkdir -p p2/root/userscripts;
-	cp -f files/userscripts/* p2/root/userscripts/;
+	cp -fr files/userscripts/* p2/root/userscripts/;
 	if [ -f p2/root/userscripts/README.md ]; then
 		rm -f p2/root/userscripts/README.md;
 	fi
