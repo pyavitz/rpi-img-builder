@@ -7,8 +7,6 @@ SRC="source"
 
 KERNEL="linux-rpi"
 CKERNEL="linux"
-KBUSER="marvin"
-KBHOST="martian"
 
 # validate
 validation(){
@@ -25,7 +23,7 @@ else
 		fi
 	done
 fi
-if [[ `grep -w "builder=4.10" "userdata.txt"` ]]; then
+if [[ `grep -w "builder=4.11" "userdata.txt"` ]]; then
 	:;
 else
 	echo -e "The ${WHT}$UD${FIN} file has expired. Please create a new one."

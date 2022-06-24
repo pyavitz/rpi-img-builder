@@ -126,12 +126,15 @@ lto_clang_thin=0
 ### COMPILER TUNING
 CORES=\`nproc\`
 CFLAGS=""
+### WHOAMI AND HOST
+KBUSER="marvin"
+KBHOST="martian"
 ### EXTRA WIRELESS
 rtl8812au=0
 rtl88x2bu=0
 rtl8811cu=0
 ### DO NOT EDIT BELOW THIS LINE
-builder=4.7
+builder=4.11
 EOF
 }
 

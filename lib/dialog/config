@@ -119,6 +119,8 @@ echo CLANG_LLVM='"'LLVM=1 LLVM_IAS=1'"' >> tmp0
 echo lto_clang_thin=0 >> tmp0
 echo CORES=\`nproc\` >> tmp0
 echo CFLAGS='"''"' >> tmp0
+echo KBUSER='"'$USER'"' >> tmp0
+echo KBHOST='"'raspberrypi'"' >> tmp0
 echo "set_locales(){" >> tmp0
 echo "apt install -y locales" >> tmp0
 echo "export LANGUAGE=${LOCALE}" >> tmp0
@@ -135,7 +137,7 @@ echo NAMESERVER2='"'${USER_NAMESERVER2}'"' >> tmp0
 echo rtl8812au=0 >> tmp0
 echo rtl88x2bu=0 >> tmp0
 echo rtl8811cu=0 >> tmp0
-echo builder=4.10 >> tmp0
+echo builder=4.11 >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
 echo '"' >> tmp2
@@ -167,11 +169,12 @@ sed -i '19i### FILESYSTEM' userdata.txt
 sed -i '23i### CUSTOM' userdata.txt
 sed -i '32i### CLANG/LLVM' userdata.txt
 sed -i '35i### COMPILER TUNING' userdata.txt
-sed -i '38i### LOCALES' userdata.txt
-sed -i '46i### TIMEZONE' userdata.txt
-sed -i '51i### NAME SERVER' userdata.txt
-sed -i '54i### EXTRA WIRELESS' userdata.txt
-sed -i '58i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '38i### WHOAMI AND HOST' userdata.txt
+sed -i '41i### LOCALES' userdata.txt
+sed -i '49i### TIMEZONE' userdata.txt
+sed -i '54i### NAME SERVER' userdata.txt
+sed -i '57i### EXTRA WIRELESS' userdata.txt
+sed -i '61i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # clear screen
 clear -x
