@@ -1,5 +1,4 @@
 #!/bin/bash
-
 RED="\e[1;31m"
 GRN="\e[1;32m"
 PNK="\e[1;35m"
@@ -24,12 +23,12 @@ echo -n -e "${PNK}[${FIN}${RED}failed${FIN}${PNK}]${FIN}"
 }
 
 ierror(){
-echo
+echo ""
 echo -e "${WHT}Please check your internet connection and try again${FIN}."
 }
 
 derror(){
-echo
+echo ""
 echo -e "${WHT}The OS you are running is not supported${FIN}."
 }
 
@@ -46,7 +45,7 @@ else
 		echo_fail
 		echo ""
 		ierror
-		exit > /dev/null 2>&1;
+		exit 0;
 	fi
 fi
 }
@@ -60,7 +59,7 @@ else
 	echo_fail
 	echo ""
 	ierror
-	exit > /dev/null 2>&1;
+	exit 0;
 fi
 }
 
@@ -78,7 +77,7 @@ else
 		echo_fail
 		echo ""
 		derror
-		exit > /dev/null 2>&1;
+		exit 0;
 	fi
 fi
 }
@@ -105,7 +104,7 @@ fi
 
 if [[ `uname -m | grep -w aarch64` ]]; then
 echo -e -n "${WHT}"
-echo -e "Arm64 Detected! Select the dependencies you would like installed."
+echo -e "Arm64 detected. Select the dependencies you would like installed."
 options=("Cross Compiling" "Native Compiling" "Quit")
 select opt in "${options[@]}"
 do
@@ -154,5 +153,6 @@ echo -e -n "${FIN}"
 fi
 
 make dialogrc > /dev/null 2>&1
-echo
+echo ""
 make
+exit 0
