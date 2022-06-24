@@ -15,6 +15,16 @@ if [ -f /etc/update-motd.d/20-sysinfo ]; then
 		sudo mv /etc/update-motd.d/20-sysinfo.orig /etc/update-motd.d/20-sysinfo;
 	fi
 fi
+if [[ `command -v sysinfo` ]]; then
+	sudo mv -f /usr/local/bin/sysinfo /usr/local/bin/sysinfo.orig;
+	sudo wget -cq $GHURL/scripts/sysinfo -P /usr/local/bin/;
+	if [ -f /usr/local/bin/sysinfo ]; then
+		sudo chmod +x /usr/local/bin/sysinfo;
+		sudo rm -f /usr/local/bin/sysinfo.orig;
+	else
+		sudo mv /usr/local/bin/sysinfo.orig /usr/local/bin/sysinfo;
+	fi
+fi
 MENU=`command -v menu-config`
 MENUDIR="/usr/local/bin/"
 if [ -f $MENU ]; then
