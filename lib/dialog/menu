@@ -3,23 +3,6 @@ COUNT=0
 
 # userdata-txt
 source lib/source
-UD=userdata.txt
-userdata(){
-echo ""
-echo "Create a userdata.txt file"
-while [ true ]; do
-	read -t 10 -n 1
-	if [ $? = 0 ]; then
-		exit 0;
-	fi
-done
-}
-
-if [ -f "$UD" ]; then
-	:;
-else 
-	userdata;
-fi
 validation
 
 # menu list
