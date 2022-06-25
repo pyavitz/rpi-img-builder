@@ -2,9 +2,15 @@
 GHURL="https://raw.githubusercontent.com/pyavitz/rpi-img-builder/master/files"
 clear -x
 echo -en "Updating menu and scripts "
-fetch -u > /dev/null 2>&1
-governor -u > /dev/null 2>&1
-swh -U > /dev/null 2>&1
+if [[ `command -v fetch` ]]; then
+	fetch -u > /dev/null 2>&1;
+fi
+if [[ `command -v governor` ]]; then
+	governor -u > /dev/null 2>&1;
+fi
+if [[ `command -v swh` ]]; then
+	swh -U > /dev/null 2>&1;
+fi
 if [ -f /etc/update-motd.d/20-sysinfo ]; then
 	sudo mv /etc/update-motd.d/20-sysinfo /etc/update-motd.d/20-sysinfo.orig;
 	sudo wget -cq $GHURL/scripts/20-sysinfo -P /etc/update-motd.d/;
