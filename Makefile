@@ -74,45 +74,34 @@ define create_rootfs
 endef
 
 help:
-	@echo
+	@echo ""
 	@echo "\t\t\e[1;31mRaspberry Pi Image Builder\e[0m"
-	@echo "\t\t\e[1;37m**************************"
-	@echo "\e[1;37mUsage:\e[0m "
-	@echo
-	@echo "  make ccompile          Install x86-64 cross dependencies"
-	@echo "  make ccompile64        Install Arm64 cross dependencies"
-	@echo "  make ncompile          Install native dependencies"
-	@echo "  make config            Create user data file"
-	@echo "  make menu              User menu interface"
-	@echo "  make cleanup           Clean up rootfs and image errors"
-	@echo "  make purge             Remove source directory"
-	@echo "  make purge-all         Remove source and output directory"
-	@echo "  make commands          List more commands"
-	@echo
-	@echo "For details consult the \e[1;37mREADME.md\e[0m"
-	@echo
-
-commands:
-	@echo
-	@echo "Boards:"
-	@echo
-	@echo "  bcm2711                 Raspberry Pi 4B/400"
-	@echo "  bcm2710                 Raspberry Pi 2/3/A/B/W/+"
-	@echo "  bcm2709                 Raspberry Pi 2/3/A/B/W/+"
-	@echo "  bcm2708                 Raspberry Pi 0/W/B/+"
-	@echo
-	@echo "Usage:"
-	@echo " "
-	@echo "  make all board=XXX      Kernel > rootfs > image"
-	@echo "  make kernel board=XXX   Builds linux kernel package"
-	@echo "  make rootfs board=XXX   Create rootfs tarball"
-	@echo "  make image board=XXX    Make bootable image"
-	@echo
-	@echo "Miscellaneous:"
-	@echo
-	@echo "  make dialogrc		  Set builder theme"
-	@echo "  make check		  Shows latest revision of selected branch"
-	@echo
+	@echo "\t\t\e[1;37m**************************\e[0m"
+	@echo ""
+	@echo "\e[1;37mBoards:\e[0m"
+	@echo "   bcm2711\t\t\tRaspberry Pi 4B/400 (arm64)"
+	@echo "   bcm2711v7\t\t\tRaspberry Pi 4B/400 (armhf)"
+	@echo "   bcm2710\t\t\tRaspberry Pi 2/3/A/B/W/+ (arm64)"
+	@echo "   bcm2709\t\t\tRaspberry Pi 2/3/A/B/W/+ (armhf)"
+	@echo "   bcm2708\t\t\tRaspberry Pi 0/W/B/+ (armel)"
+	@echo ""
+	@echo "\e[1;37mCommands:\e[0m"
+	@echo "   make ccompile\t\tInstall x86-64 cross dependencies"
+	@echo "   make ccompile64\t\tInstall Arm64 cross dependencies"
+	@echo "   make ncompile\t\tInstall native dependencies"
+	@echo "   make config\t\t\tCreate user data file"
+	@echo "   make menu\t\t\tUser menu interface"
+	@echo "   make cleanup\t\t\tClean up rootfs and image errors"
+	@echo "   make purge\t\t\tRemove source directory"
+	@echo "   make purge-all\t\tRemove source and output directory"
+	@echo "   make dialogrc\t\tSet builder theme"
+	@echo "   make check\t\t\tLatest revision of selected branch"
+	@echo ""
+	@echo "   make all board=xxx\t\tKernel > rootfs > image"
+	@echo "   make kernel board=xxx\tBuilds linux kernel package"
+	@echo "   make rootfs board=xxx\tCreate rootfs tarball"
+	@echo "   make image board=xxx\t\tMake bootable image"
+	@echo ""
 
 ccompile:
 	# Installing x86_64 cross dependencies:
