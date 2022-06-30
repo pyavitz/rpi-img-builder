@@ -1,6 +1,10 @@
 #!/bin/bash
 
 edit_defconfig(){
+# remove localversion
+if [[ `grep -w "CONFIG_LOCALVERSION=" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then
+	sed -i 's/CONFIG_LOCALVERSION=/# CONFIG_LOCALVERSION=/g' arch/${ARCH}/configs/${LINUX_DEFCONFIG};
+fi
 # module sig
 if [[ `grep -w "CONFIG_MODULE_SIG=y" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then
 	:;

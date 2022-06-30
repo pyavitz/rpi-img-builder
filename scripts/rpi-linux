@@ -7,7 +7,7 @@ source userdata.txt
 source lib/function/compiler
 source lib/function/rpi-linux
 source lib/function/wireless
-source lib/function/modules
+source lib/function/modconfig
 
 # prep
 validation
