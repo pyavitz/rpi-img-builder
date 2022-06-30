@@ -1,0 +1,18 @@
+#!/bin/bash
+source /etc/opt/board.txt
+source /etc/default/dynamic-motd
+
+if [[ "$BRANDING" == "true" ]]; then
+	echo "";
+	toilet -f ${T_FONT} --filter ${T_FILTER} $DEFAULT_MOTD;
+	echo "";
+else
+	if [[ -f "/proc/device-tree/model" ]]; then
+		MODEL=$(tr -d '\0' </proc/device-tree/model)
+		WHT="\e[1;37m"
+		FIN="\e[0m"
+		echo -e "${WHT}";
+		figlet ${B_POS} -f term $MODEL;
+		echo -e "${FIN}";
+	fi
+fi

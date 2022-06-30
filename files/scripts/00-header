@@ -1,4 +1,5 @@
 #!/bin/bash
+source /etc/default/dynamic-motd
 UNAME_R=$(uname -r)
 UNAME_V=$(uname -v | sed 's/ SMP//g' | sed 's/ PREEMPT//g')
 UNAME_M=$(uname -m)
@@ -9,7 +10,8 @@ if [[ -f "/etc/lsb-release" ]]; then
 		# Fall back to using the very slow lsb_release utility
 		DISTRIB_DESCRIPTION=$(lsb_release -s -d)
 	fi
-	printf "%s (%s %s %s)\n" "$DISTRIB_DESCRIPTION" "$UNAME_R" "$UNAME_V" "$UNAME_M"
+	HEADER=$(printf "%s (%s %s %s)\n" "$DISTRIB_DESCRIPTION" "$UNAME_R" "$UNAME_V" "$UNAME_M")
+	figlet ${H_POS} -f term $HEADER
 else
 	# Debian / Devuan
 	if [[ -f "/etc/os-release" ]]; then
@@ -18,7 +20,8 @@ else
 			# Fall back to using the very slow lsb_release utility
 			DISTRIB_DESCRIPTION=$(lsb_release -s -d)
 		fi
-		printf "%s %s %s %s\n" "$DISTRIB_DESCRIPTION" "$UNAME_R" "$UNAME_V" "$UNAME_M"
+		HEADER=$(printf "%s %s %s %s\n" "$DISTRIB_DESCRIPTION" "$UNAME_R" "$UNAME_V" "$UNAME_M")
+		figlet ${H_POS} -f term $HEADER
 	else
 		uname -snrvm
 	fi

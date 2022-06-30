@@ -4,6 +4,12 @@ CPUM=`lscpu | grep "CPU max MHz" | sed -n 1p | sed 's/CPU max MHz://g' | sed -r 
 if [[ -f "/sys/class/thermal/thermal_zone0/temp" ]]; then
 	CPU0T=$(cat /sys/class/thermal/thermal_zone0/temp|cut -c1-2);
 fi
+
+run(){
+if [[ -f "/proc/device-tree/model" ]]; then
+	MODEL=$(tr -d '\0' </proc/device-tree/model)
+	echo -e "== $MODEL"
+fi
 echo -e "CPU Usage:  " `top -b -n1 | grep "Cpu(s)" | awk '{print $2 + $4}'`
 if [[ -f "/sys/devices/system/cpu/present" ]]; then
 	echo -en "Processor:  " $CPU; echo -en " @ $CPUM"; echo -e "MHz $CPU0T°C";
@@ -13,3 +19,118 @@ echo -e "Governor:   " $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_govern
 echo -e "Memory:     " $(free -h | sed 's/i//g' | sed 's/Mem://g' | awk '{print $1" "$2}' | sed -n 'n;p')
 echo -e "Entropy:    " $(cat /proc/sys/kernel/random/entropy_avail)
 echo -e "Uptime:     " $(uptime)
+}
+
+update_sysinfo(){
+if [ -f /usr/local/bin/sysinfo ]; then
+	sudo mv /usr/local/bin/sysinfo /usr/local/bin/sysinfo.orig;
+	sudo mv /usr/local/bin/smon /usr/local/bin/smon.orig;
+	sudo wget -cq ${GHURL}/scripts/sysinfo -P /usr/local/bin/;
+	sudo wget -cq ${GHURL}/scripts/smon -P /usr/local/bin/;
+	if [ -f /usr/local/bin/sysinfo ]; then
+		sudo chmod +x /usr/local/bin/sysinfo;
+		sudo rm -f /usr/local/bin/sysinfo.orig;
+		ls -ls /usr/local/bin/sysinfo;
+	else
+		sudo mv /usr/local/bin/sysinfo.orig /usr/local/bin/sysinfo;
+	fi
+	if [ -f /usr/local/bin/smon ]; then
+		sudo chmod +x /usr/local/bin/smon;
+		sudo rm -f /usr/local/bin/smon.orig;
+		ls -ls /usr/local/bin/smon;
+	else
+		sudo mv /usr/local/bin/smon.orig /usr/local/bin/smon;
+	fi
+fi
+}
+
+update_motd(){
+# remove
+if [[ -f "/etc/default/dynamic-motd" ]]; then
+	sudo rm -f /etc/default/dynamic-motd;
+fi
+if [[ -f "/etc/update-motd.d/00-header" ]]; then
+	sudo rm -f /etc/update-motd.d/00-header;
+fi
+if [[ -f "/etc/update-motd.d/10-uname" ]]; then
+	sudo rm -f /etc/update-motd.d/10-uname;
+fi
+if [[ -f "/etc/update-motd.d/15-brand" ]]; then
+	sudo rm -f /etc/update-motd.d/15-brand;
+fi
+if [[ -f "/etc/update-motd.d/20-sysinfo" ]]; then
+	sudo rm -f /etc/update-motd.d/20-sysinfo;
+fi
+if [[ -f "/etc/update-motd.d/90-dynamic-motd" ]]; then
+	sudo rm -f /etc/update-motd.d/90-dynamic-motd;
+fi
+# download
+sudo wget -cq $GHURL/scripts/00-header -P /etc/update-motd.d/
+sudo wget -cq $GHURL/scripts/15-brand -P /etc/update-motd.d/
+sudo wget -cq $GHURL/scripts/20-sysinfo -P /etc/update-motd.d/
+sudo wget -cq $GHURL/scripts/90-dynamic-motd -P /etc/update-motd.d/
+# check
+if [[ -f "/etc/update-motd.d/00-header" ]]; then
+	sudo chmod +x /etc/update-motd.d/00-header;
+	ls -ls /etc/update-motd.d/00-header;
+fi
+if [[ -f "/etc/update-motd.d/15-brand" ]]; then
+	sudo chmod +x /etc/update-motd.d/15-brand;
+	ls -ls /etc/update-motd.d/15-brand;
+fi
+if [[ -f "/etc/update-motd.d/20-sysinfo" ]]; then
+	sudo chmod +x /etc/update-motd.d/20-sysinfo;
+	ls -ls /etc/update-motd.d/20-sysinfo;
+fi
+if [[ -f "/etc/update-motd.d/90-dynamic-motd" ]]; then
+	sudo chmod +x /etc/update-motd.d/90-dynamic-motd;
+	ls -ls /etc/update-motd.d/90-dynamic-motd;
+fi
+# default dynamic motd
+sudo sh -c "echo '# DYNAMIC MOTD VARIABLES' > /etc/default/dynamic-motd"
+sudo sh -c "echo 'H_POS=-c' >> /etc/default/dynamic-motd"
+sudo sh -c "echo 'B_POS=-r' >> /etc/default/dynamic-motd"
+sudo sh -c "echo 'BRANDING=false' >> /etc/default/dynamic-motd"
+sudo sh -c "echo 'T_FONT=small' >> /etc/default/dynamic-motd"
+sudo sh -c "echo 'T_FILTER=metal' >> /etc/default/dynamic-motd"
+sudo sh -c "echo 'MENUCONFIG=false' >> /etc/default/dynamic-motd"
+if [[ -f "/etc/default/dynamic-motd" ]]; then
+	ls -ls /etc/default/dynamic-motd;
+fi
+}
+
+if [ $# -eq 0 ]; then
+	echo -e "Missing options!"
+	echo "(run $0 -h for help)"
+	echo ""
+	exit 0
+fi
+
+while getopts "eruh" OPTION; do
+	case $OPTION in
+
+		e)
+			sudo nano /etc/default/dynamic-motd
+			;;
+		r)
+			run
+			;;
+		u)
+			if [[ `curl -I https://github.com 2>&1 | grep 'HTTP/2 200'` ]]; then
+				GHURL="https://raw.githubusercontent.com/pyavitz/rpi-img-builder/master/files/"
+				update_sysinfo;
+				update_motd;
+			else
+				echo -e "Requires a internet connection."
+				exit 0;
+			fi
+			;;
+		h)
+			echo ""
+			echo -e "\t-e\tEdit dynamic motd"
+			echo -e "\t-r\tRun script"
+			echo ""
+			exit 0
+			;;
+	esac
+done

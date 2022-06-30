@@ -11,16 +11,6 @@ fi
 if [[ `command -v swh` ]]; then
 	swh -U > /dev/null 2>&1;
 fi
-if [ -f /etc/update-motd.d/20-sysinfo ]; then
-	sudo mv /etc/update-motd.d/20-sysinfo /etc/update-motd.d/20-sysinfo.orig;
-	sudo wget -cq $GHURL/scripts/20-sysinfo -P /etc/update-motd.d/;
-	if [ -f /etc/update-motd.d/20-sysinfo ]; then
-		sudo chmod +x /etc/update-motd.d/20-sysinfo;
-		sudo rm -f /etc/update-motd.d/20-sysinfo.orig
-	else
-		sudo mv /etc/update-motd.d/20-sysinfo.orig /etc/update-motd.d/20-sysinfo;
-	fi
-fi
 if [[ `command -v sysinfo` ]]; then
 	sudo mv -f /usr/local/bin/sysinfo /usr/local/bin/sysinfo.orig;
 	sudo wget -cq $GHURL/scripts/sysinfo -P /usr/local/bin/;
