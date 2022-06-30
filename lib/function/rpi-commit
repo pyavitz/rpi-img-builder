@@ -41,19 +41,6 @@ else
 fi
 }
 
-clean_source(){
-if [ -e ${CKERNEL}-$commit ]; then
-	echo "";
-	echo -e "${PNK}Cleaning${FIN} ...";
-	rm -fdr ${CKERNEL}-$commit;
-fi
-}
-
-noinitrd(){
-sed -i 's/export INITRD=$want_initrd/export INITRD=No/g' scripts/package/builddeb
-sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
-}
-
 rpi0+1(){
 sed -i 's/packageversion=$version-$revision/packageversion=$version-$revision~rpi0+1/g' scripts/package/mkdebian
 }
@@ -77,7 +64,7 @@ BINURL="https://github.com/raspberrypi/firmware/raw/master/boot/"
 mkdir -p firmware
 rm -f firmware/*
 cd firmware
-echo
+echo ""
 echo_firm
 ${DOWNLOAD} ${BINURL}fixup4.dat
 ${DOWNLOAD} ${BINURL}fixup4cd.dat
@@ -103,7 +90,7 @@ BINURL="https://github.com/raspberrypi/firmware/raw/master/boot/"
 mkdir -p firmware
 rm -f firmware/*
 cd firmware
-echo
+echo ""
 echo_firm
 ${DOWNLOAD} ${BINURL}bootcode.bin
 ${DOWNLOAD} ${BINURL}fixup.dat
@@ -127,27 +114,19 @@ fi
 
 download(){
 RPIURL="https://github.com/raspberrypi/linux/archive/"
-echo
-echo_kernel
+echo ""
 if [ -f ${CKERNEL}-$commit.tar.gz ]; then
-	echo -e "${YLW}${CKERNEL}-$commit.tar.gz found${FIN}.";
+	:;
 else
+	echo_kernel;
 	${DOWNLOAD} ${RPIURL}$commit.tar.gz;
 	echo_bdone;
 fi
-if [ $rtl8812au -eq 1 ]; then
-	rtl8812au_download;
-fi
-if [ $rtl88x2bu -eq 1 ]; then
-	rtl88x2bu_download;
-fi
-if [ $rtl8811cu -eq 1 ]; then
-	rtl8811cu_download;
-fi
+extra_wireless
 }
 
 extract(){
-echo
+echo ""
 echo_extract
 pv ${CKERNEL}-$commit.tar.gz | tar -xzf - -C .
 }
@@ -198,7 +177,7 @@ echo_done
 }
 
 menuconfig(){
-echo
+echo ""
 echo_menuconfig
 sleep 1s
 if [ $crosscompile -eq 1 ]; then

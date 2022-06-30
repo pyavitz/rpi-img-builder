@@ -16,7 +16,14 @@ if [ $verbose -eq 1 ]; then
 fi
 compiler
 source_dir
-clean_source
+
+if [ -e ${KERNEL}-${VERSION} ]; then
+	echo "";
+	echo -en "${WHT}${KERNEL}-${VERSION}${FIN}";
+	echo -en " ${PNK}[${FIN}${YLW}removing${FIN}${PNK}]${FIN} ";
+	rm -fdr ${KERNEL}-${VERSION};
+	echo -en "${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}";
+fi
 
 # Download kernel
 if [[ `wget -S --spider https://raw.githubusercontent.com/raspberrypi/linux/rpi-${VERSION}/Makefile 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then

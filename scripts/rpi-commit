@@ -20,7 +20,14 @@ source_dir
 echo
 echo -e -n "${WHT}Paste commit: ${FIN}"
 read commit
-clean_source
+
+if [ -e ${CKERNEL}-$commit ]; then
+	echo "";
+	echo -en "${WHT}${CKERNEL}-$commit${FIN}";
+	echo -en " ${PNK}[${FIN}${YLW}removing${FIN}${PNK}]${FIN} ";
+	rm -fdr ${CKERNEL}-$commit;
+	echo -en "${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}";
+fi
 
 ### Download kernel
 if [[ `wget -S --spider https://github.com/raspberrypi/linux/archive/$commit.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
