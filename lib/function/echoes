@@ -5,7 +5,7 @@ RED="\e[1;31m"
 GRN="\e[1;32m"
 PNK="\e[1;35m"
 YLW="\e[1;33m"
-WHT="\e[1;37m"
+WHT="\033[1m"
 FIN="\e[0m"
 
 # ECHOES

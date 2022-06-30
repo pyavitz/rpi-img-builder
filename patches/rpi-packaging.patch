@@ -69,7 +69,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
 +if [ -e /boot/kernel.img ]; then
 +	rm -fdr /boot/{kernel*,initrd.img*,System.map-*,config-*,vmlinuz-*,*.dtb,bootcode.bin,fixup*.dat,start*.elf,LICENCE.broadcom,COPYING.linux,overlays};
 +else
-+	echo -e "\e[1;37mInstalling new kernel\e[0m ...";
++	:;
 +fi
 +
 +exit 0
@@ -104,7 +104,7 @@ diff -Naur a/scripts/package/builddeb b/scripts/package/builddeb
 +}
 +
 +cd /usr/src/linux-headers-$version
-+echo -e "\e[1;37mCompiling headers\e[0m ..."
++echo -e "Compiling headers ..."
 +clean_headers > /dev/null 2>&1
 +exit 0
 +EOT

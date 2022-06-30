@@ -49,7 +49,7 @@ fi
 # Expand root filesystem
 if [[ `grep -w "Devuan" "/etc/os-release"` ]]; then
 	echo ""
-	echo -e " \e[0;31mExpanding root filesystem\e[0m ...";
+	echo -e " \033[1mExpanding root filesystem\033[0m ...";
 fi
 if [[ `findmnt -v -n -o SOURCE / | grep "mmc"` ]]; then
 	bash growpart $GROW > /dev/null 2>&1;
@@ -75,7 +75,7 @@ fi
 
 # Fsck boot partition
 if [[ `grep -w "Devuan" "/etc/os-release"` ]]; then
-	echo -e " \e[0;31mRunning fsck on boot partition\e[0m ...";
+	echo -e " \033[1mRunning fsck on boot partition\033[0m ...";
 fi
 umount /boot
 sleep 1s

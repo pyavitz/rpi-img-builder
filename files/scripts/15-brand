@@ -9,9 +9,9 @@ if [[ "$BRANDING" == "true" ]]; then
 else
 	if [[ -f "/proc/device-tree/model" ]]; then
 		MODEL=$(tr -d '\0' </proc/device-tree/model)
-		WHT="\e[1;37m"
-		FIN="\e[0m"
-		echo -e "${WHT}";
+		BLD="\033[1m"
+		FIN="\033[0m"
+		echo -e "${BLD}";
 		figlet ${B_POS} -f term $MODEL;
 		echo -e "${FIN}";
 	fi

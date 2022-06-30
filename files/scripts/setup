@@ -1,9 +1,9 @@
 #!/bin/bash
-WHT="\033[1m"
+BLD="\033[1m"
 FIN="\033[0m"
 
 if [ $# -eq 0 ]; then
-	echo -e "\e[0;31mMissing options!${FIN}"
+	echo -e "Missing options!"
 	echo "(run $0 -h for help)"
 	echo ""
 	exit 0
@@ -14,7 +14,7 @@ while getopts "rh" OPTION; do
 
 		r)
 			echo ""
-			echo -e "${WHT}Running System Setup${FIN} ..."
+			echo -e "${BLD}Running System Setup${FIN} ..."
 			sleep 1s
 			sudo dpkg-reconfigure locales tzdata keyboard-configuration
 			sleep 1s
@@ -36,7 +36,7 @@ while getopts "rh" OPTION; do
 			sleep 1s
 			sudo update-ca-certificates -f
 			echo ""
-			echo -e "${WHT}System is ready to go${FIN}."
+			echo -e "${BLD}System is ready to go${FIN}."
 			exit 0
 			;;
 		h)
