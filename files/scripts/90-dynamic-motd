@@ -7,6 +7,6 @@ if [ -f /etc/default/dynamic-motd ]; then
 		echo "";
 		echo -e "To configure your Raspberry Pi run 'menu-config'";
 		# run once and disable
-		sed -i 's/MENUCONFIG="true"/MENUCONFIG="false"/g' /etc/default/dynamic-motd;
+		sed -i 's/MENUCONFIG=true/MENUCONFIG=false/g' /etc/default/dynamic-motd;
 	fi
 fi
