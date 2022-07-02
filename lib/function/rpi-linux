@@ -89,7 +89,7 @@ if ls firmware/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,star
 	echo_bdone;
 else
 	echo_fail;
-	exit;
+	exit 0;
 fi
 }
 
