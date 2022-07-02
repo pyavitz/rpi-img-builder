@@ -1,10 +1,11 @@
 #!/bin/bash
 
-WHT="\e[1;37m"
+TXT="\033[0m"
 FIN="\e[0m"
 
 jammy-ccompile(){
-sudo apt install -y build-essential bison bc git dialog patch fdisk distro-info-data \
+sudo debconf-apt-progress -- apt install -y \
+	build-essential bison bc git dialog patch fdisk distro-info-data \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync xfsprogs \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig kpartx \
 	aria2 pv lsb-release xz-utils curl e2fsprogs btrfs-progs \
@@ -17,7 +18,8 @@ sudo apt install -y build-essential bison bc git dialog patch fdisk distro-info-
 }
 
 bullseye-ccompile(){
-sudo apt install -y build-essential bison bc git dialog patch kpartx zstd aria2 pv \
+sudo debconf-apt-progress -- apt install -y \
+	build-essential bison bc git dialog patch kpartx zstd aria2 pv \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync make \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig libelf-dev \
 	crossbuild-essential-arm64 crossbuild-essential-armel crossbuild-essential-armhf \
@@ -29,8 +31,8 @@ sudo apt install -y build-essential bison bc git dialog patch kpartx zstd aria2 
 
 if [[ `uname -m | grep -w aarch64` ]]; then
 	echo ""
-	echo -e "${WHT}Host Machine: Arm64${FIN}"
-	echo -e "${WHT}Please run:${FIN} make ncompile or make ccompile64"
+	echo -e "${TXT}Host Machine: Arm64${FIN}"
+	echo -e "${TXT}Please run:${FIN} make ncompile or make ccompile64"
 	echo ""
 	exit > /dev/null 2>&1;
 fi
@@ -44,7 +46,7 @@ else
 		bullseye-ccompile;
 	else
 		echo ""
-		echo -e "${WHT}What OS are you running?${FIN}"
+		echo -e "${TXT}What OS are you running?${FIN}"
 		echo ""
 		exit > /dev/null 2>&1;
 	fi
