@@ -73,8 +73,8 @@ Menuconfig:		# Kernel menuconfig
 Crosscompile:		# 1 to cross compile | 0 to native compile
 
 Compiler        	WARNING: Only one may be selected
-Version:		# Defaults at gcc-10
-GCC:			# Default compiler
+Version:		# gcc-10 (default)
+GCC:			#
 Ccache:			#
 Clang:			# Supported: Jammy Jellyfish
 
@@ -86,9 +86,9 @@ Release:		# Debian: bullseye, bookworm, testing, unstable and sid
 Network Manager		# Enable nmtui (default: ifupdown)
 
 Filesystem
-ext4:			# Default fstype
-btrfs:			#
-xfs:			#
+ext4:			# Journaling filesystem (default)
+btrfs:			# Copy on write (CoW) filesystem
+xfs:			# High-performance 64-bit journaling filesystem
 
 Customize
 Defconfig:		# User defconfig
