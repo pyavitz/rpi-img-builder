@@ -29,7 +29,9 @@ fi
 
 # STAGE 2
 btrfs_udev-rule(){
-if [ -f /lib/udev/rules.d/64-btrfs.rules ]; then
+if [[ -f "/lib/udev/rules.d/64-btrfs.rules" ]]; then
+	# I believe this bug has been fixed in Chimaera.
+	# If so, remove this function.
 	sed -i 's/${exec_prefix}//g' /lib/udev/rules.d/64-btrfs.rules;
 fi
 }

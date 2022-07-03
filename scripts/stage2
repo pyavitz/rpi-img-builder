@@ -172,7 +172,6 @@ fi
 # Scripts
 echo ""
 echo "Moving scripts ..."
-sleep 1s
 cd ~
 mkdir -p /usr/local/bin
 mkdir -p /usr/local/sbin
@@ -212,13 +211,13 @@ echo "Done."
 
 # MOTD
 mkdir -p /etc/update-motd.d
-if [ -f /etc/update-motd.d/10-uname ]; then
+if [[ -f "/etc/update-motd.d/10-uname" ]]; then
 	rm -f /etc/update-motd.d/10-uname;
 fi
-if [ -f /etc/update-motd.d/10-help-text ]; then
+if [[ -f "/etc/update-motd.d/10-help-text" ]]; then
 	rm -f /etc/update-motd.d/10-help-text;
 fi
-if [ -f /etc/update-motd.d/00-header ]; then
+if [[ -f "/etc/update-motd.d/00-header" ]]; then
 	rm -f /etc/update-motd.d/00-header;
 fi
 mv -f {00-header,15-brand,20-sysinfo,90-dynamic-motd} /etc/update-motd.d/
@@ -242,7 +241,7 @@ chown root:root /etc/motd
 extra_firmware
 
 # Udev rule
-if [ -f /root/99-com.rules ]; then
+if [[ -f "/root/99-com.rules" ]]; then
 	cd ~
 	mkdir -p /lib/udev/rules.d/;
 	mv -f 99-com.rules /lib/udev/rules.d/;
@@ -261,14 +260,14 @@ else
 fi
 
 # Board information
-if [ -f /root/board.txt ]; then
+if [[ -f "/root/board.txt" ]]; then
 	cp -f /root/board.txt /etc/opt/;
 	ln -sr /etc/opt/board.txt /etc/opt/soc.txt;
 	chown root:root /etc/opt/board.txt;
 fi
 
 # ZSWAP virtual memory
-if [ -f /etc/default/zramswap ]; then
+if [[ -f "/etc/default/zramswap" ]]; then
 	sed -i 's/#ALLOCATION=256/ALLOCATION=1024/g' /etc/default/zramswap;
 	sed -i 's/#SIZE=256/SIZE=1024/g' /etc/default/zramswap;
 	sed -i 's/#PRIORITY=100/PRIORITY=100/g' /etc/default/zramswap;
@@ -276,14 +275,14 @@ fi
 
 # Adding sys-mods
 raspberrypi_sys_mods
-if [ -f /etc/sudoers.d/010_pi-nopasswd ]; then
+if [[ -f "/etc/sudoers.d/010_pi-nopasswd" ]]; then
+	# security risk
 	rm -f /etc/sudoers.d/010_pi-nopasswd;
 fi
 
 # Pi Bluetooth
 echo ""
 echo "Installing pi-bluetooth ..."
-sleep 1s
 if [[ "$DISTRO" == "ubuntu" ]]; then
 	git clone https://github.com/pyavitz/pi-bluetooth.git -b ubuntu;
 else
@@ -329,6 +328,13 @@ fi
 # Clean misc files
 rm -f {*.patch,*led*,*eeprom*}
 
+# Whiptail color palette
+if [[ "$DISTRO" == "ubuntu" ]]; then
+	mkdir -p /etc/newt;
+	palette-dark > /dev/null 2>&1;
+	ln -sf /etc/newt/palette.dark  /etc/alternatives/newt-palette;
+fi
+
 # RPi Hack
 if [[ "$BOARD" == "bcm2708" ]]; then
 	ln -s /lib/ld-linux.so.3 /lib/ld-linux-armhf.so.3;
@@ -338,7 +344,7 @@ fi
 if [[ "$BOARD" == "bcm2708" ]]; then
 	:;
 else
-	if [ -f /etc/systemd/journald.conf ]; then
+	if [[ -f "/etc/systemd/journald.conf" ]]; then
 		sed -i 's/#Storage=auto/Storage=volatile/g' /etc/systemd/journald.conf;
 		sed -i 's/#SystemMaxFileSize=/SystemMaxFileSize=50M/g' /etc/systemd/journald.conf;
 		sed -i 's/#SystemMaxFiles=100/SystemMaxFiles=5/g' /etc/systemd/journald.conf;

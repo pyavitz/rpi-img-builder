@@ -230,6 +230,21 @@ if [ $xfs -eq 1 ]; then
 fi
 }
 
+# whiptail color palette (ubuntu)
+palette-dark(){
+tee /etc/newt/palette.dark <<EOF
+root=,black
+checkbox=,black
+entry=,black
+label=black,
+actlistbox=,black
+helpline=,black
+roottext=lightgray,black
+emptyscale=black
+disabledentry=black,
+EOF
+}
+
 # User scripts
 uscripts_pre-stage1(){
 if [ -f files/userscripts/uscripts ]; then

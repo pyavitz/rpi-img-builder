@@ -43,7 +43,7 @@ else
 	partition_uuid > /dev/null 2>&1;
 fi
 
-### cmd line
+# cmd line
 cmdline > /dev/null 2>&1
 if [ -f p1/cmdline.txt ]; then
 	echo -en "${WHT}cmdline.txt${FIN}  ";
@@ -55,7 +55,7 @@ else
 	echo_fail;
 	exit;
 fi
-### config dot txt
+# config dot txt
 if [[ "$BOARD_EXT" == "rpi-4" ]]; then
 	bcm2711_config > /dev/null 2>&1;
 else
@@ -83,7 +83,7 @@ if [[ "$BOARD" == "bcm2708" ]]; then
 	fi
 fi
 
-### extract rootfs
+# extract rootfs
 extract_rootfs
 
 mkdir -p p2/etc/apt/apt.conf.d p2/etc/dpkg/dpkg.cfg.d
@@ -160,7 +160,7 @@ if [ -n "$PROXY" ]; then
 fi
 rm p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
 
-### Finish
+# Finish
 defrag_p2
 
 umount p2
