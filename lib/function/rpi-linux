@@ -73,6 +73,7 @@ if [[ "$BOARD_EXT" == "rpi-4" ]]; then
 	${DOWNLOAD} ${BINURL}start4cd.elf
 	${DOWNLOAD} ${BINURL}start4db.elf
 	${DOWNLOAD} ${BINURL}start4x.elf
+	cd ..
 	if [[ `ls firmware/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf,LICENCE.broadcom,COPYING.linux}` ]] > /dev/null 2>&1; then
 		echo_bdone;
 	else
@@ -89,6 +90,7 @@ else
 	${DOWNLOAD} ${BINURL}start_cd.elf
 	${DOWNLOAD} ${BINURL}start_db.elf
 	${DOWNLOAD} ${BINURL}start_x.elf
+	cd ..
 	if [[ `ls firmware/{bootcode.bin,fixup.dat,fixup_cd.dat,fixup_db.dat,fixup_x.dat,start.elf,start_cd.elf,start_db.elf,start_x.elf,LICENCE.broadcom,COPYING.linux}` ]] > /dev/null 2>&1; then
 		echo_bdone;
 	else
@@ -96,7 +98,6 @@ else
 		exit 0;
 	fi
 fi
-cd ..
 }
 
 download(){
