@@ -39,11 +39,7 @@ extract
 
 # Setup
 setup
-if [[ "$BOARD_EXT" == "rpi-4" ]]; then
-	rpi4_firmware;
-else
-	rpi_firmware;
-fi
+firmware
 
 # Patching
 patching
