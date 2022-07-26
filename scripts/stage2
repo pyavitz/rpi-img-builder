@@ -19,7 +19,7 @@ set -o pipefail
 set -o nounset
 
 if [ $networkmanager -eq 0 ]; then
-	if [[ "$DISTRO_VERSION" == "jammy" ]]; then
+	if [[ "$DISTRO_VERSION" == "jammy" ]] || [[ "$DISTRO_VERSION" == "kinetic" ]]; then
 		# systemd-resolved breaks static ip when using ifupdown
 		# it will be disabled on jammy jellyfish
 		unlink /etc/resolv.conf;
@@ -305,9 +305,11 @@ if [[ "$BOARD_EXT" == "rpi-4" ]]; then
 fi
 
 # Remove zstd compression (not supported by older kernels)
-if [[ "$DISTRO" == "ubuntu" ]] && [[ "$DISTRO_VERSION" == "jammy" ]]; then
-	if [[ `grep -w "COMPRESS=zstd" "/etc/initramfs-tools/initramfs.conf"` ]]; then
-		sed -i 's/COMPRESS=zstd/COMPRESS=xz/g' /etc/initramfs-tools/initramfs.conf;
+if [[ "$DISTRO" == "ubuntu" ]]; then
+	if [[ "$DISTRO_VERSION" == "jammy" ]] || [[ "$DISTRO_VERSION" == "kinetic" ]]; then
+		if [[ `grep -w "COMPRESS=zstd" "/etc/initramfs-tools/initramfs.conf"` ]]; then
+			sed -i 's/COMPRESS=zstd/COMPRESS=xz/g' /etc/initramfs-tools/initramfs.conf;
+		fi
 	fi
 fi
 
