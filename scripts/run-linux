@@ -1,10 +1,10 @@
 #!/bin/bash
 
-RED="\e[1;31m"
-GRN="\e[1;32m"
-PNK="\e[1;35m"
-WHT="\e[1;37m"
-YLW="\e[1;33m"
+RED="\031[0m"
+GRN="\032[0m"
+YLW="\033[0m"
+PNK="\035[0m"
+WHT="\037[0m"
 FIN="\e[0m"
 
 ### Functions
@@ -37,12 +37,12 @@ echo -n -e "${PNK}[${FIN}${RED}FAILED${FIN}${PNK}]${FIN}"
 }
 
 ierror(){
-echo
+echo ""
 echo -e "${WHT}Please check your internet connection and try again${FIN}."
 }
 
 derror(){
-echo
+echo ""
 echo -e "${WHT}The OS you are running is not supported${FIN}."
 }
 
@@ -50,10 +50,10 @@ confirm(){
 echo -e "${YLW}If you don't know what this command does, say no.${FIN}"
 echo -e ""
 read -p "Continue (y/n)?" choice
-case "$choice" in 
-  y|Y ) echo && echo -e "${RED}Confirmed${FIN}!";;
-  n|N ) echo && echo -e "${YLW}You have chosen${FIN}... ${YLW}wisely${FIN}." && exit 0;;
-  * ) echo && echo -e "${YLW}Invalid choice${FIN}." && exit 0;;
+case "$choice" in
+	y|Y ) echo && echo -e "${RED}Confirmed${FIN}!";;
+	n|N ) echo && echo -e "${YLW}You have chosen${FIN}... ${YLW}wisely${FIN}." && exit 0;;
+	* ) echo && echo -e "${YLW}Invalid choice${FIN}." && exit 0;;
 esac
 }
 

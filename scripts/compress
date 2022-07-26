@@ -9,10 +9,10 @@ confirm(){
 echo -e "Would you like to archive the release?"
 echo -e ""
 read -p "Continue (y/n)?" choice
-case "$choice" in 
-  y|Y ) echo && echo -e "${WHT}Confirmed${FIN}.";;
-  n|N ) echo && echo -e "${WHT}Exiting script${FIN} ..." && exit 0;;
-  * ) echo && echo -e "${WHT}Invalid choice${FIN}." && exit 0;;
+case "$choice" in
+	y|Y ) echo && echo -e "${WHT}Confirmed${FIN}.";;
+	n|N ) echo && echo -e "${WHT}Exiting script${FIN} ..." && exit 0;;
+	* ) echo && echo -e "${WHT}Invalid choice${FIN}." && exit 0;;
 esac
 }
 confirm
@@ -31,32 +31,22 @@ echo -en "Creating $release archives: "
 if [ -e bcm2708 ]; then
 	mv -f bcm2708 rpi-$release;
 	XZ_DEFAULTS="--threads=${CORES}";tar cfJ rpi-$release.tar.xz rpi-$release;
-else
-	:;
 fi
 if [ -e bcm2709 ]; then
 	mv -f bcm2709 rpi2-$release;
 	XZ_DEFAULTS="--threads=${CORES}";tar cfJ rpi2-$release.tar.xz rpi2-$release;
-else
-	:;
 fi
 if [ -e bcm2710 ]; then
 	mv -f bcm2710 rpi3-$release;
 	XZ_DEFAULTS="--threads=${CORES}";tar cfJ rpi3-$release.tar.xz rpi3-$release;
-else
-	:;
 fi
 if [ -e bcm2711 ]; then
 	mv -f bcm2711 rpi4-$release;
 	XZ_DEFAULTS="--threads=${CORES}";tar cfJ rpi4-$release.tar.xz rpi4-$release;
-else
-	:;
 fi
 if [ -e bcm2711v7 ]; then
 	mv -f bcm2711v7 rpi4v7-$release;
 	XZ_DEFAULTS="--threads=${CORES}";tar cfJ rpi4v7-$release.tar.xz rpi4v7-$release;
-else
-	:;
 fi
 echo "[done]"
 
@@ -66,36 +56,26 @@ if [ -e rpi-$release.tar.xz ]; then
 	rm -fdr rpi-$release;
 	sha256sum rpi-$release.tar.xz > rpi-$release.sha256;
 	sha256sum --check rpi-$release.sha256;
-else
-	:;
 fi
 if [ -e rpi2-$release.tar.xz ]; then
 	rm -fdr rpi2-$release;
 	sha256sum rpi2-$release.tar.xz > rpi2-$release.sha256;
 	sha256sum --check rpi2-$release.sha256;
-else
-	:;
 fi
 if [ -e rpi3-$release.tar.xz ]; then
 	rm -fdr rpi3-$release;
 	sha256sum rpi3-$release.tar.xz > rpi3-$release.sha256;
 	sha256sum --check rpi3-$release.sha256;
-else
-	:;
 fi
 if [ -e rpi4-$release.tar.xz ]; then
 	rm -fdr rpi4-$release;
 	sha256sum rpi4-$release.tar.xz > rpi4-$release.sha256;
 	sha256sum --check rpi4-$release.sha256;
-else
-	:;
 fi
 if [ -e rpi4v7-$release.tar.xz ]; then
 	rm -fdr rpi4v7-$release;
 	sha256sum rpi4v7-$release.tar.xz > rpi4v7-$release.sha256;
 	sha256sum --check rpi4v7-$release.sha256;
-else
-	:;
 fi
 echo -e ""
 cd ..
