@@ -1,2 +1,2 @@
 #!/bin/bash
-watch -n1 /usr/local/bin/sysinfo -r
+sudo watch -n1 /usr/local/bin/sysinfo -r
