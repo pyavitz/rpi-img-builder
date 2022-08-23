@@ -1,4 +1,11 @@
 #!/bin/bash
+
+export LANG=$LANG:C
+if [[ $EUID -ne 0 ]]; then
+	$0 $@ 
+	exit 0
+fi
+
 CPU=`lscpu | grep "Model name" | sed -n 1p | sed 's/Model name://g' | sed -r '1s/\s+//g'`
 CPUM=`lscpu | grep "CPU max MHz" | sed -n 1p | sed 's/CPU max MHz://g' | sed -r '1s/\s+//g' | sed 's/.0000//g'`
 if [[ -f "/sys/class/thermal/thermal_zone0/temp" ]]; then
@@ -13,7 +20,7 @@ fi
 echo -e "CPU Usage:  " `top -b -n1 | grep "Cpu(s)" | awk '{print $2 + $4}'`
 if [[ -f "/sys/devices/system/cpu/present" ]]; then
 	echo -en "Processor:  " $CPU; echo -en " @ $CPUM"; echo -e "MHz $CPU0T°C";
-	echo -e "Cur freq:   " $(sudo cat /sys/devices/system/cpu/cpu*/cpufreq/cpuinfo_cur_freq);
+	echo -e "Cur freq:   " $(cat /sys/devices/system/cpu/cpu*/cpufreq/cpuinfo_cur_freq);
 fi
 echo -e "Governor:   " $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
 echo -e "Memory:     " $(free -h | sed 's/i//g' | sed 's/Mem://g' | awk '{print $1" "$2}' | sed -n 'n;p')
@@ -23,23 +30,23 @@ echo -e "Uptime:     " $(uptime)
 
 update_sysinfo(){
 if [ -f /usr/local/bin/sysinfo ]; then
-	sudo mv /usr/local/bin/sysinfo /usr/local/bin/sysinfo.orig;
-	sudo mv /usr/local/bin/smon /usr/local/bin/smon.orig;
-	sudo wget -cq ${GHURL}/scripts/sysinfo -P /usr/local/bin/;
-	sudo wget -cq ${GHURL}/scripts/smon -P /usr/local/bin/;
+	mv /usr/local/bin/sysinfo /usr/local/bin/sysinfo.orig;
+	mv /usr/local/bin/smon /usr/local/bin/smon.orig;
+	wget -cq ${GHURL}/scripts/sysinfo -P /usr/local/bin/;
+	wget -cq ${GHURL}/scripts/smon -P /usr/local/bin/;
 	if [ -f /usr/local/bin/sysinfo ]; then
-		sudo chmod +x /usr/local/bin/sysinfo;
-		sudo rm -f /usr/local/bin/sysinfo.orig;
+		chmod +x /usr/local/bin/sysinfo;
+		rm -f /usr/local/bin/sysinfo.orig;
 		ls -ls /usr/local/bin/sysinfo;
 	else
-		sudo mv /usr/local/bin/sysinfo.orig /usr/local/bin/sysinfo;
+		mv /usr/local/bin/sysinfo.orig /usr/local/bin/sysinfo;
 	fi
 	if [ -f /usr/local/bin/smon ]; then
-		sudo chmod +x /usr/local/bin/smon;
-		sudo rm -f /usr/local/bin/smon.orig;
+		chmod +x /usr/local/bin/smon;
+		rm -f /usr/local/bin/smon.orig;
 		ls -ls /usr/local/bin/smon;
 	else
-		sudo mv /usr/local/bin/smon.orig /usr/local/bin/smon;
+		mv /usr/local/bin/smon.orig /usr/local/bin/smon;
 	fi
 fi
 }
@@ -47,53 +54,53 @@ fi
 update_motd(){
 # remove
 if [[ -f "/etc/default/dynamic-motd" ]]; then
-	sudo rm -f /etc/default/dynamic-motd;
+	rm -f /etc/default/dynamic-motd;
 fi
 if [[ -f "/etc/update-motd.d/00-header" ]]; then
-	sudo rm -f /etc/update-motd.d/00-header;
+	rm -f /etc/update-motd.d/00-header;
 fi
 if [[ -f "/etc/update-motd.d/10-uname" ]]; then
-	sudo rm -f /etc/update-motd.d/10-uname;
+	rm -f /etc/update-motd.d/10-uname;
 fi
 if [[ -f "/etc/update-motd.d/15-brand" ]]; then
-	sudo rm -f /etc/update-motd.d/15-brand;
+	rm -f /etc/update-motd.d/15-brand;
 fi
 if [[ -f "/etc/update-motd.d/20-sysinfo" ]]; then
-	sudo rm -f /etc/update-motd.d/20-sysinfo;
+	rm -f /etc/update-motd.d/20-sysinfo;
 fi
 if [[ -f "/etc/update-motd.d/90-dynamic-motd" ]]; then
-	sudo rm -f /etc/update-motd.d/90-dynamic-motd;
+	rm -f /etc/update-motd.d/90-dynamic-motd;
 fi
 # download
-sudo wget -cq $GHURL/scripts/00-header -P /etc/update-motd.d/
-sudo wget -cq $GHURL/scripts/15-brand -P /etc/update-motd.d/
-sudo wget -cq $GHURL/scripts/20-sysinfo -P /etc/update-motd.d/
-sudo wget -cq $GHURL/scripts/90-dynamic-motd -P /etc/update-motd.d/
+wget -cq $GHURL/scripts/00-header -P /etc/update-motd.d/
+wget -cq $GHURL/scripts/15-brand -P /etc/update-motd.d/
+wget -cq $GHURL/scripts/20-sysinfo -P /etc/update-motd.d/
+wget -cq $GHURL/scripts/90-dynamic-motd -P /etc/update-motd.d/
 # check
 if [[ -f "/etc/update-motd.d/00-header" ]]; then
-	sudo chmod +x /etc/update-motd.d/00-header;
+	chmod +x /etc/update-motd.d/00-header;
 	ls -ls /etc/update-motd.d/00-header;
 fi
 if [[ -f "/etc/update-motd.d/15-brand" ]]; then
-	sudo chmod +x /etc/update-motd.d/15-brand;
+	chmod +x /etc/update-motd.d/15-brand;
 	ls -ls /etc/update-motd.d/15-brand;
 fi
 if [[ -f "/etc/update-motd.d/20-sysinfo" ]]; then
-	sudo chmod +x /etc/update-motd.d/20-sysinfo;
+	chmod +x /etc/update-motd.d/20-sysinfo;
 	ls -ls /etc/update-motd.d/20-sysinfo;
 fi
 if [[ -f "/etc/update-motd.d/90-dynamic-motd" ]]; then
-	sudo chmod +x /etc/update-motd.d/90-dynamic-motd;
+	chmod +x /etc/update-motd.d/90-dynamic-motd;
 	ls -ls /etc/update-motd.d/90-dynamic-motd;
 fi
 # default dynamic motd
-sudo sh -c "echo '# DYNAMIC MOTD VARIABLES' > /etc/default/dynamic-motd"
-sudo sh -c "echo 'H_POS=-c' >> /etc/default/dynamic-motd"
-sudo sh -c "echo 'B_POS=-r' >> /etc/default/dynamic-motd"
-sudo sh -c "echo 'BRANDING=false' >> /etc/default/dynamic-motd"
-sudo sh -c "echo 'T_FONT=small' >> /etc/default/dynamic-motd"
-sudo sh -c "echo 'T_FILTER=metal' >> /etc/default/dynamic-motd"
-sudo sh -c "echo 'MENUCONFIG=false' >> /etc/default/dynamic-motd"
+sh -c "echo '# DYNAMIC MOTD VARIABLES' > /etc/default/dynamic-motd"
+sh -c "echo 'H_POS=-c' >> /etc/default/dynamic-motd"
+sh -c "echo 'B_POS=-r' >> /etc/default/dynamic-motd"
+sh -c "echo 'BRANDING=false' >> /etc/default/dynamic-motd"
+sh -c "echo 'T_FONT=small' >> /etc/default/dynamic-motd"
+sh -c "echo 'T_FILTER=metal' >> /etc/default/dynamic-motd"
+sh -c "echo 'MENUCONFIG=false' >> /etc/default/dynamic-motd"
 if [[ -f "/etc/default/dynamic-motd" ]]; then
 	ls -ls /etc/default/dynamic-motd;
 fi
@@ -110,7 +117,7 @@ while getopts "eruh" OPTION; do
 	case $OPTION in
 
 		e)
-			sudo nano /etc/default/dynamic-motd
+			nano /etc/default/dynamic-motd
 			;;
 		r)
 			run

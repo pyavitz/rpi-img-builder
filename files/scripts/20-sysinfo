@@ -5,16 +5,9 @@ CPUT=$(/opt/vc/bin/vcgencmd measure_temp | egrep -o '[0-9]*\.[0-9]*')
 CPU=`lscpu | grep "Model name" | sed -n 1p | sed 's/Model name://g' | sed -r '1s/\s+//g'`
 CPUM=`lscpu | grep "CPU max MHz" | sed -n 1p | sed 's/CPU max MHz://g' | sed -r '1s/\s+//g' | sed 's/.0000//g'`
 NETWORK=$(ip -o -4 -br a | grep -v '^lo'| sed 's/^/ /' | sed 's/\/..//' | sed -r '1s/\s+/ /g' | sed -r '2s/\s+/ /g')
-ETH0=`echo -e Wired:`
-WLAN0=`echo -e Wireless:`
-USB0=`echo -e Tether:`
-
-# function
-mem_hwinfo(){
-meminfo=$(awk '$3=="kB"{if ($2>1024^2){$2=$2/1024^2;$3="GB";} else if ($2>1024){$2=$2/1024;$3="MB";}} 1' /proc/meminfo)
-echo "$meminfo" | column -t;
-unset meminfo;
-}
+ETH=`echo -e Wired:`
+WLAN=`echo -e Wireless:`
+USB=`echo -e Tether:`
 
 # display
 echo -e "== DISK"
@@ -22,19 +15,16 @@ df -h | egrep '(Filesystem)|(/dev/mmc)|(/dev/root)|(/dev/sd)|(/dev/nvme)'
 echo ""
 echo -e "== NETWORK"
 echo -e "Hostname:    $(hostname)"
-echo -e "$NETWORK" | sed "s/^[ \t]*//" | sed "s/eth0/$ETH0       eth0/g" | sed "s/wlan0/$WLAN0    wlan0/g" | sed "s/usb0/$USB0      usb0/g"
+echo -e "$NETWORK" | sed "s/^[ \t]*//" | sed "s/eth0/$ETH       eth0/g" | sed "s/wlan0/$WLAN    wlan0/g" | sed "s/wlan1/$WLAN    wlan1/g" | sed "s/usb0/$USB      usb0/g"
 echo ""
 echo -e "== SYSTEM"
 if [[ -f "/sys/devices/system/cpu/present" ]]; then
 	echo -en "Processor:  " $CPU; echo -en " @ $CPUM"; echo -e "MHz $CPUT°C";
 else
 	echo -e "Temperature:" $CPUT°C;
-	echo -e "Cores:      " $(sudo cat /sys/devices/system/cpu/cpu*/cpufreq/cpuinfo_cur_freq);
+	echo -e "Cores:      " $(cat /sys/devices/system/cpu/cpu*/cpufreq/cpuinfo_cur_freq);
 fi
 echo -e "Governor:   " $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
-if [[ -f "/proc/meminfo" ]]; then
-	MEMTOTAL=$(mem_hwinfo | awk '/MemTotal/ {printf "%.2f", $2; print $3}')
-	echo -e "Memory:     " $MEMTOTAL
-fi
+echo -e "Memory:     " $(free -h | sed 's/i//g' | sed 's/Mem://g' | awk '{print $1" "$2}' | sed -n 'n;p')
 echo -e "Entropy:    " $(cat /proc/sys/kernel/random/entropy_avail)
 echo -e "Uptime:     " $(uptime)
