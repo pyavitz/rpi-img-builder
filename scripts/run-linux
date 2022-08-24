@@ -1,10 +1,10 @@
 #!/bin/bash
 
-RED="\031[0m"
-GRN="\032[0m"
-YLW="\033[0m"
-PNK="\035[0m"
-WHT="\037[0m"
+RED="\e[0;31m"
+GRN="\e[0;32m"
+PNK="\e[0;35m"
+YLW="\e[0;36m"
+WHT="\033[0m"
 FIN="\e[0m"
 
 ### Functions
