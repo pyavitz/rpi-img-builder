@@ -3,37 +3,37 @@
 RED="\e[0;31m"
 GRN="\e[0;32m"
 PNK="\e[0;35m"
-YLW="\e[0;36m"
+BLU="\e[0;36m"
 WHT="\033[0m"
 FIN="\e[0m"
 
 ### Functions
 echo_nok(){
-echo -e -n "${PNK}[${FIN}${GRN}OK${FIN}${PNK}]${FIN}"
+echo -en "${PNK}[${FIN}${GRN}ok${FIN}${PNK}]${FIN}"
 }
 
 echo_done(){
-echo -n -e "${PNK}[${FIN}${GRN}DONE${FIN}${PNK}]${FIN}"
+echo -en "${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
 }
 
 echo_focal(){
-echo -e -n "${PNK}[${FIN}${GRN}Ubuntu Focal${FIN}${PNK}]${FIN}"
+echo -en "${PNK}[${FIN}${GRN}Ubuntu Focal${FIN}${PNK}]${FIN}"
 }
 
 echo_jammy(){
-echo -e -n "${PNK}[${FIN}${GRN}Ubuntu Jammy Jellyfish${FIN}${PNK}]${FIN}"
+echo -en "${PNK}[${FIN}${GRN}Ubuntu Jammy Jellyfish${FIN}${PNK}]${FIN}"
 }
 
 echo_bullseye(){
-echo -e -n "${PNK}[${FIN}${GRN}Debian Bullseye${FIN}${PNK}]${FIN}"
+echo -en "${PNK}[${FIN}${GRN}Debian Bullseye${FIN}${PNK}]${FIN}"
 }
 
 echo_chimaera(){
-echo -e -n "${PNK}[${FIN}${GRN}Devuan Chimaera${FIN}${PNK}]${FIN}"
+echo -en "${PNK}[${FIN}${GRN}Devuan Chimaera${FIN}${PNK}]${FIN}"
 }
 
 echo_fail(){
-echo -n -e "${PNK}[${FIN}${RED}FAILED${FIN}${PNK}]${FIN}"
+echo -en "${PNK}[${FIN}${RED}failed${FIN}${PNK}]${FIN}"
 }
 
 ierror(){
@@ -47,18 +47,18 @@ echo -e "${WHT}The OS you are running is not supported${FIN}."
 }
 
 confirm(){
-echo -e "${YLW}If you don't know what this command does, say no.${FIN}"
+echo -e "${BLU}If you don't know what this command does, say no.${FIN}"
 echo -e ""
 read -p "Continue (y/n)?" choice
 case "$choice" in
-	y|Y ) echo && echo -e "${RED}Confirmed${FIN}!";;
-	n|N ) echo && echo -e "${YLW}You have chosen${FIN}... ${YLW}wisely${FIN}." && exit 0;;
-	* ) echo && echo -e "${YLW}Invalid choice${FIN}." && exit 0;;
+	y|Y ) echo && echo -e "${WHT}Confirmed${FIN}!";;
+	n|N ) echo && echo -e "${WHT}You have chosen${FIN}... ${BLU}wisely${FIN}." && exit 0;;
+	* ) echo && echo -e "${WHT}Invalid choice${FIN}." && exit 0;;
 esac
 }
 
 internet_check(){
-echo -e -n "${WHT}Checking Internet Connection:${FIN} "
+echo -en "${WHT}Checking Internet Connection:${FIN} "
 if [[ `wget -S --spider https://github.com 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
 	echo_nok
 	echo "";
@@ -71,7 +71,7 @@ fi
 }
 
 distro_check(){
-echo -e -n "${WHT}Checking Host Machine:${FIN} "
+echo -en "${WHT}Checking Host Machine:${FIN} "
 sleep 1s
 if [[ `grep -w "jammy" "/etc/os-release"` ]]; then
 	echo_jammy
@@ -157,17 +157,17 @@ else
 		exit 1 > /dev/null 2>&1;
 	fi
 fi
-echo -n -e "${WHT}Preparing build area${FIN}: "
+echo -en "${WHT}Preparing build area${FIN}: "
 rm -f {userdata.txt,log.txt}
 make cleanup > /dev/null 2>&1
 make purge-all > /dev/null 2>&1
 echo_done
 echo ""
-echo -e -n "${WHT}Linux branch: ${FIN}"
+echo -en "${WHT}Linux branch: ${FIN}"
 read branch
-echo -e -n "${WHT}Build number: ${FIN}"
+echo -en "${WHT}Build number: ${FIN}"
 read build
-echo -e -n "${WHT}GCC Version: ${FIN}"
+echo -en "${WHT}GCC Version: ${FIN}"
 read version
 
 userdata > /dev/null 2>&1
