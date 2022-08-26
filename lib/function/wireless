@@ -125,24 +125,15 @@ if [ $rtl8812au -eq 1 ]; then
 	echo -en "${WHT}Realtek 88XXAU${FIN} ";
 	rtl8812au_download;
 	echo_bdone;
-else
-	echo -en "${WHT}Realtek 88XXAU${FIN} ";
-	echo -e "${PNK}[${FIN}${WHT}not selected${FIN}${PNK}]${FIN}";
 fi
 if [ $rtl88x2bu -eq 1 ]; then
 	echo -en "${WHT}Realtek 88X2BU${FIN} ";
 	rtl88x2bu_download;
 	echo_bdone;
-else
-	echo -en "${WHT}Realtek 88X2BU${FIN} ";
-	echo -e "${PNK}[${FIN}${WHT}not selected${FIN}${PNK}]${FIN}";
 fi
 if [ $rtl8811cu -eq 1 ]; then
 	echo -en "${WHT}Realtek 88XXCU${FIN} ";
 	rtl8811cu_download;
 	echo_bdone;
-else
-	echo -en "${WHT}Realtek 88XXCU${FIN} ";
-	echo -e "${PNK}[${FIN}${WHT}not selected${FIN}${PNK}]${FIN}";
 fi
 }
