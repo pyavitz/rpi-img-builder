@@ -1,9 +1,9 @@
 #!/bin/bash
 
 export LANG=$LANG:C
-if [ "$USER" != "root" ]; then
-        echo "Run as root or with sudo privileges.";
-        exit;
+if [[ $EUID -ne 0 ]]; then
+	sudo $0 $@;
+	exit;
 fi
 
 CPU=`lscpu | grep "Model name" | sed -n 1p | sed 's/Model name://g' | sed -r '1s/\s+//g'`
