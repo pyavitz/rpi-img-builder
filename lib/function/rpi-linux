@@ -41,6 +41,13 @@ else
 fi
 }
 
+raspberrypi_packaging(){ # broadcom
+sed -i 's/packagename=linux-image-$version/packagename=raspberrypi-linux-image/g' scripts/package/builddeb
+sed -i 's/kernel_headers_packagename=linux-headers-$version/kernel_headers_packagename=raspberrypi-linux-headers/g' scripts/package/builddeb
+sed -i 's/packagename=linux-image-$version/packagename=raspberrypi-linux-image/g' scripts/package/mkdebian
+sed -i 's/kernel_headers_packagename=linux-headers-$version/kernel_headers_packagename=raspberrypi-linux-headers/g' scripts/package/mkdebian
+}
+
 noinitrd(){ # no longer used
 sed -i 's/export INITRD=$want_initrd/export INITRD=No/g' scripts/package/builddeb
 sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
@@ -196,6 +203,7 @@ rm -f scripts/package/{builddeb,mkdebian}
 cp -r ../${PAT}/{builddeb,mkdebian} scripts/package/
 chmod +x scripts/package/builddeb
 chmod +x scripts/package/mkdebian
+raspberrypi_packaging
 if [[ "$BOARD_EXT" == "rpi-4" ]]; then
 	patch -p1 < ../${PAT}/rpi4-packaging.patch > /dev/null 2>&1;
 	sed -i 's/packageversion=$version-$revision/packageversion=$version-$revision~rpi4/g' scripts/package/mkdebian;

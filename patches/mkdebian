@@ -1,8 +1,4 @@
 #!/bin/sh
-#
-# Copyright 2003 Wichert Akkerman <wichert@wiggy.net>
-#
-# Simple script to generate a debian/ directory for a Linux kernel.
 
 set -e
 
