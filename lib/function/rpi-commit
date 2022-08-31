@@ -46,12 +46,21 @@ sed -i 's/packagename=linux-image-$version/packagename=raspberrypi-linux-image/g
 sed -i 's/kernel_headers_packagename=linux-headers-$version/kernel_headers_packagename=raspberrypi-linux-headers/g' scripts/package/builddeb
 sed -i 's/packagename=linux-image-$version/packagename=raspberrypi-linux-image/g' scripts/package/mkdebian
 sed -i 's/kernel_headers_packagename=linux-headers-$version/kernel_headers_packagename=raspberrypi-linux-headers/g' scripts/package/mkdebian
+if [[ "$BOARD_EXT" == "rpi-4" ]]; then
+	sed -i 's/packageversion=$version-$revision/packageversion=$version-$revision~rpi4/g' scripts/package/mkdebian;
+fi
+if [[ "$BOARD" == "bcm2710" ]] || [[ "$BOARD" == "bcm2709" ]]; then
+	sed -i 's/packageversion=$version-$revision/packageversion=$version-$revision~rpi2+3/g' scripts/package/mkdebian;
+fi
+if [[ "$BOARD" == "bcm2708" ]]; then
+	sed -i 's/packageversion=$version-$revision/packageversion=$version-$revision~rpi0+1/g' scripts/package/mkdebian;
+fi
 }
 
 userpatches(){
-if [[ `ls ../../${USERPATCHES}/*.patch` ]] > /dev/null 2>&1; then
+if [[ `ls ../../userpatches/*.patch` ]] > /dev/null 2>&1; then
 	echo_patch;
-	for i in ../../${USERPATCHES}/*.patch; do patch -p1 < $i; done;
+	for i in ../../userpatches/*.patch; do patch -p1 < $i; done;
 	echo_done;
 	echo "";
 fi
@@ -140,7 +149,7 @@ fi
 
 cconfig(){
 echo_cconfig
-cp -f ../${DEF}/${MYCONFIG} arch/${ARCH}/configs/
+cp -f ../../defconfig/${MYCONFIG} arch/${ARCH}/configs/
 if [ $crosscompile -eq 1 ]; then
 	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} ${CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=${CROSS_COMPILE} ${MYCONFIG};
 else
@@ -191,29 +200,21 @@ echo ${BUILD_VERSION} > .version
 echo 'y' | make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} ${NATIVE} CFLAGS="${CFLAGS}" bindeb-pkg
 }
 
-patching(){
+packaging(){
 echo ""
 userpatches
 rm -f scripts/package/{builddeb,mkdebian}
-cp -r ../${PAT}/{builddeb,mkdebian} scripts/package/
-chmod +x scripts/package/builddeb
-chmod +x scripts/package/mkdebian
-raspberrypi_packaging
 if [[ "$BOARD_EXT" == "rpi-4" ]]; then
-	patch -p1 < ../${PAT}/rpi4-packaging.patch > /dev/null 2>&1;
-	sed -i 's/packageversion=$version-$revision/packageversion=$version-$revision~rpi4/g' scripts/package/mkdebian;
+	cp -f ../../packaging/rpi4-builddeb scripts/package/builddeb;
 fi
-if [[ "$BOARD" == "bcm2710" ]]; then
-	patch -p1 < ../${PAT}/rpi2+3-packaging.patch > /dev/null 2>&1;
-	sed -i 's/packageversion=$version-$revision/packageversion=$version-$revision~rpi2+3/g' scripts/package/mkdebian;
-fi
-if [[ "$BOARD" == "bcm2709" ]]; then
-	patch -p1 < ../${PAT}/rpi2+3-packaging.patch > /dev/null 2>&1;
-	sed -i 's/packageversion=$version-$revision/packageversion=$version-$revision~rpi2+3/g' scripts/package/mkdebian;
+if [[ "$BOARD" == "bcm2710" ]] || [[ "$BOARD" == "bcm2709" ]]; then
+	cp -f ../../packaging/rpi2+3-builddeb scripts/package/builddeb;
 fi
 if [[ "$BOARD" == "bcm2708" ]]; then
-	patch -p1 < ../${PAT}/rpi-packaging.patch > /dev/null 2>&1;
-	sed -i 's/packageversion=$version-$revision/packageversion=$version-$revision~rpi0+1/g' scripts/package/mkdebian;
+	cp -f ../../packaging/rpi-builddeb scripts/package/builddeb;
 fi
-cp -f ../${PAT}/headers-byteshift.patch headers-byteshift.patch;
+cp -f ../../packaging/mkdebian scripts/package/
+chmod +x scripts/package/{builddeb,mkdebian}
+raspberrypi_packaging
+cp -f ../../packaging/headers-byteshift.patch headers-byteshift.patch;
 }

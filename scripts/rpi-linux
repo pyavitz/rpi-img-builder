@@ -41,8 +41,8 @@ extract
 setup
 firmware
 
-# Patching
-patching
+# Packaging
+packaging
 
 # Defconfig
 if [ $custom_defconfig -eq 1 ]; then

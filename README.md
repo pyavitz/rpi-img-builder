@@ -112,7 +112,7 @@ in the userdata.txt file.
 #### User patches
 
 ```sh
-Patches "-p1" placed in patches/userpatches are applied during compilation.
+Patches "-p1" placed in userpatches are applied during compilation.
 ```
 
 ## Usage

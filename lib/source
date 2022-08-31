@@ -1,10 +1,6 @@
 #!/bin/bash
 
-DEF="../defconfig"
-PAT="../patches"
-USERPATCHES="patches/userpatches"
 SRC="source"
-
 KERNEL="linux-rpi"
 CKERNEL="linux"
 
