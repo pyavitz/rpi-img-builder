@@ -186,6 +186,7 @@ wget -cq --show-progress ${URL}governor
 mv -f {swh,fetch,governor,setup,sysinfo,smon,menu-config,menu-config-update} /usr/local/bin/
 initrd_script
 mv -f firstboot.sh /usr/local/sbin/firstboot
+mv -f leds.sh /usr/local/sbin/leds
 if [[ "$DISTRO" == "devuan" ]]; then
 	# Inits
 	mv -f firstboot.init /etc/init.d/firstboot;
@@ -369,14 +370,12 @@ echo "Checking Services ..."
 sleep 1s
 if [[ "$DISTRO" == "devuan" ]]; then
 	echo "== Sysvinit";
-	led_script > /dev/null 2>&1;
 	enable_services > /dev/null 2>&1;
 else
 	echo "== Systemd";
 	firstboot_service > /dev/null 2>&1;
 	credentials_service > /dev/null 2>&1;
 	governor_service > /dev/null 2>&1;
-	led_script > /dev/null 2>&1;
 	led_service > /dev/null 2>&1;
 	rc-local_service > /dev/null 2>&1;
 	enable_services > /dev/null 2>&1;

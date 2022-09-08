@@ -355,50 +355,21 @@ kpartx -d ${IMAGE_FILE}
 rm -f kpart.txt
 }
 
-# Rename and compress
-rename_image(){
-source kernel.txt
-mv -f ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}.img
-}
-
-compress_image(){
-source kernel.txt
-mv -f ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}.img
-xz -zev --threads=${CORES} ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}.img
-}
-
-# LED script
-led_script(){
-tee /usr/local/sbin/leds <<EOF
-#!/bin/bash
-
-if [[ -e /dev/mmcblk0 ]]; then 
-	if [ -e /sys/class/leds/led0/trigger ]; then
-		echo "mmc0" | tee /sys/class/leds/led0/trigger;
+# Finish image
+finish_image(){
+if [[ -f "kernel.txt" ]]; then source kernel.txt; fi
+if [[ -f "${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img" ]]; then
+	mv -f ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img \
+	${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}.img
+	if [ $compress_img -eq 1 ]; then
+		echo ""
+		echo_compress
+		xz -zev --threads=${CORES} ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}.img
 	fi
 fi
-
-if [[ -e /dev/mmcblk1 ]]; then 
-	if [ -e /sys/class/leds/ACT/trigger ]; then
-		echo "mmc1" | tee /sys/class/leds/ACT/trigger;
-	fi
+if [[ -f "${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}.img.xz" ]]; then
+	sha256sum ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}.img.xz \
+	> ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}.img.xz.sha256
+	sha256sum --check ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}.img.xz.sha256
 fi
-
-pwr_default(){
-sh -c 'echo 0 > /sys/class/leds/led1/brightness'
-}
-
-pwr_mainline(){
-sh -c 'echo 0 > /sys/class/leds/PWR/brightness'
-}
-
-if [ -e /sys/class/leds/led1/brightness ]; then
-	pwr_default;
-fi
-if [ -e /sys/class/leds/PWR/brightness ]; then
-	pwr_mainline;
-fi
-EOF
-chmod +x /usr/local/sbin/leds
-chown -R root:root /usr/local/sbin/leds
 }
