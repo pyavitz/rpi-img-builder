@@ -54,20 +54,23 @@ clear -x
 
 # check releases
 clear -x
-echo -en "Checking Network Connection: "
-if [[ `curl -I https://github.com 2>&1 | grep 'HTTP/2 200'` ]]; then
-	echo -e "Verifying Releases"
-	BANNER="Available Kernel Releases: "
-	VERSION="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/version";
-	ONE=`curl --silent -L $VERSION | sed -n 2p`;
-	TWO=`curl --silent -L $VERSION | sed -n 3p`;
-	clear -x
-else
-	BANNER="LIMITED USAGE: "
-	ONE="THE NETWORK "
-	TWO="IS DOWN"
-	clear -x
-fi
+#echo -en "Checking Network Connection: "
+#if [[ `curl -I https://github.com 2>&1 | grep 'HTTP/2 200'` ]]; then
+#	echo -e "Verifying Releases"
+#	BANNER="Available Kernel Releases: "
+#	VERSION="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/version";
+#	ONE=`curl --silent -L $VERSION | sed -n 2p`;
+#	TWO=`curl --silent -L $VERSION | sed -n 3p`;
+#	clear -x
+#else
+#	BANNER="LIMITED USAGE: "
+#	ONE="THE NETWORK "
+#	TWO="IS DOWN"
+#	clear -x
+#fi
+BANNER="Menu Interface: "
+ONE="System "
+TWO="Settings"
 
 # main menu
 while [ 1 ]
