@@ -1,4 +1,5 @@
 #!/bin/bash
+
 RED="\e[0;31m"
 GRN="\e[0;32m"
 PNK="\e[0;35m"
@@ -92,12 +93,14 @@ if [[ `uname -m | grep -w x86_64` ]]; then
 	echo -e "${TXT}Starting install ...${FIN}"
 	sleep 1s
 	if [[ `command -v make` ]]; then
-		sudo debconf-apt-progress -- apt update
+		sudo apt update
+		sudo apt upgrade -y
 		make ccompile;
 	else
 		sleep 1s
-		sudo debconf-apt-progress -- apt update
-		sudo debconf-apt-progress -- apt install -y make
+		sudo apt update
+		sudo apt upgrade -y
+		sudo apt install -y make
 		make ccompile;
 	fi
 fi
@@ -114,14 +117,16 @@ do
 			echo ""
 			echo -e "${TXT}Starting install ...${FIN}"
 			sleep 1s
-			sudo debconf-apt-progress -- apt update
+			sudo apt update
+			sudo apt upgrade -y
 			make ccompile64;
 		else
 			echo ""
 			echo -e "${TXT}Starting install ...${FIN}"
 			sleep 1s
-			sudo debconf-apt-progress -- apt update
-			sudo debconf-apt-progress -- apt install -y make
+			sudo apt update
+			sudo apt upgrade -y
+			sudo apt install -y make
 			make ccompile64;
 		fi
 			break
@@ -131,14 +136,16 @@ do
 			echo ""
 			echo -e "${TXT}Starting install ...${FIN}"
 			sleep 1s
-			sudo debconf-apt-progress -- apt update
+			sudo apt update
+			sudo apt upgrade -y
 			make ncompile;
 		else
 			echo ""
 			echo -e "${TXT}Starting install ...${FIN}"
 			sleep 1s
-			sudo debconf-apt-progress -- apt update
-			sudo debconf-apt-progress -- apt install -y make
+			sudo apt update
+			sudo apt upgrade -y
+			sudo apt install -y make
 			make ncompile;
 		fi
 			break
@@ -155,5 +162,6 @@ fi
 make dialogrc > /dev/null 2>&1
 echo ""
 clear -x
-make
+make help
+
 exit 0
