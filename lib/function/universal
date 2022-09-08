@@ -32,15 +32,16 @@ raspberrypi_sys_mods(){
 echo ""
 echo "Installing raspi-sys-mods ..."
 git clone https://github.com/RPi-Distro/raspberrypi-sys-mods.git
-git checkout -q 46ae4208397d662fc4f5d0cc9acc85395f852af1
 if [[ "$DISTRO" == "devuan" ]]; then
 	mv -f raspberrypi-sys-mods-control.patch raspberrypi-sys-mods/;
 	cd raspberrypi-sys-mods;
+	git checkout -q 46ae4208397d662fc4f5d0cc9acc85395f852af1
 	patch -p1 < raspberrypi-sys-mods-control.patch;
 	rm -f raspberrypi-sys-mods-control.patch;
 else
 	rm -f raspberrypi-sys-mods-control.patch;
 	cd raspberrypi-sys-mods;
+	git checkout -q 46ae4208397d662fc4f5d0cc9acc85395f852af1
 fi
 dpkg-buildpackage -us -uc
 cd ~
