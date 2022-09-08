@@ -39,7 +39,7 @@ fi
 
 devuan_keyring(){
 URL="https://pkgmaster.devuan.org/devuan/pool/main/d/devuan-keyring/"
-FILE="devuan-keyring_2017.10.03_all.deb"
+FILE="devuan-keyring_2022.09.04_all.deb"
 if ls /usr/share/keyrings/{devuan-archive-keyring.gpg,devuan-keyring.gpg} > /dev/null 2>&1;
 	then :;
 else
