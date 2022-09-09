@@ -3,5 +3,5 @@
 initrd="/boot/initrd.gz"
 
 echo "Creating initrd.gz."
-rm -fdr /boot/{initrd.gz,initrd.img-*-bak} > /dev/null 2>&1
+rm -fr /boot/{initrd.gz,initrd.img-*-bak}
 cp -f /boot/initrd.img-* ${initrd}
