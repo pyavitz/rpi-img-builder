@@ -1,26 +1,30 @@
 #!/bin/bash
+# Bind root activity to green LED
+# Turn off power LED
 
-if [[ -f "/sys/class/leds/led0/trigger" ]]; then
-	ACTIVITY="/sys/class/leds/led0/trigger"
+# foundation kernel
+if [ -f /sys/class/leds/led0/trigger ]; then
+	ACT="led0"
 fi
-if [[ -f "/sys/class/leds/ACT/trigger" ]]; then
-	ACTIVITY="/sys/class/leds/ACT/trigger"
+if [ -f /sys/class/leds/led1/brightness ]; then
+	PWR="led1"
 fi
-if [[ -f "/sys/class/leds/led1/brightness" ]]; then
-	POWER="/sys/class/leds/led1/brightness"
+# mainline kernel
+if [ -f /sys/class/leds/ACT/trigger ]; then
+	ACT="ACT"
 fi
-if [[ -f "/sys/class/leds/PWR/brightness" ]]; then
-	POWER="/sys/class/leds/PWR/brightness"
+if [ -f /sys/class/leds/PWR/brightness ]; then
+	PWR="PWR"
 fi
 
-# set act and pwr leds
-if [[ -f "$ACTIVITY" ]]; then
+if [ -f /sys/class/leds/$ACT/trigger ]; then
 	ROOT_DEVICE=`findmnt -v -n -o SOURCE /`
 	ROOT_DEVICE=${ROOT_DEVICE/\/dev\//}
 	ROOT_DEVICE=${ROOT_DEVICE/mmcblk/mmc}
-	ROOT_DEVICE=${ROOT_DEVICE/p[0-9]/}
-	echo -n "$ROOT_DEVICE" > $ACTIVITY
+        ROOT_DEVICE=${ROOT_DEVICE/p[0-9]/}
+	echo -n "$ROOT_DEVICE" > /sys/class/leds/$ACT/trigger
 fi
-if [[ -f "$POWER" ]]; then
-	sh -c 'echo 0 > $POWER'
+
+if [ -f /sys/class/leds/$PWR/brightness ]; then
+	echo "0" > /sys/class/leds/$PWR/brightness
 fi
