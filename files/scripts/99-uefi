@@ -1,0 +1,66 @@
+#!/bin/bash
+# UEFI/GRUB post update file management
+
+if [[ -f "/etc/opt/board.txt" ]]; then
+	. /etc/opt/board.txt
+else
+	exit 0
+fi
+
+default_cfg(){
+PTYPE="msdos"
+if [[ "$FSTYPE" == "ext4" ]]; then
+	FSMOD="ext2"
+	ROOTFSTYPE="rootfstype=ext4"
+fi
+if [[ "$FSTYPE" == "btrfs" ]]; then
+	FSMOD="btrfs"
+	ROOTFSTYPE="rootfstype=btrfs rootflags=subvol=@"
+fi
+if [[ "$FSTYPE" == "xfs" ]]; then
+	FSMOD="xfs"
+	ROOTFSTYPE="rootfstype=xfs"
+fi
+cat <<EOF > /etc/opt/grub.cfg
+set timeout=0
+set default=0
+menuentry "${MOTD}" {
+	insmod gzio
+	insmod part_${PTYPE}
+	insmod ${FSMOD}
+	set root=hd0,${PTYPE}1
+	echo "Loading kernel ..."
+	linux /Image root=LABEL=ROOTFS ${CONSOLE} rw rootwait ${ROOTFSTYPE} fsck.repair=yes loglevel=1 ${EXTRA}
+	echo "Loading ramdisk ..."
+	initrd /initrd.gz
+}
+EOF
+}
+
+if [[ -f "/etc/opt/grub.cfg" ]]; then
+	:;
+else
+	default_cfg;
+	if [[ "$BOARD" == "bcm2708" ]]; then
+		sed -i 's/}/	echo "Loading devicetree ..."/g' /etc/opt/grub.cfg
+		echo "	devicetree /${BOARD_EXT}.dtb" >> /etc/opt/grub.cfg
+		echo "}" >> /etc/opt/grub.cfg
+	fi
+fi
+if [[ -d "/boot/efi" ]]; then
+	mkdir -p /boot/efi/EFI/BOOT
+	if [[ -f "/boot/efi/EFI/BOOT/BOOTARM.EFI" ]]; then
+		rm -f /boot/efi/EFI/BOOT/BOOTARM.BAK;
+		mv -f /boot/efi/EFI/BOOT/BOOTARM.EFI /boot/efi/EFI/BOOT/BOOTARM.BAK;
+	fi
+	if [[ -f "/boot/efi/EFI/BOOT/BOOTAA64.EFI" ]]; then
+		rm -f /boot/efi/EFI/BOOT/BOOTAA64.BAK;
+		mv -f /boot/efi/EFI/BOOT/BOOTAA64.EFI /boot/efi/EFI/BOOT/BOOTAA64.BAK;
+	fi
+	if [[ "$ARCH" == "arm" ]]; then
+		grub-mkstandalone -O arm-efi -o /boot/efi/EFI/BOOT/BOOTARM.EFI "/boot/grub/grub.cfg=/etc/opt/grub.cfg";
+	fi
+	if [[ "$ARCH" == "arm64" ]]; then
+		grub-mkstandalone -O arm64-efi -o /boot/efi/EFI/BOOT/BOOTAA64.EFI "/boot/grub/grub.cfg=/etc/opt/grub.cfg";
+	fi
+fi

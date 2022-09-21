@@ -1,7 +1,10 @@
 #!/bin/bash
 
-initrd="/boot/initrd.gz"
+initrd_efi="/boot/efi/initrd.gz"
+initrd_boot="/boot/initrd.gz"
 
 echo "Creating initrd.gz."
 rm -fr /boot/{initrd.gz,initrd.img-*-bak}
-cp -f /boot/initrd.img-* ${initrd}
+rm -fr /boot/efi/{initrd.gz,initrd.img-*-bak}
+cp -f /boot/initrd.img-* ${initrd_boot}
+cp -f /boot/initrd.img-* ${initrd_efi}

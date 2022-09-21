@@ -1,24 +1,15 @@
 #!/bin/bash
 
 # Stage1
-extract_rootfs(){
-if [ -f ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz ]; then
-	echo "";
-	echo -en "${WHT}Extracting rootfs${FIN} ";
-	tar -xf ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz -C ${P_VALUE}/;
-	echo_bdone;
-else
-	echo "";
-	echo -e "${YLW}Missing rootfs tarball${FIN}!";
-	make cleanup;
-	exit;
-fi
-echo ""
-}
-
 stage1_kernel(){
 if [[ `ls ${OUTPUT}/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}` ]] > /dev/null 2>&1; then
-		cp ${OUTPUT}/*.deb p2/root;
+	cp ${OUTPUT}/*.deb p2/root;
+else
+	echo "";
+	echo -en "${BOARD}";
+	echo -e ": Compile a kernel before building an image."
+	make cleanup;
+	exit 0;
 fi
 }
 
@@ -160,62 +151,36 @@ EOF
 chown root:root /etc/modules
 }
 
-# Download kernel archive
-download_kernel(){
-DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
-KURL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"
-if [[ "$BOARD" == "bcm2711" ]]; then
-	RPI="rpi4";
-fi
-if [[ "$BOARD" == "bcm2711v7" ]]; then
-	RPI="rpi4v7";
-fi
-if [[ "$BOARD" == "bcm2710" ]]; then
-	RPI="rpi3";
-fi
-if [[ "$BOARD" == "bcm2709" ]]; then
-	RPI="rpi2";
-fi
-if [[ "$BOARD" == "bcm2708" ]]; then
-	RPI="rpi";
-fi
-echo -en "\e[1;37mSearching\e[0m ...";
-sleep 1s;
-if [[ `wget -S --spider ${KURL}${RPI}-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
-	${DOWNLOAD} ${KURL}${RPI}-${VERSION}.tar.xz;
-	echo "";
-	tar xf ${RPI}-${VERSION}.tar.xz;
-	cd ${RPI}-${VERSION};
-	dpkg -i *.deb;
-	cd ~;
-	rm -fdr ${RPI}-${VERSION}*;
-else
-	${DOWNLOAD} ${KURL}${RPI}-5.15.y.tar.xz
-	echo "";
-	tar xf ${RPI}-5.15.y.tar.xz;
-	cd ${RPI}-5.15.y;
-	dpkg -i *.deb;
-	cd ~;
-	rm -fdr ${RPI}-5.15.y*;
-fi
-}
-
 # Kernel
 stage2_kernel(){
 echo ""
 echo "Installing kernel ..."
 apt update
 apt upgrade -y
+if [[ "$EFI" == "true" ]]; then
+	apt install -y grub-efi;
+fi
+if [ $ext4 -eq 1 ]; then
+	echo "" >> /etc/opt/board.txt;
+	echo "# filesystem" >> /etc/opt/board.txt;
+	echo FSTYPE='"'ext4'"' >> /etc/opt/board.txt;
+fi
+if [ $btrfs -eq 1 ]; then
+	echo "" >> /etc/opt/board.txt;
+	echo "# filesystem" >> /etc/opt/board.txt;
+	echo FSTYPE='"'btrfs'"' >> /etc/opt/board.txt;
+fi
+if [ $xfs -eq 1 ]; then
+	echo "" >> /etc/opt/board.txt;
+	echo "# filesystem" >> /etc/opt/board.txt;
+	echo FSTYPE='"'xfs'"' >> /etc/opt/board.txt;
+fi
 apt -y clean
 apt -y autoclean
 sleep 1s
 cd ~
-if [[ `ls /root/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}` ]] > /dev/null 2>&1; then
-	dpkg -i *.deb;
-	rm -f *.deb;
-else
-	download_kernel;
-fi
+dpkg -i *.deb;
+rm -f *.deb;
 echo "Done."
 sleep 1s
 # take note of linux kernel release
@@ -233,6 +198,11 @@ if [ $btrfs -eq 1 ]; then
 fi
 if [ $xfs -eq 1 ]; then
 	echo FSTYPE='"'xfs'"' >> /root/kernel.txt;
+fi
+if [[ "$EFI" == "true" ]]; then
+	# 99-uefi uses /etc/opt/board.txt, this script does not.
+	# re-source /root/board.txt to ensure no confusion.
+	source /root/board.txt
 fi
 }
 
@@ -302,6 +272,16 @@ if [ -f /root/99-initrd ]; then
 	mv -f 99-initrd /etc/initramfs/post-update.d/
 	chmod +x /etc/initramfs/post-update.d/99-initrd
 	chown root:root /etc/initramfs/post-update.d/99-initrd
+fi
+if [[ "$EFI" == "true" ]]; then
+	# uefi kernel, initrd, dtb and grub cfg script
+	mkdir -p /etc/initramfs/post-update.d/
+	mv -f /root/99-uefi /etc/initramfs/post-update.d/;
+	chmod +x /etc/initramfs/post-update.d/99-uefi;
+	chown root:root /etc/initramfs/post-update.d/99-uefi;
+	ln -s /etc/initramfs/post-update.d/99-uefi /usr/local/bin/grub-menu
+else
+	rm -f /root/99-uefi;
 fi
 }
 

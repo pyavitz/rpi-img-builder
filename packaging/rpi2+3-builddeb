@@ -83,16 +83,22 @@ else
 	cp System.map "$tmpdir/boot/System.map-$version"
 	cp $KCONFIG_CONFIG "$tmpdir/boot/config-$version"
 	if [ -f arch/arm/boot/zImage ]; then
-		cp arch/arm/boot/zImage "$tmpdir/boot/kernel7.img";
+		mkdir -p "$tmpdir/boot/efi"
+		cp arch/arm/boot/zImage "$tmpdir/boot/Image";
+		cp arch/arm/boot/zImage "$tmpdir/boot/efi/Image";
+		cp arch/arm/boot/zImage "$tmpdir/boot/efi/kernel7.img";
 	fi
 	if [ -f arch/arm64/boot/Image ]; then
-		cp arch/arm64/boot/Image "$tmpdir/boot/kernel8.img";
+		mkdir -p "$tmpdir/boot/efi"
+		cp arch/arm64/boot/Image "$tmpdir/boot/Image";
+		cp arch/arm64/boot/Image "$tmpdir/boot/efi/Image";
+		cp arch/arm64/boot/Image "$tmpdir/boot/efi/kernel8.img";
 	fi
-	install -m 0644 firmware/bootcode.bin "$tmpdir/boot"
-	install -m 0644 firmware/fixup*.dat "$tmpdir/boot"
-	install -m 0644 firmware/start*.elf "$tmpdir/boot"
-	cp firmware/LICENCE.broadcom "$tmpdir/boot"
-	cp firmware/COPYING.linux "$tmpdir/boot"
+	install -m 0644 firmware/bootcode.bin "$tmpdir/boot/efi"
+	install -m 0644 firmware/fixup*.dat "$tmpdir/boot/efi"
+	install -m 0644 firmware/start*.elf "$tmpdir/boot/efi"
+	cp firmware/LICENCE.broadcom "$tmpdir/boot/efi"
+	cp firmware/COPYING.linux "$tmpdir/boot/efi"
 fi
 cp "$($MAKE -s -f $srctree/Makefile image_name)" "$tmpdir/$installed_image_path"
 
@@ -141,52 +147,52 @@ if [ "$ARCH" != "um" ]; then
 fi
 
 # Install dtbs
-if [ -d $tmpdir/boot ]; then :; else mkdir -p "$tmpdir/boot"; fi
+if [ -d $tmpdir/boot/efi ]; then :; else mkdir -p "$tmpdir/boot/efi"; fi
 # armhf
 if [ -f $tmpdir/usr/lib/raspberrypi-linux-image/bcm2710-rpi-3-b-plus.dtb ]; then
-	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2710-rpi-3-b-plus.dtb" "$tmpdir/boot/bcm2710-rpi-3-b-plus.dtb";
+	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2710-rpi-3-b-plus.dtb" "$tmpdir/boot/efi/bcm2710-rpi-3-b-plus.dtb";
 fi
 if [ -f $tmpdir/usr/lib/raspberrypi-linux-image/bcm2710-rpi-3-b.dtb ]; then
-	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2710-rpi-3-b.dtb" "$tmpdir/boot/bcm2710-rpi-3-b.dtb";
+	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2710-rpi-3-b.dtb" "$tmpdir/boot/efi/bcm2710-rpi-3-b.dtb";
 fi
 if [ -f $tmpdir/usr/lib/raspberrypi-linux-image/bcm2710-rpi-2-b.dtb ]; then
-	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2710-rpi-2-b.dtb" "$tmpdir/boot/bcm2710-rpi-2-b.dtb";
+	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2710-rpi-2-b.dtb" "$tmpdir/boot/efi/bcm2710-rpi-2-b.dtb";
 fi
 if [ -f $tmpdir/usr/lib/raspberrypi-linux-image/bcm2709-rpi-2-b.dtb ]; then
-	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2709-rpi-2-b.dtb" "$tmpdir/boot/bcm2709-rpi-2-b.dtb";
+	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2709-rpi-2-b.dtb" "$tmpdir/boot/efi/bcm2709-rpi-2-b.dtb";
 fi
 if [ -f $tmpdir/usr/lib/raspberrypi-linux-image/bcm2710-rpi-zero-2.dtb ]; then
-	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2710-rpi-zero-2.dtb" "$tmpdir/boot/bcm2710-rpi-zero-2.dtb";
+	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2710-rpi-zero-2.dtb" "$tmpdir/boot/efi/bcm2710-rpi-zero-2.dtb";
 fi
 if [ -f $tmpdir/usr/lib/raspberrypi-linux-image/bcm2710-rpi-zero-2-w.dtb ]; then
-	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2710-rpi-zero-2-w.dtb" "$tmpdir/boot/bcm2710-rpi-zero-2-w.dtb";
+	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2710-rpi-zero-2-w.dtb" "$tmpdir/boot/efi/bcm2710-rpi-zero-2-w.dtb";
 fi
 if [ -f $tmpdir/usr/lib/raspberrypi-linux-image/bcm2710-rpi-cm3.dtb ]; then
-	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2710-rpi-cm3.dtb" "$tmpdir/boot/bcm2710-rpi-cm3.dtb";
+	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/bcm2710-rpi-cm3.dtb" "$tmpdir/boot/efi/bcm2710-rpi-cm3.dtb";
 fi
 # arm64
 if [ -f $tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2710-rpi-3-b-plus.dtb ]; then
-	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2710-rpi-3-b-plus.dtb" "$tmpdir/boot/bcm2710-rpi-3-b-plus.dtb";
+	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2710-rpi-3-b-plus.dtb" "$tmpdir/boot/efi/bcm2710-rpi-3-b-plus.dtb";
 fi
 if [ -f $tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2710-rpi-3-b.dtb ]; then
-	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2710-rpi-3-b.dtb" "$tmpdir/boot/bcm2710-rpi-3-b.dtb";
+	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2710-rpi-3-b.dtb" "$tmpdir/boot/efi/bcm2710-rpi-3-b.dtb";
 fi
 if [ -f $tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2710-rpi-2-b.dtb ]; then
-	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2710-rpi-2-b.dtb" "$tmpdir/boot/bcm2710-rpi-2-b.dtb";
+	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2710-rpi-2-b.dtb" "$tmpdir/boot/efi/bcm2710-rpi-2-b.dtb";
 fi
 if [ -f $tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2710-rpi-zero-2.dtb ]; then
-	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2710-rpi-zero-2.dtb" "$tmpdir/boot/bcm2710-rpi-zero-2.dtb";
+	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2710-rpi-zero-2.dtb" "$tmpdir/boot/efi/bcm2710-rpi-zero-2.dtb";
 fi
 if [ -f $tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2710-rpi-zero-2-w.dtb ]; then
-	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2710-rpi-zero-2-w.dtb" "$tmpdir/boot/bcm2710-rpi-zero-2-w.dtb";
+	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2710-rpi-zero-2-w.dtb" "$tmpdir/boot/efi/bcm2710-rpi-zero-2-w.dtb";
 fi
 if [ -f $tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2710-rpi-cm3.dtb ]; then
-	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2710-rpi-cm3.dtb" "$tmpdir/boot/bcm2710-rpi-cm3.dtb";
+	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/broadcom/bcm2710-rpi-cm3.dtb" "$tmpdir/boot/efi/bcm2710-rpi-cm3.dtb";
 fi
 # Install overlays
 if [ -d $tmpdir/usr/lib/raspberrypi-linux-image/overlays ]; then
-	mkdir -p "$tmpdir/boot/overlays";
-	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/overlays/" "$tmpdir/boot/";
+	mkdir -p "$tmpdir/boot/efi/overlays";
+	cp -r "$tmpdir/usr/lib/raspberrypi-linux-image/overlays/" "$tmpdir/boot/efi/";
 fi
 
 # Install the maintainer scripts
@@ -219,9 +225,11 @@ cat <<EOF > "$tmpdir/DEBIAN/preinst"
 #!/bin/bash
 
 set -e
-
-if [ -e /boot/kernel*.img ]; then
-	rm -fdr /boot/{kernel*,initrd.img*,System.map-*,config-*,vmlinuz-*,*.dtb,bootcode.bin,fixup*.dat,start*.elf,LICENCE.broadcom,COPYING.linux,overlays};
+if [ -f /boot/Image ]; then
+	rm -f /boot/{Image,vmlinuz-*,System.map-*,config-*,initrd.img*,initrd.gz};
+fi
+if [ -e /boot/efi/kernel*.img ]; then
+	rm -fdr /boot/efi/{Image,kernel*,initrd.gz,initrd.img*,System.map-*,config-*,vmlinuz-*,*.dtb,bootcode.bin,fixup*.dat,start*.elf,LICENCE.broadcom,COPYING.linux,overlays};
 fi
 
 exit 0

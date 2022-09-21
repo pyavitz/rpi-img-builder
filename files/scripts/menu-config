@@ -1,7 +1,11 @@
 #!/bin/bash
 # RASPBERRY PI IMAGE BUILDER: SYSTEM MENU INTERFACE
-if [ -f /etc/opt/board.txt ]; then
+if [[ -f "/etc/opt/board.txt" ]]; then
 	source /etc/opt/board.txt;
+else
+	export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray';
+	whiptail --msgbox "    Your board is not supported." 0 0;
+	exit 0
 fi
 
 # functions
@@ -93,7 +97,13 @@ whiptail --backtitle "$BANNER$ONE$TWO" --title "System Menu Config" --menu "" --
 )
 case $CHOICE in
 	"F)")
-		fetch -m
+		if [[ "$EFI" == "true" ]]; then
+			export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray';
+			whiptail --msgbox "    Your board is not supported." 0 0;
+			exit 0
+		else
+			fetch -m
+		fi
 		;;
 	"W)")
 		if [[ `command -v nmtui` ]]; then
@@ -130,7 +140,7 @@ case $CHOICE in
 		if [ -f $MCU ]; then
 			sudo mv -f $MCU $MCU.orig > /dev/null 2>&1;
 		fi
-		sudo wget -cq https://raw.githubusercontent.com/pyavitz/rpi-img-builder/master/files/scripts/menu-config-update -P $MENUDIR
+		sudo wget -cq https://raw.githubusercontent.com/pyavitz/rpi-img-builder/efi/files/scripts/menu-config-update -P $MENUDIR
 		sleep 1s
 		sudo chmod +x $(command -v menu-config-update)
 		if [ -f $MCU ]; then

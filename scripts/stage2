@@ -181,9 +181,9 @@ if [[ "$BOARD_EXT" == "rpi-4" ]]; then
 	mv -f {write2usb,deb-eeprom} /usr/local/bin/;
 fi
 wget -cq --show-progress ${URL}swh
-wget -cq --show-progress ${URL}fetch
+#wget -cq --show-progress ${URL}fetch
 wget -cq --show-progress ${URL}governor
-mv -f {swh,fetch,governor,setup,sysinfo,smon,menu-config,menu-config-update} /usr/local/bin/
+mv -f {swh,governor,setup,sysinfo,smon,menu-config,menu-config-update} /usr/local/bin/
 initrd_script
 mv -f firstboot.sh /usr/local/sbin/firstboot
 mv -f leds.sh /usr/local/sbin/leds
@@ -240,6 +240,9 @@ chown root:root /etc/motd
 
 # Extra firmware
 extra_firmware
+if [[ -f "/root/u-boot.bin" ]]; then
+	mv /root/u-boot.bin /boot/efi/u-boot.bin;
+fi
 
 # Udev rule
 if [[ -f "/root/99-com.rules" ]]; then

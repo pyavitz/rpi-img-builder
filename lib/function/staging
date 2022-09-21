@@ -13,7 +13,7 @@ echo -e "o
 n
 p
 1
-2048
+${OFFSET}
 526335
 a
 c
@@ -30,7 +30,11 @@ IMAGE_LOOP_DEV="$(losetup --show -P -f ${IMAGE_FOLDER}${IMAGE_FILE_NAME})"
 IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
 IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
 partprobe "${IMAGE_LOOP_DEV}"
-mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}"
+if [[ "$EFI" == "true" ]]; then
+	mkfs.vfat -n EFI "${IMAGE_LOOP_DEV_BOOT}";
+else
+	mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}";
+fi
 if [ $ext4 -eq 1 ]; then
 	mkfs.ext4 -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}";
 fi
@@ -60,6 +64,11 @@ fi
 }
 
 create_fstab(){
+if [[ "$EFI" == "true" ]]; then
+	BMP="/boot/efi"
+else
+	BMP="/boot"
+fi
 if [ $ext4 -eq 1 ]; then
 	FSTYPE="ext4	defaults,noatime,nodiratime,commit=600,errors=remount-ro 0 1"
 fi
@@ -70,7 +79,7 @@ if [ $xfs -eq 1 ]; then
 	FSTYPE="xfs	defaults,noatime 0 1"
 fi
 tee p2/etc/fstab <<EOF
-UUID=${BOOT_UUID}	/boot	vfat	defaults 0 2
+UUID=${BOOT_UUID}	${BMP}	vfat	defaults 0 2
 UUID=${ROOT_UUID}	/	${FSTYPE}
 tmpfs	/tmp		tmpfs	defaults,nosuid 0 0
 EOF
@@ -106,7 +115,7 @@ EOF
 bcm2711_config(){
 tee p1/config.txt <<EOF
 arm_64bit=1
-kernel=kernel8.img
+kernel=u-boot.bin
 initramfs initrd.gz followkernel
 
 # uncomment if you get no picture on HDMI for a default "safe" mode
@@ -171,7 +180,7 @@ disable_overscan=1
 dtparam=audio=on
 
 # enable uart
-enable_uart=0
+enable_uart=1
 
 # disable wifi and bluetooth
 #dtoverlay=disable-wifi
@@ -195,7 +204,7 @@ EOF
 bcm2710_config(){
 tee p1/config.txt <<EOF
 arm_64bit=1
-kernel=kernel8.img
+kernel=u-boot.bin
 initramfs initrd.gz followkernel
 
 # uncomment if you get no picture on HDMI for a default "safe" mode
@@ -259,7 +268,7 @@ disable_overscan=1
 dtparam=audio=on
 
 # enable uart
-enable_uart=0
+enable_uart=1
 
 # disable wifi and bluetooth
 #dtoverlay=pi3-disable-wifi
@@ -275,7 +284,7 @@ EOF
 
 bcm2709_config(){
 tee p1/config.txt <<EOF
-kernel=kernel7.img
+kernel=u-boot.bin
 initramfs initrd.gz followkernel
 
 # uncomment if you get no picture on HDMI for a default "safe" mode
@@ -339,7 +348,7 @@ disable_overscan=1
 dtparam=audio=on
 
 # enable uart
-enable_uart=0
+enable_uart=1
 
 # disable wifi and bluetooth
 #dtoverlay=pi3-disable-wifi
@@ -355,7 +364,7 @@ EOF
 
 bcm2708_config(){
 tee p1/config.txt <<EOF
-kernel=kernel.img
+kernel=u-boot.bin
 initramfs initrd.gz followkernel
 
 # uncomment if you get no picture on HDMI for a default "safe" mode
@@ -419,7 +428,7 @@ disable_overscan=1
 dtparam=audio=on
 
 # enable uart
-enable_uart=0
+enable_uart=1
 
 # disable wifi and bluetooth
 #dtoverlay=disable-wifi

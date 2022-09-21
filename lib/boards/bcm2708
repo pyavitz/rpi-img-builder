@@ -13,6 +13,10 @@ FAMILY_EXT=""
 
 # default config
 LINUX_DEFCONFIG="bcmrpi_defconfig"
+
+# partitions
+EFI="true"
+OFFSET="8192"
 P_VALUE="p2"
 
 # output
