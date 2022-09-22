@@ -100,7 +100,6 @@ case $CHOICE in
 		if [[ "$EFI" == "true" ]]; then
 			export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray';
 			whiptail --msgbox "    Your board is not supported." 0 0;
-			exit 0
 		else
 			fetch -m
 		fi
