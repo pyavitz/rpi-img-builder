@@ -140,7 +140,7 @@ case $CHOICE in
 		if [ -f $MCU ]; then
 			sudo mv -f $MCU $MCU.orig > /dev/null 2>&1;
 		fi
-		sudo wget -cq https://raw.githubusercontent.com/pyavitz/rpi-img-builder/efi/files/scripts/menu-config-update -P $MENUDIR
+		sudo wget -cq https://raw.githubusercontent.com/pyavitz/rpi-img-builder/uefi/files/scripts/menu-config-update -P $MENUDIR
 		sleep 1s
 		sudo chmod +x $(command -v menu-config-update)
 		if [ -f $MCU ]; then

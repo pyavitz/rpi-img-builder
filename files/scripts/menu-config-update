@@ -1,5 +1,5 @@
 #!/bin/bash
-GHURL="https://raw.githubusercontent.com/pyavitz/rpi-img-builder/efi/files"
+GHURL="https://raw.githubusercontent.com/pyavitz/rpi-img-builder/uefi/files"
 clear -x
 echo -en "Updating menu and scripts "
 if [[ `command -v fetch` ]]; then
