@@ -18,11 +18,12 @@ EOF
 systemctl enable leds
 }
 
+# first boot
 firstboot_service(){
 tee /etc/systemd/system/firstboot.service <<EOF
 [Unit]
 Description=First Boot
-After=systemd-remount-fs.service
+After=systemd-remount-fs.service sysinit.target local-fs.target
 Before=credentials.service
 ConditionPathExists=/usr/local/sbin/firstboot
 
@@ -30,6 +31,8 @@ ConditionPathExists=/usr/local/sbin/firstboot
 ExecStart=/usr/local/sbin/firstboot > /dev/null 2>&1
 Type=oneshot
 RemainAfterExit=no
+StandardOutput=journal+console
+StandardError=journal+console
 
 [Install]
 WantedBy=multi-user.target
