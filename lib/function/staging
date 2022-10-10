@@ -62,7 +62,7 @@ if [ $ext4 -eq 1 ]; then
 fi
 if [ $btrfs -eq 1 ]; then
 	MAKE_ROOTFS="mkfs.btrfs -f -L ROOTFS ${IMAGE_LOOP_DEV_ROOTFS}"
-	MAKE_ROOTFS="mount -o compress=lzo,noatime,subvol=@ ${IMAGE_LOOP_DEV_ROOTFS} p2;"
+	MOUNT_ROOTFS="mount -o compress=lzo,noatime,subvol=@ ${IMAGE_LOOP_DEV_ROOTFS} p2;"
 	FSTYPE="btrfs	defaults,compress=lzo,noatime,subvol=@ 0 1"
 	ROOTFSTYPE="rootfstype=btrfs rootflags=subvol=@"
 fi

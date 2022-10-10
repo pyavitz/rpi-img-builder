@@ -187,7 +187,7 @@ echo 'y' | make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} KBUILD_BUILD_U
 packaging(){
 echo ""
 rm -f scripts/package/{builddeb,mkdebian}
-cp -f ../../packaging/{builddeb,mkdebian} scripts/package/
+cp -fr ../../packaging/{builddeb,mkdebian} scripts/package/
 chmod +x scripts/package/{builddeb,mkdebian}
 cp -f ../../packaging/headers-byteshift.patch headers-byteshift.patch
 userpatches
