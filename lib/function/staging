@@ -1,14 +1,16 @@
 #!/bin/bash
+
 partitions(){
 if [ $ext4 -eq 1 ]; then
-	truncate -s ${EXT4} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+	IMAGE_SIZE="${EXT4}"
 fi
 if [ $btrfs -eq 1 ]; then
-	truncate -s ${BTRFS} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+	IMAGE_SIZE="${BTRFS}"
 fi
 if [ $xfs -eq 1 ]; then
-	truncate -s ${XFS} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}";
+	IMAGE_SIZE="${XFS}"
 fi
+truncate -s ${IMAGE_SIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
 echo -e "o
 n
 p
@@ -30,56 +32,51 @@ IMAGE_LOOP_DEV="$(losetup --show -P -f ${IMAGE_FOLDER}${IMAGE_FILE_NAME})"
 IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
 IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
 partprobe "${IMAGE_LOOP_DEV}"
-if [[ "$EFI" == "true" ]]; then
-	mkfs.vfat -n EFI "${IMAGE_LOOP_DEV_BOOT}";
-else
-	mkfs.vfat -n BOOT "${IMAGE_LOOP_DEV_BOOT}";
-fi
-if [ $ext4 -eq 1 ]; then
-	mkfs.ext4 -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}";
-fi
-if [ $btrfs -eq 1 ]; then
-	mkfs.btrfs -f -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}";
-fi
-if [ $xfs -eq 1 ]; then
-	mkfs.xfs -f -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}";
-fi
+filesystem
+$MAKE_BOOTFS
+$MAKE_ROOTFS
 mkdir -p p1 p2
 mount "${IMAGE_LOOP_DEV_BOOT}" p1
 mount "${IMAGE_LOOP_DEV_ROOTFS}" p2
-if [[ `grep -w "btrfs=1" "userdata.txt"` ]]; then
+if [ $btrfs -eq 1 ]; then
 	btrfs subvolume create p2/@;
 fi
 sync
 umount p2
+$MOUNT_ROOTFS
+}
+
+filesystem(){
+if [[ "$EFI" == "true" ]]; then
+	MAKE_BOOTFS="mkfs.vfat -n EFI ${IMAGE_LOOP_DEV_BOOT}"
+	BOOT_PATH="/boot/broadcom"
+else
+	MAKE_BOOTFS="mkfs.vfat -n BOOT ${IMAGE_LOOP_DEV_BOOT}"
+	BOOT_PATH="/boot"
+fi
 if [ $ext4 -eq 1 ]; then
-	mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2;
+	MAKE_ROOTFS="mkfs.ext4 -L ROOTFS ${IMAGE_LOOP_DEV_ROOTFS}"
+	MOUNT_ROOTFS="mount -o defaults,noatime ${IMAGE_LOOP_DEV_ROOTFS} p2"
+	FSTYPE="ext4	defaults,noatime,nodiratime,commit=600,errors=remount-ro 0 1"
+	ROOTFSTYPE="rootfstype=ext4"
 fi
 if [ $btrfs -eq 1 ]; then
-	mount -o compress=lzo,noatime,subvol=@ "${IMAGE_LOOP_DEV_ROOTFS}" p2;
+	MAKE_ROOTFS="mkfs.btrfs -f -L ROOTFS ${IMAGE_LOOP_DEV_ROOTFS}"
+	MAKE_ROOTFS="mount -o compress=lzo,noatime,subvol=@ ${IMAGE_LOOP_DEV_ROOTFS} p2;"
+	FSTYPE="btrfs	defaults,compress=lzo,noatime,subvol=@ 0 1"
+	ROOTFSTYPE="rootfstype=btrfs rootflags=subvol=@"
 fi
 if [ $xfs -eq 1 ]; then
-	mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" p2;
+	MAKE_ROOTFS="mkfs.xfs -f -L ROOTFS ${IMAGE_LOOP_DEV_ROOTFS}"
+	MOUNT_ROOTFS="mount -o defaults,noatime ${IMAGE_LOOP_DEV_ROOTFS} p2"
+	FSTYPE="xfs	defaults,noatime 0 1"
+	ROOTFSTYPE="rootfstype=xfs"
 fi
 }
 
 create_fstab(){
-if [[ "$EFI" == "true" ]]; then
-	BMP="/boot/efi"
-else
-	BMP="/boot"
-fi
-if [ $ext4 -eq 1 ]; then
-	FSTYPE="ext4	defaults,noatime,nodiratime,commit=600,errors=remount-ro 0 1"
-fi
-if [ $btrfs -eq 1 ]; then
-	FSTYPE="btrfs	defaults,compress=lzo,noatime,subvol=@ 0 1";
-fi
-if [ $xfs -eq 1 ]; then
-	FSTYPE="xfs	defaults,noatime 0 1"
-fi
 tee p2/etc/fstab <<EOF
-UUID=${BOOT_UUID}	${BMP}	vfat	defaults 0 2
+UUID=${BOOT_UUID}	${BOOT_PATH}	vfat	defaults 0 2
 UUID=${ROOT_UUID}	/	${FSTYPE}
 tmpfs	/tmp		tmpfs	defaults,nosuid 0 0
 EOF
@@ -89,24 +86,13 @@ partition_uuid(){
 BOOT_UUID=$(blkid -o export -- "${IMAGE_LOOP_DEV_BOOT}" | sed -ne 's/^UUID=//p')
 ROOT_UUID=$(blkid -o export -- "${IMAGE_LOOP_DEV_ROOTFS}" | sed -ne 's/^UUID=//p')
 ROOT_PARTUUID=$(blkid -o export -- "${IMAGE_LOOP_DEV_ROOTFS}" | sed -ne 's/^PARTUUID=//p')
-
 echo BOOT_UUID='"'$BOOT_UUID'"' > part-uuid.txt
 echo ROOT_UUID='"'$ROOT_UUID'"' >> part-uuid.txt
 echo ROOT_PARTUUID='"'$ROOT_PARTUUID'"' >> part-uuid.txt
-
 source part-uuid.txt
 }
 
 cmdline(){
-if [ $ext4 -eq 1 ]; then
-	ROOTFSTYPE="rootfstype=ext4";
-fi
-if [ $btrfs -eq 1 ]; then
-	ROOTFSTYPE="rootfstype=btrfs rootflags=subvol=@";
-fi
-if [ $xfs -eq 1 ]; then
-	ROOTFSTYPE="rootfstype=xfs";
-fi
 tee p1/cmdline.txt <<EOF
 ${CONSOLE} root=PARTUUID=${ROOT_PARTUUID} ${ROOTFSTYPE} fsck.repair=yes ${EXTRA} rootwait
 EOF

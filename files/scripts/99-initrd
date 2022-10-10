@@ -1,10 +1,14 @@
 #!/bin/bash
 
-initrd_efi="/boot/efi/initrd.gz"
+initrd_brcm="/boot/broadcom/initrd.gz"
 initrd_boot="/boot/initrd.gz"
 
 echo "Creating initrd.gz."
-rm -fr /boot/{initrd.gz,initrd.img-*-bak}
-rm -fr /boot/efi/{initrd.gz,initrd.img-*-bak}
-cp -f /boot/initrd.img-* ${initrd_boot}
-cp -f /boot/initrd.img-* ${initrd_efi}
+if [[ -d "/boot" ]]; then
+	rm -fr /boot/{initrd.gz,initrd.img-*-bak}
+	cp -f /boot/initrd.img-* ${initrd_boot}
+fi
+if [[ -d "/boot/broadcom" ]]; then
+	rm -fr /boot/broadcom/{initrd.gz,initrd.img-*-bak}
+	cp -f /boot/initrd.img-* ${initrd_brcm}
+fi

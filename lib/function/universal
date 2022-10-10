@@ -2,7 +2,7 @@
 
 # Stage1
 stage1_kernel(){
-if [[ `ls ${OUTPUT}/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}` ]] > /dev/null 2>&1; then
+if [[ `ls ${OUTPUT}/{linux-image-*.deb,linux-headers-*.deb}` ]] > /dev/null 2>&1; then
 	cp ${OUTPUT}/*.deb p2/root;
 else
 	echo "";
@@ -339,19 +339,20 @@ rm -f kpart.txt
 
 # Finish image
 finish_image(){
+IMAGE_TIME="$(date +%T | sed 's/://g' | sed 's/..$//')"
 if [[ -f "kernel.txt" ]]; then source kernel.txt; fi
 if [[ -f "${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img" ]]; then
 	mv -f ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img \
-	${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}.img
+	${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}-${IMAGE_TIME}.img
 	if [ $compress_img -eq 1 ]; then
 		echo ""
 		echo_compress
-		xz -zev --threads=${CORES} ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}.img
+		xz -zev --threads=${CORES} ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}-${IMAGE_TIME}.img
 	fi
 fi
-if [[ -f "${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}.img.xz" ]]; then
-	sha256sum ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}.img.xz \
-	> ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}.img.xz.sha256
-	sha256sum --check ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}.img.xz.sha256
+if [[ -f "${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}-${IMAGE_TIME}.img.xz" ]]; then
+	sha256sum ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}-${IMAGE_TIME}.img.xz \
+	> ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}-${IMAGE_TIME}.img.xz.sha256
+	sha256sum --check ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}-${IMAGE_TIME}.img.xz.sha256
 fi
 }

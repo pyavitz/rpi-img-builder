@@ -47,20 +47,20 @@ else
 		echo "}" >> /etc/opt/grub.cfg
 	fi
 fi
-if [[ -d "/boot/efi" ]]; then
-	mkdir -p /boot/efi/EFI/BOOT
-	if [[ -f "/boot/efi/EFI/BOOT/BOOTARM.EFI" ]]; then
-		rm -f /boot/efi/EFI/BOOT/BOOTARM.BAK;
-		mv -f /boot/efi/EFI/BOOT/BOOTARM.EFI /boot/efi/EFI/BOOT/BOOTARM.BAK;
+if [[ -d "/boot/broadcom" ]]; then
+	mkdir -p /boot/broadcom/EFI/BOOT
+	if [[ -f "/boot/broadcom/EFI/BOOT/BOOTARM.EFI" ]]; then
+		rm -f /boot/broadcom/EFI/BOOT/BOOTARM.BAK;
+		mv -f /boot/broadcom/EFI/BOOT/BOOTARM.EFI /boot/broadcom/EFI/BOOT/BOOTARM.BAK;
 	fi
-	if [[ -f "/boot/efi/EFI/BOOT/BOOTAA64.EFI" ]]; then
-		rm -f /boot/efi/EFI/BOOT/BOOTAA64.BAK;
-		mv -f /boot/efi/EFI/BOOT/BOOTAA64.EFI /boot/efi/EFI/BOOT/BOOTAA64.BAK;
+	if [[ -f "/boot/broadcom/EFI/BOOT/BOOTAA64.EFI" ]]; then
+		rm -f /boot/broadcom/EFI/BOOT/BOOTAA64.BAK;
+		mv -f /boot/broadcom/EFI/BOOT/BOOTAA64.EFI /boot/broadcom/EFI/BOOT/BOOTAA64.BAK;
 	fi
 	if [[ "$ARCH" == "arm" ]]; then
-		grub-mkstandalone -O arm-efi -o /boot/efi/EFI/BOOT/BOOTARM.EFI "/boot/grub/grub.cfg=/etc/opt/grub.cfg";
+		grub-mkstandalone -O arm-efi -o /boot/broadcom/EFI/BOOT/BOOTARM.EFI "/boot/grub/grub.cfg=/etc/opt/grub.cfg";
 	fi
 	if [[ "$ARCH" == "arm64" ]]; then
-		grub-mkstandalone -O arm64-efi -o /boot/efi/EFI/BOOT/BOOTAA64.EFI "/boot/grub/grub.cfg=/etc/opt/grub.cfg";
+		grub-mkstandalone -O arm64-efi -o /boot/broadcom/EFI/BOOT/BOOTAA64.EFI "/boot/grub/grub.cfg=/etc/opt/grub.cfg";
 	fi
 fi

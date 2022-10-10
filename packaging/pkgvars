@@ -1,0 +1,16 @@
+#!/bin/bash
+
+linux_packaging(){
+echo "# packaging variables" > "scripts/package/pkgvars"
+echo board_series='"'$BOARD_EXT'"' >> "scripts/package/pkgvars"
+echo kernel_img='"'$KERNEL_IMG'"' >> "scripts/package/pkgvars"
+echo linux_packagename='"'$LINUX_IMAGE'"' >> "scripts/package/pkgvars"
+echo headers_packagename='"'$LINUX_HEADERS'"' >> "scripts/package/pkgvars"
+echo compression='"'$COMPRESSION'"' >> "scripts/package/pkgvars"
+echo efi='"'$EFI'"' >> "scripts/package/pkgvars"
+if [[ "$EFI" == "true" ]]; then
+	echo boot_path='"'boot/broadcom'"' >> "scripts/package/pkgvars"
+else
+	echo boot_path='"'boot'"' >> "scripts/package/pkgvars"
+fi
+}

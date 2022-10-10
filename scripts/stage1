@@ -140,8 +140,8 @@ stage1_kernel # universal
 echo -e "${WHT}Starting chroot${FIN} ..."
 # Mount and chroot
 if [[ "$EFI" == "true" ]]; then
-	mkdir -p p2/boot/efi;
-	mount -o bind p1 p2/boot/efi;
+	mkdir -p p2/boot/broadcom;
+	mount -o bind p1 p2/boot/broadcom;
 else
 	mount -o bind p1 p2/boot;
 fi
@@ -152,7 +152,7 @@ chroot p2 /root/stage2;
 umount p2/dev/pts
 umount p2/dev
 if [[ "$EFI" == "true" ]]; then
-	umount p2/boot/efi;
+	umount p2/boot/broadcom;
 else
 	umount p2/boot;
 fi

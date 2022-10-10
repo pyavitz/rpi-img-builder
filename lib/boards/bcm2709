@@ -36,3 +36,10 @@ MOTD="Raspberry Pi"
 EXT4="3000MB"
 BTRFS="2650MB"
 XFS="2650MB"
+
+# packaging
+KERNEL_IMG="kernel7.img"
+SERIES="${BOARD_EXT}-bcm2709"
+LINUX_IMAGE="linux-image-${SERIES}"
+LINUX_HEADERS="linux-headers-${SERIES}"
+COMPRESSION="xz"
