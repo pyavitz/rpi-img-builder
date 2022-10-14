@@ -61,7 +61,7 @@ fi
 
 create_fstab(){
 if [ $ext4 -eq 1 ]; then
-	FSTYPE="ext4	defaults,noatime,nodiratime,commit=600,errors=remount-ro 0 1"
+	FSTYPE="ext4	defaults,noatime,commit=600,errors=remount-ro 0 1"
 fi
 if [ $btrfs -eq 1 ]; then
 	FSTYPE="btrfs	defaults,compress=lzo,noatime,subvol=@ 0 1";
