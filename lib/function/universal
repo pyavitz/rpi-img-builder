@@ -163,7 +163,7 @@ chown root:root /etc/modules
 # Download kernel archive
 download_kernel(){
 DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
-KURL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-10/"
+KURL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-11/"
 if [[ "$BOARD" == "bcm2711" ]]; then
 	RPI="rpi4";
 fi
