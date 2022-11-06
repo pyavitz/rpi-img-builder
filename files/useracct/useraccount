@@ -51,9 +51,11 @@ echo -en "Username: "
 read USERNAME
 while true; do
 	echo -en "Password: "
-	read FIRST
+	read -s FIRST
+	echo ""
 	echo -en "Password (again): "
-	read SECOND
+	read -s SECOND
+	echo ""
 	if [ "$FIRST" = "$SECOND" ]; then
 		PASSWORD="${FIRST}";
 		echo "";
