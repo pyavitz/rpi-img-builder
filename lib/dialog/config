@@ -1,17 +1,14 @@
 #!/bin/bash
 
-COL="\e[0;37m"
-FIN="\e[0m"
-if [ -f profile.txt ]; then
-	source profile.txt;
-else
-	NAME="";
-	USERNAME="";
-	PASSWORD="";
-	LOCALE="en_US.UTF-8";
-	TIMEZONE="America/New_York";
-	USER_NAMESERVER1="8.8.8.8";
-	USER_NAMESERVER2="8.8.4.4";
+NAME=""
+USERNAME=""
+PASSWORD=""
+LOCALE="en_US.UTF-8"
+TIMEZONE="America/New_York"
+USER_NAMESERVER1="8.8.8.8"
+USER_NAMESERVER2="8.8.4.4"
+if [[ -f "profile.txt" ]]; then
+	. profile.txt
 fi
 rootpasswd="0"
 VERSION="5.15.y"
@@ -180,4 +177,9 @@ sed -i '61i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 clear -x
 
 # userdata
-echo -e "${COL}userdata file created${FIN}."
+if [[ -f "userdata.txt" ]]; then
+	echo -e "userdata file created."
+	exit 0
+fi
+
+exit 0
