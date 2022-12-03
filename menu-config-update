@@ -1,0 +1,38 @@
+#!/bin/bash
+GHURL="https://raw.githubusercontent.com/pyavitz/rpi-img-builder/menuconfig"
+clear -x
+echo -en "Updating menu and scripts "
+if [[ `command -v governor` ]]; then
+	governor -u > /dev/null 2>&1;
+fi
+if [[ `command -v swh` ]]; then
+	swh -U > /dev/null 2>&1;
+fi
+if [[ `command -v sysinfo` ]]; then
+	sudo mv -f /usr/local/bin/sysinfo /usr/local/bin/sysinfo.orig;
+	sudo wget -cq $GHURL/scripts/sysinfo -P /usr/local/bin/;
+	if [ -f /usr/local/bin/sysinfo ]; then
+		sudo chmod +x /usr/local/bin/sysinfo;
+		sudo rm -f /usr/local/bin/sysinfo.orig;
+	else
+		sudo mv /usr/local/bin/sysinfo.orig /usr/local/bin/sysinfo;
+	fi
+fi
+MENU=`command -v menu-config`
+MENUDIR="/usr/local/bin/"
+if [ -f $MENU ]; then
+	sudo mv -f $MENU $MENU.orig;
+fi
+sudo wget -cq $GHURL/menu-config -P $MENUDIR
+sleep 1s
+sudo chmod +x $(command -v menu-config)
+if [ -f $MENU ]; then
+	sudo rm -f $MENU.orig;
+else
+	sudo mv -f $MENU.orig $MENU;
+fi
+echo -e "[done]"
+sleep 1s
+clear -x
+menu-config
+exit 0
