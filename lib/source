@@ -3,6 +3,7 @@
 SRC="source"
 KERNEL="linux-rpi"
 CKERNEL="linux"
+BUILDER=`grep "builder=" "userdata.txt" | sed 's/builder=//g'`
 
 # validate
 validation(){
@@ -19,11 +20,11 @@ else
 		fi
 	done
 fi
-if [[ `grep -w "builder=4.11" "userdata.txt"` ]]; then
+if [[ "$BUILDER" == "5.0" ]]; then
 	:;
 else
 	echo -e "The ${WHT}$UD${FIN} file has expired. Please create a new one."
-	exit;
+	exit 0;
 fi
 }
 

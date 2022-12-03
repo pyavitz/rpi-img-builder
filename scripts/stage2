@@ -116,23 +116,23 @@ if [ $useracct -eq 0 ]; then
 	adduser ${USERNAME} spi
 fi
 if [ $useracct -eq 1 ]; then
-	mkdir -p /boot;
-	mkdir -p /usr/local/sbin;
-	mv -f /root/useracct/useraccount /usr/local/sbin/;
-	chmod +x /usr/local/sbin/useraccount;
-	mv -f /root/{nanorc-user,user-ini} /etc/opt/;
-	mv -f /root/useracct/useraccount.txt /boot/rename_to_useraccount.txt;
+	mkdir -p /boot/broadcom
+	mkdir -p /usr/local/sbin
+	mv -f /root/useracct/useraccount /usr/local/sbin/
+	chmod +x /usr/local/sbin/useraccount
+	mv -f /root/{nanorc-user,user-ini} /etc/opt/
+	mv -f /root/useracct/useraccount.txt /boot/broadcom/rename_to_useraccount.txt
 	if [[ "$DISTRO" == "devuan" ]]; then
 		mkdir -p /etc/init.d;
-		mv -f /root/useracct/useraccount.init /etc/init.d/useraccount;
-		chmod +x /etc/init.d/useraccount;
-		update-rc.d useraccount defaults 5;
-		rm -fdr /root/useracct;
+		mv -f /root/useracct/useraccount.init /etc/init.d/useraccount
+		chmod +x /etc/init.d/useraccount
+		update-rc.d useraccount defaults 5
+		rm -fdr /root/useracct
 	else
 		mkdir -p /etc/systemd/system/;
-		mv -f /root/useracct/useraccount.service /etc/systemd/system/;
-		systemctl enable useraccount > /dev/null 2>&1;
-		rm -fdr /root/useracct;
+		mv -f /root/useracct/useraccount.service /etc/systemd/system/
+		systemctl enable useraccount > /dev/null 2>&1
+		rm -fdr /root/useracct
 	fi
 fi
 if [ $rootpasswd -eq 1 ]; then
@@ -181,9 +181,10 @@ if [[ "$BOARD_EXT" == "rpi-4" ]]; then
 	mv -f {write2usb,deb-eeprom} /usr/local/bin/;
 fi
 wget -cq --show-progress ${URL}swh
-wget -cq --show-progress ${URL}fetch
 wget -cq --show-progress ${URL}governor
-mv -f {swh,fetch,governor,setup,sysinfo,smon,menu-config,menu-config-update} /usr/local/bin/
+wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/rpi-img-builder/menuconfig/menu-config
+wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/rpi-img-builder/menuconfig/menu-config-update
+mv -f {swh,governor,setup,sysinfo,smon,menu-config,menu-config-update} /usr/local/bin/
 initrd_script
 mv -f firstboot.sh /usr/local/sbin/firstboot
 mv -f leds.sh /usr/local/sbin/leds
@@ -240,6 +241,9 @@ chown root:root /etc/motd
 
 # Extra firmware
 extra_firmware
+if [[ -f "/root/u-boot.bin" ]]; then
+	mv /root/u-boot.bin /boot/broadcom/u-boot.bin;
+fi
 
 # Udev rule
 if [[ -f "/root/99-com.rules" ]]; then

@@ -150,9 +150,6 @@ DNS=""				# Your preferred dns
 For headless use: ssh user@ipaddress
 ```
 
-#### System Menu: `menu-config`
-<img src="https://i.imgur.com/g6vPI8t.png" alt="Main Menu" />
-
 ---
 
 ## Support

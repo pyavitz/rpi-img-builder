@@ -97,15 +97,15 @@ echo "options 8821cu rtw_power_mgnt=0 rtw_enusbss=0 rtw_switch_usb_mode=1" > /et
 chown root:root /etc/modprobe.d/8821cu.conf
 
 # ifupdown interfaces and wpa_supplicant files
-tee /etc/opt/interfaces.manual <<EOF
-### Interfaces
+tee /etc/network/interfaces <<EOF
+# Interfaces
 source /etc/network/interfaces.d/*
 
-### Loopback network interface
+# Loopback network interface
 auto lo
 iface lo inet loopback
 
-### Ethernet
+# Ethernet
 allow-hotplug eth0
 iface eth0 inet dhcp
 	#address 10.0.0.10
@@ -113,11 +113,11 @@ iface eth0 inet dhcp
 	#gateway 10.0.0.1
 	#dns-nameservers 8.8.8.8 8.8.4.4
 
-### Mobile tether
+# Mobile tether
 #allow-hotplug usb0
 #iface usb0 inet dhcp
 
-### Wifi
+# Wireless
 allow-hotplug wlan0
 iface wlan0 inet dhcp
 	wireless-power off
@@ -126,42 +126,9 @@ iface wlan0 inet dhcp
 	#gateway 10.0.0.1
 	#dns-nameservers 8.8.8.8 8.8.4.4
 	wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
-
 EOF
 
-tee /etc/opt/interfaces <<EOF
-### Interfaces
-source /etc/network/interfaces.d/*
-
-### Loopback network interface
-auto lo
-iface lo inet loopback
-
-### Ethernet
-allow-hotplug eth0
-iface eth0 inet dhcp
-	#address 10.0.0.10
-	#netmask 255.255.255.0
-	#gateway 10.0.0.1
-	#dns-nameservers 8.8.8.8 8.8.4.4
-
-### Mobile tether
-#allow-hotplug usb0
-#iface usb0 inet dhcp
-
-### Wifi
-allow-hotplug wlan0
-iface wlan0 inet dhcp
-	wireless-power off
-	wlan_address 10.0.0.10
-	wlan_netmask 255.255.255.0
-	wlan_gateway 10.0.0.1
-	wlan_dns-nameservers 8.8.8.8 8.8.4.4
-	wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
-
-EOF
-
-tee /etc/opt/wpa_supplicant.manual <<EOF
+tee /etc/wpa_supplicant/wpa_supplicant.conf <<EOF
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
 country=US
@@ -171,19 +138,6 @@ network={
 	scan_ssid=1
 	key_mgmt=WPA-PSK
 	psk="wifipasskey"
-}
-EOF
-
-tee /etc/opt/wpa_supplicant.conf <<EOF
-ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
-update_config=1
-country=
-
-network={
-	name=
-	scan_ssid=1
-	key_mgmt=WPA-PSK
-	password=
 }
 EOF
 }
@@ -260,16 +214,16 @@ if [ -f /root/ifupdown.credentials ]; then
 	chown root:root /usr/local/bin/credentials;
 	rm -f /root/networkmanager.credentials;
 fi
-echo "# wifi credentials" > /boot/rename_to_credentials.txt
-echo 'SSID=""' >> /boot/rename_to_credentials.txt
-echo 'PASSKEY=""' >> /boot/rename_to_credentials.txt
-echo 'COUNTRYCODE=""' >> /boot/rename_to_credentials.txt
-echo "# set static ip address" >> /boot/rename_to_credentials.txt
-echo 'MANUAL="n"' >> /boot/rename_to_credentials.txt
-echo 'IPADDR=""' >> /boot/rename_to_credentials.txt
-echo 'NETMASK=""' >> /boot/rename_to_credentials.txt
-echo 'GATEWAY=""' >> /boot/rename_to_credentials.txt
-echo 'NAMESERVERS=""' >> /boot/rename_to_credentials.txt
+echo "# wifi credentials" > /boot/broadcom/rename_to_credentials.txt
+echo 'SSID=""' >> /boot/broadcom/rename_to_credentials.txt
+echo 'PASSKEY=""' >> /boot/broadcom/rename_to_credentials.txt
+echo 'COUNTRYCODE=""' >> /boot/broadcom/rename_to_credentials.txt
+echo "# set static ip address" >> /boot/broadcom/rename_to_credentials.txt
+echo 'MANUAL="n"' >> /boot/broadcom/rename_to_credentials.txt
+echo 'IPADDR=""' >> /boot/broadcom/rename_to_credentials.txt
+echo 'NETMASK=""' >> /boot/broadcom/rename_to_credentials.txt
+echo 'GATEWAY=""' >> /boot/broadcom/rename_to_credentials.txt
+echo 'NAMESERVERS=""' >> /boot/broadcom/rename_to_credentials.txt
 }
 
 networkmanager-credentials(){
@@ -279,13 +233,13 @@ if [ -f /root/networkmanager.credentials ]; then
 	chown root:root /usr/local/bin/credentials;
 	rm -f /root/ifupdown.credentials;
 fi
-echo "# wifi credentials" > /boot/rename_to_credentials.txt
-echo 'SSID=""' >> /boot/rename_to_credentials.txt
-echo 'PASSKEY=""' >> /boot/rename_to_credentials.txt
-echo 'COUNTRYCODE=""' >> /boot/rename_to_credentials.txt
-echo "# set static ip address" >> /boot/rename_to_credentials.txt
-echo 'MANUAL="n"' >> /boot/rename_to_credentials.txt
-echo 'IPADDR=""' >> /boot/rename_to_credentials.txt
-echo 'GATEWAY=""' >> /boot/rename_to_credentials.txt
-echo 'DNS=""' >> /boot/rename_to_credentials.txt
+echo "# wifi credentials" > /boot/broadcom/rename_to_credentials.txt
+echo 'SSID=""' >> /boot/broadcom/rename_to_credentials.txt
+echo 'PASSKEY=""' >> /boot/broadcom/rename_to_credentials.txt
+echo 'COUNTRYCODE=""' >> /boot/broadcom/rename_to_credentials.txt
+echo "# set static ip address" >> /boot/broadcom/rename_to_credentials.txt
+echo 'MANUAL="n"' >> /boot/broadcom/rename_to_credentials.txt
+echo 'IPADDR=""' >> /boot/broadcom/rename_to_credentials.txt
+echo 'GATEWAY=""' >> /boot/broadcom/rename_to_credentials.txt
+echo 'DNS=""' >> /boot/broadcom/rename_to_credentials.txt
 }

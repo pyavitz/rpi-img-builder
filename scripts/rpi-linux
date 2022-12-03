@@ -4,6 +4,7 @@ source lib/source
 validation
 source board.txt
 source userdata.txt
+source packaging/pkgvars
 source lib/function/compiler
 source lib/function/rpi-linux
 source lib/function/wireless

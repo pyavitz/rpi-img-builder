@@ -18,24 +18,23 @@ EOF
 systemctl enable leds
 }
 
-# first boot
 firstboot_service(){
 tee /etc/systemd/system/firstboot.service <<EOF
 [Unit]
-Description=First Boot
+Description=Resize ROOTFS partition
 After=systemd-remount-fs.service sysinit.target local-fs.target
-Before=credentials.service
 ConditionPathExists=/usr/local/sbin/firstboot
+DefaultDependencies=no
 
 [Service]
-ExecStart=/usr/local/sbin/firstboot > /dev/null 2>&1
+ExecStart=/usr/local/sbin/firstboot
 Type=oneshot
 RemainAfterExit=no
 StandardOutput=journal+console
 StandardError=journal+console
 
 [Install]
-WantedBy=multi-user.target
+RequiredBy=local-fs-pre.target
 EOF
 }
 

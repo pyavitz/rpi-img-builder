@@ -1,5 +1,6 @@
 #!/bin/bash
 source /etc/opt/board.txt
+RELEASE=`cat /etc/os-release | grep -w NAME | sed 's/NAME=//g' | sed 's/"//g' | sed 's/ GNU\/Linux//g'`
 
 create_user(){
 adduser ${USERNAME} --gecos ${NAME} --disabled-password
@@ -17,22 +18,22 @@ adduser ${USERNAME} render
 adduser ${USERNAME} tty
 adduser ${USERNAME} i2c
 if [[ `grep -w "gpio" "/etc/group"` ]]; then
-	adduser ${USERNAME} gpio;
+	adduser ${USERNAME} gpio
 else
 	groupadd gpio;
-	adduser ${USERNAME} gpio;
+	adduser ${USERNAME} gpio
 fi
 if [[ `grep -w "spi" "/etc/group"` ]]; then
-	adduser ${USERNAME} spi;
+	adduser ${USERNAME} spi
 else
 	groupadd spi;
-	adduser ${USERNAME} spi;
+	adduser ${USERNAME} spi
 fi
 }
 
 create_sudoers(){
-if [ -f /etc/sudoers.d/010_pi-nopasswd ]; then
-	rm -f /etc/sudoers.d/010_pi-nopasswd;
+if [[ -f "/etc/sudoers.d/010_pi-nopasswd" ]]; then
+	rm -f /etc/sudoers.d/010_pi-nopasswd
 fi
 tee /etc/sudoers.d/010_${USERNAME}-nopasswd <<EOF
 ${USERNAME} ALL=(ALL) NOPASSWD: ALL
@@ -51,66 +52,59 @@ echo -en "Username: "
 read USERNAME
 while true; do
 	echo -en "Password: "
-	read -s FIRST
-	echo ""
+	read FIRST
 	echo -en "Password (again): "
-	read -s SECOND
-	echo ""
+	read SECOND
 	if [ "$FIRST" = "$SECOND" ]; then
-		PASSWORD="${FIRST}";
+		PASSWORD="${FIRST}"
 		echo "";
-		echo -e "Creating a user account for: \e[1;37m${NAME}\e[0m ...";
+		echo -e "Creating a user account for: \e[1;37m${NAME}\e[0m ..."
 	else
-		echo -e "The passwords don't match. Try again.";
-		continue;
+		echo -e "The passwords don't match. Try again."
+		continue
 	fi
 	break
 done
 }
 
-if [ -f /boot/useraccount.txt ]; then
+if [[ -f "/boot/broadcom/useraccount.txt" ]]; then
 	# headless
-	source /boot/useraccount.txt;
+	. /boot/broadcom/useraccount.txt
 	echo -en "${FAMILY}: " | sed -e 's/\(.*\)/\U\1/'
 	echo -e "${BOARD}" | sed -e 's/\(.*\)/\U\1/'
 	echo ""
 	echo -e "Creating a user account for: \e[1;37m${NAME}\e[0m"
-	create_user > /dev/null 2>&1;
-	create_sudoers > /dev/null 2>&1;
-	rm -f /boot/useraccount.txt;
-	echo "Almost done ...";
-	sleep 1s;
+	create_user > /dev/null 2>&1
+	create_sudoers > /dev/null 2>&1
+	rm -f /boot/broadcom/useraccount.txt
+	echo "Almost done ..."
+	sleep 1s
 else
 	# headful
-	account_prompt;
-	create_user > /dev/null 2>&1;
-	create_sudoers > /dev/null 2>&1;
-	rm -f /boot/rename_to_useraccount.txt;
-	echo "Almost done ...";
-	sleep 1s;
+	account_prompt
+	create_user > /dev/null 2>&1
+	create_sudoers > /dev/null 2>&1
+	rm -f /boot/broadcom/rename_to_useraccount.txt
+	echo "Almost done ..."
+	sleep 1s
 fi
-if [[ `grep -w "Debian" "/etc/os-release"` ]]; then
-	systemctl disable useraccount > /dev/null 2>&1;
-else
-	if [[ `grep -w "Devuan" "/etc/os-release"` ]]; then
-		update-rc.d useraccount remove > /dev/null 2>&1;
-	else
-		if [[ `grep -w "Ubuntu" "/etc/os-release"` ]]; then
-			systemctl disable useraccount > /dev/null 2>&1;
-		fi
-	fi
+if [[ "$RELEASE" == "Debian" || "$RELEASE" == "Ubuntu" ]]; then
+	systemctl disable useraccount > /dev/null 2>&1
+fi
+if [[ "$RELEASE" == "Devuan" ]]; then
+	update-rc.d useraccount remove > /dev/null 2>&1
 fi
 sleep 1s
 if [ -e /home/${USERNAME} ]; then
 	sleep 1s
-	mkdir -p /home/${USERNAME}/.config/mc/;
-	mv -f /etc/opt/user-ini /home/${USERNAME}/.config/mc/ini;
-	mv -f /etc/opt/nanorc-user /home/${USERNAME}/.nanorc;
-	chown -R ${USERNAME}:${USERNAME} /home/${USERNAME};
-	rm -f /etc/opt/{nanorc-user,user-ini};
+	mkdir -p /home/${USERNAME}/.config/mc/
+	mv -f /etc/opt/user-ini /home/${USERNAME}/.config/mc/ini
+	mv -f /etc/opt/nanorc-user /home/${USERNAME}/.nanorc
+	chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}
+	rm -f /etc/opt/{nanorc-user,user-ini}
 fi
-if [[ `grep -w "Devuan" "/etc/os-release"` ]]; then
-	clear -x;
+if [[ "$RELEASE" == "Devuan" ]]; then
+	clear -x
 fi
 
 exit 0
