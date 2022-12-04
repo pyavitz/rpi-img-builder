@@ -9,7 +9,8 @@ LOCALE="en_US.UTF-8"
 TIMEZONE="America/New_York"
 USER_NAMESERVER1="8.8.8.8"
 USER_NAMESERVER2="8.8.4.4"
-if [ -f profile.txt ]; then
+if [[ -f "profile.txt" ]]; then
+	# source user profile
 	. profile.txt
 fi
 rootpasswd="0"
