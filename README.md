@@ -117,7 +117,8 @@ Patches "-p1" placed in userpatches are applied during compilation.
 
 ## Usage
 * Review the [Wiki](https://github.com/pyavitz/rpi-img-builder/wiki/Options-&-Scripts)
-#### /boot/rename_to_useraccount.txt
+* The boot partition is labelled EFI
+#### EFI: rename_to_useraccount.txt
 * Headless: rename file to useraccount.txt and fill in the variables
 * Headful: don't rename file & get prompted to create a user account
 ```sh
@@ -126,7 +127,7 @@ USERNAME=""
 PASSWORD=""
 ```
 
-#### /boot/rename_to_credentials.txt
+#### EFI: rename_to_credentials.txt
 ```sh
 Rename file to credentials.txt and input your wifi information.
 
