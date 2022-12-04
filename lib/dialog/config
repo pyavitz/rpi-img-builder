@@ -17,7 +17,11 @@ rootpasswd="0"
 VERSION="5.15.y"
 BUILD_VERSION="1"
 menuconfig="0"
-crosscompile="1"
+if [[ `uname -m | grep aarch64` ]]; then
+	crosscompile="0"
+else
+	crosscompile="1"
+fi
 GCC_VERSION="gcc-$GCC"
 gcc="1"
 ccache="0"
