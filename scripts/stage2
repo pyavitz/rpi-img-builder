@@ -241,9 +241,6 @@ chown root:root /etc/motd
 
 # Extra firmware
 extra_firmware
-if [[ -f "/root/u-boot.bin" ]]; then
-	mv /root/u-boot.bin /boot/broadcom/u-boot.bin;
-fi
 
 # Udev rule
 if [[ -f "/root/99-com.rules" ]]; then
