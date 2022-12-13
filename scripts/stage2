@@ -85,7 +85,11 @@ if [[ "$DISTRO" == "devuan" ]]; then
 	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} openresolv ${FSPROG} ${NETWORKING} ${NETWORKING_EXTRA};
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
-	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} openresolv openssh-client openssh-server ${FSPROG} ${NETWORKING};
+	if [[ "$DISTRO_VERSION" == "kinetic" ]]; then
+		apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} systemd-resolved openssh-client openssh-server ${FSPROG} ${NETWORKING};
+	else
+		apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} openresolv openssh-client openssh-server ${FSPROG} ${NETWORKING};
+	fi
 fi
 # apt clean
 apt -y clean
@@ -308,10 +312,8 @@ fi
 
 # Remove zstd compression (not supported by older kernels)
 if [[ "$DISTRO" == "ubuntu" ]]; then
-	if [[ "$DISTRO_VERSION" == "jammy" ]] || [[ "$DISTRO_VERSION" == "kinetic" ]]; then
-		if [[ `grep -w "COMPRESS=zstd" "/etc/initramfs-tools/initramfs.conf"` ]]; then
-			sed -i 's/COMPRESS=zstd/COMPRESS=xz/g' /etc/initramfs-tools/initramfs.conf;
-		fi
+	if [[ `grep -w "COMPRESS=zstd" "/etc/initramfs-tools/initramfs.conf"` ]]; then
+		sed -i 's/COMPRESS=zstd/COMPRESS=xz/g' /etc/initramfs-tools/initramfs.conf;
 	fi
 fi
 
