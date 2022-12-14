@@ -93,13 +93,11 @@ else
 	if [ -f arch/arm/boot/zImage ]; then
 		mkdir -p "$tmpdir/$boot_path"
 		cp arch/arm/boot/zImage "$tmpdir/boot/Image"
-		cp arch/arm/boot/zImage "$tmpdir/$boot_path/Image"
 		cp arch/arm/boot/zImage "$tmpdir/$boot_path/$kernel_img"
 	fi
 	if [ -f arch/arm64/boot/Image ]; then
 		mkdir -p "$tmpdir/$boot_path"
 		cp arch/arm64/boot/Image "$tmpdir/boot/Image"
-		cp arch/arm64/boot/Image "$tmpdir/$boot_path/Image"
 		cp arch/arm64/boot/Image "$tmpdir/$boot_path/$kernel_img"
 	fi
 	if [ -f firmware/bootcode.bin ]; then
