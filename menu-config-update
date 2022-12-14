@@ -1,5 +1,7 @@
 #!/bin/bash
-GHURL="https://raw.githubusercontent.com/pyavitz/rpi-img-builder/menuconfig"
+GHURL="https://raw.githubusercontent.com/pyavitz/rpi-img-builder/master/"
+MCURL="https://raw.githubusercontent.com/pyavitz/rpi-img-builder/menuconfig"
+MENUDIR="/usr/local/bin/"
 clear -x
 echo -en "Updating menu and scripts "
 if [[ `command -v governor` ]]; then
@@ -10,29 +12,26 @@ if [[ `command -v swh` ]]; then
 fi
 if [[ `command -v sysinfo` ]]; then
 	sudo mv -f /usr/local/bin/sysinfo /usr/local/bin/sysinfo.orig;
-	sudo wget -cq $GHURL/scripts/sysinfo -P /usr/local/bin/;
-	if [ -f /usr/local/bin/sysinfo ]; then
+	sudo wget -cq $GHURL/files/scripts/sysinfo -P /usr/local/bin/;
+	if [[ -f "/usr/local/bin/sysinfo" ]]; then
 		sudo chmod +x /usr/local/bin/sysinfo;
 		sudo rm -f /usr/local/bin/sysinfo.orig;
 	else
 		sudo mv /usr/local/bin/sysinfo.orig /usr/local/bin/sysinfo;
 	fi
 fi
-MENU=`command -v menu-config`
-MENUDIR="/usr/local/bin/"
-if [ -f $MENU ]; then
-	sudo mv -f $MENU $MENU.orig;
-fi
-sudo wget -cq $GHURL/menu-config -P $MENUDIR
-sleep 1s
-sudo chmod +x $(command -v menu-config)
-if [ -f $MENU ]; then
-	sudo rm -f $MENU.orig;
-else
-	sudo mv -f $MENU.orig $MENU;
+if [[ `type -p menu-config` ]]; then
+	sudo mv -f /usr/local/bin/menu-config /usr/local/bin/menu-config.orig
+	sudo wget -cq $MCURL/menu-config -P $MENUDIR
+	sleep .50
+	sudo chmod +x $(command -v menu-config)
+	if [[ `type -p menu-config` ]]; then
+		sudo rm -f /usr/local/bin/menu-config.orig
+	else
+		sudo mv -f /usr/local/bin/menu-config.orig /usr/local/bin/menu-config
+	fi
 fi
 echo -e "[done]"
-sleep 1s
-clear -x
-menu-config
+sleep .50; clear -x; menu-config
+
 exit 0
