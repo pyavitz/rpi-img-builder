@@ -1,10 +1,11 @@
 #!/bin/bash
-# RASPBERRY PI IMAGE BUILDER: SYSTEM MENU INTERFACE
+# RASPBERRY PI IMAGE BUILDER
+# SYSTEM MENU INTERFACE
 if [[ -f "/etc/opt/board.txt" ]]; then
-	source /etc/opt/board.txt;
+	. /etc/opt/board.txt
 else
-	export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray';
-	whiptail --msgbox "    Your board is not supported." 0 0;
+	export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray'
+	whiptail --msgbox "    Your board is not supported." 0 0
 	exit 0
 fi
 
@@ -15,18 +16,18 @@ while true; do
 	PASSWD1=$(whiptail --backtitle "Menu Interface: User Password" --title "User: $USER" --passwordbox "Enter new password" --nocancel 8 78 3>&1 1>&2 2>&3)
 	PASSWD2=$(whiptail --backtitle "Menu Interface: User Password" --title "User: $USER" --passwordbox "Enter new password (again)" --nocancel 8 78 3>&1 1>&2 2>&3)
 	if [ "$PASSWD1" = "$PASSWD2" ]; then
-		PASSWORD="${PASSWD1}";
+		PASSWORD="${PASSWD1}"
 		export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray'
 		if (whiptail --backtitle "Menu Interface: User Password: Confirm" --title "Confirm" --yesno "    Set the new password?" 0 0); then
-			echo "$PASSWORD" | sed 's/.*/\0\n\0/' | sudo passwd -q $USER 2> /dev/null;
-			whiptail --backtitle "Menu Interface: User Password: Confirmation" --title "Confirmation" --msgbox "    Password changed successfully." 0 0;
+			echo "$PASSWORD" | sed 's/.*/\0\n\0/' | sudo passwd -q $USER 2> /dev/null
+			whiptail --backtitle "Menu Interface: User Password: Confirmation" --title "Confirmation" --msgbox "    Password changed successfully." 0 0
 		else
-			whiptail --title "Cancelled" --msgbox "    Hit enter to return to menu." 0 0;
+			whiptail --title "Cancelled" --msgbox "    Hit enter to return to menu." 0 0
 		fi
 	else
-		export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray';
-		whiptail --backtitle "" --msgbox "    Passwords don't match? Try again." 0 0;
-		continue;
+		export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray'
+		whiptail --backtitle "" --msgbox "    Passwords don't match? Try again." 0 0
+		continue
 	fi
 	break
 	clear -x
@@ -40,33 +41,33 @@ NEWHOST=$(whiptail --backtitle "Menu Interface: Hostname" --title "Current: $CUR
 HOSTNAME="${NEWHOST}"
 export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray'
 if (whiptail --backtitle "Hostname: Confirm" --title "Confirm" --yesno "    Apply new hostname? ${HOSTNAME}" 0 0); then
-	sudo sh -c "echo '$HOSTNAME' > /etc/hostname";
+	sudo sh -c "echo '$HOSTNAME' > /etc/hostname"
 	sudo sed -i "2s/.*/127.0.1.1	$HOSTNAME/" /etc/hosts
 	if [[ `grep -w "Devuan" "/etc/os-release"` ]]; then
-		sudo service hostname.sh --full-restart;
-		sudo service avahi-daemon restart;
+		sudo service hostname.sh --full-restart
+		sudo service avahi-daemon restart
 	else
-		sudo hostnamectl set-hostname $HOSTNAME;
-		sudo systemctl restart avahi-daemon;
+		sudo hostnamectl set-hostname $HOSTNAME
+		sudo systemctl restart avahi-daemon
 	fi
-	whiptail --backtitle "Hostname: Confirmation" --title "Confirmation" --msgbox "    ${HOSTNAME} applied successfully." 0 0;
+	whiptail --backtitle "Hostname: Confirmation" --title "Confirmation" --msgbox "    ${HOSTNAME} applied successfully." 0 0
 else
-	whiptail --title "Cancelled" --msgbox "    Hit enter to return to menu." 0 0;
+	whiptail --title "Cancelled" --msgbox "    Hit enter to return to menu." 0 0
 fi
 clear -x
 }
 
 clear -x
 BANNER="Menu Interface: "
-ONE="System "
-TWO="Settings"
+SYS="System "
+SET="Settings"
 
 # main menu
 while [ 1 ]
 do
 CHOICE=$(
 export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray'
-whiptail --backtitle "$BANNER$ONE$TWO" --title "System Menu Config" --menu "" --nocancel 0 25 0 \
+whiptail --backtitle "$BANNER$SYS$SET" --title "System Menu Config" --menu "" --nocancel 0 25 0 \
 	"W)" "Wireless          Configure wireless network interface" \
 	"" "" \
 	"1)" "Password          Change the default user password" \
@@ -82,9 +83,9 @@ whiptail --backtitle "$BANNER$ONE$TWO" --title "System Menu Config" --menu "" --
 case $CHOICE in
 	"W)")
 		if [[ `command -v nmtui` ]]; then
-			sudo nmtui;
+			sudo nmtui
 		else
-			swh -m;
+			swh -m
 		fi
 		;;
 	"")
@@ -110,18 +111,17 @@ case $CHOICE in
 	"")
 		;;
 	"U)")
-		MCU=`command -v menu-config-update`
-		MENUDIR="/usr/local/bin/"
-		if [ -f $MCU ]; then
-			sudo mv -f $MCU $MCU.orig > /dev/null 2>&1;
+		MENUDIR="/usr/local/bin"
+		if [[ `command -v menu-config-update` ]]; then
+			sudo mv -f ${MENUDIR}/menu-config-update ${MENUDIR}/menu-config-update.orig
 		fi
-		sudo wget -cq https://raw.githubusercontent.com/pyavitz/rpi-img-builder/menuconfig/menu-config-update -P $MENUDIR
-		sleep 1s
+		sudo wget -cq https://raw.githubusercontent.com/pyavitz/rpi-img-builder/menuconfig/menu-config-update -P ${MENUDIR}/
+		sleep .50
 		sudo chmod +x $(command -v menu-config-update)
-		if [ -f $MCU ]; then
-			sudo rm -f $MCU.orig;
+		if [[ `command -v menu-config-update` ]]; then
+			sudo rm -f ${MENUDIR}/menu-config-update.orig
 		else
-			sudo mv -f $MCU.orig $MCU > /dev/null 2>&1;
+			sudo mv -f ${MENUDIR}/menu-config-update.orig ${MENUDIR}/menu-config-update
 		fi
 		menu-config-update
 		exit 0
