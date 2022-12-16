@@ -15,7 +15,7 @@ df -h | egrep '(Filesystem)|(/dev/mmc)|(/dev/root)|(/dev/sd)|(/dev/nvme)'
 echo ""
 echo -e "== NETWORK"
 echo -e "Hostname:    $(hostname)"
-echo -e "$NETWORK" | sed "s/^[ \t]*//" | sed "s/eth0/$ETH       eth0/g" | sed "s/wlan0/$WLAN    wlan0/g" | sed "s/wlan1/$WLAN    wlan1/g" | sed "s/usb0/$USB      usb0/g"
+echo -e "$NETWORK" | sed "s/^[ \t]*//" | sed "s/eth0/$ETH       eth0/g" | sed "s/eth1/$ETH       eth1/g" | sed "s/wlan0/$WLAN    wlan0/g" | sed "s/wlan1/$WLAN    wlan1/g" | sed "s/usb0/$USB      usb0/g"
 echo ""
 echo -e "== SYSTEM"
 if [[ -f "/sys/devices/system/cpu/present" ]]; then
