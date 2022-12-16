@@ -10,7 +10,7 @@ FIN="\e[0m"
 
 # ECHOES
 echo_extract(){
-echo -e "${WHT}Extracting ${KERNEL}-${VERSION}${FIN} ..."
+echo -e "${WHT}Extracting archive${FIN} ..."
 }
 
 echo_compress(){
