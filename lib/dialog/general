@@ -58,7 +58,7 @@ case $selection in
 		;;
 	1 )
 		make "all" "board=$1"
-		dialog --prgbox "Results:" "ls $IMG_EXP *$ARCH_EXT* $MAKE_OUTPUT/" 30 75
+		dialog --prgbox "Results:" "ls $IMG_EXP *rootfs-${ARCH_EXT}* $MAKE_OUTPUT/" 30 75
 		exit 0
 		;;
 	2 )
@@ -67,7 +67,7 @@ case $selection in
 		;;
 	3 )
 		make "rootfs" "board=$1"
-		dialog --prgbox "Results:" "ls *$ARCH_EXT*" 30 75
+		dialog --prgbox "Results:" "ls *rootfs-${ARCH_EXT}*" 30 75
 		;;
 	4 )
 		make "image" "board=$1"
