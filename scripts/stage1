@@ -17,12 +17,24 @@ if [ $useracct -eq 0 ]; then
 fi
 source lib/function/universal
 if [ $uscripts -eq 1 ]; then
-	uscripts_pre-stage1;
+	uscripts_pre-stage1
 fi
 source board.txt
 source lib/function/staging
 source lib/function/${DISTRO}
-
+# clean area if found
+if [[ -d "p1" ]]; then
+	make cleanup
+	make cleanup > /dev/null 2>&1
+	clear -x
+fi
+# check output
+if [[ -d "output/${BOARD}" ]] && [[ `ls output/${BOARD}/linux-*.deb` ]]; then
+	:;
+else
+	echo -e "Missing linux deb packages"
+	exit 0
+fi
 # verbose
 if [ $verbose -eq 1 ]; then
 	set -eux -o pipefail;
