@@ -3,6 +3,18 @@ source lib/function/echoes
 source lib/source
 validation
 source userdata.txt
+# check user data file
+if [ $useracct -eq 0 ]; then
+	if [ -z $NAME ] && [ -z $USERNAME ] && [ -z $PASSWORD ]; then
+		echo -e ""
+		echo -e "Name, Username and Password fields are empty?"
+		echo -e "Enable the user account service or input your"
+		echo -e "information into the userdata.txt file."
+		echo -e ""
+		read -p "Press enter to continue."
+		exit 0
+	fi
+fi
 source lib/function/universal
 if [ $uscripts -eq 1 ]; then
 	uscripts_pre-stage1;
