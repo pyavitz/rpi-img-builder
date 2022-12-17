@@ -175,7 +175,7 @@ chown root:root /usr/lib/NetworkManager/conf.d/rtl8821cu.conf
 
 networkmanager-setup(){
 if [ -f /etc/network/interfaces ]; then
-	rm -f /etc/network/interfaces;
+	rm -f /etc/network/interfaces
 fi
 tee /etc/network/interfaces <<EOF
 source /etc/network/interfaces.d/*
@@ -209,10 +209,10 @@ rtl8821cu_conf
 
 ifupdown-credentials(){
 if [ -f /root/ifupdown.credentials ]; then
-	mv -f /root/ifupdown.credentials /usr/local/bin/credentials;
-	chmod +x /usr/local/bin/credentials;
-	chown root:root /usr/local/bin/credentials;
-	rm -f /root/networkmanager.credentials;
+	mv -f /root/ifupdown.credentials /usr/local/bin/credentials
+	chmod +x /usr/local/bin/credentials
+	chown root:root /usr/local/bin/credentials
+	rm -f /root/networkmanager.credentials
 fi
 echo "# wifi credentials" > /boot/broadcom/rename_to_credentials.txt
 echo 'SSID=""' >> /boot/broadcom/rename_to_credentials.txt
@@ -228,10 +228,10 @@ echo 'NAMESERVERS=""' >> /boot/broadcom/rename_to_credentials.txt
 
 networkmanager-credentials(){
 if [ -f /root/networkmanager.credentials ]; then
-	mv -f /root/networkmanager.credentials /usr/local/bin/credentials;
-	chmod +x /usr/local/bin/credentials;
-	chown root:root /usr/local/bin/credentials;
-	rm -f /root/ifupdown.credentials;
+	mv -f /root/networkmanager.credentials /usr/local/bin/credentials
+	chmod +x /usr/local/bin/credentials
+	chown root:root /usr/local/bin/credentials
+	rm -f /root/ifupdown.credentials
 fi
 echo "# wifi credentials" > /boot/broadcom/rename_to_credentials.txt
 echo 'SSID=""' >> /boot/broadcom/rename_to_credentials.txt
