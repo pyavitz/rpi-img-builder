@@ -8,36 +8,43 @@ cd ${SRC}
 }
 
 compiler(){
+if [[ -e "/etc/os-release" ]]; then
+	CODENAME=`cat /etc/os-release | grep -w VERSION_CODENAME | sed 's/VERSION_CODENAME=//g'`
+else
+	CODENAME="none"
+fi
 if [ $gcc -eq 1 ]; then
 	rm -f {gcc.txt,ccache.txt,clang.txt}
-	gcc_compiler;
+	gcc_compiler
 fi
 if [ $ccache -eq 1 ]; then
 	if [[ `command -v ccache` ]]; then
-	rm -f {gcc.txt,ccache.txt,clang.txt}
-	ccache_compiler;
-
-else
-	sudo apt update
-	sudo apt upgrade -y
-	sudo apt install -y ccache
-	sleep 1s
-	rm -f {gcc.txt,ccache.txt,clang.txt}
-	ccache_compiler;
+		rm -f {gcc.txt,ccache.txt,clang.txt}
+		ccache_compiler
+	else
+		sudo apt update
+		sudo apt upgrade -y
+		sudo apt install -y ccache
+		sleep .75
+		rm -f {gcc.txt,ccache.txt,clang.txt}
+		ccache_compiler
 	fi
 fi
-if [ $clang -eq 1 ]; then
+if [ $clang -eq 1 ] && [[ "$CODENAME" == "jammy" ]]; then
 	if [[ `command -v clang-14` ]]; then
-	rm -f {gcc.txt,ccache.txt,clang.txt}
-	clang_compiler;
-else
-	sudo apt update
-	sudo apt upgrade -y
-	sudo apt install -y clang clang-14 lld lld-14 llvm
-	sleep 1s
-	rm -f {gcc.txt,ccache.txt,clang.txt}
-	clang_compiler;
+		rm -f {gcc.txt,ccache.txt,clang.txt}
+		clang_compiler
+	else
+		sudo apt update
+		sudo apt upgrade -y
+		sudo apt install -y clang clang-14 lld lld-14 llvm
+		sleep .75
+		rm -f {gcc.txt,ccache.txt,clang.txt}
+		clang_compiler
 	fi
+else
+	echo -e "${CODENAME} is not supported."
+	exit 0
 fi
 }
 
@@ -48,10 +55,10 @@ sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export I
 
 userpatches(){
 if [[ `ls ../../userpatches/*.patch` ]] > /dev/null 2>&1; then
-	echo_patch;
-	for i in ../../userpatches/*.patch; do patch -p1 < $i; done;
-	echo_done;
-	echo "";
+	echo_patch
+	for i in ../../userpatches/*.patch; do patch -p1 < $i; done
+	echo_done
+	echo ""
 fi
 }
 
@@ -138,7 +145,16 @@ fi
 
 cconfig(){
 echo_cconfig
-cp -f ../../defconfig/${MYCONFIG} arch/${ARCH}/configs/
+if [[ -f "../../defconfig/${MYCONFIG}" ]]; then
+	cp -f ../../defconfig/${MYCONFIG} arch/${ARCH}/configs/
+else
+	echo ""
+	echo -e "${MYCONFIG} was not found."
+	echo -e "Check that the name is correct and in the correct location."
+	echo -e "If you believe you are receiving this in error, please report it."
+	read -p "Press enter to continue."
+	exit 1
+fi
 if [ $crosscompile -eq 1 ]; then
 	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} ${CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=${CROSS_COMPILE} ${MYCONFIG};
 else
