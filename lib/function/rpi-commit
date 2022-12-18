@@ -30,21 +30,23 @@ if [ $ccache -eq 1 ]; then
 		ccache_compiler
 	fi
 fi
-if [ $clang -eq 1 ] && [[ "$CODENAME" == "jammy" ]]; then
-	if [[ `command -v clang-14` ]]; then
-		rm -f {gcc.txt,ccache.txt,clang.txt}
-		clang_compiler
+if [ $clang -eq 1 ]; then
+	if [[ "$CODENAME" == "jammy" ]]; then
+		if [[ `command -v clang-14` ]]; then
+			rm -f {gcc.txt,ccache.txt,clang.txt}
+			clang_compiler
+		else
+			sudo apt update
+			sudo apt upgrade -y
+			sudo apt install -y clang clang-14 lld lld-14 llvm
+			sleep .75
+			rm -f {gcc.txt,ccache.txt,clang.txt}
+			clang_compiler
+		fi
 	else
-		sudo apt update
-		sudo apt upgrade -y
-		sudo apt install -y clang clang-14 lld lld-14 llvm
-		sleep .75
-		rm -f {gcc.txt,ccache.txt,clang.txt}
-		clang_compiler
+		echo -e "${CODENAME} is not supported."
+		exit 0
 	fi
-else
-	echo -e "${CODENAME} is not supported."
-	exit 0
 fi
 }
 
