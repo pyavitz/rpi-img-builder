@@ -19,7 +19,7 @@ else
 	echo ""
 	echo -e "Missing dependency: curl"
 	sudo apt install -y curl wget
-	exit 0
+	#exit 0
 fi
 
 echo ""
