@@ -19,7 +19,7 @@ set -o pipefail
 set -o nounset
 
 if [ $networkmanager -eq 0 ]; then
-	if [[ "$DISTRO_VERSION" == "jammy" ]] || [[ "$DISTRO_VERSION" == "kinetic" ]]; then
+	if [[ "$DISTRO_VERSION" == "jammy" || "$DISTRO_VERSION" == "kinetic" || "$DISTRO_VERSION" == "lunar" ]]; then
 		# systemd-resolved breaks static ip when using ifupdown
 		# it will be disabled on jammy jellyfish
 		unlink /etc/resolv.conf;
@@ -85,7 +85,7 @@ if [[ "$DISTRO" == "devuan" ]]; then
 	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} openresolv ${FSPROG} ${NETWORKING} ${NETWORKING_EXTRA};
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
-	if [[ "$DISTRO_VERSION" == "kinetic" ]]; then
+	if [[ "$DISTRO_VERSION" == "kinetic" || "$DISTRO_VERSION" == "lunar" ]]; then
 		apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} systemd-resolved openssh-client openssh-server ${FSPROG} ${NETWORKING};
 	else
 		apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} openresolv openssh-client openssh-server ${FSPROG} ${NETWORKING};

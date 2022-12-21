@@ -73,7 +73,7 @@ Menuconfig:		# Kernel menuconfig
 Crosscompile:		# 1 to cross compile | 0 to native compile
 
 Compiler        	WARNING: Only one may be selected
-Version:		# gcc-10 (default)
+Version:		# gcc-10
 GCC:			#
 Ccache:			#
 Clang:			# Supported: Jammy Jellyfish
@@ -83,7 +83,7 @@ Distro:			# Supported: debian, devuan and ubuntu
 Release:		# Debian: bullseye, bookworm, testing, unstable and sid
 			# Devuan: chimaera, daedalus, testing, unstable and ceres
 			# Ubuntu: focal and jammy
-Network Manager		# Enable nmtui (default: ifupdown)
+NetworkManager		# 1 networkmanager | 0 ifupdown
 
 Filesystem
 ext4:			# Journaling filesystem (default)

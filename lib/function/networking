@@ -79,7 +79,7 @@ if [[ "$DISTRO" == "devuan" ]]; then
 		eth_udev-rule;
 	fi
 fi
-if [[ "$DISTRO_VERSION" == "jammy" ]]; then
+if [[ "$DISTRO_VERSION" == "jammy" || "$DISTRO_VERSION" == "kinetic" || "$DISTRO_VERSION" == "lunar" ]]; then
 	# /etc/network/if-down.d/resolved: 12: mystatedir: not found
 	# /etc/network/if-up.d/resolved: 12: mystatedir: not found
 	if [ -f /etc/network/if-down.d/resolved ]; then
