@@ -47,15 +47,10 @@ else
 	sudo dpkg -i $FILE
 	rm -f $FILE;
 fi
-if [ -e /usr/share/debootstrap/scripts/chimaera ]; then
+if [[ -f "/usr/share/debootstrap/scripts/${DISTRO_VERSION}" ]]; then
 	:;
 else
-	ln -sr /usr/share/debootstrap/scripts/sid /usr/share/debootstrap/scripts/chimaera;
-fi
-if [ -e /usr/share/debootstrap/scripts/daedalus ]; then
-	:;
-else
-	ln -sr /usr/share/debootstrap/scripts/sid /usr/share/debootstrap/scripts/daedalus;
+	ln -sr /usr/share/debootstrap/scripts/sid /usr/share/debootstrap/scripts/${DISTRO_VERSION}
 fi
 }
 
