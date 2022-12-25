@@ -34,7 +34,7 @@ StandardOutput=journal+console
 StandardError=journal+console
 
 [Install]
-RequiredBy=local-fs-pre.target
+WantedBy=multi-user.target
 EOF
 }
 
