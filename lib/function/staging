@@ -160,7 +160,7 @@ disable_overscan=1
 dtparam=audio=on
 
 # enable uart
-enable_uart=1
+enable_uart=0
 
 # disable wifi and bluetooth
 #dtoverlay=disable-wifi
@@ -247,7 +247,7 @@ disable_overscan=1
 dtparam=audio=on
 
 # enable uart
-enable_uart=1
+enable_uart=0
 
 # disable wifi and bluetooth
 #dtoverlay=pi3-disable-wifi
@@ -326,7 +326,7 @@ disable_overscan=1
 dtparam=audio=on
 
 # enable uart
-enable_uart=1
+enable_uart=0
 
 # disable wifi and bluetooth
 #dtoverlay=pi3-disable-wifi
@@ -405,7 +405,7 @@ disable_overscan=1
 dtparam=audio=on
 
 # enable uart
-enable_uart=1
+enable_uart=0
 
 # disable wifi and bluetooth
 #dtoverlay=disable-wifi
