@@ -120,7 +120,6 @@ fi
 }
 
 extra_wireless(){
-echo ""
 if [ $rtl8812au -eq 1 ]; then
 	echo -en "${WHT}Realtek 88XXAU${FIN} ";
 	rtl8812au_download;

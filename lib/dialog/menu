@@ -12,7 +12,7 @@ while IFS=$'\n' read -r opt; do
 done < lib/dialog/list
 
 # dialog menu
-cmd=(dialog --backtitle "Raspberry Pi Image Builder" --title "B O A R D S" --cancel-label "Exit" --radiolist "" 0 0 0)
+cmd=(dialog --backtitle "RASPBERRY PI IMAGE BUILDER" --title "B O A R D S" --cancel-label "Exit" --radiolist "" 0 0 0)
 choices=($("${cmd[@]}" "${options[@]}" 2>&1 1>/dev/tty))
 
 # selection

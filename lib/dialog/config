@@ -1,5 +1,8 @@
 #!/bin/bash
 
+GCC=`ls -ls /usr/bin/gcc | sed 's/.*\(..\)/\1/' | sed 's/ //g'`
+ARCH=`uname -m`
+
 NAME=""
 USERNAME=""
 PASSWORD=""
@@ -8,20 +11,25 @@ TIMEZONE="America/New_York"
 USER_NAMESERVER1="8.8.8.8"
 USER_NAMESERVER2="8.8.4.4"
 if [[ -f "profile.txt" ]]; then
+	# source user profile
 	. profile.txt
 fi
 rootpasswd="0"
 VERSION="5.15.y"
 BUILD_VERSION="1"
 menuconfig="0"
-crosscompile="1"
-GCC_VERSION="gcc-10"
+if [[ "$ARCH" == "aarch64" ]]; then
+	crosscompile="0"
+else
+	crosscompile="1"
+fi
+GCC_VERSION="gcc-$GCC"
 gcc="1"
 ccache="0"
 clang="0"
 DISTRO="debian"
 DISTRO_VERSION="bullseye"
-networkmanager="0"
+networkmanager="1"
 ext4="1"
 btrfs="0"
 xfs="0"
@@ -38,8 +46,8 @@ exec 3>&1
 
 # store data to $VALUES variable
 VALUES=$(dialog --ok-label "Submit" --no-cancel \
-	  --backtitle "Raspberry Pi Image Builder" \
-	  --title "Config Menu" \
+	  --backtitle "RASPBERRY PI IMAGE BUILDER" \
+	  --title "" \
 	  --form "" \
 0 36 0 \
 	"Name:"			1 1	"$NAME" 		1 7 23 0 \
@@ -65,9 +73,9 @@ VALUES=$(dialog --ok-label "Submit" --no-cancel \
 	"Network Manager:" 	21 1	"$networkmanager" 	21 18 2 0 \
 	""			22 1	""	 		22 14 0 0 \
 	"Filesystem"		23 1	""	 		23 14 0 0 \
-	"ext4:"			24 1	"$ext4"		 	24 8 2 0 \
-	"btrfs:"		25 1	"$btrfs"	 	25 8 2 0 \
-	"xfs:"			26 1	"$xfs"		 	26 8 2 0 \
+	"EXT4:"			24 1	"$ext4"		 	24 8 2 0 \
+	"BTRFS:"		25 1	"$btrfs"	 	25 8 2 0 \
+	"XFS:"			26 1	"$xfs"		 	26 8 2 0 \
 	""			27 1	""	 		27 14 0 0 \
 	"Customize"		28 1	""	 		28 14 0 0 \
 	"Defconfig:"		29 1	"$custom_defconfig" 	29 12 2 0 \
@@ -84,7 +92,7 @@ VALUES=$(dialog --ok-label "Submit" --no-cancel \
 # close fd
 exec 3>&-
 
-# convert into vars
+# convert into variables
 echo "$VALUES" > tmp1
 echo NAME='"' > tmp0
 echo USERNAME='"' >> tmp0
@@ -134,7 +142,7 @@ echo NAMESERVER2='"'${USER_NAMESERVER2}'"' >> tmp0
 echo rtl8812au=0 >> tmp0
 echo rtl88x2bu=0 >> tmp0
 echo rtl8811cu=0 >> tmp0
-echo builder=4.11 >> tmp0
+echo builder=5.0 >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
 echo '"' >> tmp2

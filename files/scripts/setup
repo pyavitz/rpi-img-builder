@@ -1,6 +1,4 @@
 #!/bin/bash
-BLD="\033[1m"
-FIN="\033[0m"
 
 if [ $# -eq 0 ]; then
 	echo -e "Missing options!"
@@ -11,32 +9,32 @@ fi
 
 while getopts "rh" OPTION; do
 	case $OPTION in
-
 		r)
 			echo ""
-			echo -e "${BLD}Running System Setup${FIN} ..."
-			sleep 1s
+			echo -e "Running System Setup ..."
+			sleep .75
 			sudo dpkg-reconfigure locales tzdata keyboard-configuration
-			sleep 1s
+			sleep .50
 			if [[ `curl -I https://github.com 2>&1 | grep 'HTTP/2 200'` ]]; then
-				echo "Updating tasksel ...";
+				if [[ "$NAME" == "Ubuntu" ]]; then echo ""; fi
+				echo "Configuring tasksel ..."
 				if [[ `command -v tasksel` ]]; then
 					:;
 				else
-					sudo apt update;
-					sudo apt install -y tasksel;
+					sudo apt update
+					sudo apt install -y tasksel
 				fi
-				sleep 1s;
-				sudo apt-get update;
-				sudo apt-get install --reinstall debconf;
-				sudo dpkg-reconfigure tasksel;
-				echo "Done.";
-				echo "";
+				sleep .75
+				sudo apt-get update
+				sudo apt-get install --reinstall debconf
+				sudo dpkg-reconfigure tasksel
+				echo "Done."
+				echo ""
 			fi
-			sleep 1s
+			sleep .50
 			sudo update-ca-certificates -f
 			echo ""
-			echo -e "${BLD}System is ready to go${FIN}."
+			echo -e "Setup complete."
 			exit 0
 			;;
 		h)
@@ -47,4 +45,5 @@ while getopts "rh" OPTION; do
 			;;
 	esac
 done
+
 exit 0

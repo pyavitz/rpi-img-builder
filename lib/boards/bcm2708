@@ -13,6 +13,9 @@ FAMILY_EXT=""
 
 # default config
 LINUX_DEFCONFIG="bcmrpi_defconfig"
+
+# partitions
+OFFSET="8192"
 P_VALUE="p2"
 
 # output
@@ -32,3 +35,10 @@ MOTD="Raspberry Pi"
 EXT4="3000MB"
 BTRFS="2650MB"
 XFS="2650MB"
+
+# packaging
+KERNEL_IMG="kernel.img"
+SERIES="bcm2708-${BOARD_EXT}"
+LINUX_IMAGE="linux-image-${SERIES}"
+LINUX_HEADERS="linux-headers-${SERIES}"
+COMPRESSION="xz"

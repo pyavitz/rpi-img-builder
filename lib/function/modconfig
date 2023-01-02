@@ -17,4 +17,35 @@ if [[ `grep -w "CONFIG_CIFS_POSIX=y" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` 
 else
 	echo "CONFIG_CIFS_POSIX=y" >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
 fi
+# efi
+if [[ `grep -w "CONFIG_EFI=y" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then
+	:;
+else
+	echo "CONFIG_EFI=y" >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
+fi
+if [[ `grep -w "CONFIG_DMI=y" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then
+	:;
+else
+	echo "CONFIG_DMI=y" >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
+fi
+if [[ `grep -w "CONFIG_SYSFB_SIMPLEFB=y" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then
+	:;
+else
+	echo "CONFIG_SYSFB_SIMPLEFB=y" >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
+fi
+if [[ `grep -w "CONFIG_EFI_ARMSTUB_DTB_LOADER=y" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then
+	:;
+else
+	echo "CONFIG_EFI_ARMSTUB_DTB_LOADER=y" >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
+fi
+if [[ `grep -w "CONFIG_EFI_BOOTLOADER_CONTROL=y" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then
+	:;
+else
+	echo "CONFIG_EFI_BOOTLOADER_CONTROL=y" >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
+fi
+if [[ `grep -w "CONFIG_RESET_ATTACK_MITIGATION=y" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then
+	:;
+else
+	echo "CONFIG_RESET_ATTACK_MITIGATION=y" >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
+fi
 }

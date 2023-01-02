@@ -40,22 +40,17 @@ fi
 devuan_keyring(){
 URL="https://pkgmaster.devuan.org/devuan/pool/main/d/devuan-keyring/"
 FILE="devuan-keyring_2022.09.04_all.deb"
-if ls /usr/share/keyrings/{devuan-archive-keyring.gpg,devuan-keyring.gpg} > /dev/null 2>&1;
-	then :;
+if ls /usr/share/keyrings/{devuan-archive-keyring.gpg,devuan-keyring.gpg} > /dev/null 2>&1; then
+	:;
 else
 	wget -cq --show-progress $URL$FILE
 	sudo dpkg -i $FILE
 	rm -f $FILE;
 fi
-if [ -e /usr/share/debootstrap/scripts/chimaera ]; then
+if [[ -f "/usr/share/debootstrap/scripts/${DISTRO_VERSION}" ]]; then
 	:;
 else
-	ln -sr /usr/share/debootstrap/scripts/sid /usr/share/debootstrap/scripts/chimaera;
-fi
-if [ -e /usr/share/debootstrap/scripts/daedalus ]; then
-	:;
-else
-	ln -sr /usr/share/debootstrap/scripts/sid /usr/share/debootstrap/scripts/daedalus;
+	ln -sr /usr/share/debootstrap/scripts/sid /usr/share/debootstrap/scripts/${DISTRO_VERSION}
 fi
 }
 
@@ -73,16 +68,16 @@ FILE3="ubuntu-keyring_2020.06.17.1-1_all.deb"
 FILE4="ubuntu-archive-keyring_2020.06.17.1-1_all.deb"
 FILE5="ubuntu-cloud-keyring_2020.06.17.1-1_all.deb"
 FILE6="ubuntu-dbgsym-keyring_2020.06.17.1-1_all.deb"
-if [[ `grep -w "Ubuntu" "/etc/os-release"` ]]; [[ `grep -w "VERSION_CODENAME=jammy" "/etc/os-release"` ]]; then
+if [[ `grep -w "Ubuntu" "/etc/os-release"` ]] && [[ `grep -w "VERSION_CODENAME=jammy" "/etc/os-release"` ]]; then
 	:;
 else
 	if [[ `apt show dpkg | grep "Version: 1.21"` ]] > /dev/null 2>&1; then
 		:;
 	else
-		wget -cq $URL$FILE1;
-		wget -cq $URL$FILE2;
-		sudo dpkg -i *.deb;
-		rm -f *.deb;
+		wget -cq $URL$FILE1
+		wget -cq $URL$FILE2
+		sudo dpkg -i *.deb
+		rm -f *.deb
 	fi
 fi
 if [ -e /usr/share/keyrings/ubuntu-archive-keyring.gpg ]; then
@@ -94,15 +89,12 @@ else
 	wget -cq --show-progress $URL$FILE6
 	sudo dpkg -i *.deb
 	rm -f *.deb
-	if [ -e /usr/share/debootstrap/scripts/impish ]; then
+fi
+if [[ "$DISTRO_VERSION" == "jammy" || "$DISTRO_VERSION" == "kinetic" || "$DISTRO_VERSION" == "lunar" ]]; then
+	if [[ -f "/usr/share/debootstrap/scripts/${DISTRO_VERSION}" ]]; then
 		:;
 	else
-		ln -sr /usr/share/debootstrap/scripts/gutsy /usr/share/debootstrap/scripts/impish;
-	fi
-	if [ -e /usr/share/debootstrap/scripts/jammy ]; then
-		:;
-	else
-		ln -sr /usr/share/debootstrap/scripts/gutsy /usr/share/debootstrap/scripts/jammy;
+		ln -sr /usr/share/debootstrap/scripts/gutsy /usr/share/debootstrap/scripts/${DISTRO_VERSION}
 	fi
 fi
 }

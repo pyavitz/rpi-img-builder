@@ -5,6 +5,7 @@ validation
 source board.txt
 source userdata.txt
 source lib/function/rootfs
+HOST_MACHINE=`cat /etc/os-release | grep -w NAME | sed 's/NAME=//g' | sed 's/"//g' | sed 's/ GNU\/Linux//g'`
 
 if [[ "$ROOTFS_ARCH" == "rootfs-armel" ]]; then
 	if [[ "$DISTRO" == "ubuntu" ]]; then
@@ -21,7 +22,7 @@ fi
 if [[ "$DISTRO" == "devuan" ]]; then
 	devuan_keyring;
 fi
-if [[ `grep -w "Ubuntu" "/etc/os-release"` ]]; then
+if [[ "$HOST_MACHINE" == "Ubuntu" ]]; then
 	:;
 else
 	if [[ "$DISTRO" == "ubuntu" ]]; then
@@ -109,11 +110,15 @@ if [ -e ${ROOT} ]; then
 	rm -fdr ${ROOT}
 fi
 
-if [ -f /usr/share/debootstrap/scripts/chimaera ]; then
-	rm -f /usr/share/debootstrap/scripts/chimaera;
+if [[ "$HOST_MACHINE" == "Debian" || "$HOST_MACHINE" == "Ubuntu" ]]; then
+	if [[ -f "/usr/share/debootstrap/scripts/chimaera" ]]; then
+		rm -f /usr/share/debootstrap/scripts/chimaera;
+	fi
+	if [[ -f "/usr/share/debootstrap/scripts/daedalus" ]]; then
+		rm -f /usr/share/debootstrap/scripts/daedalus;
+	fi
 fi
-if [ -f /usr/share/debootstrap/scripts/daedalus ]; then
-	rm -f /usr/share/debootstrap/scripts/daedalus;
-fi
+
 clear -x
+
 exit 0

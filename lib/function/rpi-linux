@@ -8,52 +8,45 @@ cd ${SRC}
 }
 
 compiler(){
+if [[ -e "/etc/os-release" ]]; then
+	CODENAME=`cat /etc/os-release | grep -w VERSION_CODENAME | sed 's/VERSION_CODENAME=//g'`
+else
+	CODENAME="none"
+fi
 if [ $gcc -eq 1 ]; then
 	rm -f {gcc.txt,ccache.txt,clang.txt}
-	gcc_compiler;
+	gcc_compiler
 fi
 if [ $ccache -eq 1 ]; then
 	if [[ `command -v ccache` ]]; then
-	rm -f {gcc.txt,ccache.txt,clang.txt}
-	ccache_compiler;
-
-else
-	sudo apt update
-	sudo apt upgrade -y
-	sudo apt install -y ccache
-	sleep 1s
-	rm -f {gcc.txt,ccache.txt,clang.txt}
-	ccache_compiler;
+		rm -f {gcc.txt,ccache.txt,clang.txt}
+		ccache_compiler
+	else
+		sudo apt update
+		sudo apt upgrade -y
+		sudo apt install -y ccache
+		sleep .75
+		rm -f {gcc.txt,ccache.txt,clang.txt}
+		ccache_compiler
 	fi
 fi
 if [ $clang -eq 1 ]; then
-	if [[ `command -v clang-14` ]]; then
-	rm -f {gcc.txt,ccache.txt,clang.txt}
-	clang_compiler;
-else
-	sudo apt update
-	sudo apt upgrade -y
-	sudo apt install -y clang clang-14 lld lld-14 llvm
-	sleep 1s
-	rm -f {gcc.txt,ccache.txt,clang.txt}
-	clang_compiler;
+	if [[ "$CODENAME" == "jammy" ]]; then
+		if [[ `command -v clang-14` ]]; then
+			rm -f {gcc.txt,ccache.txt,clang.txt}
+			clang_compiler
+		else
+			sudo apt update
+			sudo apt upgrade -y
+			sudo apt install -y clang clang-14 lld lld-14 llvm
+			sleep .75
+			rm -f {gcc.txt,ccache.txt,clang.txt}
+			clang_compiler
+		fi
+	else
+		echo -e "${CODENAME} is not supported."
+		exit 0
 	fi
-fi
-}
-
-raspberrypi_packaging(){ # broadcom
-sed -i 's/packagename=linux-image-$version/packagename=raspberrypi-linux-image/g' scripts/package/builddeb
-sed -i 's/kernel_headers_packagename=linux-headers-$version/kernel_headers_packagename=raspberrypi-linux-headers/g' scripts/package/builddeb
-sed -i 's/packagename=linux-image-$version/packagename=raspberrypi-linux-image/g' scripts/package/mkdebian
-sed -i 's/kernel_headers_packagename=linux-headers-$version/kernel_headers_packagename=raspberrypi-linux-headers/g' scripts/package/mkdebian
-if [[ "$BOARD_EXT" == "rpi-4" ]]; then
-	sed -i 's/packageversion=$version-$revision/packageversion=$version-$revision~rpi4/g' scripts/package/mkdebian;
-fi
-if [[ "$BOARD" == "bcm2710" ]] || [[ "$BOARD" == "bcm2709" ]]; then
-	sed -i 's/packageversion=$version-$revision/packageversion=$version-$revision~rpi2+3/g' scripts/package/mkdebian;
-fi
-if [[ "$BOARD" == "bcm2708" ]]; then
-	sed -i 's/packageversion=$version-$revision/packageversion=$version-$revision~rpi0+1/g' scripts/package/mkdebian;
 fi
 }
 
@@ -64,10 +57,10 @@ sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export I
 
 userpatches(){
 if [[ `ls ../../userpatches/*.patch` ]] > /dev/null 2>&1; then
-	echo_patch;
-	for i in ../../userpatches/*.patch; do patch -p1 < $i; done;
-	echo_done;
-	echo "";
+	echo_patch
+	for i in ../../userpatches/*.patch; do patch -p1 < $i; done
+	echo_done
+	echo ""
 fi
 }
 
@@ -154,7 +147,16 @@ fi
 
 cconfig(){
 echo_cconfig
-cp -f ../../defconfig/${MYCONFIG} arch/${ARCH}/configs/
+if [[ -f "../../defconfig/${MYCONFIG}" ]]; then
+	cp -f ../../defconfig/${MYCONFIG} arch/${ARCH}/configs/
+else
+	echo ""
+	echo -e "${MYCONFIG} was not found."
+	echo -e "Check that the name is correct and in the correct location."
+	echo -e "If you believe you are receiving this in error, please report it."
+	read -p "Press enter to continue."
+	exit 1
+fi
 if [ $crosscompile -eq 1 ]; then
 	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} ${CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=${CROSS_COMPILE} ${MYCONFIG};
 else
@@ -207,19 +209,10 @@ echo 'y' | make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} KBUILD_BUILD_U
 
 packaging(){
 echo ""
-userpatches
 rm -f scripts/package/{builddeb,mkdebian}
-if [[ "$BOARD_EXT" == "rpi-4" ]]; then
-	cp -f ../../packaging/rpi4-builddeb scripts/package/builddeb;
-fi
-if [[ "$BOARD" == "bcm2710" ]] || [[ "$BOARD" == "bcm2709" ]]; then
-	cp -f ../../packaging/rpi2+3-builddeb scripts/package/builddeb;
-fi
-if [[ "$BOARD" == "bcm2708" ]]; then
-	cp -f ../../packaging/rpi-builddeb scripts/package/builddeb;
-fi
-cp -f ../../packaging/mkdebian scripts/package/
+cp -fr ../../packaging/{builddeb,mkdebian} scripts/package/
 chmod +x scripts/package/{builddeb,mkdebian}
-raspberrypi_packaging
-cp -f ../../packaging/headers-byteshift.patch headers-byteshift.patch;
+cp -f ../../packaging/headers-byteshift.patch headers-byteshift.patch
+userpatches
+linux_packaging
 }

@@ -46,7 +46,7 @@ echo -e "${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
 }
 
 echo_kernel(){
-echo -e "${WHT}Downloading kernel${FIN} ..."
+echo -e "${WHT}Downloading ${KERNEL}-${VERSION}${FIN} ..."
 }
 
 echo_firm(){

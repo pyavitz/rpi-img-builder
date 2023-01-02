@@ -33,18 +33,26 @@ create_package() {
 
 	# Create the package
 	dpkg-gencontrol -p$pname -P"$pdir"
-	dpkg-deb -Zxz --build "$pdir" ..
+	dpkg-deb -Z$compression --build "$pdir" ..
 }
+
+if [ -f scripts/package/pkgvars ]; then
+	. scripts/package/pkgvars
+else
+	echo "Missing: pkgvars"
+	exit 0
+fi
 
 version=$KERNELRELEASE
 tmpdir="$objtree/debian/tmp"
 kernel_headers_dir="$objtree/debian/hdrtmp"
 libc_headers_dir="$objtree/debian/headertmp"
 dbg_dir="$objtree/debian/dbgtmp"
-packagename=linux-image-$version
-kernel_headers_packagename=linux-headers-$version
 libc_headers_packagename=linux-libc-dev
 dbg_packagename=$packagename-dbg
+# set by pkgvars
+packagename=$linux_packagename
+kernel_headers_packagename=$headers_packagename
 
 if [ "$ARCH" = "um" ] ; then
 	packagename=user-mode-linux-$version
@@ -82,6 +90,37 @@ if [ "$ARCH" = "um" ] ; then
 else
 	cp System.map "$tmpdir/boot/System.map-$version"
 	cp $KCONFIG_CONFIG "$tmpdir/boot/config-$version"
+	if [ -f arch/arm/boot/zImage ]; then
+		mkdir -p "$tmpdir/$boot_path"
+		cp arch/arm/boot/zImage "$tmpdir/boot/Image"
+		cp arch/arm/boot/zImage "$tmpdir/$boot_path/$kernel_img"
+	fi
+	if [ -f arch/arm64/boot/Image ]; then
+		mkdir -p "$tmpdir/$boot_path"
+		cp arch/arm64/boot/Image "$tmpdir/boot/Image"
+		cp arch/arm64/boot/Image "$tmpdir/$boot_path/$kernel_img"
+	fi
+	if [ -f firmware/bootcode.bin ]; then
+		install -m 0644 firmware/bootcode.bin "$tmpdir/$boot_path"
+	fi
+	if [ -f firmware/fixup.dat ]; then
+		install -m 0644 firmware/fixup*.dat "$tmpdir/$boot_path"
+	fi
+	if [ -f firmware/start.elf ]; then
+		install -m 0644 firmware/start*.elf "$tmpdir/$boot_path"
+	fi
+	if [ -f firmware/fixup4.dat ]; then
+		install -m 0644 firmware/fixup4*.dat "$tmpdir/$boot_path"
+	fi
+	if [ -f firmware/start4.elf ]; then
+		install -m 0644 firmware/start4*.elf "$tmpdir/$boot_path"
+	fi
+	if [ -f firmware/LICENCE.broadcom ]; then
+		install -m 0644 firmware/LICENCE.broadcom "$tmpdir/$boot_path"
+	fi
+	if [ -f firmware/COPYING.linux ]; then
+		install -m 0644 firmware/COPYING.linux "$tmpdir/$boot_path"
+	fi
 fi
 cp "$($MAKE -s -f $srctree/Makefile image_name)" "$tmpdir/$installed_image_path"
 
@@ -129,11 +168,103 @@ if [ "$ARCH" != "um" ]; then
 	mv $libc_headers_dir/usr/include/asm $libc_headers_dir/usr/include/$host_arch/
 fi
 
+# Install dtbs
+if [ -d $tmpdir/$boot_path ]; then :; else mkdir -p "$tmpdir/$boot_path"; fi
+if [ "$board_series" = "rpi-4" ]; then
+	# armhf
+	if [ -f $tmpdir/usr/lib/$linux_packagename/bcm2711-rpi-4-b.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/bcm2711-rpi-4-b.dtb" "$tmpdir/$boot_path/bcm2711-rpi-4-b.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/bcm2711-rpi-400.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/bcm2711-rpi-400.dtb" "$tmpdir/$boot_path/bcm2711-rpi-400.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/bcm2711-rpi-cm4.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/bcm2711-rpi-cm4.dtb" "$tmpdir/$boot_path/bcm2711-rpi-cm4.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/bcm2711-rpi-cm4s.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/bcm2711-rpi-cm4s.dtb" "$tmpdir/$boot_path/bcm2711-rpi-cm4s.dtb"
+	fi
+	# arm64
+	if [ -f $tmpdir/usr/lib/$linux_packagename/broadcom/bcm2711-rpi-4-b.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/broadcom/bcm2711-rpi-4-b.dtb" "$tmpdir/$boot_path/bcm2711-rpi-4-b.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/broadcom/bcm2711-rpi-400.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/broadcom/bcm2711-rpi-400.dtb" "$tmpdir/$boot_path/bcm2711-rpi-400.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/broadcom/bcm2711-rpi-cm4.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/broadcom/bcm2711-rpi-cm4.dtb" "$tmpdir/$boot_path/bcm2711-rpi-cm4.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/broadcom/bcm2711-rpi-cm4s.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/broadcom/bcm2711-rpi-cm4s.dtb" "$tmpdir/$boot_path/bcm2711-rpi-cm4s.dtb"
+	fi
+fi
+if [ "$board_series" = "rpi-3" ] || [ "$board_series" = "rpi-2+3" ]; then
+	# armhf
+	if [ -f $tmpdir/usr/lib/$linux_packagename/bcm2710-rpi-3-b-plus.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/bcm2710-rpi-3-b-plus.dtb" "$tmpdir/$boot_path/bcm2710-rpi-3-b-plus.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/bcm2710-rpi-3-b.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/bcm2710-rpi-3-b.dtb" "$tmpdir/$boot_path/bcm2710-rpi-3-b.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/bcm2710-rpi-2-b.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/bcm2710-rpi-2-b.dtb" "$tmpdir/$boot_path/bcm2710-rpi-2-b.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/bcm2709-rpi-2-b.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/bcm2709-rpi-2-b.dtb" "$tmpdir/$boot_path/bcm2709-rpi-2-b.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/bcm2710-rpi-zero-2.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/bcm2710-rpi-zero-2.dtb" "$tmpdir/$boot_path/bcm2710-rpi-zero-2.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/bcm2710-rpi-zero-2-w.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/bcm2710-rpi-zero-2-w.dtb" "$tmpdir/$boot_path/bcm2710-rpi-zero-2-w.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/bcm2710-rpi-cm3.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/bcm2710-rpi-cm3.dtb" "$tmpdir/$boot_path/bcm2710-rpi-cm3.dtb"
+	fi
+	# arm64
+	if [ -f $tmpdir/usr/lib/$linux_packagename/broadcom/bcm2710-rpi-3-b-plus.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/broadcom/bcm2710-rpi-3-b-plus.dtb" "$tmpdir/$boot_path/bcm2710-rpi-3-b-plus.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/broadcom/bcm2710-rpi-3-b.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/broadcom/bcm2710-rpi-3-b.dtb" "$tmpdir/$boot_path/bcm2710-rpi-3-b.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/broadcom/bcm2710-rpi-2-b.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/broadcom/bcm2710-rpi-2-b.dtb" "$tmpdir/$boot_path/bcm2710-rpi-2-b.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/broadcom/bcm2710-rpi-zero-2.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/broadcom/bcm2710-rpi-zero-2.dtb" "$tmpdir/$boot_path/bcm2710-rpi-zero-2.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/broadcom/bcm2710-rpi-zero-2-w.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/broadcom/bcm2710-rpi-zero-2-w.dtb" "$tmpdir/$boot_path/bcm2710-rpi-zero-2-w.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/broadcom/bcm2710-rpi-cm3.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/broadcom/bcm2710-rpi-cm3.dtb" "$tmpdir/$boot_path/bcm2710-rpi-cm3.dtb"
+	fi
+fi
+if [ "$board_series" = "rpi" ]; then
+	if [ -f $tmpdir/usr/lib/$linux_packagename/bcm2708-rpi-zero-w.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/bcm2708-rpi-zero-w.dtb" "$tmpdir/$boot_path/bcm2708-rpi-zero-w.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/bcm2708-rpi-zero.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/bcm2708-rpi-zero.dtb" "$tmpdir/$boot_path/bcm2708-rpi-zero.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/bcm2708-rpi-b.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/bcm2708-rpi-b.dtb" "$tmpdir/$boot_path/bcm2708-rpi-b.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/bcm2708-rpi-b-plus.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/bcm2708-rpi-b-plus.dtb" "$tmpdir/$boot_path/bcm2708-rpi-b-plus.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/bcm2708-rpi-b-rev1.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/bcm2708-rpi-b-rev1.dtb" "$tmpdir/$boot_path/bcm2708-rpi-b-rev1.dtb"
+	fi
+fi
+# Install overlays
+if [ -d $tmpdir/usr/lib/$linux_packagename/overlays ]; then
+	mkdir -p "$tmpdir/$boot_path/overlays";
+	cp -r "$tmpdir/usr/lib/$linux_packagename/overlays/" "$tmpdir/$boot_path/"
+fi
+
 # Install the maintainer scripts
-# Note: hook scripts under /etc/kernel are also executed by official Debian
-# kernel packages, as well as kernel packages built using make-kpkg.
-# make-kpkg sets $INITRD to indicate whether an initramfs is wanted, and
-# so do we; recent versions of dracut and initramfs-tools will obey this.
 debhookdir=${KDEB_HOOKDIR:-/etc/kernel}
 for script in postinst postrm preinst prerm ; do
 	mkdir -p "$tmpdir$debhookdir/$script.d"
@@ -154,6 +285,22 @@ EOF
 	chmod 755 "$tmpdir/DEBIAN/$script"
 done
 
+# clean boot directory
+cat <<EOF > "$tmpdir/DEBIAN/preinst"
+#!/bin/bash
+set -e
+
+if [ -f /boot/Image ]; then
+	rm -fr /boot/{Image,vmlinuz-*,System.map-*,config-*,initrd.img*,initrd.gz};
+fi
+if [ -f /$boot_path/$kernel_img ]; then
+	rm -fdr /$boot_path/{Image,$kernel_img,initrd.gz,initrd.img*,System.map-*,config-*,vmlinuz-*,*.dtb,bootcode.bin,fixup*.dat,start*.elf,LICENCE.broadcom,COPYING.linux,overlays};
+fi
+
+exit 0
+EOF
+chmod 755 "$tmpdir/DEBIAN/preinst"
+
 # Build kernel header package
 (cd $srctree; find . -name Makefile\* -o -name Kconfig\* -o -name \*.pl) > "$objtree/debian/hdrsrcfiles"
 (cd $srctree; find arch/*/include include scripts -type f -o -type l) >> "$objtree/debian/hdrsrcfiles"
@@ -173,6 +320,65 @@ mkdir -p "$destdir"
 (cd $objtree; cp $KCONFIG_CONFIG $destdir/.config) # copy .config manually to be where it's expected to be
 ln -sf "/usr/src/linux-headers-$version" "$kernel_headers_dir/lib/modules/$version/build"
 rm -f "$objtree/debian/hdrsrcfiles" "$objtree/debian/hdrobjfiles"
+
+# Clean and compile headers
+if [ -f headers-byteshift.patch ]; then
+	cp headers-byteshift.patch $destdir/
+	cp $srctree/scripts/module.lds $destdir/
+	mkdir -p $kernel_headers_dir/DEBIAN
+	cat <<EOF > "$kernel_headers_dir/DEBIAN/postinst"
+#!/bin/bash
+set -e
+
+clean_headers(){
+find -type f -exec touch {} +
+if grep -w "Linux/arm" ".config"; then
+	echo 'y' | make ARCH=arm M=scripts clean;
+else
+	echo 'y' | make M=scripts clean;
+fi
+if [ -f headers-byteshift.patch ]; then
+	patch -p1 < headers-byteshift.patch;
+fi
+if [ -f scripts/module.lds ]; then
+	:;
+else
+	install -m 0644 module.lds scripts/;
+fi
+rm -f {headers-byteshift.patch,module.lds}
+if grep -w "Linux/arm" ".config"; then
+	echo 'y' | make ARCH=arm -j\$(grep -c 'processor' /proc/cpuinfo) -s scripts;
+	echo 'y' | make ARCH=arm -j\$(grep -c 'processor' /proc/cpuinfo) -s M=scripts/mod/;
+else
+	echo 'y' | make -j\$(grep -c 'processor' /proc/cpuinfo) -s scripts;
+	echo 'y' | make -j\$(grep -c 'processor' /proc/cpuinfo) -s M=scripts/mod/;
+fi
+if [ -f .config.old ]; then
+	rm -f .config.old;
+fi
+}
+
+cd /usr/src/linux-headers-$version
+echo -e "Compiling headers ..."
+clean_headers > /dev/null 2>&1
+
+exit 0
+EOF
+	chmod 755 "$kernel_headers_dir/DEBIAN/postinst"
+fi
+
+# Remove old headers
+mkdir -p $kernel_headers_dir/DEBIAN
+cat <<EOF > "$kernel_headers_dir/DEBIAN/preinst"
+#!/bin/bash
+
+set -e
+
+rm -fdr /usr/src/linux-headers-*
+
+exit 0
+EOF
+chmod 755 "$kernel_headers_dir/DEBIAN/preinst"
 
 if [ "$ARCH" != "um" ]; then
 	create_package "$kernel_headers_packagename" "$kernel_headers_dir"

@@ -16,7 +16,7 @@
 
 case "$1" in
 	start)
-	if [ -f /boot/useraccount.txt ]; then
+	if [ -f /boot/broadcom/useraccount.txt ]; then
 		/usr/local/sbin/useraccount;
 	else
 		sleep 1s;

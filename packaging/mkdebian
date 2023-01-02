@@ -80,6 +80,13 @@ set_debarch() {
 	fi
 }
 
+if [ -f scripts/package/pkgvars ]; then
+	. scripts/package/pkgvars
+else
+	echo "Missing: pkgvars"
+	exit 0
+fi
+
 # Some variables and settings used throughout the script
 version=$KERNELRELEASE
 if [ -n "$KDEB_PKGVERSION" ]; then
@@ -90,8 +97,10 @@ else
 	packageversion=$version-$revision
 fi
 sourcename=$KDEB_SOURCENAME
-packagename=linux-image-$version
-kernel_headers_packagename=linux-headers-$version
+# set by pkgvars
+packagename=$linux_packagename
+kernel_headers_packagename=$headers_packagename
+# end of pkgvars
 dbg_packagename=$packagename-dbg
 debarch=
 set_debarch

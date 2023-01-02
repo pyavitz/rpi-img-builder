@@ -11,7 +11,7 @@
 * **Recommended host:** Debian Bullseye
 
 **Install options:**
-* Run the `./install` script ***(recommended)***
+* Run the `./install.sh` script ***(recommended)***
 * Run builder [make commands](https://github.com/pyavitz/rpi-img-builder#install-dependencies) (dependency: make)
 * Review [package list](https://raw.githubusercontent.com/pyavitz/rpi-img-builder/master/lib/.package.list) and install manually
 
@@ -73,7 +73,7 @@ Menuconfig:		# Kernel menuconfig
 Crosscompile:		# 1 to cross compile | 0 to native compile
 
 Compiler        	WARNING: Only one may be selected
-Version:		# gcc-10 (default)
+Version:		# gcc-10
 GCC:			#
 Ccache:			#
 Clang:			# Supported: Jammy Jellyfish
@@ -83,7 +83,7 @@ Distro:			# Supported: debian, devuan and ubuntu
 Release:		# Debian: bullseye, bookworm, testing, unstable and sid
 			# Devuan: chimaera, daedalus, testing, unstable and ceres
 			# Ubuntu: focal and jammy
-Network Manager		# Enable nmtui (default: ifupdown)
+NetworkManager		# 1 networkmanager | 0 ifupdown
 
 Filesystem
 ext4:			# Journaling filesystem (default)
@@ -117,7 +117,8 @@ Patches "-p1" placed in userpatches are applied during compilation.
 
 ## Usage
 * Review the [Wiki](https://github.com/pyavitz/rpi-img-builder/wiki/Options-&-Scripts)
-#### /boot/rename_to_useraccount.txt
+* The boot partition is labelled EFI
+#### EFI: rename_to_useraccount.txt
 * Headless: rename file to useraccount.txt and fill in the variables
 * Headful: don't rename file & get prompted to create a user account
 ```sh
@@ -126,7 +127,7 @@ USERNAME=""
 PASSWORD=""
 ```
 
-#### /boot/rename_to_credentials.txt
+#### EFI: rename_to_credentials.txt
 ```sh
 Rename file to credentials.txt and input your wifi information.
 
@@ -149,9 +150,8 @@ DNS=""				# Your preferred dns
 
 For headless use: ssh user@ipaddress
 ```
-
 #### System Menu: `menu-config`
-<img src="https://i.imgur.com/g6vPI8t.png" alt="Main Menu" />
+<img src="https://i.imgur.com/5zyY8uI.png" alt="Main Menu" />
 
 ---
 

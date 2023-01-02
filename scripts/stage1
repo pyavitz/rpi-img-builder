@@ -3,14 +3,38 @@ source lib/function/echoes
 source lib/source
 validation
 source userdata.txt
+# check user data file
+if [ $useracct -eq 0 ]; then
+	if [ -z $NAME ] && [ -z $USERNAME ] && [ -z $PASSWORD ]; then
+		echo -e ""
+		echo -e "Name, Username and Password fields are empty?"
+		echo -e "Enable the user account service or input your"
+		echo -e "information into the userdata.txt file."
+		echo -e ""
+		read -p "Press enter to continue."
+		exit 0
+	fi
+fi
 source lib/function/universal
 if [ $uscripts -eq 1 ]; then
-	uscripts_pre-stage1;
+	uscripts_pre-stage1
 fi
 source board.txt
 source lib/function/staging
 source lib/function/${DISTRO}
-
+# clean area if found
+if [[ -d "p1" ]]; then
+	make cleanup
+	make cleanup > /dev/null 2>&1
+	clear -x
+fi
+# check output
+if [[ -d "output/${BOARD}" ]] && [[ `ls output/${BOARD}/linux-*.deb` ]]; then
+	:;
+else
+	echo -e "Missing linux deb packages"
+	exit 0
+fi
 # verbose
 if [ $verbose -eq 1 ]; then
 	set -eux -o pipefail;
@@ -45,10 +69,8 @@ fi
 
 # cmd line
 cmdline > /dev/null 2>&1
-if [ -f p1/cmdline.txt ]; then
-	echo -en "${WHT}cmdline.txt${FIN}  ";
-	sleep 1s;
-	echo_nok;
+if [[ -f "p1/cmdline.txt" ]]; then
+	:;
 else
 	echo -en "${WHT}cmdline.txt${FIN}  ";
 	sleep 1s;
@@ -61,11 +83,8 @@ if [[ "$BOARD_EXT" == "rpi-4" ]]; then
 else
 	${BOARD}_config > /dev/null 2>&1;
 fi
-if [ -e p1/config.txt ]; then
-	echo "";
-	echo -en "${WHT}config.txt${FIN}   ";
-	sleep 1s;
-	echo_nok;
+if [[ -f "p1/config.txt" ]]; then
+	:;
 else
 	echo "";
 	echo -en "${WHT}config.txt${FIN}   ";
@@ -75,16 +94,19 @@ else
 fi
 if [[ "$BOARD" == "bcm2711v7" ]]; then
 	sed -i '1d' p1/config.txt;
-	sed -i 's/kernel=kernel8.img/kernel=kernel7l.img/g' p1/config.txt;
-fi
-if [[ "$BOARD" == "bcm2708" ]]; then
-	if [ $ext4 -eq 1 ]; then
-		sed -i 's/initramfs initrd.gz followkernel/#initramfs initrd.gz followkernel/g' p1/config.txt;
-	fi
 fi
 
 # extract rootfs
-extract_rootfs
+if [[ -f "${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz" ]]; then
+	echo -en "${WHT}Extracting rootfs${FIN} ";
+	tar -xf ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz -C ${P_VALUE}/;
+	echo_bdone;
+else
+	echo -e "${YLW}Missing rootfs tarball${FIN}!";
+	make cleanup;
+	exit;
+fi
+echo ""
 
 mkdir -p p2/etc/apt/apt.conf.d p2/etc/dpkg/dpkg.cfg.d
 echo "force-unsafe-io" > "p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
@@ -137,15 +159,15 @@ fi
 stage1_kernel # universal
 echo -e "${WHT}Starting chroot${FIN} ..."
 # Mount and chroot
-mount -o bind p1 p2/boot
+mkdir -p p2/boot/broadcom;
+mount -o bind p1 p2/boot/broadcom;
 mount -o bind /dev p2/dev
 mount -o bind /dev/pts p2/dev/pts
 chroot p2 /root/stage2;
 # unmount
 umount p2/dev/pts
 umount p2/dev
-umount p2/boot
-
+umount p2/boot/broadcom;
 # qemu remove static
 if [ -e p2/usr/bin/${STATIC} ]; then
 	rm -f p2/usr/bin/${STATIC};

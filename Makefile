@@ -31,8 +31,6 @@ PURGEALL=$(shell sudo rm -fdr source output)
 # miscellaneous
 XCHECK=./scripts/check
 CHECK=./scripts/check
-XRUN=./scripts/run-linux
-RUN=./scripts/run-linux
 XCOMP=./scripts/compress
 COMP=sudo ./scripts/compress
 

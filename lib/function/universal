@@ -1,24 +1,15 @@
 #!/bin/bash
 
 # Stage1
-extract_rootfs(){
-if [ -f ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz ]; then
-	echo "";
-	echo -en "${WHT}Extracting rootfs${FIN} ";
-	tar -xf ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz -C ${P_VALUE}/;
-	echo_bdone;
+stage1_kernel(){
+if [[ `ls ${OUTPUT}/{linux-image-*.deb,linux-headers-*.deb}` ]] > /dev/null 2>&1; then
+	cp ${OUTPUT}/*.deb p2/root;
 else
 	echo "";
-	echo -e "${YLW}Missing rootfs tarball${FIN}!";
+	echo -en "${BOARD}";
+	echo -e ": Compile a kernel before building an image."
 	make cleanup;
-	exit;
-fi
-echo ""
-}
-
-stage1_kernel(){
-if [[ `ls ${OUTPUT}/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}` ]] > /dev/null 2>&1; then
-		cp ${OUTPUT}/*.deb p2/root;
+	exit 0;
 fi
 }
 
@@ -160,62 +151,33 @@ EOF
 chown root:root /etc/modules
 }
 
-# Download kernel archive
-download_kernel(){
-DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
-KURL="https://github.com/pyavitz/rpi-linux/releases/download/gcc-11/"
-if [[ "$BOARD" == "bcm2711" ]]; then
-	RPI="rpi4";
-fi
-if [[ "$BOARD" == "bcm2711v7" ]]; then
-	RPI="rpi4v7";
-fi
-if [[ "$BOARD" == "bcm2710" ]]; then
-	RPI="rpi3";
-fi
-if [[ "$BOARD" == "bcm2709" ]]; then
-	RPI="rpi2";
-fi
-if [[ "$BOARD" == "bcm2708" ]]; then
-	RPI="rpi";
-fi
-echo -en "\e[1;37mSearching\e[0m ...";
-sleep 1s;
-if [[ `wget -S --spider ${KURL}${RPI}-${VERSION}.tar.xz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
-	${DOWNLOAD} ${KURL}${RPI}-${VERSION}.tar.xz;
-	echo "";
-	tar xf ${RPI}-${VERSION}.tar.xz;
-	cd ${RPI}-${VERSION};
-	dpkg -i *.deb;
-	cd ~;
-	rm -fdr ${RPI}-${VERSION}*;
-else
-	${DOWNLOAD} ${KURL}${RPI}-5.15.y.tar.xz
-	echo "";
-	tar xf ${RPI}-5.15.y.tar.xz;
-	cd ${RPI}-5.15.y;
-	dpkg -i *.deb;
-	cd ~;
-	rm -fdr ${RPI}-5.15.y*;
-fi
-}
-
 # Kernel
 stage2_kernel(){
 echo ""
 echo "Installing kernel ..."
 apt update
 apt upgrade -y
+if [ $ext4 -eq 1 ]; then
+	echo "" >> /etc/opt/board.txt;
+	echo "# filesystem" >> /etc/opt/board.txt;
+	echo FSTYPE='"'ext4'"' >> /etc/opt/board.txt;
+fi
+if [ $btrfs -eq 1 ]; then
+	echo "" >> /etc/opt/board.txt;
+	echo "# filesystem" >> /etc/opt/board.txt;
+	echo FSTYPE='"'btrfs'"' >> /etc/opt/board.txt;
+fi
+if [ $xfs -eq 1 ]; then
+	echo "" >> /etc/opt/board.txt;
+	echo "# filesystem" >> /etc/opt/board.txt;
+	echo FSTYPE='"'xfs'"' >> /etc/opt/board.txt;
+fi
 apt -y clean
 apt -y autoclean
 sleep 1s
 cd ~
-if [[ `ls /root/{raspberrypi-linux-image_*.deb,raspberrypi-linux-headers_*.deb}` ]] > /dev/null 2>&1; then
-	dpkg -i *.deb;
-	rm -f *.deb;
-else
-	download_kernel;
-fi
+dpkg -i *.deb;
+rm -f *.deb;
 echo "Done."
 sleep 1s
 # take note of linux kernel release
@@ -359,19 +321,20 @@ rm -f kpart.txt
 
 # Finish image
 finish_image(){
+IMAGE_TIME="$(date +%T | sed 's/://g' | sed 's/..$//')"
 if [[ -f "kernel.txt" ]]; then source kernel.txt; fi
 if [[ -f "${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img" ]]; then
 	mv -f ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img \
-	${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}.img
+	${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}-${IMAGE_TIME}.img
 	if [ $compress_img -eq 1 ]; then
 		echo ""
 		echo_compress
-		xz -zev --threads=${CORES} ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}.img
+		xz -zev --threads=${CORES} ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}-${IMAGE_TIME}.img
 	fi
 fi
-if [[ -f "${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}.img.xz" ]]; then
-	sha256sum ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}.img.xz \
-	> ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}.img.xz.sha256
-	sha256sum --check ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}.img.xz.sha256
+if [[ -f "${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}-${IMAGE_TIME}.img.xz" ]]; then
+	sha256sum ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}-${IMAGE_TIME}.img.xz \
+	> ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}-${IMAGE_TIME}.img.xz.sha256
+	sha256sum --check ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}-${IMAGE_TIME}.img.xz.sha256
 fi
 }
