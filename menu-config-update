@@ -3,23 +3,7 @@ GHURL="https://raw.githubusercontent.com/pyavitz/rpi-img-builder/master/"
 MCURL="https://raw.githubusercontent.com/pyavitz/rpi-img-builder/menuconfig"
 MENUDIR="/usr/local/bin/"
 clear -x
-echo -en "Updating menu and scripts "
-if [[ `command -v governor` ]]; then
-	governor -u > /dev/null 2>&1;
-fi
-if [[ `command -v swh` ]]; then
-	swh -U > /dev/null 2>&1;
-fi
-if [[ `command -v sysinfo` ]]; then
-	sudo mv -f /usr/local/bin/sysinfo /usr/local/bin/sysinfo.orig;
-	sudo wget -cq $GHURL/files/scripts/sysinfo -P /usr/local/bin/;
-	if [[ -f "/usr/local/bin/sysinfo" ]]; then
-		sudo chmod +x /usr/local/bin/sysinfo;
-		sudo rm -f /usr/local/bin/sysinfo.orig;
-	else
-		sudo mv /usr/local/bin/sysinfo.orig /usr/local/bin/sysinfo;
-	fi
-fi
+echo -en "Updating menu "
 if [[ `type -p menu-config` ]]; then
 	sudo mv -f /usr/local/bin/menu-config /usr/local/bin/menu-config.orig
 	sudo wget -cq $MCURL/menu-config -P $MENUDIR
