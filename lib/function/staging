@@ -47,7 +47,7 @@ $MOUNT_ROOTFS
 }
 
 filesystem(){
-MAKE_BOOTFS="mkfs.vfat -n EFI ${IMAGE_LOOP_DEV_BOOT}"
+MAKE_BOOTFS="mkfs.vfat -n BOOT ${IMAGE_LOOP_DEV_BOOT}"
 BOOT_PATH="/boot/broadcom"
 if [ $ext4 -eq 1 ]; then
 	MAKE_ROOTFS="mkfs.ext4 -L ROOTFS ${IMAGE_LOOP_DEV_ROOTFS}"
