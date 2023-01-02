@@ -15,7 +15,8 @@ fi
 run(){
 if [[ -f "/proc/device-tree/model" ]]; then
 	MODEL=$(tr -d '\0' </proc/device-tree/model)
-	echo -e "== $MODEL"
+	echo -en "== $MODEL"
+	echo -e " (`uname -r`)"
 fi
 echo -e "CPU Usage:  " `top -b -n1 | grep "Cpu(s)" | awk '{print $2 + $4}'`
 if [[ -f "/sys/devices/system/cpu/present" ]]; then
