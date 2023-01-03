@@ -1,5 +1,14 @@
 #!/bin/bash
 
+if [[ -f "/etc/opt/board.txt" ]]; then
+	. /etc/opt/board.txt
+fi
+if [[ -f "/etc/os-release" ]]; then
+	NAME=`cat /etc/os-release | grep -w 'NAME=' | sed 's/NAME="//g' | sed 's/"//g'`
+else
+	NAME="none"
+fi
+
 if [ $# -eq 0 ]; then
 	echo -e "Missing options!"
 	echo "(run $0 -h for help)"
