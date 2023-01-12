@@ -213,9 +213,10 @@ if [ -f /root/ifupdown.credentials ]; then
 	chmod +x /usr/local/bin/credentials
 	chown root:root /usr/local/bin/credentials
 	rm -f /root/networkmanager.credentials
-	echo 'ENABLE="false"' > /boot/broadcom/credentials.txt
+	echo "# activate service" > /boot/broadcom/credentials.txt
+	echo 'ENABLE="false"' >> /boot/broadcom/credentials.txt
 	echo "" >> /boot/broadcom/credentials.txt
-	echo "# wifi credentials" >> /boot/broadcom/credentials.txt
+	echo "# input wifi credentials" >> /boot/broadcom/credentials.txt
 	echo 'SSID=""' >> /boot/broadcom/credentials.txt
 	echo 'PASSKEY=""' >> /boot/broadcom/credentials.txt
 	echo 'COUNTRYCODE=""' >> /boot/broadcom/credentials.txt
@@ -238,9 +239,10 @@ if [ -f /root/networkmanager.credentials ]; then
 	chmod +x /usr/local/bin/credentials
 	chown root:root /usr/local/bin/credentials
 	rm -f /root/ifupdown.credentials
-	echo 'ENABLE="false"' > /boot/broadcom/credentials.txt
+	echo "# activate service" > /boot/broadcom/credentials.txt
+	echo 'ENABLE="false"' >> /boot/broadcom/credentials.txt
 	echo "" >> /boot/broadcom/credentials.txt
-	echo "# wifi credentials" >> /boot/broadcom/credentials.txt
+	echo "# input wifi credentials" >> /boot/broadcom/credentials.txt
 	echo 'SSID=""' >> /boot/broadcom/credentials.txt
 	echo 'PASSKEY=""' >> /boot/broadcom/credentials.txt
 	echo 'COUNTRYCODE=""' >> /boot/broadcom/credentials.txt

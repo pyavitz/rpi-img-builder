@@ -1,7 +1,7 @@
-# HEADLESS: true (recommended)
-# HEADFUL: false
-
+# activate service (recommended)
 ENABLE="false"
+
+# input user information
 NAME=""
 USERNAME=""
 PASSWORD=""
