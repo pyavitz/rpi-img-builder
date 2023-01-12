@@ -151,7 +151,7 @@ GATEWAY=""			# Your Gateway
 DNS=""				# Your preferred dns
 
 # change hostname
-CHANGE="false"			# Set to true to set hostname
+CHANGE="false"			# Set to true to change hostname
 HOSTNAME="raspberrypi"		# Hostname
 
 For headless use: ssh user@ipaddress
