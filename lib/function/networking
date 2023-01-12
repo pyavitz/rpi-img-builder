@@ -213,17 +213,23 @@ if [ -f /root/ifupdown.credentials ]; then
 	chmod +x /usr/local/bin/credentials
 	chown root:root /usr/local/bin/credentials
 	rm -f /root/networkmanager.credentials
+	echo 'ENABLE="false"' > /boot/broadcom/credentials.txt
+	echo "" >> /boot/broadcom/credentials.txt
+	echo "# wifi credentials" >> /boot/broadcom/credentials.txt
+	echo 'SSID=""' >> /boot/broadcom/credentials.txt
+	echo 'PASSKEY=""' >> /boot/broadcom/credentials.txt
+	echo 'COUNTRYCODE=""' >> /boot/broadcom/credentials.txt
+	echo "# set static ip address" >> /boot/broadcom/credentials.txt
+	echo 'MANUAL="false"' >> /boot/broadcom/credentials.txt
+	echo 'IPADDR=""' >> /boot/broadcom/credentials.txt
+	echo 'NETMASK=""' >> /boot/broadcom/credentials.txt
+	echo 'GATEWAY=""' >> /boot/broadcom/credentials.txt
+	echo 'NAMESERVERS=""' >> /boot/broadcom/credentials.txt
+	echo "" >> /boot/broadcom/credentials.txt
+	echo "# change hostname" >> /boot/broadcom/credentials.txt
+	echo 'CHANGE="false"' >> /boot/broadcom/credentials.txt
+	echo 'HOSTNAME="raspberrypi"' >> /boot/broadcom/credentials.txt
 fi
-echo "# wifi credentials" > /boot/broadcom/rename_to_credentials.txt
-echo 'SSID=""' >> /boot/broadcom/rename_to_credentials.txt
-echo 'PASSKEY=""' >> /boot/broadcom/rename_to_credentials.txt
-echo 'COUNTRYCODE=""' >> /boot/broadcom/rename_to_credentials.txt
-echo "# set static ip address" >> /boot/broadcom/rename_to_credentials.txt
-echo 'MANUAL="n"' >> /boot/broadcom/rename_to_credentials.txt
-echo 'IPADDR=""' >> /boot/broadcom/rename_to_credentials.txt
-echo 'NETMASK=""' >> /boot/broadcom/rename_to_credentials.txt
-echo 'GATEWAY=""' >> /boot/broadcom/rename_to_credentials.txt
-echo 'NAMESERVERS=""' >> /boot/broadcom/rename_to_credentials.txt
 }
 
 networkmanager-credentials(){
@@ -232,14 +238,20 @@ if [ -f /root/networkmanager.credentials ]; then
 	chmod +x /usr/local/bin/credentials
 	chown root:root /usr/local/bin/credentials
 	rm -f /root/ifupdown.credentials
+	echo 'ENABLE="false"' > /boot/broadcom/credentials.txt
+	echo "" >> /boot/broadcom/credentials.txt
+	echo "# wifi credentials" >> /boot/broadcom/credentials.txt
+	echo 'SSID=""' >> /boot/broadcom/credentials.txt
+	echo 'PASSKEY=""' >> /boot/broadcom/credentials.txt
+	echo 'COUNTRYCODE=""' >> /boot/broadcom/credentials.txt
+	echo "# set static ip address" >> /boot/broadcom/credentials.txt
+	echo 'MANUAL="false"' >> /boot/broadcom/credentials.txt
+	echo 'IPADDR=""' >> /boot/broadcom/credentials.txt
+	echo 'GATEWAY=""' >> /boot/broadcom/credentials.txt
+	echo 'DNS=""' >> /boot/broadcom/credentials.txt
+	echo "" >> /boot/broadcom/credentials.txt
+	echo "# change hostname" >> /boot/broadcom/credentials.txt
+	echo 'CHANGE="false"' >> /boot/broadcom/credentials.txt
+	echo 'HOSTNAME="raspberrypi"' >> /boot/broadcom/credentials.txt
 fi
-echo "# wifi credentials" > /boot/broadcom/rename_to_credentials.txt
-echo 'SSID=""' >> /boot/broadcom/rename_to_credentials.txt
-echo 'PASSKEY=""' >> /boot/broadcom/rename_to_credentials.txt
-echo 'COUNTRYCODE=""' >> /boot/broadcom/rename_to_credentials.txt
-echo "# set static ip address" >> /boot/broadcom/rename_to_credentials.txt
-echo 'MANUAL="n"' >> /boot/broadcom/rename_to_credentials.txt
-echo 'IPADDR=""' >> /boot/broadcom/rename_to_credentials.txt
-echo 'GATEWAY=""' >> /boot/broadcom/rename_to_credentials.txt
-echo 'DNS=""' >> /boot/broadcom/rename_to_credentials.txt
 }

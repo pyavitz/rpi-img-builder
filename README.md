@@ -118,35 +118,41 @@ Patches "-p1" placed in userpatches are applied during compilation.
 ## Usage
 * Review the [Wiki](https://github.com/pyavitz/rpi-img-builder/wiki/Options-&-Scripts)
 * The boot partition is labelled BOOT
-#### BOOT: rename_to_useraccount.txt
-* Headless: rename file to useraccount.txt and fill in the variables
-* Headful: don't rename file & get prompted to create a user account
+#### BOOT: useraccount.txt
+* Headless: ENABLE="true" and fill in the variables (recommended)
+* Headful: ENABLE="false" and get prompted to create a user account
 ```sh
-NAME=""
-USERNAME=""
-PASSWORD=""
+ENABLE="false"			# Set to true to enable service
+NAME=""				# Your name
+USERNAME=""			# Username
+PASSWORD=""			# Password
 ```
 
-#### BOOT: rename_to_credentials.txt
+#### BOOT: credentials.txt
 ```sh
-Rename file to credentials.txt and input your wifi information.
+Set to ENABLE="true" and input your wifi information.
+ENABLE="false"			# Enable service
 
 SSID=""				# Service set identifier
 PASSKEY=""			# Wifi password
 COUNTRYCODE=""			# Your country code
 
 # set static ip (ifupdown)
-MANUAL="n"			# Set to y to enable a static ip
+MANUAL="false"			# Set to true to enable a static ip
 IPADDR=""			# Static ip address
 NETMASK=""			# Your Netmask
 GATEWAY=""			# Your Gateway
 NAMESERVERS=""			# Your preferred dns
 
 # set static ip (network-manager)
-MANUAL="n"			# Set to y to enable a static ip
+MANUAL="false"			# Set to true to enable a static ip
 IPADDR=""			# Static ip address
 GATEWAY=""			# Your Gateway
 DNS=""				# Your preferred dns
+
+# change hostname
+CHANGE="false"			# Set to true to set hostname
+HOSTNAME="raspberrypi"		# Hostname
 
 For headless use: ssh user@ipaddress
 ```

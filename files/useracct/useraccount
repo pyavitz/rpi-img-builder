@@ -1,5 +1,11 @@
 #!/bin/bash
-source /etc/opt/board.txt
+
+if [[ -f "/etc/opt/board.txt" ]]; then
+	. /etc/opt/board.txt
+fi
+if [[ -f "/boot/broadcom/useraccount.txt" ]]; then
+	. /boot/broadcom/useraccount.txt
+fi
 RELEASE=`cat /etc/os-release | grep -w NAME | sed 's/NAME=//g' | sed 's/"//g' | sed 's/ GNU\/Linux//g'`
 
 create_user(){
@@ -67,9 +73,8 @@ while true; do
 done
 }
 
-if [[ -f "/boot/broadcom/useraccount.txt" ]]; then
+if [[ "$ENABLE" == "true" || "$ENABLE" == "yes" || "$ENABLE" == "enable" ]]; then
 	# headless
-	. /boot/broadcom/useraccount.txt
 	echo -en "${FAMILY}: " | sed -e 's/\(.*\)/\U\1/'
 	echo -e "${BOARD}" | sed -e 's/\(.*\)/\U\1/'
 	echo ""
@@ -84,7 +89,7 @@ else
 	account_prompt
 	create_user > /dev/null 2>&1
 	create_sudoers > /dev/null 2>&1
-	rm -f /boot/broadcom/rename_to_useraccount.txt
+	rm -f /boot/broadcom/useraccount.txt
 	echo "Almost done ..."
 	sleep 1s
 fi

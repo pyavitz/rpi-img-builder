@@ -125,15 +125,15 @@ if [ $useracct -eq 1 ]; then
 	mv -f /root/useracct/useraccount /usr/local/sbin/
 	chmod +x /usr/local/sbin/useraccount
 	mv -f /root/{nanorc-user,user-ini} /etc/opt/
-	mv -f /root/useracct/useraccount.txt /boot/broadcom/rename_to_useraccount.txt
+	mv -f /root/useracct/useraccount.txt /boot/broadcom/useraccount.txt
 	if [[ "$DISTRO" == "devuan" ]]; then
-		mkdir -p /etc/init.d;
+		mkdir -p /etc/init.d
 		mv -f /root/useracct/useraccount.init /etc/init.d/useraccount
 		chmod +x /etc/init.d/useraccount
 		update-rc.d useraccount defaults 5
 		rm -fdr /root/useracct
 	else
-		mkdir -p /etc/systemd/system/;
+		mkdir -p /etc/systemd/system/
 		mv -f /root/useracct/useraccount.service /etc/systemd/system/
 		systemctl enable useraccount > /dev/null 2>&1
 		rm -fdr /root/useracct
