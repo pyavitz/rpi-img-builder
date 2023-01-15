@@ -213,7 +213,6 @@ chmod +x /usr/local/bin/*
 chmod +x /usr/local/sbin/*
 chown -R root:root /usr/local/bin/
 chown -R root:root /usr/local/sbin/
-echo "Done."
 
 # MOTD
 mkdir -p /etc/update-motd.d
@@ -300,7 +299,6 @@ dpkg-buildpackage -us -uc
 cd ~
 dpkg -i pi-bluetooth_*.deb
 rm -fdR pi-bluetooth*
-echo "Done."
 
 #  Raspi userland
 rpi_userland
@@ -383,7 +381,6 @@ else
 	rc-local_service > /dev/null 2>&1;
 	enable_services > /dev/null 2>&1;
 fi
-echo "Done."
 
 # Finish
 echo ""

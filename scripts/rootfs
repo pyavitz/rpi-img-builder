@@ -7,12 +7,10 @@ source userdata.txt
 source lib/function/rootfs
 HOST_MACHINE=`cat /etc/os-release | grep -w NAME | sed 's/NAME=//g' | sed 's/"//g' | sed 's/ GNU\/Linux//g'`
 
-if [[ "$ROOTFS_ARCH" == "rootfs-armel" ]]; then
-	if [[ "$DISTRO" == "ubuntu" ]]; then
-		echo -e "${YLW}Ubuntu is not supported${FIN}.";
-		echo "";
-		exit;
-	fi
+if [[ "$ROOTFS_ARCH" == "rootfs-armel" ]] && [[ "$DISTRO" == "ubuntu" ]]; then
+	echo -e "${YLW}Ubuntu is not supported${FIN}."
+	echo ""
+	exit 0
 fi
 if [ $verbose -eq 1 ]; then
 	set -eux -o pipefail;
@@ -31,9 +29,9 @@ else
 fi
 ROOT="sysroot"
 RELEASE_TARBALL=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
-if [ -f $RELEASE_TARBALL ]; then
+if [[ -f "$RELEASE_TARBALL" ]]; then
 	ls $RELEASE_TARBALL
-	exit;
+	exit 0
 fi
 echo ""
 echo -e "${WHT}Starting debootstrap${FIN} ..."
@@ -66,17 +64,17 @@ fi
 
 # creating developer tarball
 if [ $devrootfs -eq 1 ]; then
-	sysroot_setup;
-	mount -o bind /dev ${ROOT}/dev;
-	mount -o bind /dev/pts ${ROOT}/dev/pts;
-	cp -f lib/source ${ROOT}/root/source.txt;
-	cp -f {scripts/rootfs-extra,userdata.txt,board.txt} ${ROOT}/root/;
-	chroot ${ROOT} /root/rootfs-extra;
-	umount ${ROOT}/dev/pts;
-	umount ${ROOT}/dev;
-	rm -f ${ROOT}/root/rootfs-extra;
-	rm -f ${ROOT}/root/*.txt;
-	rm -f ${ROOT}/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io;
+	sysroot_setup
+	mount -o bind /dev ${ROOT}/dev
+	mount -o bind /dev/pts ${ROOT}/dev/pts
+	cp -f lib/source ${ROOT}/root/source.txt
+	cp -f {scripts/rootfs-extra,userdata.txt,board.txt} ${ROOT}/root/
+	chroot ${ROOT} /root/rootfs-extra
+	umount ${ROOT}/dev/pts
+	umount ${ROOT}/dev
+	rm -f ${ROOT}/root/rootfs-extra
+	rm -f ${ROOT}/root/*.txt
+	rm -f ${ROOT}/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
 	rm -f ${ROOT}/etc/apt/sources.list
 fi
 # clean up
@@ -86,7 +84,7 @@ fi
 if [ -f ${ROOT}/usr/bin/qemu-arm-static ]; then
 	rm -f ${ROOT}/usr/bin/qemu-arm-static
 fi
-rm -f ${ROOT}/var/cache/debconf/*
+rm -fr ${ROOT}/var/cache/debconf/*
 
 # finish
 echo
@@ -96,17 +94,17 @@ XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - * | (pv -terb > .
 cd ..
 
 if [ $devrootfs -eq 1 ]; then
-	losetup -d "${IMAGE_LOOP_DEV}";
-	rm -f "${ROOTFS_FOLDER}${RELEASE_NAME}";
+	losetup -d "${IMAGE_LOOP_DEV}"
+	rm -f "${ROOTFS_FOLDER}${RELEASE_NAME}"
 	if [ $RAM -ne 0 ]; then
-		umount "${ROOTFS_FOLDER}";
+		umount "${ROOTFS_FOLDER}"
 	fi
-	rmdir "${ROOTFS_FOLDER}";
+	rmdir "${ROOTFS_FOLDER}"
 	# just in case
-	make cleanup > /dev/null 2>&1;
+	make cleanup > /dev/null 2>&1
 fi
 
-if [ -e ${ROOT} ]; then
+if [[ -d "${ROOT}" ]]; then
 	rm -fdr ${ROOT}
 fi
 

@@ -24,7 +24,6 @@ if [[ `wget -S --spider https://kernel.googlesource.com/pub/scm/linux/kernel/git
 	fi
 fi
 cd ~
-echo "Done."
 }
 
 # regulatory db
@@ -38,7 +37,6 @@ cp -f regulatory.db /lib/firmware/regulatory.db
 cp -f regulatory.db.p7s /lib/firmware/regulatory.db.p7s
 cd ~
 rm -fdr wireless-regdb
-echo "Done."
 if [ $networkmanager -eq 1 ]; then
 	echo 'KERNEL=="regulatory*", ACTION=="change", SUBSYSTEM=="platform", RUN+="/sbin/crda"' > /etc/udev/rules.d/60-regdb.rules;
 fi

@@ -74,5 +74,5 @@ if [[ `ls ../${OUTPUT}/*.deb` ]] > /dev/null 2>&1; then
 fi
 mkdir -p ../${OUTPUT}
 mv -f *.deb ../${OUTPUT}/
-echo_done
+
 exit 0

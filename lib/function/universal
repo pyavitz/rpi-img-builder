@@ -47,7 +47,6 @@ fi
 if [ -f /etc/apt/preferences.d/3rd_parties.pref ]; then
 	rm -f /etc/apt/preferences.d/3rd_parties.pref;
 fi
-echo "Done."
 }
 
 # EEPROM
@@ -103,7 +102,6 @@ cd ..
 dpkg -i *.deb
 cd ..
 rm -fdr eeprom
-echo "Done."
 }
 
 # Userland
@@ -133,7 +131,6 @@ fi
 cd ~
 rm -fdr userland
 ldconfig
-echo "Done."
 }
 
 # Modules
@@ -178,8 +175,7 @@ sleep 1s
 cd ~
 dpkg -i *.deb;
 rm -f *.deb;
-echo "Done."
-sleep 1s
+sleep .75
 # take note of linux kernel release
 if [ -f /usr/src/linux-headers-*/include/config/kernel.release ]; then
 	KERNEL_RELEASE=`cat /usr/src/linux-headers-*/include/config/kernel.release`

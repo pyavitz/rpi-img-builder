@@ -2,16 +2,16 @@
 
 # RTL8812AU
 rtl8812au_download(){
-if [ -e rtl8812au ]; then
-	echo -en "${PNK}[${FIN}${YLW}found${FIN}${PNK}]${FIN} ";
-	cd rtl8812au;
-	git config pull.rebase false;
-	echo -en "${PNK}[${FIN}${WHT}pulling${FIN}${PNK}]${FIN} ";
-	git pull -q;
-	cd ..;
+if [[ -d "rtl8812au" ]]; then
+	echo -en "${PNK}[${FIN}${YLW}found${FIN}${PNK}]${FIN} "
+	cd rtl8812au
+	git config pull.rebase false
+	echo -en "${PNK}[${FIN}${WHT}pulling${FIN}${PNK}]${FIN} "
+	git pull -q
+	cd ..
 else
-	echo -en "${PNK}[${FIN}${WHT}cloning${FIN}${PNK}]${FIN} ";
-	git clone -q https://github.com/pyavitz/rtl8812au.git rtl8812au;
+	echo -en "${PNK}[${FIN}${WHT}cloning${FIN}${PNK}]${FIN} "
+	git clone -q https://github.com/pyavitz/rtl8812au.git rtl8812au
 fi
 }
 
@@ -25,30 +25,25 @@ echo "obj-\$(CONFIG_88XXAU) += rtl8812au/" >> "drivers/net/wireless/Makefile"
 sed -i '/source "drivers\/net\/wireless\/ti\/Kconfig"/a source "drivers\/net\/wireless\/rtl8812au\/Kconfig"' drivers/net/wireless/Kconfig
 }
 
-rtl8812au_select(){
-if [ -e arch/${ARCH}/configs/${LINUX_DEFCONFIG} ]; then
-	echo CONFIG_88XXAU=m >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
-fi
-}
 
 rtl8812au_module(){
-if [ $rtl8812au -eq 1 ]; then
-	rtl8812au_select;
+if [ $rtl8812au -eq 1 ] && [[ -f "arch/${ARCH}/configs/${LINUX_DEFCONFIG}" ]]; then
+	echo CONFIG_88XXAU=m >> arch/${ARCH}/configs/${LINUX_DEFCONFIG}
 fi
 }
 
 # RTL8811CU
 rtl8811cu_download(){
-if [ -e rtl8811cu ]; then
-	echo -en "${PNK}[${FIN}${YLW}found${FIN}${PNK}]${FIN} ";
-	cd rtl8811cu;
-	git config pull.rebase false;
-	echo -en "${PNK}[${FIN}${WHT}pulling${FIN}${PNK}]${FIN} ";
-	git pull -q;
-	cd ..;
+if [[ -d "rtl8811cu" ]]; then
+	echo -en "${PNK}[${FIN}${YLW}found${FIN}${PNK}]${FIN} "
+	cd rtl8811cu
+	git config pull.rebase false
+	echo -en "${PNK}[${FIN}${WHT}pulling${FIN}${PNK}]${FIN} "
+	git pull -q
+	cd ..
 else
-	echo -en "${PNK}[${FIN}${WHT}cloning${FIN}${PNK}]${FIN} ";
-	git clone -q https://github.com/morrownr/8821cu-20210118.git rtl8811cu;
+	echo -en "${PNK}[${FIN}${WHT}cloning${FIN}${PNK}]${FIN} "
+	git clone -q https://github.com/morrownr/8821cu-20210118.git rtl8811cu
 fi
 }
 
@@ -65,31 +60,26 @@ echo "obj-\$(CONFIG_RTL8821CU) += rtl8811cu/" >> drivers/net/wireless/Makefile
 sed -i '/source "drivers\/net\/wireless\/ti\/Kconfig"/a source "drivers\/net\/wireless\/rtl8811cu\/Kconfig"' drivers/net/wireless/Kconfig
 }
 
-rtl8811cu_select(){
-if [ -e arch/${ARCH}/configs/${LINUX_DEFCONFIG} ]; then
-	echo CONFIG_RTL8821CU=m >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
-fi
-}
 
 rtl8811cu_module(){
-if [ $rtl8811cu -eq 1 ]; then
-	rtl8811cu_select;
+if [ $rtl8811cu -eq 1 ] && [[ -f "arch/${ARCH}/configs/${LINUX_DEFCONFIG}" ]]; then
+	echo CONFIG_RTL8821CU=m >> arch/${ARCH}/configs/${LINUX_DEFCONFIG}
 fi
 }
 
 
 # RTL88X2BU
 rtl88x2bu_download(){
-if [ -e rtl88x2bu ]; then
-	echo -en "${PNK}[${FIN}${YLW}found${FIN}${PNK}]${FIN} ";
-	cd rtl88x2bu;
-	git config pull.rebase false;
-	echo -en "${PNK}[${FIN}${WHT}pulling${FIN}${PNK}]${FIN} ";
-	git pull -q;
-	cd ..;
+if [[ -d "rtl88x2bu" ]]; then
+	echo -en "${PNK}[${FIN}${YLW}found${FIN}${PNK}]${FIN} "
+	cd rtl88x2bu
+	git config pull.rebase false
+	echo -en "${PNK}[${FIN}${WHT}pulling${FIN}${PNK}]${FIN} "
+	git pull -q
+	cd ..
 else
-	echo -en "${PNK}[${FIN}${WHT}cloning${FIN}${PNK}]${FIN} ";
-	git clone -q https://github.com/RinCat/RTL88x2BU-Linux-Driver.git rtl88x2bu;
+	echo -en "${PNK}[${FIN}${WHT}cloning${FIN}${PNK}]${FIN} "
+	git clone -q https://github.com/RinCat/RTL88x2BU-Linux-Driver.git rtl88x2bu
 fi
 }
 
@@ -107,32 +97,26 @@ sed -i '/source "drivers\/net\/wireless\/ti\/Kconfig"/a source "drivers\/net\/wi
 drivers/net/wireless/Kconfig
 }
 
-rtl88x2bu_select(){
-if [ -e arch/${ARCH}/configs/${LINUX_DEFCONFIG} ]; then
-	echo CONFIG_RTL8822BU=m >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
-fi
-}
-
 rtl88x2bu_module(){
-if [ $rtl88x2bu -eq 1 ]; then
-	rtl88x2bu_select;
+if [ $rtl88x2bu -eq 1 ] && [[ -f "arch/${ARCH}/configs/${LINUX_DEFCONFIG}" ]]; then
+	echo CONFIG_RTL8822BU=m >> arch/${ARCH}/configs/${LINUX_DEFCONFIG}
 fi
 }
 
 extra_wireless(){
 if [ $rtl8812au -eq 1 ]; then
-	echo -en "${WHT}Realtek 88XXAU${FIN} ";
-	rtl8812au_download;
-	echo_bdone;
+	echo -en "${WHT}Realtek 88XXAU${FIN} "
+	rtl8812au_download
+	echo_bdone
 fi
 if [ $rtl88x2bu -eq 1 ]; then
-	echo -en "${WHT}Realtek 88X2BU${FIN} ";
-	rtl88x2bu_download;
-	echo_bdone;
+	echo -en "${WHT}Realtek 88X2BU${FIN} "
+	rtl88x2bu_download
+	echo_bdone
 fi
 if [ $rtl8811cu -eq 1 ]; then
-	echo -en "${WHT}Realtek 88XXCU${FIN} ";
-	rtl8811cu_download;
-	echo_bdone;
+	echo -en "${WHT}Realtek 88XXCU${FIN} "
+	rtl8811cu_download
+	echo_bdone
 fi
 }

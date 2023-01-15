@@ -7,14 +7,15 @@ echo
 echo -en "${WHT}Select branch: ${FIN}"
 read branch
 
-run_check(){
-curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile | grep -m1 VERSION
-curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile | grep -m1 PATCHLEVEL
-curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile | grep -m1 SUBLEVEL
-curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile | grep -m1 EXTRAVERSION
-}
-
-if [[ `wget -S --spider https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile 2>&1 | grep 'HTTP/1.1 200 OK'` ]];
-	then run_check; else echo && echo -e "${WHT}It appears the branch you selected is not available${FIN}?" && exit;
+if [[ `wget -S --spider https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+	curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile | grep -m1 VERSION
+	curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile | grep -m1 PATCHLEVEL
+	curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile | grep -m1 SUBLEVEL
+	curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile | grep -m1 EXTRAVERSION
+else
+	echo ""
+	echo -e "The branch you selected is not available."
+	exit 0
 fi
+
 exit 0
