@@ -294,7 +294,10 @@ if [ -f /boot/Image ]; then
 	rm -fr /boot/{Image,vmlinuz-*,System.map-*,config-*,initrd.img*,initrd.gz};
 fi
 if [ -f /$boot_path/$kernel_img ]; then
-	rm -fdr /$boot_path/{Image,$kernel_img,initrd.gz,initrd.img*,System.map-*,config-*,vmlinuz-*,*.dtb,bootcode.bin,fixup*.dat,start*.elf,LICENCE.broadcom,COPYING.linux,overlays};
+	rm -fr /$boot_path/{Image,$kernel_img,initrd.gz,initrd.img*,System.map-*,config-*,vmlinuz-*,*.dtb,bootcode.bin,fixup*.dat,start*.elf,LICENCE.broadcom,COPYING.linux,overlays};
+fi
+if [ -d /$boot_path/overlays ]; then
+	rm -fdr /$boot_path/overlays;
 fi
 
 exit 0
