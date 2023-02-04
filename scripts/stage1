@@ -175,7 +175,7 @@ fi
 cp -f p2/root/kernel.txt .
 rm p2/root/stage2
 rm -f p2/root/*.txt
-rm -f p2/var/cache/debconf/*
+rm -fdr p2/var/cache/debconf/*
 
 if [ -n "$PROXY" ]; then
 	rm p2/etc/apt/apt.conf.d/30proxy

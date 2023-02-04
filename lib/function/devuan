@@ -15,7 +15,7 @@ EOF
 unstable_sources(){
 rm -f ${RELEASE}
 tee ${RELEASE} <<EOF
-deb http://deb.devuan.org/merged ${DISTRO_VERSION} main contrib non-free
+deb http://deb.devuan.org/merged ${DISTRO_VERSION} main contrib non-free non-free-firmware
 EOF
 }
 

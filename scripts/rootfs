@@ -72,8 +72,7 @@ if [ $devrootfs -eq 1 ]; then
 	chroot ${ROOT} /root/rootfs-extra
 	umount ${ROOT}/dev/pts
 	umount ${ROOT}/dev
-	rm -f ${ROOT}/root/rootfs-extra
-	rm -f ${ROOT}/root/*.txt
+	rm -fr ${ROOT}/root/{rootfs-extra,*.txt}
 	rm -f ${ROOT}/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
 	rm -f ${ROOT}/etc/apt/sources.list
 fi
@@ -84,7 +83,7 @@ fi
 if [ -f ${ROOT}/usr/bin/qemu-arm-static ]; then
 	rm -f ${ROOT}/usr/bin/qemu-arm-static
 fi
-rm -fr ${ROOT}/var/cache/debconf/*
+rm -fdr ${ROOT}/var/cache/debconf/*
 
 # finish
 echo
