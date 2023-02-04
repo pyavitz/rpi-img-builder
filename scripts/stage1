@@ -187,7 +187,12 @@ defrag_p2
 
 umount p2
 umount p1
-
+if [ $ext4 -eq 1 ]; then
+	tune2fs -O^has_journal "${IMAGE_LOOP_DEV_ROOTFS}"
+	fsck -fy "${IMAGE_LOOP_DEV_ROOTFS}"
+	resize2fs -M "${IMAGE_LOOP_DEV_ROOTFS}"
+	tune2fs -Ohas_journal "${IMAGE_LOOP_DEV_ROOTFS}"
+fi
 losetup -d "${IMAGE_LOOP_DEV}"
 mv "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" "${IMAGE_FILE_NAME}"
 if [ $RAM -ne 0 ]; then
@@ -197,9 +202,7 @@ rmdir "${IMAGE_FOLDER}"
 rmdir p1 p2
 
 if [ $ext4 -eq 1 ]; then
-	ext4_shrink;
-else
-	:;
+	ext4_shrink
 fi
 finish_image
 rm -f {part-uuid.txt,board.txt,kernel.txt}

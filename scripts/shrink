@@ -72,18 +72,12 @@ blocksize=$(echo "$tune2fs_output" | grep '^Block size:' | tr -d ' ' | cut -d ':
 
 # Expand rootfs on next boot (Feature removed)
 if [ "$should_skip_autoexpand" = false ]; then
-	echo "Feature removed ...";
-else
-	echo "Skipping autoexpanding process ..."
+	echo "Feature removed ..."
 fi
 
 # Make sure filesystem is ok
 e2fsck -p -f "$loopback"
 minsize=$(resize2fs -P "$loopback" | cut -d ':' -f 2 | tr -d ' ')
-if [[ $currentsize -eq $minsize ]]; then
-	echo "ERROR: Image already shrunk to smallest size"
-	exit -6
-fi
 
 # Add some free space to the end of the filesystem
 extra_space=$(($currentsize - $minsize))
@@ -93,17 +87,6 @@ for space in 5000 1000 100; do
 		break
 	fi
 done
-
-# Shrink filesystem
-resize2fs -p "$loopback" $minsize
-if [[ $? != 0 ]]; then
-	echo "ERROR: resize2fs failed ..."
-	mount "$loopback" "$mountdir"
-	mv "$mountdir/etc/rc.local.bak" "$mountdir/etc/rc.local"
-	umount "$mountdir"
-	losetup -d "$loopback"
-	exit -7
-fi
 sleep 1
 
 # Shrink partition
