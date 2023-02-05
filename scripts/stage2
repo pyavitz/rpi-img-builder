@@ -92,6 +92,20 @@ if [[ "$DISTRO" == "ubuntu" ]]; then
 	fi
 fi
 # apt clean
+if [[ "$DISTRO" == "ubuntu" ]]; then
+	# remove ubuntu pro advert
+	HOOK_SIZE=`wc -c /etc/apt/apt.conf.d/20apt-esm-hook.conf | sed 's/[a-z]*/ /g' | sed 's/ //g' | sed 's/\/\/\/..\/20--.//g'`
+	if [[ -f "/etc/update-motd.d/88-esm-announce" ]]; then
+		echo '#!/bin/sh' > /etc/update-motd.d/88-esm-announce
+		chmod +x /etc/update-motd.d/88-esm-announce
+	fi
+	if [[ -f "/etc/apt/apt.conf.d/20apt-esm-hook.conf" ]] && [[ "$HOOK_SIZE" == "0" ]]; then
+		:;
+	else
+		mv /etc/apt/apt.conf.d/20apt-esm-hook.conf /etc/apt/apt.conf.d/20apt-esm-hook.conf.bak
+		touch /etc/apt/apt.conf.d/20apt-esm-hook.conf
+	fi
+fi
 apt -y clean
 apt -y autoclean
 
