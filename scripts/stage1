@@ -186,7 +186,7 @@ defrag_p2
 
 umount p2
 umount p1
-if [ $ext4 -eq 1 ]; then
+if [ $ext4 -eq 1 ] && [[ "$ARCH" == "arm64"; then
 	echo ""
 	tune2fs -O^has_journal "${IMAGE_LOOP_DEV_ROOTFS}"
 	fsck -fy "${IMAGE_LOOP_DEV_ROOTFS}"

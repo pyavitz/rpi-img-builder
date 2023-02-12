@@ -291,8 +291,8 @@ fi
 # shrink
 ext4_shrink(){
 echo ""
-chmod +x scripts/shrink
-scripts/shrink -s ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img
+chmod +x scripts/shrink.${ARCH}
+scripts/shrink.${ARCH} -s ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img
 echo 'LOOP1="/dev/mapper/' > kpart1
 echo 'LOOP2="/dev/mapper/' >> kpart1
 IMAGE_FILE="${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img"
