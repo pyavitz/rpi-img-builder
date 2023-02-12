@@ -21,7 +21,7 @@ if [ $uscripts -eq 1 ]; then
 fi
 source board.txt
 source lib/function/staging
-source lib/function/${DISTRO}
+source lib/function/release
 # clean area if found
 if [[ -d "p1" ]]; then
 	make cleanup
@@ -115,13 +115,13 @@ echo "force-unsafe-io" > "p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
 mkdir -p p2/usr/bin;
 cp $(command -v "${STATIC}") p2/usr/bin;
 if [[ ! -z $P_VALUE ]]; then
-	RELEASE="${P_VALUE}/etc/apt/sources.list"
+	SOURCES_LIST="${P_VALUE}/etc/apt/sources.list"
 fi
 if [ $verbose -eq 1 ]; then
-	distro_release;
+	choose_release;
 	create_fstab;
 else
-	distro_release > /dev/null 2>&1;
+	choose_release > /dev/null 2>&1;
 	create_fstab > /dev/null 2>&1;
 fi
 
@@ -133,7 +133,7 @@ fi
 
 # setup stage2
 cp scripts/stage2 p2/root
-cp lib/function/${DISTRO} p2/root/${DISTRO}.txt
+cp lib/function/services p2/root/services.txt
 cp lib/function/universal p2/root/universal.txt
 cp lib/function/networking p2/root/networking.txt
 cp lib/source p2/root/source.txt
@@ -141,8 +141,6 @@ cp userdata.txt p2/root
 cp board.txt p2/root
 if [[ "$DISTRO" == "devuan" ]]; then
 	cp files/inits/* p2/root
-else
-	cp lib/function/services p2/root/services.txt
 fi
 cp files/patches/* p2/root
 cp files/misc/* p2/root
@@ -181,6 +179,7 @@ if [ -n "$PROXY" ]; then
 	rm p2/etc/apt/apt.conf.d/30proxy
 fi
 rm p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
+if [[ -f "kernel.txt" ]]; then source kernel.txt; fi
 
 # Finish
 defrag_p2
@@ -188,6 +187,7 @@ defrag_p2
 umount p2
 umount p1
 if [ $ext4 -eq 1 ]; then
+	echo ""
 	tune2fs -O^has_journal "${IMAGE_LOOP_DEV_ROOTFS}"
 	fsck -fy "${IMAGE_LOOP_DEV_ROOTFS}"
 	resize2fs -M "${IMAGE_LOOP_DEV_ROOTFS}"

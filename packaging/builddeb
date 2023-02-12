@@ -53,7 +53,7 @@ dbg_packagename=$packagename-dbg
 # set by pkgvars
 packagename=$linux_packagename
 kernel_headers_packagename=$headers_packagename
-
+# end of pkgvars
 if [ "$ARCH" = "um" ] ; then
 	packagename=user-mode-linux-$version
 fi

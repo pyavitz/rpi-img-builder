@@ -1,0 +1,65 @@
+#!/bin/bash
+
+debian_release(){
+if [[ "$DISTRO_VERSION" == "bullseye" ]]; then
+	tee ${SOURCES_LIST} <<EOF
+deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free
+deb http://deb.debian.org/debian ${DISTRO_VERSION}-updates main contrib non-free
+deb http://deb.debian.org/debian ${DISTRO_VERSION}-proposed-updates main contrib non-free
+deb http://deb.debian.org/debian-security ${DISTRO_VERSION}-security main contrib non-free
+deb http://deb.debian.org/debian ${DISTRO_VERSION}-backports main contrib non-free
+EOF
+else
+	tee ${SOURCES_LIST} <<EOF
+deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free non-free-firmware
+EOF
+fi
+}
+
+devuan_release(){
+if [[ "$DISTRO_VERSION" == "chimaera" ]]; then
+	tee ${SOURCES_LIST} <<EOF
+deb http://deb.devuan.org/merged ${DISTRO_VERSION} main contrib non-free
+deb http://deb.devuan.org/merged ${DISTRO_VERSION}-updates main contrib non-free
+deb http://deb.devuan.org/devuan ${DISTRO_VERSION}-proposed-updates main contrib non-free
+deb http://deb.devuan.org/merged ${DISTRO_VERSION}-security main contrib non-free
+deb http://deb.devuan.org/merged ${DISTRO_VERSION}-backports main contrib non-free
+EOF
+else
+	tee ${SOURCES_LIST} <<EOF
+deb http://deb.devuan.org/merged ${DISTRO_VERSION} main contrib non-free non-free-firmware
+EOF
+fi
+}
+
+ubuntu_release(){
+tee ${SOURCES_LIST} <<EOF
+deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION} main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-updates main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION} universe
+deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-updates universe
+deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION} multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-updates multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-backports main restricted universe multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-security main restricted
+deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-security universe
+deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-security multiverse
+
+## Uncomment the following two lines to add software from Canonical's
+## 'partner' repository.
+## This software is not part of Ubuntu, but is offered by Canonical and the
+## respective vendors as a service to Ubuntu users.
+# deb http://archive.canonical.com/ubuntu ${DISTRO_VERSION} partner
+# deb-src http://archive.canonical.com/ubuntu ${DISTRO_VERSION} partner
+EOF
+}
+
+choose_release(){
+rm -f ${SOURCES_LIST}
+if [[ "$DISTRO" == "debian" || "$DISTRO" == "devuan" || "$DISTRO" == "ubuntu" ]]; then
+	${DISTRO}_release
+else
+	echo "${CAP_DISTRO} ${CAP_RELEASE} is not supported."
+	exit 0
+fi
+}

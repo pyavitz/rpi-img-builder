@@ -37,7 +37,7 @@ echo ""
 echo -e "${WHT}Starting debootstrap${FIN} ..."
 # start debootstrap
 if [ $devrootfs -eq 1 ]; then
-	source lib/function/${DISTRO}
+	source lib/function/release
 	RAM=0
 	ROOTFS_FOLDER="img/"
 	RELEASE_NAME=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}

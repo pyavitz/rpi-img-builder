@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Stage1
+# stage 1
 stage1_kernel(){
 if [[ `ls ${OUTPUT}/{linux-image-*.deb,linux-headers-*.deb}` ]] > /dev/null 2>&1; then
 	cp ${OUTPUT}/*.deb p2/root;
@@ -13,12 +13,12 @@ else
 fi
 }
 
-# Stage 2
+# stage 2
 root_password(){
 echo "root:toor" | chpasswd
 }
 
-# SYS-MODS
+# rpi-sys-mods
 raspberrypi_sys_mods(){
 echo ""
 echo "Installing raspi-sys-mods ..."
@@ -49,7 +49,7 @@ if [ -f /etc/apt/preferences.d/3rd_parties.pref ]; then
 fi
 }
 
-# EEPROM
+# rpi-eeprom
 find_eeprom(){
 EEPROM_VERSION=$(curl --silent -L ${CHANGELOG} | awk '{if (NR==1) {print substr($2, 1, length($2)-3)}}' | sed 's/[()]//g')
 if [[ `wget -S --spider ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
@@ -104,7 +104,7 @@ cd ..
 rm -fdr eeprom
 }
 
-# Userland
+# userland
 rpi_userland(){
 echo ""
 echo "Installing userland ..."
@@ -133,7 +133,7 @@ rm -fdr userland
 ldconfig
 }
 
-# Modules
+# modules
 bcm_modules(){
 rm -f /etc/modules
 tee /etc/modules <<EOF
@@ -148,7 +148,7 @@ EOF
 chown root:root /etc/modules
 }
 
-# Kernel
+# linux kernel
 stage2_kernel(){
 echo ""
 echo "Installing kernel ..."
@@ -209,7 +209,7 @@ disabledentry=black,
 EOF
 }
 
-# User scripts
+# user scripts
 uscripts_pre-stage1(){
 if [ -f files/userscripts/uscripts ]; then
 	if [[ `grep -w "run_function0" "files/userscripts/uscripts"` ]]; then
@@ -252,7 +252,7 @@ if [ -e /root/userscripts ]; then
 fi
 }
 
-# Initrd script
+# initrd script
 initrd_script(){
 cd ~
 if [ -f /root/99-initrd ]; then
@@ -263,7 +263,19 @@ if [ -f /root/99-initrd ]; then
 fi
 }
 
-# Defrag
+# ubuntu apt preferences
+apt_preferences(){
+echo
+echo Blacking listing packages.
+tee /etc/apt/preferences <<EOF
+Package: rpi-eeprom linux-firmware linux-firmware-raspi2 pi-bluetooth raspberrypi-sys-mods
+Pin: release o=Ubuntu
+Pin-Priority: 1
+EOF
+echo Done.
+}
+
+# defrag
 defrag_p2(){
 if [ $ext4 -eq 1 ]; then
 	e4defrag -c ${P_VALUE};
@@ -276,7 +288,7 @@ if [ $xfs -eq 1 ]; then
 fi
 }
 
-# Shrink
+# shrink
 ext4_shrink(){
 echo ""
 chmod +x scripts/shrink
@@ -307,7 +319,7 @@ ROOTFS="${LOOP2}"
 ROOT_PARTUUID=$(blkid -o export -- ${ROOTFS} | sed -ne 's/^PARTUUID=//p')
 echo ROOT_PARTUUID='"'$ROOT_PARTUUID'"' > part-uuid.txt
 source part-uuid.txt
-cmdline
+cmdline > /dev/null 2>&1
 sleep 1s
 umount p1
 rm -fdr p1
@@ -315,22 +327,19 @@ kpartx -d ${IMAGE_FILE}
 rm -f kpart.txt
 }
 
-# Finish image
+# fin and compress
 finish_image(){
 IMAGE_TIME="$(date +%T | sed 's/://g' | sed 's/..$//')"
-if [[ -f "kernel.txt" ]]; then source kernel.txt; fi
-if [[ -f "${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img" ]]; then
-	mv -f ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img \
-	${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}-${IMAGE_TIME}.img
-	if [ $compress_img -eq 1 ]; then
-		echo ""
-		echo_compress
-		xz -zev --threads=${CORES} ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}-${IMAGE_TIME}.img
-	fi
+IMAGE_FIN_NAME="${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}-${IMAGE_TIME}.img"
+if [[ -f "${IMAGE_FILE_NAME}" ]]; then
+	mv -f ${IMAGE_FILE_NAME} ${IMAGE_FIN_NAME}
 fi
-if [[ -f "${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}-${IMAGE_TIME}.img.xz" ]]; then
-	sha256sum ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}-${IMAGE_TIME}.img.xz \
-	> ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}-${IMAGE_TIME}.img.xz.sha256
-	sha256sum --check ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}-${IMAGE_TIME}.img.xz.sha256
+if [ $compress_img -eq 1 ]; then
+	echo ""; echo_compress
+	xz -zev --threads=${CORES} ${IMAGE_FIN_NAME}
+	if [[ -f "${IMAGE_FIN_NAME}.xz" ]]; then
+		sha256sum ${IMAGE_FIN_NAME}.xz > ${IMAGE_FIN_NAME}.xz.sha256
+		sha256sum --check ${IMAGE_FIN_NAME}.xz.sha256
+	fi
 fi
 }

@@ -27,13 +27,13 @@ mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" ${ROOT}
 }
 
 sysroot_setup(){
-RELEASE="${ROOT}/etc/apt/sources.list"
+SOURCES_LIST="${ROOT}/etc/apt/sources.list"
 mkdir -p ${ROOT}/etc/apt/apt.conf.d ${ROOT}/etc/dpkg/dpkg.cfg.d
 echo "force-unsafe-io" > "${ROOT}/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
 if [ $verbose -eq 1 ]; then
-	distro_release;
+	choose_release;
 else
-	distro_release > /dev/null 2>&1;
+	choose_release > /dev/null 2>&1;
 fi
 }
 

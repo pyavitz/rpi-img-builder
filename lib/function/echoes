@@ -14,11 +14,11 @@ echo -e "${WHT}Extracting archive${FIN} ..."
 }
 
 echo_compress(){
-echo -e "${WHT}Compressing image${FIN} ..."
+echo -e "${WHT}== Compressing image${FIN}"
 }
 
 echo_shrink(){
-echo -e "${WHT}Shrinking image${FIN} ..."
+echo -e "${WHT}== Shrinking image${FIN}"
 }
 
 echo_patch(){

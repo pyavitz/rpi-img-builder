@@ -109,7 +109,7 @@ EOF
 chmod +x /etc/rc.local
 }
 
-enable_services(){
+systemd_services(){
 systemctl enable rc-local
 systemctl enable ifplugd
 systemctl enable zramswap
@@ -132,4 +132,25 @@ if [[ "$DISTRO" == "debian" ]]; then
 	systemctl enable resolvconf;
 fi
 #systemctl enable serial-getty@ttyUSB0.service
+}
+
+# devuan
+sysvinit_services(){
+chmod +x /etc/init.d/governor
+chmod +x /etc/init.d/firstboot
+chmod +x /etc/init.d/leds
+chmod +x /etc/init.d/bthelper
+chmod +x /etc/init.d/zramswap
+if [ $networkmanager -eq 0 ]; then
+	chmod +x /etc/init.d/network;
+	update-rc.d -f networking remove;
+fi
+chmod +x /etc/init.d/credentials
+update-rc.d -f hwclock.sh remove
+update-rc.d firstboot defaults S
+update-rc.d governor defaults 2
+update-rc.d leds defaults 2
+update-rc.d bthelper defaults 2
+update-rc.d zramswap defaults 2
+update-rc.d credentials defaults 2
 }

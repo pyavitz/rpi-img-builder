@@ -1,4 +1,6 @@
 #!/bin/bash
+
+# cleanup
 umount p2/proc p2/sys p2/dev p2/run > /dev/null 2>&1
 umount sysroot/proc sysroot/sys sysroot/dev/pts sysroot/dev sysroot/run > /dev/null 2>&1
 umount -l p1 p2 sysroot > /dev/null 2>&1

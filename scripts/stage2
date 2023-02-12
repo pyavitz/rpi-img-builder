@@ -9,7 +9,6 @@ if [ -f /root/services.txt ]; then
 	source /root/services.txt;
 fi
 source /root/universal.txt
-source /root/${DISTRO}.txt
 source /root/networking.txt
 UNMINIMIZE=/usr/local/sbin/unminimize
 URL="https://raw.githubusercontent.com/pyavitz/scripts/master/"
@@ -375,18 +374,13 @@ echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' > /etc/udev/rules.d/10-vchiq
 echo 'SUBSYSTEM=="vcio",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
 echo 'SUBSYSTEM=="vc-mem",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
 
-if [[ "$DISTRO" == "devuan" ]]; then
-	if [ $btrfs -eq 1 ]; then
-		btrfs_udev-rule;
-	fi
-fi
-
+# Services
 echo ""
 echo "Checking Services ..."
 sleep 1s
 if [[ "$DISTRO" == "devuan" ]]; then
 	echo "== Sysvinit";
-	enable_services > /dev/null 2>&1;
+	sysvinit_services > /dev/null 2>&1;
 else
 	echo "== Systemd";
 	firstboot_service > /dev/null 2>&1;
@@ -394,7 +388,7 @@ else
 	governor_service > /dev/null 2>&1;
 	led_service > /dev/null 2>&1;
 	rc-local_service > /dev/null 2>&1;
-	enable_services > /dev/null 2>&1;
+	systemd_services > /dev/null 2>&1;
 fi
 
 # Finish
