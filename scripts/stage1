@@ -182,6 +182,10 @@ rm p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
 if [[ -f "kernel.txt" ]]; then source kernel.txt; fi
 
 # Finish
+if [ $ext4 -eq 1 ] && [[ "$ARCH" == "arm" ]]; then
+	# add removable 100mb file to ensure space on the img after shrinking
+	dd if="/dev/urandom" of="p2/block.img" bs=100MB count=1 > /dev/null 2>&1
+fi
 defrag_p2
 
 umount p2

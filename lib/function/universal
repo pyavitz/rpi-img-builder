@@ -320,7 +320,18 @@ ROOT_PARTUUID=$(blkid -o export -- ${ROOTFS} | sed -ne 's/^PARTUUID=//p')
 echo ROOT_PARTUUID='"'$ROOT_PARTUUID'"' > part-uuid.txt
 source part-uuid.txt
 cmdline > /dev/null 2>&1
-sleep 1s
+sleep .75
+if [[ "$ARCH" == "arm" ]]; then
+	# remove 100mb file
+	mkdir -p p2
+	sleep .25
+	mount "${ROOTFS}" p2
+	rm -f p2/block.img
+	sleep .50
+	umount p2
+	sleep .50
+	rm -fdr p2
+fi
 umount p1
 rm -fdr p1
 kpartx -d ${IMAGE_FILE}

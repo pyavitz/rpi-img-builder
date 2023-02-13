@@ -26,7 +26,7 @@ if [[ `findmnt -v -n -o FSTYPE / | grep -w "xfs"` ]]; then
 fi
 rm -f /boot/broadcom/cmdline.txt
 tee /boot/broadcom/cmdline.txt <<EOF
-console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} ${ROOTFSTYPE} fsck.repair=yes logo.nologo net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm rootwait
+console=serial0,115200 console=tty1 root=PARTUUID=${ROOT_PARTUUID} ${ROOTFSTYPE} fsck.repair=yes loglevel=5 net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm rootwait
 EOF
 }
 
