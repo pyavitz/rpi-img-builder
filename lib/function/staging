@@ -1,16 +1,8 @@
 #!/bin/bash
 
 partitions(){
-if [ $ext4 -eq 1 ]; then
-	IMAGE_SIZE="${EXT4}"
-fi
-if [ $btrfs -eq 1 ]; then
-	IMAGE_SIZE="${BTRFS}"
-fi
-if [ $xfs -eq 1 ]; then
-	IMAGE_SIZE="${XFS}"
-fi
-truncate -s ${IMAGE_SIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
+IMGSIZE="3072MB"
+truncate -s ${IMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
 echo -e "o
 n
 p

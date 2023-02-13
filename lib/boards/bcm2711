@@ -30,11 +30,6 @@ EXTRA="loglevel=5 net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm"
 # motd
 MOTD="Raspberry Pi"
 
-# image sizes
-EXT4="3000MB"
-BTRFS="2650MB"
-XFS="2650MB"
-
 # packaging
 KERNEL_IMG="kernel8.img"
 SERIES="bcm2711-${BOARD_EXT}"
