@@ -13,10 +13,11 @@
 # update-rc.d useraccount defaults 5
 
 . /lib/lsb/init-functions
+. /boot/broadcom/useraccount.txt
 
 case "$1" in
 	start)
-	if [ -f /boot/broadcom/useraccount.txt ]; then
+	if [ "$ENABLE" = "true" ]; then
 		/usr/local/sbin/useraccount;
 	else
 		sleep 1s;
