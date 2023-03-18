@@ -70,7 +70,6 @@ Linux kernel
 Branch:			# Supported: 5.15.y and above
 Build:			# Kernel build version number
 Menuconfig:		# Kernel menuconfig
-Crosscompile:		# 1 to cross compile | 0 to native compile
 
 Compiler        	WARNING: Only one may be selected
 Version:		# gcc-10
