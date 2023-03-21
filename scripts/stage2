@@ -92,6 +92,15 @@ if [[ "$DISTRO" == "ubuntu" ]]; then
 fi
 # apt clean
 if [[ "$DISTRO" == "ubuntu" ]]; then
+	if [[ -f "/etc/update-motd.d/88-esm-announce" ]]; then
+		rm -f /etc/update-motd.d/88-esm-announce
+		echo '#!/bin/sh' > /etc/update-motd.d/88-esm-announce
+		chmod +x /etc/update-motd.d/88-esm-announce
+	fi
+	if [[ -f "/etc/apt/apt.conf.d/20apt-esm-hook.conf" ]]; then
+		rm -f /etc/apt/apt.conf.d/20apt-esm-hook.conf
+		touch /etc/apt/apt.conf.d/20apt-esm-hook.conf
+	fi
 	# remove ubuntu pro adverts apt hook
 	echo 'DPkg::Post-Invoke {"/usr/local/sbin/remove-ubuntu-advert";};' > /etc/apt/apt.conf.d/80remove-ubuntu-advert
 	cat <<EOF > "/usr/local/sbin/remove-ubuntu-advert"
