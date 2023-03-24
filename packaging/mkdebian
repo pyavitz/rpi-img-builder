@@ -89,7 +89,7 @@ else
 	revision=$(cat .version 2>/dev/null||echo 1)
 	packageversion=$version-$revision
 fi
-sourcename=$KDEB_SOURCENAME
+sourcename="rpi-img-builder"
 packagename=linux-image-$version
 kernel_headers_packagename=linux-headers-$version
 dbg_packagename=$packagename-dbg
