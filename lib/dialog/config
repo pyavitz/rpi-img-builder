@@ -16,7 +16,7 @@ if [[ -f "profile.txt" ]]; then
 	. profile.txt
 fi
 rootpasswd="0"
-VERSION="5.15.y"
+VERSION="6.1.y"
 BUILD_VERSION="1"
 menuconfig="0"
 GCC_VERSION="gcc-$GCC"
