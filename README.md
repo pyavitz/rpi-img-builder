@@ -67,7 +67,7 @@ Password:		# Your password
 Enable root:		# Set root password to `toor`
 
 Linux kernel
-Branch:			# Supported: 5.15.y and above
+Branch:			# Supported: 6.1.y and above
 Build:			# Kernel build version number
 Menuconfig:		# Kernel menuconfig
 
