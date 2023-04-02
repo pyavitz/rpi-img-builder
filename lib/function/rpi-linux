@@ -13,40 +13,44 @@ if [[ -e "/etc/os-release" ]]; then
 else
 	CODENAME="none"
 fi
-if [ $gcc -eq 1 ]; then
-	rm -f {gcc.txt,ccache.txt,clang.txt}
-	gcc_compiler
-fi
-if [ $ccache -eq 1 ]; then
+# install depends
+if [ $CCACHE -eq 1 ]; then
 	if [[ `command -v ccache` ]]; then
-		rm -f {gcc.txt,ccache.txt,clang.txt}
-		ccache_compiler
+		:;
 	else
-		sudo apt update
-		sudo apt upgrade -y
-		sudo apt install -y ccache
-		sleep .75
-		rm -f {gcc.txt,ccache.txt,clang.txt}
-		ccache_compiler
+		apt install -y ccache
 	fi
 fi
-if [ $clang -eq 1 ]; then
+if [ $CLANG -eq 1 ]; then
 	if [[ "$CODENAME" == "jammy" ]]; then
-		if [[ `command -v clang-14` ]]; then
-			rm -f {gcc.txt,ccache.txt,clang.txt}
-			clang_compiler
+		if [[ `command -v clang-14` ]] && [[ `command -v clang-15` ]]; then
+			:;
 		else
-			sudo apt update
-			sudo apt upgrade -y
-			sudo apt install -y clang clang-14 lld lld-14 llvm
-			sleep .75
-			rm -f {gcc.txt,ccache.txt,clang.txt}
-			clang_compiler
+			apt install -y clang clang-14 clang-15 lld lld-14 lld-15 llvm
 		fi
 	else
 		echo -e "${CODENAME} is not supported."
 		exit 0
 	fi
+fi
+if [ $CCACHE -eq 1 ]; then
+	DEST="/usr/lib/ccache"
+	NATIVE="CC=${DEST}/${GCC_VERSION}"
+	CROSS="CC=${DEST}/${CROSS_COMPILE}${GCC_VERSION}"
+fi
+if [ $CLANG -eq 1 ]; then
+	NATIVE="CC=${CLANG_VERSION} ${CLANG_LLVM}"
+	if [[ "$BOARD" == "bcm2708" ]]; then
+		DEST="/usr/bin"
+		CROSS="CC=${DEST}/${CLANG_VERSION}"
+	else
+		CROSS="CC=${CLANG_VERSION} ${CLANG_LLVM}"
+	fi
+fi
+if [ $GCC -eq 1 ]; then
+	DEST="/usr/bin"
+	NATIVE="CC=${DEST}/${GCC_VERSION}"
+	CROSS="CC=${DEST}/${CROSS_COMPILE}${GCC_VERSION}"
 fi
 }
 
@@ -84,10 +88,10 @@ if [[ "$BOARD_EXT" == "rpi-4" ]]; then
 	${DOWNLOAD} ${BINURL}start4x.elf
 	cd ..
 	if [[ `ls firmware/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf,LICENCE.broadcom,COPYING.linux}` ]] > /dev/null 2>&1; then
-		echo_bdone;
+		echo_bdone
 	else
-		echo_fail;
-		exit 0;
+		echo_fail
+		exit 0
 	fi
 else
 	${DOWNLOAD} ${BINURL}bootcode.bin
@@ -101,10 +105,10 @@ else
 	${DOWNLOAD} ${BINURL}start_x.elf
 	cd ..
 	if [[ `ls firmware/{bootcode.bin,fixup.dat,fixup_cd.dat,fixup_db.dat,fixup_x.dat,start.elf,start_cd.elf,start_db.elf,start_x.elf,LICENCE.broadcom,COPYING.linux}` ]] > /dev/null 2>&1; then
-		echo_bdone;
+		echo_bdone
 	else
-		echo_fail;
-		exit 0;
+		echo_fail
+		exit 0
 	fi
 fi
 }
@@ -112,12 +116,12 @@ fi
 download(){
 RPIURL="https://github.com/raspberrypi/linux/archive/"
 echo ""
-if [ -f ${KERNEL}-${VERSION}.tar.gz ]; then
+if [[ -f "${KERNEL}-${VERSION}.tar.gz" ]]; then
 	:;
 else
-	echo_kernel;
-	${DOWNLOAD} ${RPIURL}rpi-${VERSION}.tar.gz;
-	echo_bdone;
+	echo_kernel
+	${DOWNLOAD} ${RPIURL}rpi-${VERSION}.tar.gz
+	echo_bdone
 fi
 extra_wireless
 }
@@ -130,14 +134,14 @@ pv ${KERNEL}-${VERSION}.tar.gz | tar -xzf - -C .
 
 setup(){
 cd ${KERNEL}-${VERSION}
-if [ $rtl8812au -eq 1 ]; then
-	rtl8812au;
+if [ $RTL88XXAU -eq 1 ]; then
+	rtl8812au
 fi
-if [ $rtl88x2bu -eq 1 ]; then
-	rtl88x2bu;
+if [ $RTL88X2BU -eq 1 ]; then
+	rtl88x2bu
 fi
-if [ $rtl8811cu -eq 1 ]; then
-	rtl8811cu;
+if [ $RTL88XXCU -eq 1 ]; then
+	rtl8811cu
 fi
 export ARCH=${ARCH}
 if [[ "ARCH" == "arm" ]]; then
@@ -157,10 +161,10 @@ else
 	read -p "Press enter to continue."
 	exit 1
 fi
-if [ $crosscompile -eq 1 ]; then
-	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} ${CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=${CROSS_COMPILE} ${MYCONFIG};
+if [ $CROSSCOMPILE -eq 1 ]; then
+	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} ${CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=${CROSS_COMPILE} ${MYCONFIG}
 else
-	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} ${NATIVE} CFLAGS="${CFLAGS}" ${MYCONFIG};
+	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} ${NATIVE} CFLAGS="${CFLAGS}" ${MYCONFIG}
 fi
 echo_done
 }
@@ -171,13 +175,13 @@ edit_defconfig
 rtl8812au_module
 rtl88x2bu_module
 rtl8811cu_module
-if [ $lto_clang_thin -eq 1 ]; then
-	echo "CONFIG_LTO_CLANG_THIN=y" >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
+if [ $LTO_CLANG_THIN -eq 1 ]; then
+	echo "CONFIG_LTO_CLANG_THIN=y" >> arch/${ARCH}/configs/${LINUX_DEFCONFIG}
 fi
-if [ $crosscompile -eq 1 ]; then
-	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} ${CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=${CROSS_COMPILE} ${LINUX_DEFCONFIG};
+if [ $CROSSCOMPILE -eq 1 ]; then
+	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} ${CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=${CROSS_COMPILE} ${LINUX_DEFCONFIG}
 else
-	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} ${NATIVE} CFLAGS="${CFLAGS}" ${LINUX_DEFCONFIG};
+	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} ${NATIVE} CFLAGS="${CFLAGS}" ${LINUX_DEFCONFIG}
 fi
 echo_done
 }
@@ -186,24 +190,24 @@ menuconfig(){
 echo ""
 echo_menuconfig
 sleep 1s
-if [ $crosscompile -eq 1 ]; then
-	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} ${CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=${CROSS_COMPILE} menuconfig;
+if [ $CROSSCOMPILE -eq 1 ]; then
+	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} ${CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=${CROSS_COMPILE} menuconfig
 else
-	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} ${NATIVE} CFLAGS="${CFLAGS}" menuconfig;
+	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} ${NATIVE} CFLAGS="${CFLAGS}" menuconfig
 fi
 }
 
 ccompile(){
 echo -e "-- ${GRN}CC${FIN}"
 echo_build
-echo ${BUILD_VERSION} > .version;
+echo ${BUILD_VERSION} > .version
 echo 'y' | make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} ${CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=${CROSS_COMPILE} bindeb-pkg
 }
 
 ncompile(){
 echo -e "-- ${GRN}NC${FIN}"
 echo_build
-echo ${BUILD_VERSION} > .version;
+echo ${BUILD_VERSION} > .version
 echo 'y' | make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} ${NATIVE} CFLAGS="${CFLAGS}" bindeb-pkg
 }
 

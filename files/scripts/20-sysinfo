@@ -24,6 +24,7 @@ else
 	echo -e "Temperature:" $CPUT°C;
 	echo -e "Cores:      " $(cat /sys/devices/system/cpu/cpu*/cpufreq/cpuinfo_cur_freq);
 fi
+echo -e "Online:     " $(lscpu | grep -w "On-line CPU(s) list:" | sed "s/On-line CPU(s) list:/ /g" | sed -e "s/\s\{3,\}//g")
 echo -e "Governor:   " $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
 echo -e "Memory:     " $(free -h | sed 's/i//g' | sed 's/Mem://g' | awk '{print $1" "$2}' | sed -n 'n;p')
 echo -e "Entropy:    " $(cat /proc/sys/kernel/random/entropy_avail)

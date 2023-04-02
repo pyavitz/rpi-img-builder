@@ -2,11 +2,11 @@
 source /root/source.txt
 source /root/board.txt
 source /root/userdata.txt
-if [ $verbose -eq 1 ]; then
-	set -x;
+if [ $VERBOSE -eq 1 ]; then
+	set -x
 fi
-if [ -f /root/services.txt ]; then
-	source /root/services.txt;
+if [[ -f "/root/services.txt" ]]; then
+	source /root/services.txt
 fi
 source /root/universal.txt
 source /root/networking.txt
@@ -17,15 +17,15 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
-if [ $networkmanager -eq 0 ]; then
+if [ $NETWORKMANAGER -eq 0 ]; then
 	if [[ "$DISTRO_VERSION" == "jammy" || "$DISTRO_VERSION" == "kinetic" || "$DISTRO_VERSION" == "lunar" ]]; then
 		# systemd-resolved breaks static ip when using ifupdown
 		# it will be disabled on jammy jellyfish
 		unlink /etc/resolv.conf;
 		if [ -f /etc/resolv.conf ]; then
-			rm -f /etc/resolv.conf;
+			rm -f /etc/resolv.conf
 		fi
-		systemctl disable systemd-resolved;
+		systemctl disable systemd-resolved
 	fi
 fi
 echo "nameserver ${NAMESERVER1}" > /etc/resolv.conf
@@ -50,44 +50,35 @@ apt dist-upgrade -y
 apt autoremove -y
 if [[ "$DISTRO" == "ubuntu" ]]; then
 	if [ -f "$UNMINIMIZE" ]; then
-		echo 'y' | unminimize;
+		echo 'y' | unminimize
 	fi
-	apt_preferences;
-	echo "";
+	apt_preferences
+	echo ""
 fi
 # Set network variables
-if [ $networkmanager -eq 1 ]; then
-	NETWORKING="network-manager";
+if [ $NETWORKMANAGER -eq 1 ]; then
+	NETWORKING="network-manager"
 	if [[ "$DISTRO" == "devuan" ]]; then
-		NETWORKING_EXTRA="";
+		NETWORKING_EXTRA=""
 	fi
 else
-	NETWORKING="ifupdown";
+	NETWORKING="ifupdown"
 	if [[ "$DISTRO" == "devuan" ]]; then
-		NETWORKING_EXTRA="ifupdown-extra";
+		NETWORKING_EXTRA="ifupdown-extra"
 	fi
 fi
-if [ $ext4 -eq 1 ]; then
-	FSPROG="e2fsprogs";
-fi
-if [ $btrfs -eq 1 ]; then
-	FSPROG="btrfs-progs";
-fi
-if [ $xfs -eq 1 ]; then
-	FSPROG="xfsprogs";
-fi
 if [[ "$DISTRO" == "debian" ]]; then
-	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} resolvconf openssh-client openssh-server ${FSPROG} ${NETWORKING};
+	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} resolvconf openssh-client openssh-server ${FSPROG} ${NETWORKING}
 fi
 if [[ "$DISTRO" == "devuan" ]]; then
-	apt install -y openssh-client openssh-server --no-install-recommends;
-	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} openresolv ${FSPROG} ${NETWORKING} ${NETWORKING_EXTRA};
+	apt install -y openssh-client openssh-server --no-install-recommends
+	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} openresolv ${FSPROG} ${NETWORKING} ${NETWORKING_EXTRA}
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
 	if [[ "$DISTRO_VERSION" == "kinetic" || "$DISTRO_VERSION" == "lunar" ]]; then
-		apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} systemd-resolved openssh-client openssh-server ${FSPROG} ${NETWORKING};
+		apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} systemd-resolved openssh-client openssh-server ${FSPROG} ${NETWORKING}
 	else
-		apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} openresolv openssh-client openssh-server ${FSPROG} ${NETWORKING};
+		apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} openresolv openssh-client openssh-server ${FSPROG} ${NETWORKING}
 	fi
 fi
 # apt clean
@@ -123,7 +114,7 @@ apt -y autoclean
 # User options
 echo -n "raspberrypi" > /etc/hostname;
 sed -i "1 a 127.0.1.1	raspberrypi" /etc/hosts;
-if [ $useracct -eq 0 ]; then
+if [ $USERACCT -eq 0 ]; then
 	echo "";
 	adduser ${USERNAME} --gecos ${NAME} --disabled-password
 	echo "${USERNAME}:${PASSWORD}" | chpasswd
@@ -144,7 +135,7 @@ if [ $useracct -eq 0 ]; then
 	adduser ${USERNAME} gpio
 	adduser ${USERNAME} spi
 fi
-if [ $useracct -eq 1 ]; then
+if [ $USERACCT -eq 1 ]; then
 	mkdir -p /boot/broadcom
 	mkdir -p /usr/local/sbin
 	mv -f /root/useracct/useraccount /usr/local/sbin/
@@ -164,22 +155,22 @@ if [ $useracct -eq 1 ]; then
 		rm -fdr /root/useracct
 	fi
 fi
-if [ $rootpasswd -eq 1 ]; then
-	root_password;
+if [ $ROOTPASSWD -eq 1 ]; then
+	echo "root:toor" | chpasswd
 fi
 
 # Sudoers file
-if [ $useracct -eq 0 ]; then
-	echo "";
+if [ $USERACCT -eq 0 ]; then
+	echo ""
 	tee /etc/sudoers.d/010_${USERNAME}-nopasswd <<EOF
 ${USERNAME} ALL=(ALL) NOPASSWD: ALL
 EOF
 fi
 
 # User script (function 2)
-if [ $uscripts -eq 1 ]; then
+if [ $USCRIPTS -eq 1 ]; then
 	echo ""
-	uscripts_stage2;
+	uscripts_stage2
 fi
 
 # Skins
@@ -191,7 +182,7 @@ mkdir -p /root/.config/mc
 mv -f root-ini /root/.config/mc/ini
 mv -f nanorc-root /root/.nanorc
 chown -R root:root /root
-if [ $useracct -eq 0 ]; then
+if [ $USERACCT -eq 0 ]; then
 	mkdir -p /home/${USERNAME}/.config/mc;
 	mv -f user-ini /home/${USERNAME}/.config/mc/ini;
 	mv -f nanorc-user /home/${USERNAME}/.nanorc;
@@ -206,7 +197,7 @@ mkdir -p /usr/local/bin
 mkdir -p /usr/local/sbin
 if [[ "$BOARD_EXT" == "rpi-4" ]]; then
 	#wget -cq --show-progress ${URL}write2usb;
-	wget -cq --show-progress ${URL}deb-eeprom;
+	wget -cq --show-progress ${URL}deb-eeprom
 	#mv -f {write2usb,deb-eeprom} /usr/local/bin/;
 	mv -f deb-eeprom /usr/local/bin/
 fi
@@ -220,17 +211,17 @@ mv -f firstboot.sh /usr/local/sbin/firstboot
 mv -f leds.sh /usr/local/sbin/leds
 if [[ "$DISTRO" == "devuan" ]]; then
 	# Inits
-	mv -f firstboot.init /etc/init.d/firstboot;
-	mv -f leds.init /etc/init.d/leds;
-	mv -f governor.init /etc/init.d/governor;
-	mv -f bthelper.init /etc/init.d/bthelper;
-	mv -f zramswap.init /etc/init.d/zramswap;
-	if [ $networkmanager -eq 1 ]; then
-		rm -f network.init;
+	mv -f firstboot.init /etc/init.d/firstboot
+	mv -f leds.init /etc/init.d/leds
+	mv -f governor.init /etc/init.d/governor
+	mv -f bthelper.init /etc/init.d/bthelper
+	mv -f zramswap.init /etc/init.d/zramswap
+	if [ $NETWORKMANAGER -eq 1 ]; then
+		rm -f network.init
 	else
-		mv -f network.init /etc/init.d/network;
+		mv -f network.init /etc/init.d/network
 	fi
-	mv -f credentials.init /etc/init.d/credentials;
+	mv -f credentials.init /etc/init.d/credentials
 fi
 mv -f growpart /usr/bin/
 chmod +x /usr/bin/growpart
@@ -282,42 +273,42 @@ fi
 wireless_regdb
 
 # Network Setup
-if [ $networkmanager -eq 1 ]; then
-	networkmanager-setup > /dev/null 2>&1;
-	networkmanager-credentials > /dev/null 2>&1;
+if [ $NETWORKMANAGER -eq 1 ]; then
+	networkmanager-setup > /dev/null 2>&1
+	networkmanager-credentials > /dev/null 2>&1
 else
-	ifupdown-setup > /dev/null 2>&1;
-	ifupdown-credentials > /dev/null 2>&1;
+	ifupdown-setup > /dev/null 2>&1
+	ifupdown-credentials > /dev/null 2>&1
 fi
 
 # Board information
 if [[ -f "/root/board.txt" ]]; then
-	cp -f /root/board.txt /etc/opt/;
-	ln -sr /etc/opt/board.txt /etc/opt/soc.txt;
-	chown root:root /etc/opt/board.txt;
+	cp -f /root/board.txt /etc/opt/
+	ln -sr /etc/opt/board.txt /etc/opt/soc.txt
+	chown root:root /etc/opt/board.txt
 fi
 
 # ZSWAP virtual memory
 if [[ -f "/etc/default/zramswap" ]]; then
-	sed -i 's/#ALLOCATION=256/ALLOCATION=1024/g' /etc/default/zramswap;
-	sed -i 's/#SIZE=256/SIZE=1024/g' /etc/default/zramswap;
-	sed -i 's/#PRIORITY=100/PRIORITY=100/g' /etc/default/zramswap;
+	sed -i 's/#ALLOCATION=256/ALLOCATION=1024/g' /etc/default/zramswap
+	sed -i 's/#SIZE=256/SIZE=1024/g' /etc/default/zramswap
+	sed -i 's/#PRIORITY=100/PRIORITY=100/g' /etc/default/zramswap
 fi
 
 # Adding sys-mods
 raspberrypi_sys_mods
 if [[ -f "/etc/sudoers.d/010_pi-nopasswd" ]]; then
 	# security risk
-	rm -f /etc/sudoers.d/010_pi-nopasswd;
+	rm -f /etc/sudoers.d/010_pi-nopasswd
 fi
 
 # Pi Bluetooth
 echo ""
 echo "Installing pi-bluetooth ..."
 if [[ "$DISTRO" == "ubuntu" ]]; then
-	git clone https://github.com/pyavitz/pi-bluetooth.git -b ubuntu;
+	git clone https://github.com/pyavitz/pi-bluetooth.git -b ubuntu
 else
-	git clone https://github.com/pyavitz/pi-bluetooth.git;
+	git clone https://github.com/pyavitz/pi-bluetooth.git
 fi
 cd pi-bluetooth
 chmod +x debian/rules
@@ -331,13 +322,13 @@ rpi_userland
 
 # Adding eeprom
 if [[ "$BOARD_EXT" == "rpi-4" ]]; then
-	bcm2711_eeprom;
+	bcm2711_eeprom
 fi
 
 # Remove zstd compression (not supported by older kernels)
 if [[ "$DISTRO" == "ubuntu" ]]; then
 	if [[ `grep -w "COMPRESS=zstd" "/etc/initramfs-tools/initramfs.conf"` ]]; then
-		sed -i 's/COMPRESS=zstd/COMPRESS=xz/g' /etc/initramfs-tools/initramfs.conf;
+		sed -i 's/COMPRESS=zstd/COMPRESS=xz/g' /etc/initramfs-tools/initramfs.conf
 	fi
 fi
 
@@ -345,14 +336,14 @@ fi
 stage2_kernel # universal
 
 # BCM modules
-bcm_modules > /dev/null 2>&1;
+bcm_modules > /dev/null 2>&1
 if [[ "$BOARD" == "bcm2710" ]]; then
 	# audio module
-	echo "snd_bcm2835" >> /etc/modules;
+	echo "snd_bcm2835" >> /etc/modules
 fi
 if [[ "$BOARD" == "bcm2709" ]]; then
 	# audio module
-	echo "snd_bcm2835" >> /etc/modules;
+	echo "snd_bcm2835" >> /etc/modules
 fi
 
 # Clean misc files
@@ -360,14 +351,14 @@ rm -f {*.patch,*led*,*eeprom*}
 
 # Whiptail color palette
 if [[ "$DISTRO" == "ubuntu" ]]; then
-	mkdir -p /etc/newt;
-	palette-dark > /dev/null 2>&1;
-	ln -sf /etc/newt/palette.dark  /etc/alternatives/newt-palette;
+	mkdir -p /etc/newt
+	palette-dark > /dev/null 2>&1
+	ln -sf /etc/newt/palette.dark  /etc/alternatives/newt-palette
 fi
 
 # RPi Hack
 if [[ "$BOARD" == "bcm2708" ]]; then
-	ln -s /lib/ld-linux.so.3 /lib/ld-linux-armhf.so.3;
+	ln -s /lib/ld-linux.so.3 /lib/ld-linux-armhf.so.3
 fi
 
 # Flush runtime journal
@@ -375,9 +366,9 @@ if [[ "$BOARD" == "bcm2708" ]]; then
 	:;
 else
 	if [[ -f "/etc/systemd/journald.conf" ]]; then
-		sed -i 's/#Storage=auto/Storage=volatile/g' /etc/systemd/journald.conf;
-		sed -i 's/#SystemMaxFileSize=/SystemMaxFileSize=50M/g' /etc/systemd/journald.conf;
-		sed -i 's/#SystemMaxFiles=100/SystemMaxFiles=5/g' /etc/systemd/journald.conf;
+		sed -i 's/#Storage=auto/Storage=volatile/g' /etc/systemd/journald.conf
+		sed -i 's/#SystemMaxFileSize=/SystemMaxFileSize=50M/g' /etc/systemd/journald.conf
+		sed -i 's/#SystemMaxFiles=100/SystemMaxFiles=5/g' /etc/systemd/journald.conf
 	fi
 fi
 
@@ -391,22 +382,22 @@ echo ""
 echo "Checking Services ..."
 sleep 1s
 if [[ "$DISTRO" == "devuan" ]]; then
-	echo "== Sysvinit";
-	sysvinit_services > /dev/null 2>&1;
+	echo "== Sysvinit"
+	sysvinit_services > /dev/null 2>&1
 else
-	echo "== Systemd";
-	firstboot_service > /dev/null 2>&1;
-	credentials_service > /dev/null 2>&1;
-	governor_service > /dev/null 2>&1;
-	led_service > /dev/null 2>&1;
-	rc-local_service > /dev/null 2>&1;
-	systemd_services > /dev/null 2>&1;
+	echo "== Systemd"
+	firstboot_service > /dev/null 2>&1
+	credentials_service > /dev/null 2>&1
+	governor_service > /dev/null 2>&1
+	led_service > /dev/null 2>&1
+	rc-local_service > /dev/null 2>&1
+	systemd_services > /dev/null 2>&1
 fi
 
 # Finish
 echo ""
 echo "Finalizing ..."
 echo ""
-sleep 1s
+sleep .75
 
 umount /proc /sys

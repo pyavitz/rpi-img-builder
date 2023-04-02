@@ -5,25 +5,24 @@ validation
 source board.txt
 source userdata.txt
 source packaging/pkgvars
-source lib/function/compiler
 source lib/function/rpi-commit
 source lib/function/wireless
 source lib/function/modconfig
 
 # prep
 validation
-if [ $verbose -eq 1 ]; then
+if [ $VERBOSE -eq 1 ]; then
 	set -x;
 fi
 HOST_ARCH=`uname -m`
 if [[ "$HOST_ARCH" == "aarch64" ]] && [[ "$ARCH" == "arm64" ]]; then
-	crosscompile="0"
+	CROSSCOMPILE="0"
 fi
 if [[ "$HOST_ARCH" == "aarch64" ]] && [[ "$ARCH" == "arm" ]]; then
-	crosscompile="1"
+	CROSSCOMPILE="1"
 fi
 if [[ "$HOST_ARCH" == "x86_64"  ]] && [[ "$ARCH" == "arm" || "$ARCH" == "arm64" ]]; then
-	crosscompile="1"
+	CROSSCOMPILE="1"
 fi
 compiler
 source_dir
@@ -42,11 +41,11 @@ fi
 
 ### Download kernel
 if [[ `wget -S --spider https://github.com/raspberrypi/linux/archive/$commit.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
-	download;
+	download
 else
 	echo ""
 	echo -e "${WHT}It appears the commit you selected is not available${FIN}?"
-	exit > /dev/null 2>&1;
+	exit 0
 fi
 
 # Extract
@@ -60,33 +59,41 @@ firmware
 packaging
 
 # Defconfig
-if [ $custom_defconfig -eq 1 ]; then
-	cconfig;
+if [ $CUSTOM_DEFCONFIG -eq 1 ]; then
+	cconfig
 else
-	fconfig;
+	fconfig
 fi
 
 # Menuconfig
-if [ $menuconfig -eq 1 ]; then
-	menuconfig;
+if [ $MENUCONFIG -eq 1 ]; then
+	menuconfig
 fi
 
 # Builddeb
-if [ $crosscompile -eq 1 ]; then
-	ccompile;
+if [ $CROSSCOMPILE -eq 1 ]; then
+	ccompile
 else
-	ncompile;
+	ncompile
 fi
-
-# Finish
 echo ""
+# finish
 cd ..
-rm -f {linux-libc-dev*.deb,*.buildinfo,*.changes}
-if [[ `ls ../${OUTPUT}/*.deb` ]] > /dev/null 2>&1; then
-	mkdir -p ../${OUTPUT}/tmp;
-	mv -f ../${OUTPUT}/*.deb ../${OUTPUT}/tmp;
+rm -f {*linux-image-dbg*.deb,linux-libc-dev*.deb,*.buildinfo,*.changes}
+if [[ `ls *linux*.deb` ]] > /dev/null 2>&1; then
+	if [[ `ls ../${OUTPUT}/*linux*.deb` ]] > /dev/null 2>&1; then
+		mkdir -p ../${OUTPUT}/tmp
+		mv -f ../${OUTPUT}/{*linux-image*.deb,*linux-headers*.deb} ../${OUTPUT}/tmp
+	fi
+	mkdir -p ../${OUTPUT}
+	mv -f *.deb ../${OUTPUT}/
+	echo_done
+	exit 0
+else
+	echo ""
+	echo -e "${CKERNEL}-$commit [FAILED]"
+	read -p "Press enter to continue."
+	exit 1
 fi
-mkdir -p ../${OUTPUT}
-mv -f *.deb ../${OUTPUT}/
 
 exit 0

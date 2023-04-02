@@ -30,8 +30,8 @@ $MAKE_ROOTFS
 mkdir -p p1 p2
 mount "${IMAGE_LOOP_DEV_BOOT}" p1
 mount "${IMAGE_LOOP_DEV_ROOTFS}" p2
-if [ $btrfs -eq 1 ]; then
-	btrfs subvolume create p2/@;
+if [ $BTRFS -eq 1 ]; then
+	btrfs subvolume create p2/@
 fi
 sync
 umount p2
@@ -41,19 +41,19 @@ $MOUNT_ROOTFS
 filesystem(){
 MAKE_BOOTFS="mkfs.vfat -n BOOT ${IMAGE_LOOP_DEV_BOOT}"
 BOOT_PATH="/boot/broadcom"
-if [ $ext4 -eq 1 ]; then
+if [ $EXT4 -eq 1 ]; then
 	MAKE_ROOTFS="mkfs.ext4 -L ROOTFS ${IMAGE_LOOP_DEV_ROOTFS}"
 	MOUNT_ROOTFS="mount -o defaults,noatime ${IMAGE_LOOP_DEV_ROOTFS} p2"
 	FSTYPE="ext4	defaults,noatime,commit=600,errors=remount-ro 0 1"
 	ROOTFSTYPE="rootfstype=ext4"
 fi
-if [ $btrfs -eq 1 ]; then
+if [ $BTRFS -eq 1 ]; then
 	MAKE_ROOTFS="mkfs.btrfs -f -L ROOTFS ${IMAGE_LOOP_DEV_ROOTFS}"
 	MOUNT_ROOTFS="mount -o compress=lzo,noatime,subvol=@ ${IMAGE_LOOP_DEV_ROOTFS} p2;"
 	FSTYPE="btrfs	defaults,compress=lzo,noatime,subvol=@ 0 1"
 	ROOTFSTYPE="rootfstype=btrfs rootflags=subvol=@"
 fi
-if [ $xfs -eq 1 ]; then
+if [ $XFS -eq 1 ]; then
 	MAKE_ROOTFS="mkfs.xfs -f -L ROOTFS ${IMAGE_LOOP_DEV_ROOTFS}"
 	MOUNT_ROOTFS="mount -o defaults,noatime ${IMAGE_LOOP_DEV_ROOTFS} p2"
 	FSTYPE="xfs	defaults,noatime 0 1"

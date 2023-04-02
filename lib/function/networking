@@ -17,10 +17,10 @@ ln -sr /lib/firmware /etc/firmware
 if [[ `wget -S --spider https://kernel.googlesource.com/pub/scm/linux/kernel/git/firmware/linux-firmware.git/+archive/refs/heads/main/rtl_nic.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
 	mkdir -p /lib/firmware/updates/rtl_nic;
 	cd /lib/firmware/updates/rtl_nic;
-	wget -cq https://kernel.googlesource.com/pub/scm/linux/kernel/git/firmware/linux-firmware.git/+archive/refs/heads/main/rtl_nic.tar.gz;
+	wget -cq https://kernel.googlesource.com/pub/scm/linux/kernel/git/firmware/linux-firmware.git/+archive/refs/heads/main/rtl_nic.tar.gz
 	if [ -f rtl_nic.tar.gz ]; then
-		tar xf rtl_nic.tar.gz;
-		rm -f rtl_nic.tar.gz;
+		tar xf rtl_nic.tar.gz
+		rm -f rtl_nic.tar.gz
 	fi
 fi
 cd ~
@@ -37,8 +37,8 @@ cp -f regulatory.db /lib/firmware/regulatory.db
 cp -f regulatory.db.p7s /lib/firmware/regulatory.db.p7s
 cd ~
 rm -fdr wireless-regdb
-if [ $networkmanager -eq 1 ]; then
-	echo 'KERNEL=="regulatory*", ACTION=="change", SUBSYSTEM=="platform", RUN+="/sbin/crda"' > /etc/udev/rules.d/60-regdb.rules;
+if [ $NETWORKMANAGER -eq 1 ]; then
+	echo 'KERNEL=="regulatory*", ACTION=="change", SUBSYSTEM=="platform", RUN+="/sbin/crda"' > /etc/udev/rules.d/60-regdb.rules
 fi
 }
 
@@ -62,31 +62,31 @@ EOF
 ifupdown-setup(){
 rm -f /etc/network/interfaces
 if [[ "$DISTRO" == "devuan" ]]; then
-	ln -sr /etc/network/if-up.d/00check-network-cable /etc/network/if-pre-up.d/00check-network-cable;
-	sed -i 's/#CONFIGURE_INTERFACES=yes/CONFIGURE_INTERFACES=yes/g' /etc/default/networking;
-	sed -i 's/#WAIT_ONLINE_METHOD=ifup/WAIT_ONLINE_METHOD=ifup/g' /etc/default/networking;
-	sed -i 's/#WAIT_ONLINE_TIMEOUT=300/WAIT_ONLINE_TIMEOUT=10/g' /etc/default/networking;
+	ln -sr /etc/network/if-up.d/00check-network-cable /etc/network/if-pre-up.d/00check-network-cable
+	sed -i 's/#CONFIGURE_INTERFACES=yes/CONFIGURE_INTERFACES=yes/g' /etc/default/networking
+	sed -i 's/#WAIT_ONLINE_METHOD=ifup/WAIT_ONLINE_METHOD=ifup/g' /etc/default/networking
+	sed -i 's/#WAIT_ONLINE_TIMEOUT=300/WAIT_ONLINE_TIMEOUT=10/g' /etc/default/networking
 	if [ -f /etc/default/network-test ]; then
-		sed -i 's/DO_ARPING=${DO_ARPING:-yes}/DO_ARPING=${DO_ARPING:-no}/g' /etc/default/network-test;
-		sed -i 's/DO_SYSLOG=${DO_SYSLOG:-yes}/DO_SYSLOG=${DO_SYSLOG:-no}/g' /etc/default/network-test;
+		sed -i 's/DO_ARPING=${DO_ARPING:-yes}/DO_ARPING=${DO_ARPING:-no}/g' /etc/default/network-test
+		sed -i 's/DO_SYSLOG=${DO_SYSLOG:-yes}/DO_SYSLOG=${DO_SYSLOG:-no}/g' /etc/default/network-test
 	fi
 	if [[ "$BOARD" == "bcm2710" ]]; then
-		eth_udev-rule;
+		eth_udev-rule
 	fi
 	if [[ "$BOARD" == "bcm2709" ]]; then
-		eth_udev-rule;
+		eth_udev-rule
 	fi
 fi
 if [[ "$DISTRO_VERSION" == "jammy" || "$DISTRO_VERSION" == "kinetic" || "$DISTRO_VERSION" == "lunar" ]]; then
 	# /etc/network/if-down.d/resolved: 12: mystatedir: not found
 	# /etc/network/if-up.d/resolved: 12: mystatedir: not found
-	if [ -f /etc/network/if-down.d/resolved ]; then
-		sed -i 's/mystatedir statedir ifindex interface/#mystatedir statedir ifindex interface/g' /etc/network/if-down.d/resolved;
-		sed -i 's/return/exit 0/g' /etc/network/if-down.d/resolved;
+	if [[ -f "/etc/network/if-down.d/resolved" ]]; then
+		sed -i 's/mystatedir statedir ifindex interface/#mystatedir statedir ifindex interface/g' /etc/network/if-down.d/resolved
+		sed -i 's/return/exit 0/g' /etc/network/if-down.d/resolved
 	fi
-	if [ -f /etc/network/if-up.d/resolved ]; then
-		sed -i 's/mystatedir statedir ifindex interface/#mystatedir statedir ifindex interface/g' /etc/network/if-up.d/resolved;
-		sed -i 's/return/exit 0/g' /etc/network/if-up.d/resolved;
+	if [[ -f "/etc/network/if-up.d/resolved" ]]; then
+		sed -i 's/mystatedir statedir ifindex interface/#mystatedir statedir ifindex interface/g' /etc/network/if-up.d/resolved
+		sed -i 's/return/exit 0/g' /etc/network/if-up.d/resolved
 	fi
 fi
 
@@ -184,21 +184,21 @@ EOF
 echo "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev" > /etc/wpa_supplicant/wpa_supplicant.conf
 chown root:root /etc/network/interfaces
 chown root:root /etc/wpa_supplicant/wpa_supplicant.conf
-if [ -f /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf ]; then
-	rm -f /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf;
+if [[ -f "/usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf" ]]; then
+	rm -f /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf
 fi
-if [ -f /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf ]; then
-	sed -i 's/wifi.powersave = 3/wifi.powersave = 2/g' /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf;
+if [[ -f "/etc/NetworkManager/conf.d/default-wifi-powersave-on.conf" ]]; then
+	sed -i 's/wifi.powersave = 3/wifi.powersave = 2/g' /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf
 else
-	echo "[connection]" > /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf;
-	echo "wifi.powersave = 2" >> /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf;
+	echo "[connection]" > /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf
+	echo "wifi.powersave = 2" >> /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf
 fi
 if [[ "$DISTRO" == "devuan" ]]; then
 	if [[ "$BOARD" == "bcm2710" ]]; then
-		eth_udev-rule;
+		eth_udev-rule
 	fi
 	if [[ "$BOARD" == "bcm2709" ]]; then
-		eth_udev-rule;
+		eth_udev-rule
 	fi
 fi
 rtl88x2bu_conf
@@ -206,7 +206,7 @@ rtl8821cu_conf
 }
 
 ifupdown-credentials(){
-if [ -f /root/ifupdown.credentials ]; then
+if [[ -f "/root/ifupdown.credentials" ]]; then
 	mv -f /root/ifupdown.credentials /usr/local/bin/credentials
 	chmod +x /usr/local/bin/credentials
 	chown root:root /usr/local/bin/credentials
@@ -232,7 +232,7 @@ fi
 }
 
 networkmanager-credentials(){
-if [ -f /root/networkmanager.credentials ]; then
+if [[ -f "/root/networkmanager.credentials" ]]; then
 	mv -f /root/networkmanager.credentials /usr/local/bin/credentials
 	chmod +x /usr/local/bin/credentials
 	chown root:root /usr/local/bin/credentials

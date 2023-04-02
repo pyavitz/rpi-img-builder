@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BUILDER="5.1"
+BUILDER="5.2"
 GCC=`ls -ls /usr/bin/gcc | sed 's/.*\(..\)/\1/' | sed 's/ //g'`
 ARCH=`uname -m`
 
@@ -15,27 +15,27 @@ if [[ -f "profile.txt" ]]; then
 	# source user profile
 	. profile.txt
 fi
-rootpasswd="0"
+ROOTPASSWD="0"
 VERSION="6.1.y"
 BUILD_VERSION="1"
-menuconfig="0"
+MENUCONFIG="0"
 GCC_VERSION="gcc-$GCC"
-gcc="1"
-ccache="0"
-clang="0"
+GCC="1"
+CCACHE="0"
+CLANG="0"
 DISTRO="debian"
 DISTRO_VERSION="bullseye"
-networkmanager="1"
-ext4="1"
-btrfs="0"
-xfs="0"
-custom_defconfig="0"
+NETWORKMANAGER="1"
+EXT4="1"
+BTRFS="0"
+XFS="0"
+CUSTOM_DEFCONFIG="0"
 MYCONFIG=""
-verbose="0"
-devrootfs="1"
-compress_img="0"
-uscripts="0"
-useracct="0"
+VERBOSE="0"
+DEVROOTFS="1"
+COMPRESS_IMG="0"
+USCRIPTS="0"
+USERACCT="0"
 
 # open fd
 exec 3>&1
@@ -49,39 +49,39 @@ VALUES=$(dialog --ok-label "Submit" --no-cancel \
 	"Name:"			1 1	"$NAME" 		1 7 23 0 \
 	"Username:"		2 1	"$USERNAME" 		2 11 19 0 \
 	"Password:"		3 1	"$PASSWORD"  		3 11 19 0 \
-	"Enable root:"		4 1	"$rootpasswd"  		4 14 2 0 \
+	"Enable root:"		4 1	"$ROOTPASSWD"  		4 14 2 0 \
 	""			5 1	""	 		5 14 0 0 \
 	"Linux kernel"		6 1	""	 		6 14 0 0 \
         "Branch:"   		7 1     "$VERSION"        	7 9 7 0 \
         "Build:"   		8 1     "$BUILD_VERSION"        8 8 4 0 \
-	"Menuconfig:"		9 1	"$menuconfig"  		9 13 2 0 \
+	"Menuconfig:"		9 1	"$MENUCONFIG"  		9 13 2 0 \
 	""			10 1	""	 		10 14 0 0 \
 	"Compiler"		11 1	""	 		11 14 0 0 \
 	"Version:"		12 1	"$GCC_VERSION"	 	12 10 8 0 \
-	"GCC:"			13 1	"$gcc"		 	13 9 2 0 \
-	"Ccache:"		14 1	"$ccache"	 	14 9 2 0 \
-	"Clang:"		15 1	"$clang"	 	15 9 2 0 \
+	"GCC:"			13 1	"$GCC"		 	13 9 2 0 \
+	"Ccache:"		14 1	"$CCACHE"	 	14 9 2 0 \
+	"Clang:"		15 1	"$CLANG"	 	15 9 2 0 \
 	""			16 1	""	 		16 14 0 0 \
 	"Distribution"		17 1	""	 		17 14 0 0 \
 	"Distro:"		18 1	"$DISTRO"	  	18 9 21 0 \
 	"Release:"		19 1	"$DISTRO_VERSION"  	19 10 20 0 \
-	"Network Manager:" 	20 1	"$networkmanager" 	20 18 2 0 \
+	"Network Manager:" 	20 1	"$NETWORKMANAGER" 	20 18 2 0 \
 	""			21 1	""	 		21 14 0 0 \
 	"Filesystem"		22 1	""	 		22 14 0 0 \
-	"EXT4:"			23 1	"$ext4"		 	23 8 2 0 \
-	"BTRFS:"		24 1	"$btrfs"	 	24 8 2 0 \
-	"XFS:"			25 1	"$xfs"		 	25 8 2 0 \
+	"EXT4:"			23 1	"$EXT4"		 	23 8 2 0 \
+	"BTRFS:"		24 1	"$BTRFS"	 	24 8 2 0 \
+	"XFS:"			25 1	"$XFS"		 	25 8 2 0 \
 	""			26 1	""	 		26 14 0 0 \
 	"Customize"		27 1	""	 		27 14 0 0 \
-	"Defconfig:"		28 1	"$custom_defconfig" 	28 12 2 0 \
+	"Defconfig:"		28 1	"$CUSTOM_DEFCONFIG" 	28 12 2 0 \
 	"Name:"			29 1	"$MYCONFIG"	  	29 7 23 0 \
 	""			30 1	""	 		30 14 0 0 \
 	"User options"		31 1	""	 		31 14 0 0 \
-	"Verbosity:"		32 1	"$verbose"		32 12 2 0 \
-	"Devel Rootfs:"		33 1	"$devrootfs"		33 15 2 0 \
-	"Compress img:"		34 1	"$compress_img" 	34 15 2 0 \
-	"User scripts:"		35 1	"$uscripts"		35 15 2 0 \
-	"User service:" 	36 1	"$useracct"		36 15 2 0 \
+	"Verbosity:"		32 1	"$VERBOSE"		32 12 2 0 \
+	"Devel Rootfs:"		33 1	"$DEVROOTFS"		33 15 2 0 \
+	"Compress img:"		34 1	"$COMPRESS_IMG" 	34 15 2 0 \
+	"User scripts:"		35 1	"$USCRIPTS"		35 15 2 0 \
+	"User service:" 	36 1	"$USERACCT"		36 15 2 0 \
 2>&1 1>&3)
 
 # close fd
@@ -92,34 +92,35 @@ echo "$VALUES" > tmp1
 echo NAME='"' > tmp0
 echo USERNAME='"' >> tmp0
 echo PASSWORD='"' >> tmp0
-echo rootpasswd= >> tmp0
+echo ROOTPASSWD= >> tmp0
 echo VERSION='"' >> tmp0
 echo BUILD_VERSION='"' >> tmp0
-echo menuconfig= >> tmp0
+echo MENUCONFIG= >> tmp0
 echo GCC_VERSION='"' >> tmp0
-echo gcc= >> tmp0
-echo ccache= >> tmp0
-echo clang= >> tmp0
+echo GCC= >> tmp0
+echo CCACHE= >> tmp0
+echo CLANG= >> tmp0
 echo DISTRO='"' >> tmp0
 echo DISTRO_VERSION='"' >> tmp0
-echo networkmanager= >> tmp0
-echo ext4= >> tmp0
-echo btrfs= >> tmp0
-echo xfs= >> tmp0
-echo custom_defconfig= >> tmp0
+echo NETWORKMANAGER= >> tmp0
+echo EXT4= >> tmp0
+echo BTRFS= >> tmp0
+echo XFS= >> tmp0
+echo CUSTOM_DEFCONFIG= >> tmp0
 echo MYCONFIG='"' >> tmp0
-echo verbose= >> tmp0
-echo devrootfs= >> tmp0
-echo compress_img= >> tmp0
-echo uscripts= >> tmp0
-echo useracct= >> tmp0
-echo USER_PKGS='"''"' >> tmp0
-echo CLANG_LLVM='"'LLVM=1 LLVM_IAS=1'"' >> tmp0
-echo lto_clang_thin=0 >> tmp0
+echo VERBOSE= >> tmp0
+echo DEVROOTFS= >> tmp0
+echo COMPRESS_IMG= >> tmp0
+echo USCRIPTS= >> tmp0
+echo USERACCT= >> tmp0
+echo 'USER_PKGS=""' >> tmp0
+echo 'CLANG_VERSION="clang-15"' >> tmp0
+echo 'CLANG_LLVM="LLVM=-15 LLVM_IAS=1"' >> tmp0
+echo LTO_CLANG_THIN=0 >> tmp0
 echo CORES=\`nproc\` >> tmp0
-echo CFLAGS='"''"' >> tmp0
-echo KBUSER='"'$USER'"' >> tmp0
-echo KBHOST='"'raspberrypi'"' >> tmp0
+echo 'CFLAGS=""' >> tmp0
+echo 'KBUSER="$USER"' >> tmp0
+echo 'KBHOST="raspberrypi"' >> tmp0
 echo "set_locales(){" >> tmp0
 echo "apt install -y locales" >> tmp0
 echo "export LANGUAGE=${LOCALE}" >> tmp0
@@ -133,9 +134,9 @@ echo "echo -n '${TIMEZONE}' > /etc/timezone" >> tmp0
 echo "}" >> tmp0
 echo NAMESERVER1='"'${USER_NAMESERVER1}'"' >> tmp0
 echo NAMESERVER2='"'${USER_NAMESERVER2}'"' >> tmp0
-echo rtl8812au=0 >> tmp0
-echo rtl88x2bu=0 >> tmp0
-echo rtl8811cu=0 >> tmp0
+echo RTL88XXAU=0 >> tmp0
+echo RTL88X2BU=0 >> tmp0
+echo RTL88XXCU=0 >> tmp0
 echo builder=${BUILDER} >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
@@ -166,19 +167,22 @@ sed -i '14i### DISTRIBUTION' userdata.txt
 sed -i '18i### FILESYSTEM' userdata.txt
 sed -i '22i### CUSTOM' userdata.txt
 sed -i '31i### CLANG/LLVM' userdata.txt
-sed -i '34i### COMPILER TUNING' userdata.txt
-sed -i '37i### WHOAMI AND HOST' userdata.txt
-sed -i '40i### LOCALES' userdata.txt
-sed -i '48i### TIMEZONE' userdata.txt
-sed -i '53i### NAME SERVER' userdata.txt
-sed -i '56i### EXTRA WIRELESS' userdata.txt
-sed -i '60i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '35i### COMPILER TUNING' userdata.txt
+sed -i '38i### WHOAMI AND HOST' userdata.txt
+sed -i '41i### LOCALES' userdata.txt
+sed -i '49i### TIMEZONE' userdata.txt
+sed -i '54i### NAME SERVER' userdata.txt
+sed -i '57i### EXTRA WIRELESS' userdata.txt
+sed -i '61i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # clear screen
 clear -x
 
-# userdata
+# userdata-txt
 if [[ -f "userdata.txt" ]]; then
+	sed -i 's/=0/="0"/g' userdata.txt
+	sed -i 's/=1/="1"/g' userdata.txt
+	sed -i 's/LLVM_IAS="1"/LLVM_IAS=1/g' userdata.txt
 	echo -e "userdata file created."
 	exit 0
 fi

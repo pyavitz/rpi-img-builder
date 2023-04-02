@@ -12,58 +12,54 @@ if [[ "$ROOTFS_ARCH" == "rootfs-armel" ]] && [[ "$DISTRO" == "ubuntu" ]]; then
 	echo ""
 	exit 0
 fi
-if [ $verbose -eq 1 ]; then
-	set -eux -o pipefail;
+if [ $VERBOSE -eq 1 ]; then
+	set -eux -o pipefail
 else
-	set -eu -o pipefail;
+	set -eu -o pipefail
 fi
 if [[ "$DISTRO" == "devuan" ]]; then
-	devuan_keyring;
+	devuan_keyring
 fi
 if [[ "$HOST_MACHINE" == "Ubuntu" ]]; then
 	:;
 else
 	if [[ "$DISTRO" == "ubuntu" ]]; then
-		ubuntu_setup;
+		ubuntu_setup
 	fi
 fi
 ROOT="sysroot"
 RELEASE_TARBALL=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
 if [[ -f "$RELEASE_TARBALL" ]]; then
-	ls $RELEASE_TARBALL
+	ls -ls $RELEASE_TARBALL
 	exit 0
 fi
 echo ""
 echo -e "${WHT}Starting debootstrap${FIN} ..."
 # start debootstrap
-if [ $devrootfs -eq 1 ]; then
+if [ $DEVROOTFS -eq 1 ]; then
 	source lib/function/release
 	RAM=0
 	ROOTFS_FOLDER="img/"
 	RELEASE_NAME=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}
 	if [ $RAM -ne 0 ]; then
-		IMAGE_FOLDER="ram/";
+		IMAGE_FOLDER="ram/"
 	fi
 	mkdir -p "$ROOTFS_FOLDER"
 	if [ $RAM -ne 0 ]; then
-		mount -t tmpfs -o size=3G tmpfs $ROOTFS_FOLDER;
+		mount -t tmpfs -o size=3G tmpfs $ROOTFS_FOLDER
 	fi
-	if [ $verbose -eq 1 ]; then
-		sysroot_partition;
+	if [ $VERBOSE -eq 1 ]; then
+		sysroot_partition
 	else
-		sysroot_partition > /dev/null 2>&1;
+		sysroot_partition > /dev/null 2>&1
 	fi
 fi
 mkdir -p ${ROOT}/usr/bin
-cp $(command -v "${STATIC}") ${ROOT}/usr/bin;
-if [[ "$DISTRO" == "devuan" ]]; then
-	run_devuan-debootstrap;
-else
-	run_debootstrap;
-fi
+cp $(command -v "${STATIC}") ${ROOT}/usr/bin
+run_debootstrap
 
 # creating developer tarball
-if [ $devrootfs -eq 1 ]; then
+if [ $DEVROOTFS -eq 1 ]; then
 	sysroot_setup
 	mount -o bind /dev ${ROOT}/dev
 	mount -o bind /dev/pts ${ROOT}/dev/pts
@@ -77,10 +73,10 @@ if [ $devrootfs -eq 1 ]; then
 	rm -f ${ROOT}/etc/apt/sources.list
 fi
 # clean up
-if [ -f ${ROOT}/usr/bin/qemu-aarch64-static ]; then
+if [[ -f "${ROOT}/usr/bin/qemu-aarch64-static" ]]; then
 	rm -f ${ROOT}/usr/bin/qemu-aarch64-static
 fi
-if [ -f ${ROOT}/usr/bin/qemu-arm-static ]; then
+if [[ -f "${ROOT}/usr/bin/qemu-arm-static" ]]; then
 	rm -f ${ROOT}/usr/bin/qemu-arm-static
 fi
 rm -fdr ${ROOT}/var/cache/debconf/*
@@ -92,7 +88,7 @@ cd ${ROOT}
 XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - * | (pv -terb > ../$RELEASE_TARBALL)
 cd ..
 
-if [ $devrootfs -eq 1 ]; then
+if [ $DEVROOTFS -eq 1 ]; then
 	losetup -d "${IMAGE_LOOP_DEV}"
 	rm -f "${ROOTFS_FOLDER}${RELEASE_NAME}"
 	if [ $RAM -ne 0 ]; then
@@ -117,5 +113,4 @@ if [[ "$HOST_MACHINE" == "Debian" || "$HOST_MACHINE" == "Ubuntu" ]]; then
 fi
 
 clear -x
-
 exit 0

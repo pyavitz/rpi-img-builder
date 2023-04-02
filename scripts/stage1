@@ -4,7 +4,7 @@ source lib/source
 validation
 source userdata.txt
 # check user data file
-if [ $useracct -eq 0 ]; then
+if [ $USERACCT -eq 0 ]; then
 	if [ -z $NAME ] && [ -z $USERNAME ] && [ -z $PASSWORD ]; then
 		echo -e ""
 		echo -e "Name, Username and Password fields are empty?"
@@ -16,7 +16,7 @@ if [ $useracct -eq 0 ]; then
 	fi
 fi
 source lib/function/universal
-if [ $uscripts -eq 1 ]; then
+if [ $USCRIPTS -eq 1 ]; then
 	uscripts_pre-stage1
 fi
 source board.txt
@@ -36,10 +36,10 @@ else
 	exit 0
 fi
 # verbose
-if [ $verbose -eq 1 ]; then
-	set -eux -o pipefail;
+if [ $VERBOSE -eq 1 ]; then
+	set -eux -o pipefail
 else
-	set -eu -o pipefail;
+	set -eu -o pipefail
 fi
 
 CAP_DISTRO=`echo "${DISTRO}" | sed -e "s/\b\(.\)/\u\1/g"`
@@ -52,19 +52,19 @@ IMAGE_FOLDER="img/"
 IMAGE_DATE="$(date +%F)"
 IMAGE_FILE_NAME="${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img"
 if [ $RAM -ne 0 ]; then
-	IMAGE_FOLDER="ram/";
+	IMAGE_FOLDER="ram/"
 fi
 mkdir -p "$IMAGE_FOLDER"
 if [ $RAM -ne 0 ]; then
 	mount -t tmpfs -o size=3G tmpfs $IMAGE_FOLDER;
 fi
 
-if [ $verbose -eq 1 ]; then
-	partitions;
-	partition_uuid;
+if [ $VERBOSE -eq 1 ]; then
+	partitions
+	partition_uuid
 else
-	partitions > /dev/null 2>&1;
-	partition_uuid > /dev/null 2>&1;
+	partitions > /dev/null 2>&1
+	partition_uuid > /dev/null 2>&1
 fi
 
 # cmd line
@@ -72,39 +72,39 @@ cmdline > /dev/null 2>&1
 if [[ -f "p1/cmdline.txt" ]]; then
 	:;
 else
-	echo -en "${WHT}cmdline.txt${FIN}  ";
-	sleep 1s;
-	echo_fail;
-	exit;
+	echo -en "${WHT}cmdline.txt${FIN}  "
+	sleep .50
+	echo_fail
+	exit 0
 fi
 # config dot txt
 if [[ "$BOARD_EXT" == "rpi-4" ]]; then
-	bcm2711_config > /dev/null 2>&1;
+	bcm2711_config > /dev/null 2>&1
 else
-	${BOARD}_config > /dev/null 2>&1;
+	${BOARD}_config > /dev/null 2>&1
 fi
 if [[ -f "p1/config.txt" ]]; then
 	:;
 else
-	echo "";
-	echo -en "${WHT}config.txt${FIN}   ";
-	sleep 1s;
-	echo_fail;
-	exit;
+	echo ""
+	echo -en "${WHT}config.txt${FIN}   "
+	sleep .50
+	echo_fail
+	exit 0
 fi
 if [[ "$BOARD" == "bcm2711v7" ]]; then
-	sed -i '1d' p1/config.txt;
+	sed -i '1d' p1/config.txt
 fi
 
 # extract rootfs
 if [[ -f "${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz" ]]; then
-	echo -en "${WHT}Extracting rootfs${FIN} ";
-	tar -xf ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz -C ${P_VALUE}/;
-	echo_bdone;
+	echo -en "${WHT}Extracting rootfs${FIN} "
+	tar -xf ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz -C ${P_VALUE}/
+	echo_bdone
 else
-	echo -e "${YLW}Missing rootfs tarball${FIN}!";
-	make cleanup;
-	exit;
+	echo -e "${YLW}Missing rootfs tarball${FIN}!"
+	make cleanup
+	exit 0
 fi
 echo ""
 
@@ -113,16 +113,16 @@ echo "force-unsafe-io" > "p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
 
 # qemu static
 mkdir -p p2/usr/bin;
-cp $(command -v "${STATIC}") p2/usr/bin;
+cp $(command -v "${STATIC}") p2/usr/bin
 if [[ ! -z $P_VALUE ]]; then
 	SOURCES_LIST="${P_VALUE}/etc/apt/sources.list"
 fi
-if [ $verbose -eq 1 ]; then
-	choose_release;
-	create_fstab;
+if [ $VERBOSE -eq 1 ]; then
+	choose_release
+	create_fstab
 else
-	choose_release > /dev/null 2>&1;
-	create_fstab > /dev/null 2>&1;
+	choose_release > /dev/null 2>&1
+	create_fstab > /dev/null 2>&1
 fi
 
 if [ -n "$PROXY" ] ; then
@@ -147,28 +147,28 @@ cp files/misc/* p2/root
 cp files/scripts/* p2/root
 cp files/users/* p2/root
 cp files/firmware/* p2/root
-if [ $useracct -eq 1 ]; then
+if [ $USERACCT -eq 1 ]; then
 	mkdir -p p2/root/useracct
 	cp -r files/useracct/* p2/root/useracct
 fi
-if [ $uscripts -eq 1 ]; then
+if [ $USCRIPTS -eq 1 ]; then
 	uscripts_stage1;
 fi
 stage1_kernel # universal
 echo -e "${WHT}Starting chroot${FIN} ..."
 # Mount and chroot
-mkdir -p p2/boot/broadcom;
-mount -o bind p1 p2/boot/broadcom;
+mkdir -p p2/boot/broadcom
+mount -o bind p1 p2/boot/broadcom
 mount -o bind /dev p2/dev
 mount -o bind /dev/pts p2/dev/pts
-chroot p2 /root/stage2;
+chroot p2 /root/stage2
 # unmount
 umount p2/dev/pts
 umount p2/dev
-umount p2/boot/broadcom;
+umount p2/boot/broadcom
 # qemu remove static
 if [ -e p2/usr/bin/${STATIC} ]; then
-	rm -f p2/usr/bin/${STATIC};
+	rm -f p2/usr/bin/${STATIC}
 fi
 cp -f p2/root/kernel.txt .
 rm p2/root/stage2
@@ -182,7 +182,7 @@ rm p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
 if [[ -f "kernel.txt" ]]; then source kernel.txt; fi
 
 # Finish
-if [ $ext4 -eq 1 ] && [[ "$ARCH" == "arm" ]]; then
+if [ $EXT4 -eq 1 ] && [[ "$ARCH" == "arm" ]]; then
 	# add removable 100mb file to ensure space on the img after shrinking
 	dd if="/dev/urandom" of="p2/block.img" bs=100MB count=1 > /dev/null 2>&1
 fi
@@ -190,7 +190,7 @@ defrag_p2
 
 umount p2
 umount p1
-if [ $ext4 -eq 1 ]; then
+if [ $EXT4 -eq 1 ]; then
 	echo ""
 	tune2fs -O^has_journal "${IMAGE_LOOP_DEV_ROOTFS}"
 	fsck -fy "${IMAGE_LOOP_DEV_ROOTFS}"
@@ -205,7 +205,7 @@ fi
 rmdir "${IMAGE_FOLDER}"
 rmdir p1 p2
 
-if [ $ext4 -eq 1 ]; then
+if [ $EXT4 -eq 1 ]; then
 	ext4_shrink
 fi
 finish_image

@@ -3,35 +3,30 @@
 # stage 1
 stage1_kernel(){
 if [[ `ls ${OUTPUT}/{linux-image-*.deb,linux-headers-*.deb}` ]] > /dev/null 2>&1; then
-	cp ${OUTPUT}/*.deb p2/root;
+	cp ${OUTPUT}/*.deb p2/root
 else
-	echo "";
-	echo -en "${BOARD}";
+	echo ""
+	echo -en "${BOARD}"
 	echo -e ": Compile a kernel before building an image."
-	make cleanup;
-	exit 0;
+	make cleanup
+	exit 0
 fi
 }
 
 # stage 2
-root_password(){
-echo "root:toor" | chpasswd
-}
-
-# rpi-sys-mods
 raspberrypi_sys_mods(){
 echo ""
 echo "Installing raspi-sys-mods ..."
 git clone https://github.com/RPi-Distro/raspberrypi-sys-mods.git
 if [[ "$DISTRO" == "devuan" ]]; then
-	mv -f raspberrypi-sys-mods-control.patch raspberrypi-sys-mods/;
-	cd raspberrypi-sys-mods;
+	mv -f raspberrypi-sys-mods-control.patch raspberrypi-sys-mods/
+	cd raspberrypi-sys-mods
 	git checkout -q 46ae4208397d662fc4f5d0cc9acc85395f852af1
-	patch -p1 < raspberrypi-sys-mods-control.patch;
-	rm -f raspberrypi-sys-mods-control.patch;
+	patch -p1 < raspberrypi-sys-mods-control.patch
+	rm -f raspberrypi-sys-mods-control.patch
 else
-	rm -f raspberrypi-sys-mods-control.patch;
-	cd raspberrypi-sys-mods;
+	rm -f raspberrypi-sys-mods-control.patch
+	cd raspberrypi-sys-mods
 	git checkout -q 46ae4208397d662fc4f5d0cc9acc85395f852af1
 fi
 dpkg-buildpackage -us -uc
@@ -39,13 +34,13 @@ cd ~
 dpkg -i raspberrypi-sys-mods*.deb
 rm -fdr raspberrypi-sys-mods*
 if [ -f /etc/apt/sources.list.d/vscode.list ]; then
-	rm -f /etc/apt/sources.list.d/vscode.list;
+	rm -f /etc/apt/sources.list.d/vscode.list
 fi
 if [ -f /etc/apt/trusted.gpg.d/microsoft.gpg ]; then
-	rm -f /etc/apt/trusted.gpg.d/microsoft.gpg;
+	rm -f /etc/apt/trusted.gpg.d/microsoft.gpg
 fi
 if [ -f /etc/apt/preferences.d/3rd_parties.pref ]; then
-	rm -f /etc/apt/preferences.d/3rd_parties.pref;
+	rm -f /etc/apt/preferences.d/3rd_parties.pref
 fi
 }
 
@@ -53,19 +48,19 @@ fi
 find_eeprom(){
 EEPROM_VERSION=$(curl --silent -L ${CHANGELOG} | awk '{if (NR==1) {print substr($2, 1, length($2)-3)}}' | sed 's/[()]//g')
 if [[ `wget -S --spider ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
-	download_eeprom;
+	download_eeprom
 else
-	finding_eeprom;
+	finding_eeprom
 fi
 }
 
 finding_eeprom(){
 EEPROM_VERSION=$(curl --silent -L ${CHANGELOG} | awk '{if (NR==10) {print substr($2, 1, length($2)-3)}}' | sed 's/[()]//g')
 if [[ `wget -S --spider ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
-	download_eeprom;
+	download_eeprom
 else
 	EEPROM_VERSION="13.12"
-	download_eeprom;
+	download_eeprom
 fi
 }
 
@@ -120,13 +115,13 @@ cd userland
 patch -p1 < userland-remove-hi-pi.patch
 rm -f userland-remove-hi-pi.patch
 if [[ "$ARCH" == "arm64" ]]; then
-	echo -e "\e[1;37m== ARM64\e[0m";
-	sleep 1s;
-	./buildme --aarch64;
+	echo -e "\e[1;37m== ARM64\e[0m"
+	sleep .50
+	./buildme --aarch64
 else
-	echo -e "\e[1;37m== ARM\e[0m";
-	sleep 1s;
-	./buildme;
+	echo -e "\e[1;37m== ARM\e[0m"
+	sleep .50
+	./buildme
 fi
 cd ~
 rm -fdr userland
@@ -154,20 +149,20 @@ echo ""
 echo "Installing kernel ..."
 apt update
 apt upgrade -y
-if [ $ext4 -eq 1 ]; then
-	echo "" >> /etc/opt/board.txt;
-	echo "# filesystem" >> /etc/opt/board.txt;
-	echo FSTYPE='"'ext4'"' >> /etc/opt/board.txt;
+if [ $EXT4 -eq 1 ]; then
+	echo "" >> /etc/opt/board.txt
+	echo "# filesystem" >> /etc/opt/board.txt
+	echo FSTYPE='"'ext4'"' >> /etc/opt/board.txt
 fi
-if [ $btrfs -eq 1 ]; then
-	echo "" >> /etc/opt/board.txt;
-	echo "# filesystem" >> /etc/opt/board.txt;
-	echo FSTYPE='"'btrfs'"' >> /etc/opt/board.txt;
+if [ $BTRFS -eq 1 ]; then
+	echo "" >> /etc/opt/board.txt
+	echo "# filesystem" >> /etc/opt/board.txt
+	echo FSTYPE='"'btrfs'"' >> /etc/opt/board.txt
 fi
-if [ $xfs -eq 1 ]; then
-	echo "" >> /etc/opt/board.txt;
-	echo "# filesystem" >> /etc/opt/board.txt;
-	echo FSTYPE='"'xfs'"' >> /etc/opt/board.txt;
+if [ $XFS -eq 1 ]; then
+	echo "" >> /etc/opt/board.txt
+	echo "# filesystem" >> /etc/opt/board.txt
+	echo FSTYPE='"'xfs'"' >> /etc/opt/board.txt
 fi
 apt -y clean
 apt -y autoclean
@@ -183,13 +178,13 @@ else
 	KERNEL_RELEASE=`ls /boot/config-* | sed 's/\/boot\/config-//g'`
 fi
 echo -e INSTALLED_KERNEL='"'$KERNEL_RELEASE'"' > /root/kernel.txt
-if [ $ext4 -eq 1 ]; then
+if [ $EXT4 -eq 1 ]; then
 	echo FSTYPE='"'ext4'"' >> /root/kernel.txt;
 fi
-if [ $btrfs -eq 1 ]; then
+if [ $BTRFS -eq 1 ]; then
 	echo FSTYPE='"'btrfs'"' >> /root/kernel.txt;
 fi
-if [ $xfs -eq 1 ]; then
+if [ $XFS -eq 1 ]; then
 	echo FSTYPE='"'xfs'"' >> /root/kernel.txt;
 fi
 }
@@ -211,51 +206,51 @@ EOF
 
 # user scripts
 uscripts_pre-stage1(){
-if [ -f files/userscripts/uscripts ]; then
+if [[ -f "files/userscripts/uscripts" ]]; then
 	if [[ `grep -w "run_function0" "files/userscripts/uscripts"` ]]; then
-		source files/userscripts/uscripts;
-		run_function0;
+		source files/userscripts/uscripts
+		run_function0
 	fi
 fi
 }
 
 uscripts_stage1(){
-if [ -f files/userscripts/uscripts ]; then
-	mkdir -p p2/root/userscripts;
-	cp -fr files/userscripts/* p2/root/userscripts/;
+if [[ -f "files/userscripts/uscripts" ]]; then
+	mkdir -p p2/root/userscripts
+	cp -fr files/userscripts/* p2/root/userscripts/
 	if [ -f p2/root/userscripts/README.md ]; then
-		rm -f p2/root/userscripts/README.md;
+		rm -f p2/root/userscripts/README.md
 	fi
 	if [[ `grep -w "run_function1" "files/userscripts/uscripts"` ]]; then
 		if [[ `grep -w "run_function0" "files/userscripts/uscripts"` ]]; then
 			# file already sourced
 			:;
 		else
-			source files/userscripts/uscripts;
+			source files/userscripts/uscripts
 		fi
-		run_function1;
+		run_function1
 	fi
 fi
 }
 
 uscripts_stage2(){
-if [ -f /root/userscripts/uscripts ]; then
+if [[ -f "/root/userscripts/uscripts" ]]; then
 	if [[ `grep -w "run_function2" "/root/userscripts/uscripts"` ]]; then
-		echo -e "\e[1;33mRunning user scripts\e[0m.";
-		source /root/userscripts/uscripts;
-		run_function2;
-		echo -e "\e[1;33mDone\e[0m.";
+		echo -e "\e[1;33mRunning user scripts\e[0m."
+		source /root/userscripts/uscripts
+		run_function2
+		echo -e "\e[1;33mDone\e[0m."
 	fi
 fi
-if [ -e /root/userscripts ]; then
-	rm -fdr /root/userscripts;
+if [[ -e "/root/userscripts" ]]; then
+	rm -fdr /root/userscripts
 fi
 }
 
 # initrd script
 initrd_script(){
 cd ~
-if [ -f /root/99-initrd ]; then
+if [[ -f "/root/99-initrd" ]]; then
 	mkdir -p /etc/initramfs/post-update.d/
 	mv -f 99-initrd /etc/initramfs/post-update.d/
 	chmod +x /etc/initramfs/post-update.d/99-initrd
@@ -277,14 +272,14 @@ echo Done.
 
 # defrag
 defrag_p2(){
-if [ $ext4 -eq 1 ]; then
-	e4defrag -c ${P_VALUE};
+if [ $EXT4 -eq 1 ]; then
+	e4defrag -c ${P_VALUE}
 fi
-if [ $btrfs -eq 1 ]; then
-	btrfs filesystem defragment -f -r ${P_VALUE};
+if [ $BTRFS -eq 1 ]; then
+	btrfs filesystem defragment -f -r ${P_VALUE}
 fi
-if [ $xfs -eq 1 ]; then
-	xfs_fsr ${P_VALUE};
+if [ $XFS -eq 1 ]; then
+	xfs_fsr ${P_VALUE}
 fi
 }
 
@@ -345,7 +340,7 @@ IMAGE_FIN_NAME="${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${A
 if [[ -f "${IMAGE_FILE_NAME}" ]]; then
 	mv -f ${IMAGE_FILE_NAME} ${IMAGE_FIN_NAME}
 fi
-if [ $compress_img -eq 1 ]; then
+if [ $COMPRESS_IMG -eq 1 ]; then
 	echo ""; echo_compress
 	xz -zev --threads=${CORES} ${IMAGE_FIN_NAME}
 	if [[ -f "${IMAGE_FIN_NAME}.xz" ]]; then

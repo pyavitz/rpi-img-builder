@@ -30,10 +30,10 @@ sysroot_setup(){
 SOURCES_LIST="${ROOT}/etc/apt/sources.list"
 mkdir -p ${ROOT}/etc/apt/apt.conf.d ${ROOT}/etc/dpkg/dpkg.cfg.d
 echo "force-unsafe-io" > "${ROOT}/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
-if [ $verbose -eq 1 ]; then
-	choose_release;
+if [ $VERBOSE -eq 1 ]; then
+	choose_release
 else
-	choose_release > /dev/null 2>&1;
+	choose_release > /dev/null 2>&1
 fi
 }
 
@@ -56,10 +56,10 @@ fi
 
 ubuntu_setup(){
 if [[ `uname -m | grep "x86_64"` ]]; then
-	MACHINE="amd64";
+	MACHINE="amd64"
 fi
 if [[ `uname -m | grep "aarch64"` ]]; then
-	MACHINE="arm64";
+	MACHINE="arm64"
 fi
 URL="https://github.com/pyavitz/debian-image-builder/releases/download/dpkg/"
 FILE1="dpkg_1.21.2_$MACHINE.deb"
@@ -101,12 +101,12 @@ fi
 
 # debootstrap
 run_debootstrap(){
-debootstrap --arch ${ARCH_EXT} --foreign ${DISTRO_VERSION} ${ROOT}
-chroot ${ROOT} /debootstrap/debootstrap --second-stage
-}
-
-run_devuan-debootstrap(){
-KEY="/usr/share/keyrings/devuan-archive-keyring.gpg"
-debootstrap --arch ${ARCH_EXT} --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VERSION} ${ROOT} http://pkgmaster.devuan.org/merged
-chroot ${ROOT} /debootstrap/debootstrap --second-stage
+if [[ "$DISTRO" == "devuan" ]]; then
+	KEY="/usr/share/keyrings/devuan-archive-keyring.gpg"
+	debootstrap --arch ${ARCH_EXT} --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VERSION} ${ROOT} http://deb.devuan.org/merged
+	chroot ${ROOT} /debootstrap/debootstrap --second-stage
+else
+	debootstrap --arch ${ARCH_EXT} --foreign ${DISTRO_VERSION} ${ROOT}
+	chroot ${ROOT} /debootstrap/debootstrap --second-stage
+fi
 }
