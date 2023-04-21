@@ -1,5 +1,6 @@
---- a/makefiles/cmake/vmcs.cmake	2021-06-26 06:42:32.371574862 -0400
-+++ b/makefiles/cmake/vmcs.cmake	2021-06-26 06:44:21.462480302 -0400
+diff -Naur a/makefiles/cmake/vmcs.cmake b/makefiles/cmake/vmcs.cmake
+--- a/makefiles/cmake/vmcs.cmake	2023-04-21 15:51:40.011830638 -0400
++++ b/makefiles/cmake/vmcs.cmake	2023-04-21 15:53:51.268505442 -0400
 @@ -59,8 +59,8 @@
  #        PERMISSIONS OWNER_WRITE WORLD_READ)
  
