@@ -132,10 +132,10 @@ disable_overscan=1
 #gpu_mem=128
 
 # automatically load overlays for detected cameras
-camera_auto_detect=1
+#camera_auto_detect=1
 
 # automatically load overlays for detected DSI displays
-display_auto_detect=1
+#display_auto_detect=1
 
 # uncomment to overclock: https://www.tomshardware.com/how-to/overclock-any-raspberry-pi
 #arm_freq=
@@ -232,10 +232,10 @@ disable_overscan=1
 #gpu_mem=128
 
 # automatically load overlays for detected cameras
-camera_auto_detect=1
+#camera_auto_detect=1
 
 # automatically load overlays for detected DSI displays
-display_auto_detect=1
+#display_auto_detect=1
 
 # uncomment to overclock: https://www.tomshardware.com/how-to/overclock-any-raspberry-pi
 #arm_freq=
@@ -317,10 +317,10 @@ disable_overscan=1
 #gpu_mem=128
 
 # automatically load overlays for detected cameras
-camera_auto_detect=1
+#camera_auto_detect=1
 
 # automatically load overlays for detected DSI displays
-display_auto_detect=1
+#display_auto_detect=1
 
 # uncomment to overclock: https://www.tomshardware.com/how-to/overclock-any-raspberry-pi
 #arm_freq=
@@ -402,10 +402,10 @@ disable_overscan=1
 #gpu_mem=128
 
 # automatically load overlays for detected cameras
-camera_auto_detect=1
+#camera_auto_detect=1
 
 # automatically load overlays for detected DSI displays
-display_auto_detect=1
+#display_auto_detect=1
 
 # uncomment to overclock: https://www.tomshardware.com/how-to/overclock-any-raspberry-pi
 #arm_freq=
