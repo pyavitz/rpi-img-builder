@@ -234,13 +234,13 @@ chown -R root:root /usr/local/sbin/
 # MOTD
 mkdir -p /etc/update-motd.d
 if [[ -f "/etc/update-motd.d/10-uname" ]]; then
-	rm -f /etc/update-motd.d/10-uname;
+	rm -f /etc/update-motd.d/10-uname
 fi
 if [[ -f "/etc/update-motd.d/10-help-text" ]]; then
-	rm -f /etc/update-motd.d/10-help-text;
+	rm -f /etc/update-motd.d/10-help-text
 fi
 if [[ -f "/etc/update-motd.d/00-header" ]]; then
-	rm -f /etc/update-motd.d/00-header;
+	rm -f /etc/update-motd.d/00-header
 fi
 mv -f {00-header,15-brand,20-sysinfo,90-dynamic-motd} /etc/update-motd.d/
 chmod +x /etc/update-motd.d/*
@@ -251,10 +251,7 @@ echo "BRANDING=false" >> /etc/default/dynamic-motd
 echo "T_FONT=small" >> /etc/default/dynamic-motd
 echo "T_FILTER=metal" >> /etc/default/dynamic-motd
 echo "MENUCONFIG=true" >> /etc/default/dynamic-motd
-chown root:root /etc/update-motd.d/00-header
-chown root:root /etc/update-motd.d/15-brand
-chown root:root /etc/update-motd.d/20-sysinfo
-chown root:root /etc/update-motd.d/90-dynamic-motd
+chown root:root /etc/update-motd.d/{00-header,15-brand,20-sysinfo,90-dynamic-motd}
 rm -f /etc/motd
 echo "" > /etc/motd
 chown root:root /etc/motd
@@ -345,11 +342,7 @@ stage2_kernel # universal
 
 # BCM modules
 bcm_modules > /dev/null 2>&1
-if [[ "$BOARD" == "bcm2710" ]]; then
-	# audio module
-	echo "snd_bcm2835" >> /etc/modules
-fi
-if [[ "$BOARD" == "bcm2709" ]]; then
+if [[ "$BOARD" == "bcm2709" || "$BOARD" == "bcm2710" ]]; then
 	# audio module
 	echo "snd_bcm2835" >> /etc/modules
 fi
@@ -370,9 +363,7 @@ if [[ "$BOARD" == "bcm2708" ]]; then
 fi
 
 # Flush runtime journal
-if [[ "$BOARD" == "bcm2708" ]]; then
-	:;
-else
+if [[ "$BOARD" == "bcm2709" || "$BOARD" == "bcm2710" || "$BOARD_EXT" == "rpi-4" ]]; then
 	if [[ -f "/etc/systemd/journald.conf" ]]; then
 		sed -i 's/#Storage=auto/Storage=volatile/g' /etc/systemd/journald.conf
 		sed -i 's/#SystemMaxFileSize=/SystemMaxFileSize=50M/g' /etc/systemd/journald.conf
@@ -397,7 +388,7 @@ else
 	systemd_services > /dev/null 2>&1
 fi
 
-# Finish
+# FIN
 echo ""
 echo "Finalizing ..."
 echo ""
