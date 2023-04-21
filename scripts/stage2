@@ -263,10 +263,18 @@ chown root:root /etc/motd
 extra_firmware
 
 # Udev rule
+cd ~
+mkdir -p /etc/udev/rules.d/
+mkdir -p /lib/udev/rules.d/
 if [[ -f "/root/99-com.rules" ]]; then
-	cd ~
-	mkdir -p /lib/udev/rules.d/;
-	mv -f 99-com.rules /lib/udev/rules.d/;
+	mv -f 99-com.rules /etc/udev/rules.d/
+fi
+if [[ -f "/root/10-local-rpi.rules" ]]; then
+	# camera
+	mv -f 10-local-rpi.rules /lib/udev/rules.d/
+fi
+if [[ -f "/root/60-rpi.gpio-common.rules" ]]; then
+	mv -f 60-rpi.gpio-common.rules /lib/udev/rules.d/
 fi
 
 # Wireless regdb
@@ -371,11 +379,6 @@ else
 		sed -i 's/#SystemMaxFiles=100/SystemMaxFiles=5/g' /etc/systemd/journald.conf
 	fi
 fi
-
-# Vchiq permissions
-echo 'SUBSYSTEM=="vchiq",GROUP="video",MODE="0660"' > /etc/udev/rules.d/10-vchiq-permissions.rules
-echo 'SUBSYSTEM=="vcio",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
-echo 'SUBSYSTEM=="vc-mem",GROUP="video",MODE="0660"' >> /etc/udev/rules.d/10-vchiq-permissions.rules
 
 # Services
 echo ""
