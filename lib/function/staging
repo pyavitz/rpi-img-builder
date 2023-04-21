@@ -131,6 +131,12 @@ disable_overscan=1
 #start_x=1
 #gpu_mem=128
 
+# automatically load overlays for detected cameras
+camera_auto_detect=1
+
+# automatically load overlays for detected DSI displays
+display_auto_detect=1
+
 # uncomment to overclock: https://www.tomshardware.com/how-to/overclock-any-raspberry-pi
 #arm_freq=
 #gpu_freq=
@@ -163,6 +169,12 @@ disable_splash=1
 
 # disables the warning overlays
 #avoid_warnings=1
+
+[cm4]
+# Enable host mode on the 2711 built-in XHCI USB controller.
+# This line should be removed if the legacy DWC2 controller is required
+# (e.g. for USB device mode) or if USB support is not required.
+otg_mode=1
 
 [pi4]
 # enable DRM VC4 V3D driver on top of the dispmanx display stack
@@ -218,6 +230,12 @@ disable_overscan=1
 # camera
 #start_x=1
 #gpu_mem=128
+
+# automatically load overlays for detected cameras
+camera_auto_detect=1
+
+# automatically load overlays for detected DSI displays
+display_auto_detect=1
 
 # uncomment to overclock: https://www.tomshardware.com/how-to/overclock-any-raspberry-pi
 #arm_freq=
@@ -298,6 +316,12 @@ disable_overscan=1
 #start_x=1
 #gpu_mem=128
 
+# automatically load overlays for detected cameras
+camera_auto_detect=1
+
+# automatically load overlays for detected DSI displays
+display_auto_detect=1
+
 # uncomment to overclock: https://www.tomshardware.com/how-to/overclock-any-raspberry-pi
 #arm_freq=
 #core_freq=
@@ -376,6 +400,12 @@ disable_overscan=1
 # camera
 #start_x=1
 #gpu_mem=128
+
+# automatically load overlays for detected cameras
+camera_auto_detect=1
+
+# automatically load overlays for detected DSI displays
+display_auto_detect=1
 
 # uncomment to overclock: https://www.tomshardware.com/how-to/overclock-any-raspberry-pi
 #arm_freq=
