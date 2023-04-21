@@ -8,7 +8,7 @@
 * [Raspberry Pi Hardware](https://www.raspberrypi.org/documentation/hardware/raspberrypi)
 
 ## Dependencies for Debian Bullseye and Ubuntu Jammy Jellyfish
-* **Recommended host:** Debian Bullseye
+* **Recommended host:** Ubuntu Jammy Jellyfish
 
 **Install options:**
 * Run the `./install.sh` script ***(recommended)***
@@ -72,7 +72,7 @@ Build:			# Kernel build version number
 Menuconfig:		# Kernel menuconfig
 
 Compiler        	WARNING: Only one may be selected
-Version:		# gcc-10
+Version:		# gcc-11
 GCC:			#
 Ccache:			#
 Clang:			# Supported: Jammy Jellyfish
@@ -81,7 +81,7 @@ Distribution
 Distro:			# Supported: debian, devuan and ubuntu
 Release:		# Debian: bullseye, bookworm, testing, unstable and sid
 			# Devuan: chimaera, daedalus, testing, unstable and ceres
-			# Ubuntu: focal and jammy
+			# Ubuntu: focal, jammy, kinetic and lunar
 NetworkManager		# 1 networkmanager | 0 ifupdown
 
 Filesystem
