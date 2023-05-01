@@ -138,7 +138,7 @@ case $CHOICE in
 	"")
 		;;
 	"1)")
-		change_password
+		user_security
 		;;
 	"2)")
 		change_hostname
