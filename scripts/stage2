@@ -112,8 +112,8 @@ apt -y clean
 apt -y autoclean
 
 # User options
-echo -n "raspberrypi" > /etc/hostname;
-sed -i "1 a 127.0.1.1	raspberrypi" /etc/hosts;
+echo -n "${RPI_HOSTNAME:-raspberrypi}" > /etc/hostname;
+sed -i "1 a 127.0.1.1	${RPI_HOSTNAME:-raspberrypi}" /etc/hosts;
 if [ $USERACCT -eq 0 ]; then
 	echo "";
 	adduser ${USERNAME} --gecos ${NAME} --disabled-password
@@ -251,7 +251,8 @@ chmod +x /etc/update-motd.d/*
 echo "# DYNAMIC MOTD VARIABLES" > /etc/default/dynamic-motd
 echo "H_POS=-c" >> /etc/default/dynamic-motd
 echo "B_POS=-r" >> /etc/default/dynamic-motd
-echo "BRANDING=false" >> /etc/default/dynamic-motd
+echo "BRANDING=${BRANDING:-false}" >> /etc/default/dynamic-motd
+echo "DEFAULT_MOTD=\"${DEFAULT_MOTD}\"" >> /etc/default/dynamic-motd
 echo "T_FONT=small" >> /etc/default/dynamic-motd
 echo "T_FILTER=metal" >> /etc/default/dynamic-motd
 echo "MENUCONFIG=true" >> /etc/default/dynamic-motd
