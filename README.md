@@ -84,11 +84,6 @@ Release:		# Debian: bullseye, bookworm, testing, unstable and sid
 			# Ubuntu: focal, jammy, kinetic and lunar
 NetworkManager		# 1 networkmanager | 0 ifupdown
 
-Filesystem
-ext4:			# Journaling filesystem (default)
-btrfs:			# Copy on write (CoW) filesystem
-xfs:			# High-performance 64-bit journaling filesystem
-
 Customize
 Defconfig:		# User defconfig
 Name:			# Name of _defconfig (Must be placed in defconfig dir.)
@@ -100,6 +95,21 @@ Compress img:		# Auto compress img > img.xz
 User scripts:		# Review the README in the files/userscripts directory
 User service:		# Create user during first boot (bypass the user information above)
 ```
+
+#### Customize image
+* custom.txt
+```sh
+# Root Filesystem Types: ext4 btrfs xfs
+FSTYPE="ext4"
+
+# Hostname
+HOSTNAME="raspberrypi"
+
+# Branding: true false
+BRANDING="false"
+MOTD="Raspberry Pi"
+```
+
 #### User defconfig
 
 ```sh

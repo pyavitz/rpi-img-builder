@@ -28,9 +28,6 @@ IMG_EXP="${BOARD_EXT}-*.img*"
 CONSOLE="console=serial0,115200 console=tty1"
 EXTRA="loglevel=5 net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm"
 
-# motd
-DEFAULT_MOTD="Raspberry Pi"
-
 # packaging
 KERNEL_IMG="kernel7.img"
 SERIES="bcm2709-${BOARD_EXT}"

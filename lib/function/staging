@@ -30,7 +30,7 @@ $MAKE_ROOTFS
 mkdir -p p1 p2
 mount "${IMAGE_LOOP_DEV_BOOT}" p1
 mount "${IMAGE_LOOP_DEV_ROOTFS}" p2
-if [ $BTRFS -eq 1 ]; then
+if [[ "$FSTYPE" == "btrfs" ]]; then
 	btrfs subvolume create p2/@
 fi
 sync
@@ -41,22 +41,22 @@ $MOUNT_ROOTFS
 filesystem(){
 MAKE_BOOTFS="mkfs.vfat -n BOOT ${IMAGE_LOOP_DEV_BOOT}"
 BOOT_PATH="/boot/broadcom"
-if [ $EXT4 -eq 1 ]; then
+if [[ "$FSTYPE" == "ext4" ]]; then
 	MAKE_ROOTFS="mkfs.ext4 -L ROOTFS ${IMAGE_LOOP_DEV_ROOTFS}"
 	MOUNT_ROOTFS="mount -o defaults,noatime ${IMAGE_LOOP_DEV_ROOTFS} p2"
-	FSTYPE="ext4	defaults,noatime,commit=600,errors=remount-ro 0 1"
+	ROOTFS_TABLE="ext4	defaults,noatime,commit=600,errors=remount-ro 0 1"
 	ROOTFSTYPE="rootfstype=ext4"
 fi
-if [ $BTRFS -eq 1 ]; then
+if [[ "$FSTYPE" == "btrfs" ]]; then
 	MAKE_ROOTFS="mkfs.btrfs -f -L ROOTFS ${IMAGE_LOOP_DEV_ROOTFS}"
 	MOUNT_ROOTFS="mount -o compress=lzo,noatime,subvol=@ ${IMAGE_LOOP_DEV_ROOTFS} p2;"
-	FSTYPE="btrfs	defaults,compress=lzo,noatime,subvol=@ 0 1"
+	ROOTFS_TABLE="btrfs	defaults,compress=lzo,noatime,subvol=@ 0 1"
 	ROOTFSTYPE="rootfstype=btrfs rootflags=subvol=@"
 fi
-if [ $XFS -eq 1 ]; then
+if [[ "$FSTYPE" == "xfs" ]]; then
 	MAKE_ROOTFS="mkfs.xfs -f -L ROOTFS ${IMAGE_LOOP_DEV_ROOTFS}"
 	MOUNT_ROOTFS="mount -o defaults,noatime ${IMAGE_LOOP_DEV_ROOTFS} p2"
-	FSTYPE="xfs	defaults,noatime 0 1"
+	ROOTFS_TABLE="xfs	defaults,noatime 0 1"
 	ROOTFSTYPE="rootfstype=xfs"
 fi
 }
@@ -64,7 +64,7 @@ fi
 create_fstab(){
 tee p2/etc/fstab <<EOF
 UUID=${BOOT_UUID}	${BOOT_PATH}	vfat	defaults 0 2
-UUID=${ROOT_UUID}	/	${FSTYPE}
+UUID=${ROOT_UUID}	/	${ROOTFS_TABLE}
 tmpfs	/tmp		tmpfs	defaults,nosuid 0 0
 EOF
 }
