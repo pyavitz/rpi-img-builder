@@ -29,7 +29,7 @@ CONSOLE="console=serial0,115200 console=tty1"
 EXTRA="loglevel=5 net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm"
 
 # motd
-MOTD="Raspberry Pi"
+DEFAULT_MOTD="Raspberry Pi"
 
 # packaging
 KERNEL_IMG="kernel7.img"
