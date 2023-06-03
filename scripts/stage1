@@ -2,6 +2,15 @@
 source lib/function/echoes
 source lib/source
 validation
+if [[ -f "custom.txt" ]]; then
+	. custom.txt
+else
+	echo -e ""
+	echo -e "The custom.txt file is missing? You need to run: make config"
+	echo -e ""
+	read -p "Press enter to continue."
+	exit 0
+fi
 source userdata.txt
 # check user data file
 if [ $USERACCT -eq 0 ]; then
@@ -139,6 +148,7 @@ cp lib/function/networking p2/root/networking.txt
 cp lib/source p2/root/source.txt
 cp userdata.txt p2/root
 cp board.txt p2/root
+cp custom.txt p2/root
 if [[ "$DISTRO" == "devuan" ]]; then
 	cp files/inits/* p2/root
 fi
@@ -182,15 +192,14 @@ rm p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
 if [[ -f "kernel.txt" ]]; then source kernel.txt; fi
 
 # Finish
-if [ $EXT4 -eq 1 ] && [[ "$ARCH" == "arm" ]]; then
+if [[ "$FSTYPE" == "ext4" ]] && [[ "$ARCH" == "arm" ]]; then
 	# add removable 100mb file to ensure space on the img after shrinking
 	dd if="/dev/urandom" of="p2/block.img" bs=100MB count=1 > /dev/null 2>&1
 fi
 defrag_p2
-
 umount p2
 umount p1
-if [ $EXT4 -eq 1 ]; then
+if [[ "$FSTYPE" == "ext4" ]]; then
 	echo ""
 	tune2fs -O^has_journal "${IMAGE_LOOP_DEV_ROOTFS}"
 	fsck -fy "${IMAGE_LOOP_DEV_ROOTFS}"
@@ -205,7 +214,7 @@ fi
 rmdir "${IMAGE_FOLDER}"
 rmdir p1 p2
 
-if [ $EXT4 -eq 1 ]; then
+if [[ "$FSTYPE" == "ext4" ]]; then
 	ext4_shrink
 fi
 finish_image

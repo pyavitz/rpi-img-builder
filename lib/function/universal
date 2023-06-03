@@ -149,27 +149,12 @@ echo ""
 echo "Installing kernel ..."
 apt update
 apt upgrade -y
-if [ $EXT4 -eq 1 ]; then
-	echo "" >> /etc/opt/board.txt
-	echo "# filesystem" >> /etc/opt/board.txt
-	echo FSTYPE='"'ext4'"' >> /etc/opt/board.txt
-fi
-if [ $BTRFS -eq 1 ]; then
-	echo "" >> /etc/opt/board.txt
-	echo "# filesystem" >> /etc/opt/board.txt
-	echo FSTYPE='"'btrfs'"' >> /etc/opt/board.txt
-fi
-if [ $XFS -eq 1 ]; then
-	echo "" >> /etc/opt/board.txt
-	echo "# filesystem" >> /etc/opt/board.txt
-	echo FSTYPE='"'xfs'"' >> /etc/opt/board.txt
-fi
 apt -y clean
 apt -y autoclean
 sleep 1s
 cd ~
-dpkg -i *.deb;
-rm -f *.deb;
+dpkg -i *.deb
+rm -f *.deb
 sleep .75
 # take note of linux kernel release
 if [ -f /usr/src/linux-headers-*/include/config/kernel.release ]; then
@@ -178,15 +163,11 @@ else
 	KERNEL_RELEASE=`ls /boot/config-* | sed 's/\/boot\/config-//g'`
 fi
 echo -e INSTALLED_KERNEL='"'$KERNEL_RELEASE'"' > /root/kernel.txt
-if [ $EXT4 -eq 1 ]; then
-	echo FSTYPE='"'ext4'"' >> /root/kernel.txt;
-fi
-if [ $BTRFS -eq 1 ]; then
-	echo FSTYPE='"'btrfs'"' >> /root/kernel.txt;
-fi
-if [ $XFS -eq 1 ]; then
-	echo FSTYPE='"'xfs'"' >> /root/kernel.txt;
-fi
+# add fstype to the board.txt and kernel.txt file
+echo FSTYPE='"'${FSTYPE}'"' >> /root/kernel.txt
+echo "" >> /etc/opt/board.txt
+echo "# filesystem" >> /etc/opt/board.txt
+echo FSTYPE='"'${FSTYPE}'"' >> /etc/opt/board.txt
 }
 
 # whiptail color palette (ubuntu)
@@ -272,13 +253,13 @@ echo Done.
 
 # defrag
 defrag_p2(){
-if [ $EXT4 -eq 1 ]; then
+if [[ "$FSTYPE" == "ext4" ]]; then
 	e4defrag -c ${P_VALUE}
 fi
-if [ $BTRFS -eq 1 ]; then
+if [[ "$FSTYPE" == "btrfs" ]]; then
 	btrfs filesystem defragment -f -r ${P_VALUE}
 fi
-if [ $XFS -eq 1 ]; then
+if [[ "$FSTYPE" == "xfs" ]]; then
 	xfs_fsr ${P_VALUE}
 fi
 }

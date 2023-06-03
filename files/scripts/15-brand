@@ -4,7 +4,7 @@ source /etc/default/dynamic-motd
 
 if [[ "$BRANDING" == "true" ]]; then
 	echo "";
-	toilet -f ${T_FONT} --filter ${T_FILTER} $DEFAULT_MOTD;
+	toilet -f ${T_FONT} --filter ${T_FILTER} $MOTD;
 	echo "";
 else
 	if [[ -f "/proc/device-tree/model" ]]; then

@@ -207,6 +207,7 @@ rtl8821cu_conf
 
 ifupdown-credentials(){
 if [[ -f "/root/ifupdown.credentials" ]]; then
+	CURRENT_HOSTNAME=`cat /etc/hostname | sed -n '1p'`
 	mv -f /root/ifupdown.credentials /usr/local/bin/credentials
 	chmod +x /usr/local/bin/credentials
 	chown root:root /usr/local/bin/credentials
@@ -227,12 +228,13 @@ if [[ -f "/root/ifupdown.credentials" ]]; then
 	echo "" >> /boot/broadcom/credentials.txt
 	echo "# change hostname" >> /boot/broadcom/credentials.txt
 	echo 'CHANGE="false"' >> /boot/broadcom/credentials.txt
-	echo 'HOSTNAME="raspberrypi"' >> /boot/broadcom/credentials.txt
+	echo HOSTNAME='"'$CURRENT_HOSTNAME'"' >> /boot/broadcom/credentials.txt
 fi
 }
 
 networkmanager-credentials(){
 if [[ -f "/root/networkmanager.credentials" ]]; then
+	CURRENT_HOSTNAME=`cat /etc/hostname | sed -n '1p'`
 	mv -f /root/networkmanager.credentials /usr/local/bin/credentials
 	chmod +x /usr/local/bin/credentials
 	chown root:root /usr/local/bin/credentials
@@ -252,6 +254,6 @@ if [[ -f "/root/networkmanager.credentials" ]]; then
 	echo "" >> /boot/broadcom/credentials.txt
 	echo "# change hostname" >> /boot/broadcom/credentials.txt
 	echo 'CHANGE="false"' >> /boot/broadcom/credentials.txt
-	echo 'HOSTNAME="raspberrypi"' >> /boot/broadcom/credentials.txt
+	echo HOSTNAME='"'$CURRENT_HOSTNAME'"' >> /boot/broadcom/credentials.txt
 fi
 }
