@@ -369,12 +369,10 @@ if [[ "$BOARD" == "bcm2708" ]]; then
 fi
 
 # Flush runtime journal
-if [[ "$BOARD" == "bcm2709" || "$BOARD" == "bcm2710" || "$BOARD_EXT" == "rpi-4" ]]; then
-	if [[ -f "/etc/systemd/journald.conf" ]]; then
-		sed -i 's/#Storage=auto/Storage=volatile/g' /etc/systemd/journald.conf
-		sed -i 's/#SystemMaxFileSize=/SystemMaxFileSize=50M/g' /etc/systemd/journald.conf
-		sed -i 's/#SystemMaxFiles=100/SystemMaxFiles=5/g' /etc/systemd/journald.conf
-	fi
+if [[ -f "/etc/systemd/journald.conf" ]]; then
+	sed -i 's/#Storage=auto/Storage=volatile/g' /etc/systemd/journald.conf
+	sed -i 's/#SystemMaxFileSize=/SystemMaxFileSize=50M/g' /etc/systemd/journald.conf
+	sed -i 's/#SystemMaxFiles=100/SystemMaxFiles=5/g' /etc/systemd/journald.conf
 fi
 
 # Services
