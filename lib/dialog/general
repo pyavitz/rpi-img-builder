@@ -2,6 +2,7 @@
 
 source lib/boards/$1
 source userdata.txt
+source custom.txt
 MAKE_OUTPUT="output/$1"
 BTITLE=`echo $FAMILY: $MOTD: $BOARD: $ARCH_EXT | sed 's/bcm2711v7/bcm2711/g' | sed -e 's/\(.*\)/\U\1/'`
 if [[ "$BOARD" == "bcm2708" ]]; then
