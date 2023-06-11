@@ -83,7 +83,7 @@ rm -fdr ${ROOT}/var/cache/debconf/*
 
 # finish
 echo
-echo -e "${WHT}Archiving root filesystem${FIN} ..."
+echo -e "== Archiving: ${RELEASE_TARBALL}"
 cd ${ROOT}
 XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - * | (pv -terb > ../$RELEASE_TARBALL)
 cd ..
