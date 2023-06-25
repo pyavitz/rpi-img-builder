@@ -63,7 +63,7 @@ fi
 
 create_fstab(){
 tee p2/etc/fstab <<EOF
-UUID=${BOOT_UUID}	${BOOT_PATH}	vfat	defaults 0 2
+UUID=${BOOT_UUID}	${BOOT_PATH}	vfat	defaults,flush 0 2
 UUID=${ROOT_UUID}	/	${ROOTFS_TABLE}
 tmpfs	/tmp		tmpfs	defaults,nosuid 0 0
 EOF
