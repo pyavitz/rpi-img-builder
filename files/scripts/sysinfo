@@ -97,7 +97,6 @@ if [[ -f "/etc/update-motd.d/90-dynamic-motd" ]]; then
 fi
 # default dynamic motd
 MOTD=`cat /etc/os-release | grep -w 'NAME=' | sed 's/NAME="//g' | sed 's/"//g' | sed 's/ GNU\/Linux//g'`
-BRANDING=`grep -w "BRANDING=" "/etc/default/dynamic-motd" | sed 's/BRANDING="//g' | sed 's/"//g'`
 sh -c "echo '# DYNAMIC MOTD VARIABLES' > /etc/default/dynamic-motd"
 sh -c "echo 'H_POS="'"-c"'"' >> /etc/default/dynamic-motd"
 sh -c "echo 'B_POS="'"-r"'"' >> /etc/default/dynamic-motd"
