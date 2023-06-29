@@ -17,6 +17,11 @@ echo "nameserver ${NAMESERVER2}" >> /etc/resolv.conf
 mount -t proc proc proc/
 mount -t sysfs sys sys/
 
+if [[ -f "/etc/apt/trusted.gpg" ]] && [[ "$DISTRO" == "raspbian" ]]; then
+	mkdir -p /etc/apt/trusted.gpg.d
+	mv -f /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg
+fi
+
 apt-get update
 apt-get install -y apt-utils
 
