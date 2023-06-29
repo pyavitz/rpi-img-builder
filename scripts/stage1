@@ -28,6 +28,11 @@ source lib/function/universal
 if [ $USCRIPTS -eq 1 ]; then
 	uscripts_pre-stage1
 fi
+# override the board file
+if [[ -f "override.txt" ]]; then
+	. override.txt
+	override_board
+fi
 source board.txt
 source lib/function/staging
 source lib/function/release

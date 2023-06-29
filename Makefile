@@ -101,6 +101,7 @@ help:
 	@echo "   make image board=xxx\t\tMake bootable image"
 	@echo ""
 
+# make commands
 ccompile:
 	# Installing x86_64 cross dependencies:
 	@chmod +x ${CCOMPILE}
@@ -116,8 +117,12 @@ ncompile:
 	@chmod +x ${NCOMPILE}
 	@${NCOMPILE}
 
-# builder
 kernel:
+	@rm -f override.txt
+# architecture
+ifdef arch
+	@echo 'ARCH_EXT="$(arch)"' > override.txt
+endif
 	# Compiling kernel
 	$(call build_kernel)
 
@@ -126,6 +131,18 @@ commit:
 	$(call build_commit)
 
 image:
+	@rm -f override.txt
+# distro and release
+ifdef distro
+	@$(shell sed -i "s/^DISTRO=.*/DISTRO="'"${distro}"'"/" userdata.txt)
+endif
+ifdef release
+	@$(shell sed -i "s/^DISTRO_VERSION=.*/DISTRO_VERSION="'"${release}"'"/" userdata.txt)
+endif
+# architecture
+ifdef arch
+	@echo 'ARCH_EXT="$(arch)"' > override.txt
+endif
 	# Creating image
 	$(call build_image)
 
@@ -137,9 +154,21 @@ all:
 	# Creating image
 	$(call build_image)
 
-# rootfs
+# root filesystem
 rootfs:
-	# ROOTFS
+	@rm -f override.txt
+# distro and release
+ifdef distro
+	@$(shell sed -i "s/^DISTRO=.*/DISTRO="'"${distro}"'"/" userdata.txt)
+endif
+ifdef release
+	@$(shell sed -i "s/^DISTRO_VERSION=.*/DISTRO_VERSION="'"${release}"'"/" userdata.txt)
+endif
+# architecture
+ifdef arch
+	@echo 'ARCH_EXT="$(arch)"' > override.txt
+endif
+	# Root Filesystem
 	$(call create_rootfs)
 
 # clean and purge

@@ -2,23 +2,50 @@
 source lib/function/echoes
 source lib/source
 validation
+# override the board file
+if [[ -f "override.txt" ]]; then
+	. override.txt
+	override_board
+fi
 source board.txt
 source userdata.txt
 source lib/function/rootfs
-HOST_MACHINE=`cat /etc/os-release | grep -w NAME | sed 's/NAME=//g' | sed 's/"//g' | sed 's/ GNU\/Linux//g'`
 
-if [[ "$ROOTFS_ARCH" == "rootfs-armel" ]] && [[ "$DISTRO" == "ubuntu" ]]; then
-	echo -e "${YLW}Ubuntu is not supported${FIN}."
-	echo ""
-	exit 0
+# clean
+if [[ -d "sysroot" ]]; then
+	make cleanup
+	clear -x
 fi
+
+# verbosity
 if [ $VERBOSE -eq 1 ]; then
 	set -eux -o pipefail
 else
 	set -eu -o pipefail
 fi
-if [[ "$DISTRO" == "devuan" ]]; then
-	devuan_keyring
+# restrictions
+if [[ "$HOST_ARCH" == "aarch64" ]] && [[ "$DISTRO" == "raspbian" ]]; then
+	echo -e "Aarch64 is currently not supported."
+	echo -e "To build an Raspbian IMG you need to use x86_64."
+	echo -e ""
+	read -p "Press enter to continue."
+	exit 0
+fi
+if [[ "$ROOTFS_ARCH" == "rootfs-armel" ]] && [[ "$DISTRO" == "ubuntu" ]]; then
+	echo -e "Ubuntu does not support ${ARCH_EXT}."
+	echo -e ""
+	read -p "Press enter to continue."
+	exit 0
+fi
+if [[ "$ROOTFS_ARCH" == "rootfs-armel" || "$ROOTFS_ARCH" == "rootfs-arm64" ]] && [[ "$DISTRO" == "raspbian" ]]; then
+	echo -e "Raspbian does not support ${ARCH_EXT}."
+	echo -e ""
+	read -p "Press enter to continue."
+	exit 0
+fi
+# keyrings and setups
+if [[ "$DISTRO" == "devuan" || "$DISTRO" == "raspbian" ]]; then
+	${DISTRO}_keyring
 fi
 if [[ "$HOST_MACHINE" == "Ubuntu" ]]; then
 	:;
@@ -27,6 +54,7 @@ else
 		ubuntu_setup
 	fi
 fi
+
 ROOT="sysroot"
 RELEASE_TARBALL=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
 if [[ -f "$RELEASE_TARBALL" ]]; then

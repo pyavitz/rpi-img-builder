@@ -68,7 +68,7 @@ else
 		NETWORKING_EXTRA="ifupdown-extra"
 	fi
 fi
-if [[ "$DISTRO" == "debian" ]]; then
+if [[ "$DISTRO" == "debian" || "$DISTRO" == "raspbian" ]]; then
 	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} resolvconf openssh-client openssh-server ${FSPROG} ${NETWORKING}
 fi
 if [[ "$DISTRO" == "devuan" ]]; then

@@ -1,7 +1,7 @@
 # architecture
 ARCH="arm"
 ARCH_EXT="armel"
-DEBARCH="armel"
+DEBARCH="${ARCH_EXT}"
 KERNEL_VAR="kernel"
 CROSS_COMPILE="arm-linux-gnueabi-"
 ROOTFS_ARCH="rootfs-${ARCH_EXT}"

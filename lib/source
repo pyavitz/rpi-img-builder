@@ -1,8 +1,14 @@
 #!/bin/bash
 
+# variables
 SRC="source"
 KERNEL="linux-rpi"
 CKERNEL="linux"
+
+# host machine
+HOST_MACHINE=`cat /etc/os-release | grep -w NAME | sed 's/NAME=//g' | sed 's/"//g' | sed 's/ GNU\/Linux//g'`
+HOST_CODENAME=`cat /etc/os-release | grep -w "VERSION_CODENAME" | sed 's/VERSION_CODENAME=//g'`
+HOST_ARCH=`uname -m`
 
 # validate
 validation(){
@@ -29,7 +35,7 @@ fi
 }
 
 # packages
-PKGS="tzdata keyboard-configuration sudo man-db dbus initramfs-tools \
+PKGS="tzdata keyboard-configuration sudo man-db dbus initramfs-tools whiptail \
 	fonty-rg patch curl wget apt-transport-https dirmngr cmake rsync \
 	psmisc parted pv zip unzip aria2 libell0 fdisk i2c-tools cpu hwinfo \
 	haveged git build-essential net-tools ifplugd wireless-regdb ntp \
@@ -48,3 +54,24 @@ SYSMODS="debhelper d-shlibs rfkill dosfstools psmisc"
 # firmware
 FIRMWARE="firmware-linux-nonfree firmware-linux firmware-misc-nonfree \
           firmware-realtek firmware-ralink"
+
+override_board(){
+if [[ -z "$ARCH_EXT" ]]; then
+	:;
+else
+	sed -i 's/^ARCH_EXT=.*/ARCH_EXT="'"${ARCH_EXT}"'"/' board.txt
+	if [[ "$ARCH_EXT" == "armel" ]]; then
+		sed -i 's/^CROSS_COMPILE=.*/CROSS_COMPILE="'"arm-linux-gnueabi-"'"/' board.txt
+		sed -i 's/^STATIC=.*/STATIC="'"qemu-arm-static"'"/' board.txt
+	fi
+	if [[ "$ARCH_EXT" == "armhf" ]]; then
+		sed -i 's/^CROSS_COMPILE=.*/CROSS_COMPILE="'"arm-linux-gnueabihf-"'"/' board.txt
+		sed -i 's/^STATIC=.*/STATIC="'"qemu-arm-static"'"/' board.txt
+	fi
+	if [[ "$ARCH_EXT" == "arm64" ]]; then
+		sed -i 's/^CROSS_COMPILE=.*/CROSS_COMPILE="'"aarch64-linux-gnu-"'"/' board.txt
+		sed -i 's/^STATIC=.*/STATIC="'"qemu-aarch64-static"'"/' board.txt
+	fi
+fi
+rm -f override.txt
+}

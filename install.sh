@@ -1,18 +1,18 @@
 #!/bin/bash
 
+source lib/source
 RED="\e[0;31m"
 GRN="\e[0;32m"
 PNK="\e[0;35m"
 TXT="\033[0m"
 YLW="\e[0;33m"
 FIN="\e[0m"
-ARCH=`uname -m`
+GIT_BRANCH=`git branch`
 
-if [[ -e "/etc/os-release" ]]; then
-	RELEASE=`cat /etc/os-release | grep -w VERSION_CODENAME | sed 's/VERSION_CODENAME=//g'`
-else
-	RELEASE="none"
-fi
+echo ""
+echo -en "${TXT}Raspberry Pi Image Builder:${FIN}"
+echo -e " ${PNK}[${FIN}${GRN}${GIT_BRANCH}${FIN}${PNK}]${FIN}"
+
 if [[ `command -v curl` ]]; then
 	:;
 else
@@ -20,8 +20,6 @@ else
 	echo -e "Missing dependency: curl"
 	sudo apt install -y curl wget
 fi
-
-echo ""
 echo -en "${TXT}Checking Internet Connection:${FIN} "
 if [[ `curl -I https://github.com 2>&1 | grep 'HTTP/2 200'` ]]; then
 	echo -en "${PNK}[${FIN}${GRN}OK${FIN}${PNK}]${FIN}"
@@ -34,28 +32,34 @@ else
 fi
 echo -en "${TXT}Checking Host Machine:${FIN} "
 sleep .50
-if [[ "$RELEASE" == "jammy" ]]; then
+if [[ "$HOST_CODENAME" == "jammy" ]]; then
 	echo -en "${PNK}[${FIN}${GRN}Ubuntu Jammy Jellyfish${FIN}${PNK}]${FIN}"
 	echo ""
 else
-	if [[ "$RELEASE" == "bullseye" ]]; then
+	if [[ "$HOST_CODENAME" == "bullseye" ]]; then
 		echo -en "${PNK}[${FIN}${GRN}Debian Bullseye${FIN}${PNK}]${FIN}"
 		echo ""
 	else
-		echo -ne "${PNK}[${FIN}${RED}failed${FIN}${PNK}]${FIN}"
-		echo ""
-		echo -e "${TXT}The OS you are running is not supported${FIN}."
-		exit 0
+		if [[ "$HOST_CODENAME" == "bookworm" ]]; then
+			echo -en "${PNK}[${FIN}${GRN}Debian Bookworm${FIN}${PNK}]${FIN}"
+			echo ""
+		else
+			echo -ne "${PNK}[${FIN}${RED}failed${FIN}${PNK}]${FIN}"
+			echo ""
+			echo -e "${TXT}The OS you are running is not supported${FIN}."
+			exit 0
+		fi
 	fi
 fi
 echo ""
-if [[ "$ARCH" == "x86_64" || "$ARCH" == "aarch64" ]]; then
+if [[ "$HOST_ARCH" == "x86_64" || "$HOST_ARCH" == "aarch64" ]]; then
 	:;
 else
-	echo -e "ARCH: $ARCH is not supported by this script."
+	echo -e "ARCH: $HOST_ARCH is not supported by this script."
+	exit 0
 fi
 
-if [[ "$ARCH" == "x86_64" ]]; then
+if [[ "$HOST_ARCH" == "x86_64" ]]; then
 	echo -e "${TXT}Starting install ...${FIN}"
 	sleep .50
 	if [[ `command -v make` ]]; then
@@ -71,7 +75,7 @@ if [[ "$ARCH" == "x86_64" ]]; then
 	fi
 fi
 
-if [[ "$ARCH" == "aarch64" ]]; then
+if [[ "$HOST_ARCH" == "aarch64" ]]; then
 	echo -e -n "${TXT}"
 	echo -e "Arm64 detected. Select the dependencies you would like installed."
 	options=("Cross Compiling" "Native Compiling" "Quit")

@@ -8,11 +8,6 @@ cd ${SRC}
 }
 
 compiler(){
-if [[ -e "/etc/os-release" ]]; then
-	CODENAME=`cat /etc/os-release | grep -w VERSION_CODENAME | sed 's/VERSION_CODENAME=//g'`
-else
-	CODENAME="none"
-fi
 # install depends
 if [ $CCACHE -eq 1 ]; then
 	if [[ `command -v ccache` ]]; then
@@ -22,14 +17,14 @@ if [ $CCACHE -eq 1 ]; then
 	fi
 fi
 if [ $CLANG -eq 1 ]; then
-	if [[ "$CODENAME" == "jammy" ]]; then
+	if [[ "$HOST_CODENAME" == "jammy" ]]; then
 		if [[ `command -v clang-14` ]] && [[ `command -v clang-15` ]]; then
 			:;
 		else
 			apt install -y clang clang-14 clang-15 lld lld-14 lld-15 llvm
 		fi
 	else
-		echo -e "${CODENAME} is not supported."
+		echo -e "${HOST_CODENAME} is not supported."
 		exit 0
 	fi
 fi
