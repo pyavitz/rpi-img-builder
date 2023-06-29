@@ -6,7 +6,7 @@ fi
 if [[ -f "/boot/broadcom/useraccount.txt" ]]; then
 	. /boot/broadcom/useraccount.txt
 fi
-RELEASE=`cat /etc/os-release | grep -w NAME | sed 's/NAME=//g' | sed 's/"//g' | sed 's/ GNU\/Linux//g'`
+DISTRO=`cat /etc/os-release | grep -w NAME | sed 's/NAME=//g' | sed 's/"//g' | sed 's/ GNU\/Linux//g'`
 
 create_user(){
 adduser ${USERNAME} --gecos ${NAME} --disabled-password
@@ -93,11 +93,10 @@ else
 	echo "Almost done ..."
 	sleep 1s
 fi
-if [[ "$RELEASE" == "Debian" || "$RELEASE" == "Ubuntu" ]]; then
-	systemctl disable useraccount > /dev/null 2>&1
-fi
-if [[ "$RELEASE" == "Devuan" ]]; then
+if [[ "$DISTRO" == "Devuan" ]]; then
 	update-rc.d useraccount remove > /dev/null 2>&1
+else
+	systemctl disable useraccount > /dev/null 2>&1
 fi
 sleep 1s
 if [ -e /home/${USERNAME} ]; then
@@ -108,7 +107,7 @@ if [ -e /home/${USERNAME} ]; then
 	chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}
 	rm -f /etc/opt/{nanorc-user,user-ini}
 fi
-if [[ "$RELEASE" == "Devuan" ]]; then
+if [[ "$DISTRO" == "Devuan" ]]; then
 	clear -x
 fi
 
