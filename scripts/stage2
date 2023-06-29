@@ -364,7 +364,7 @@ if [[ "$DISTRO" == "ubuntu" ]]; then
 fi
 
 # RPi Hack
-if [[ "$BOARD" == "bcm2708" ]]; then
+if [[ "$BOARD" == "bcm2708" ]] && [[ -f "/lib/ld-linux.so.3" ]]; then
 	ln -s /lib/ld-linux.so.3 /lib/ld-linux-armhf.so.3
 fi
 
