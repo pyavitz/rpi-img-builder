@@ -44,8 +44,8 @@ if ls /usr/share/keyrings/{devuan-archive-keyring.gpg,devuan-keyring.gpg} > /dev
 	:;
 else
 	wget -cq --show-progress $URL$FILE
-	sudo dpkg -i $FILE
-	rm -f $FILE;
+	dpkg -i $FILE
+	rm -f $FILE
 fi
 if [[ -f "/usr/share/debootstrap/scripts/${DISTRO_VERSION}" ]]; then
 	:;
@@ -54,11 +54,19 @@ else
 fi
 }
 
+raspbian_keyring(){
+if [[ -f "/usr/share/keyrings/raspbian-archive-keyring.gpg" ]]; then
+	:;
+else
+	curl -sS http://archive.raspbian.org/raspbian.public.key | gpg --dearmor | tee /usr/share/keyrings/raspbian-archive-keyring.gpg > /dev/null 2>&1
+fi
+}
+
 ubuntu_setup(){
-if [[ `uname -m | grep "x86_64"` ]]; then
+if [[ "$HOST_ARCH" == "x86_64" ]]; then
 	MACHINE="amd64"
 fi
-if [[ `uname -m | grep "aarch64"` ]]; then
+if [[ "$HOST_ARCH" == "aarch64" ]]; then
 	MACHINE="arm64"
 fi
 URL="https://github.com/pyavitz/debian-image-builder/releases/download/dpkg/"
@@ -76,7 +84,7 @@ else
 	else
 		wget -cq $URL$FILE1
 		wget -cq $URL$FILE2
-		sudo dpkg -i *.deb
+		dpkg -i *.deb
 		rm -f *.deb
 	fi
 fi
@@ -87,7 +95,7 @@ else
 	wget -cq --show-progress $URL$FILE4
 	wget -cq --show-progress $URL$FILE5
 	wget -cq --show-progress $URL$FILE6
-	sudo dpkg -i *.deb
+	dpkg -i *.deb
 	rm -f *.deb
 fi
 if [[ "$DISTRO_VERSION" == "jammy" || "$DISTRO_VERSION" == "kinetic" || "$DISTRO_VERSION" == "lunar" ]]; then
@@ -101,12 +109,19 @@ fi
 
 # debootstrap
 run_debootstrap(){
+KEY_DIR="/usr/share/keyrings"
+if [[ "$DISTRO" == "debian" || "$DISTRO" == "kali" || "$DISTRO" == "ubuntu" ]]; then
+	debootstrap --arch ${ARCH_EXT} --foreign ${DISTRO_VERSION} ${ROOT}
+	chroot ${ROOT} /debootstrap/debootstrap --second-stage
+fi
 if [[ "$DISTRO" == "devuan" ]]; then
-	KEY="/usr/share/keyrings/devuan-archive-keyring.gpg"
+	KEY="${KEY_DIR}/devuan-archive-keyring.gpg"
 	debootstrap --arch ${ARCH_EXT} --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VERSION} ${ROOT} http://deb.devuan.org/merged
 	chroot ${ROOT} /debootstrap/debootstrap --second-stage
-else
-	debootstrap --arch ${ARCH_EXT} --foreign ${DISTRO_VERSION} ${ROOT}
+fi
+if [[ "$DISTRO" == "raspbian" ]]; then
+	KEY="${KEY_DIR}/raspbian-archive-keyring.gpg"
+	debootstrap --arch ${ARCH_EXT} --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VERSION} ${ROOT} http://mirrordirector.raspbian.org/raspbian
 	chroot ${ROOT} /debootstrap/debootstrap --second-stage
 fi
 }

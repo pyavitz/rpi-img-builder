@@ -6,7 +6,7 @@ if [[ -f "/etc/opt/board.txt" ]]; then
 	. /etc/opt/board.txt
 fi
 
-RELEASE=`cat /etc/os-release | grep -w NAME | sed 's/NAME=//g' | sed 's/"//g' | sed 's/ GNU\/Linux//g'`
+DISTRO=`cat /etc/os-release | grep -w NAME | sed 's/NAME=//g' | sed 's/"//g' | sed 's/ GNU\/Linux//g'`
 BOOT=`findmnt -v -n -o SOURCE /boot/broadcom`
 ROOTFS=`findmnt -v -n -o SOURCE /`
 GROW=`findmnt -v -n -o SOURCE / | sed 's/p/ /'`
@@ -43,7 +43,7 @@ fi
 }
 
 # expand root filesystem
-if [[ "$RELEASE" == "Devuan" ]]; then
+if [[ "$DISTRO" == "Devuan" ]]; then
 	echo ""
 	echo -e " \033[1mExpanding root filesystem\033[0m ...";
 fi
@@ -66,7 +66,7 @@ fi
 
 # fsck boot partition
 if [[ -d "/boot/broadcom" ]]; then
-	if [[ "$RELEASE" == "Devuan" ]]; then
+	if [[ "$DISTRO" == "Devuan" ]]; then
 		echo -e " \033[1mRunning fsck on boot partition\033[0m ...";
 	fi
 	umount /boot/broadcom
@@ -81,17 +81,16 @@ if [[ -d "/boot/broadcom" ]]; then
 fi
 
 # finish
-if [[ "$RELEASE" == "Debian" || "$RELEASE" == "Ubuntu" ]]; then
-	rm -f /var/cache/debconf/*
-	rm -f /usr/local/sbin/firstboot
-	systemctl disable firstboot
-fi
-if [[ "$RELEASE" == "Devuan" ]]; then
+if [[ "$DISTRO" == "Devuan" ]]; then
 	disable_bthelper
 	update-rc.d firstboot remove
 	rm -f /etc/init.d/firstboot
 	rm -f /var/cache/debconf/*
 	rm -f /usr/local/sbin/firstboot
+else
+	rm -f /var/cache/debconf/*
+	rm -f /usr/local/sbin/firstboot
+	systemctl disable firstboot
 fi
 
 exit 0

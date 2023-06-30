@@ -1,6 +1,8 @@
-### Debian Bullseye ( AMD64/x86_64 )
+* Debian
+
+### Bullseye ( AMD64/x86_64 )
 sudo apt install -y build-essential bison bc git dialog patch kpartx zstd aria2 pv \
-	dosfstools zip unzip qemu debootstrap qemu-user-static rsync make \
+	dosfstools zip unzip qemu debootstrap qemu-user-static rsync make jq \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig libelf-dev \
 	crossbuild-essential-arm64 crossbuild-essential-armel crossbuild-essential-armhf \
 	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs xfsprogs \
@@ -8,11 +10,57 @@ sudo apt install -y build-essential bison bc git dialog patch kpartx zstd aria2 
 	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-9-aarch64-linux-gnu \
 	gcc-10-aarch64-linux-gnu
 
-### Ubuntu Jammy ( AMD64/x86_64 )
+### Bullseye ( ARM64/CC )
+sudo apt install -y build-essential bison bc git dialog patch kpartx zstd \
+	dosfstools zip unzip qemu debootstrap qemu-user-static rsync make fdisk \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig libelf-dev \
+	crossbuild-essential-armel crossbuild-essential-armhf aria2 pv jq \
+	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs xfsprogs \
+	gcc-9 gcc-10 gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf \
+	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi
+
+### Bullseye ( ARM64/NC )
+sudo apt install -y build-essential bison bc git dialog patch fdisk \
+	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
+	aria2 pv distro-info-data lsb-release xz-utils curl jq \
+	e2fsprogs btrfs-progs xfsprogs kpartx make libelf-dev zstd gcc-9 gcc-10
+
+### Bookworm ( AMD64/x86_64 )
+sudo apt install -y build-essential bison bc git dialog patch kpartx zstd aria2 pv \
+	dosfstools zip unzip debootstrap qemu-user-static rsync make jq \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig libelf-dev \
+	crossbuild-essential-arm64 crossbuild-essential-armel crossbuild-essential-armhf \
+	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs xfsprogs \
+	fdisk gcc-11 gcc-12 gcc-11-arm-linux-gnueabihf gcc-12-arm-linux-gnueabihf \
+	gcc-11-arm-linux-gnueabi gcc-12-arm-linux-gnueabi gcc-11-aarch64-linux-gnu \
+	gcc-12-aarch64-linux-gnu
+
+### Bookworm ( ARM64/CC )
+sudo apt install -y build-essential bison bc git dialog patch kpartx zstd \
+	dosfstools zip unzip debootstrap qemu-user-static rsync make fdisk \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig libelf-dev \
+	crossbuild-essential-armel crossbuild-essential-armhf aria2 pv jq \
+	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs xfsprogs \
+	gcc-11 gcc-12 gcc-11-arm-linux-gnueabihf gcc-12-arm-linux-gnueabihf \
+	gcc-11-arm-linux-gnueabi gcc-12-arm-linux-gnueabi
+
+### Bookworm ( ARM64/NC )
+sudo apt install -y build-essential bison bc git dialog patch fdisk \
+	dosfstools zip unzip debootstrap qemu-user-static rsync \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
+	aria2 pv distro-info-data lsb-release xz-utils curl jq \
+	e2fsprogs btrfs-progs xfsprogs kpartx make libelf-dev zstd gcc-11 gcc-12
+
+---
+
+* Ubuntu
+
+### Jammy Jellyfish ( AMD64/x86_64 )
 sudo apt install -y build-essential bison bc git dialog patch fdisk distro-info-data \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync xfsprogs \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig kpartx \
-	aria2 pv lsb-release xz-utils curl e2fsprogs btrfs-progs \
+	aria2 pv lsb-release xz-utils curl e2fsprogs btrfs-progs jq \
 	crossbuild-essential-arm64 crossbuild-essential-armhf crossbuild-essential-armel \
 	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-11-arm-linux-gnueabi \
 	gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf gcc-11-arm-linux-gnueabihf \
@@ -20,28 +68,10 @@ sudo apt install -y build-essential bison bc git dialog patch fdisk distro-info-
 	gcc-9 gcc-10 gcc-11 gcc-12 debian-archive-keyring debian-keyring make libelf-dev \
 	gcc-12-arm-linux-gnueabi gcc-12-arm-linux-gnueabihf gcc-12-aarch64-linux-gnu
 
----
-
-### Debian Bullseye ( ARM64/CC )
-sudo apt install -y build-essential bison bc git dialog patch kpartx zstd \
-	dosfstools zip unzip qemu debootstrap qemu-user-static rsync make fdisk \
-	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig libelf-dev \
-	crossbuild-essential-armel crossbuild-essential-armhf aria2 pv \
-	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs xfsprogs \
-	gcc-9 gcc-10 gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf \
-	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi
-
-### Debian Bullseye ( ARM64/NC )
-sudo apt install -y build-essential bison bc git dialog patch fdisk \
-	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
-	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
-	aria2 pv distro-info-data lsb-release xz-utils curl \
-	e2fsprogs btrfs-progs xfsprogs kpartx make libelf-dev zstd gcc-9 gcc-10
-
-### Ubuntu Jammy ( ARM64/CC )
+### Jammy Jellyfish ( ARM64/CC )
 sudo apt install -y build-essential bison bc git dialog patch dosfstools \
 	zip unzip qemu debootstrap qemu-user-static rsync kmod cpio flex \
-	libssl-dev libncurses5-dev parted fakeroot swig aria2 pv \
+	libssl-dev libncurses5-dev parted fakeroot swig aria2 pv jq \
 	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs kpartx \
 	debian-archive-keyring crossbuild-essential-armel crossbuild-essential-armhf \
 	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-11-arm-linux-gnueabi \
@@ -49,10 +79,10 @@ sudo apt install -y build-essential bison bc git dialog patch dosfstools \
 	gcc-9 gcc-10 gcc-11 gcc-12 debian-keyring make libelf-dev xfsprogs fdisk \
 	gcc-12-arm-linux-gnueabi gcc-12-arm-linux-gnueabihf
 
-### Ubuntu Jammy Jellyfish ( ARM64/NC )
+### Jammy Jellyfish ( ARM64/NC )
 sudo apt install -y build-essential bison bc git dialog patch \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
-	aria2 pv distro-info-data lsb-release xz-utils curl \
+	aria2 pv distro-info-data lsb-release xz-utils curl jq \
 	e2fsprogs btrfs-progs kpartx xfsprogs fdisk debian-archive-keyring \
 	debian-keyring make libelf-dev gcc-9 gcc-10 gcc-11 gcc-12

@@ -68,7 +68,7 @@ else
 		NETWORKING_EXTRA="ifupdown-extra"
 	fi
 fi
-if [[ "$DISTRO" == "debian" ]]; then
+if [[ "$DISTRO" == "debian" || "$DISTRO" == "raspbian" ]]; then
 	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} resolvconf openssh-client openssh-server ${FSPROG} ${NETWORKING}
 fi
 if [[ "$DISTRO" == "devuan" ]]; then
@@ -364,7 +364,7 @@ if [[ "$DISTRO" == "ubuntu" ]]; then
 fi
 
 # RPi Hack
-if [[ "$BOARD" == "bcm2708" ]]; then
+if [[ "$BOARD" == "bcm2708" ]] && [[ -f "/lib/ld-linux.so.3" ]]; then
 	ln -s /lib/ld-linux.so.3 /lib/ld-linux-armhf.so.3
 fi
 

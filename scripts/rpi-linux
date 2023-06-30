@@ -2,6 +2,11 @@
 source lib/function/echoes
 source lib/source
 validation
+# override the board file
+if [[ -f "override.txt" ]]; then
+	. override.txt
+	override_board
+fi
 source board.txt
 source userdata.txt
 source packaging/pkgvars

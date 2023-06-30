@@ -3,11 +3,7 @@
 if [[ -f "/etc/opt/board.txt" ]]; then
 	. /etc/opt/board.txt
 fi
-if [[ -f "/etc/os-release" ]]; then
-	NAME=`cat /etc/os-release | grep -w NAME | sed 's/NAME=//g' | sed 's/"//g' | sed 's/ GNU\/Linux//g'`
-else
-	NAME="none"
-fi
+DISTRO=`cat /etc/os-release | grep -w NAME | sed 's/NAME=//g' | sed 's/"//g' | sed 's/ GNU\/Linux//g'`
 
 if [ $# -eq 0 ]; then
 	echo -e "Missing options!"
@@ -25,7 +21,7 @@ while getopts "rh" OPTION; do
 			sudo dpkg-reconfigure locales tzdata keyboard-configuration
 			sleep .50
 			if [[ `curl -I https://github.com 2>&1 | grep 'HTTP/2 200'` ]]; then
-				if [[ "$NAME" == "Ubuntu" ]]; then echo ""; fi
+				if [[ "$DISTRO" == "Ubuntu" ]]; then echo ""; fi
 				echo "Reconfiguring debconf ..."
 				if [[ `command -v tasksel` ]]; then
 					:;

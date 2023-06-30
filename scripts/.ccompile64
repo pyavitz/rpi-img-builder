@@ -1,7 +1,6 @@
 #!/bin/bash
 
-TXT="\033[0m"
-FIN="\e[0m"
+source lib/source
 
 jammy-ccompile64(){
 sudo debconf-apt-progress -- apt install -y \
@@ -27,25 +26,31 @@ sudo debconf-apt-progress -- apt install -y \
 	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi
 }
 
-if [[ `uname -m | grep -w x86_64` ]]; then
+bookworm-ccompile64(){
+sudo debconf-apt-progress -- apt install -y \
+	build-essential bison bc git dialog patch kpartx zstd \
+	dosfstools zip unzip debootstrap qemu-user-static rsync make fdisk \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig libelf-dev \
+	crossbuild-essential-armel crossbuild-essential-armhf aria2 pv jq \
+	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs xfsprogs \
+	gcc-11 gcc-12 gcc-11-arm-linux-gnueabihf gcc-12-arm-linux-gnueabihf \
+	gcc-11-arm-linux-gnueabi gcc-12-arm-linux-gnueabi
+}
+
+if [[ "$HOST_ARCH" == "x86_64" ]]; then
 	echo ""
-	echo -e "${TXT}Host Machine: x86-64${FIN}"
-	echo -e "${TXT}Please run:${FIN} make ccompile"
-	echo ""
-	exit > /dev/null 2>&1;
+	echo -e "You are running: $HOST_ARCH"
+	echo -e "Please run: make ccompile"
+	exit 0
 fi
 
-if [[ `grep -w "jammy" "/etc/os-release"` ]]; then
+if [[ "$HOST_CODENAME" == "bullseye" || "$HOST_CODENAME" == "bookworm" || "$HOST_CODENAME" == "jammy" ]]; then
 	echo ""
-	jammy-ccompile64;
+	${HOST_CODENAME}-ccompile64
 else
-	if [[ `grep -w "bullseye" "/etc/os-release"` ]]; then
-		echo ""
-		bullseye-ccompile64;
-	else
-		echo ""
-		echo -e "${TXT}What OS are you running?${FIN}"
-		echo ""
-		exit > /dev/null 2>&1;
-	fi
+	echo -e ""
+	echo -e "Something went wrong..?"
+	exit 0
 fi
+
+exit 0

@@ -42,6 +42,14 @@ EOF
 fi
 }
 
+raspbian_release(){
+tee ${SOURCES_LIST} <<EOF
+deb http://mirrordirector.raspbian.org/raspbian ${DISTRO_VERSION} main contrib non-free
+#deb http://archive.raspbian.org/raspbian ${DISTRO_VERSION} main contrib non-free
+#deb http://raspbian.raspberrypi.org/raspbian ${DISTRO_VERSION} main contrib non-free rpi
+EOF
+}
+
 ubuntu_release(){
 tee ${SOURCES_LIST} <<EOF
 deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION} main restricted
@@ -66,7 +74,7 @@ EOF
 
 choose_release(){
 rm -f ${SOURCES_LIST}
-if [[ "$DISTRO" == "debian" || "$DISTRO" == "devuan" || "$DISTRO" == "ubuntu" ]]; then
+if [[ "$DISTRO" == "debian" || "$DISTRO" == "devuan" || "$DISTRO" == "raspbian" || "$DISTRO" == "ubuntu" ]]; then
 	${DISTRO}_release
 else
 	echo "${CAP_DISTRO} ${CAP_RELEASE} is not supported."

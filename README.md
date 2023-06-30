@@ -1,14 +1,16 @@
 <img src="https://socialify.git.ci/pyavitz/rpi-img-builder/image?description=1&font=KoHo&forks=1&issues=1&logo=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fde%2Fthumb%2Fc%2Fcb%2FRaspberry_Pi_Logo.svg%2F475px-Raspberry_Pi_Logo.svg.png&owner=1&pattern=Charlie%20Brown&stargazers=1&theme=Dark" alt="rpi-img-builder" width="640" height="320" />
 
-## The boards and distributions that are currently supported
+### The boards and distributions that are currently supported
 * **Raspberry Pi 4B/400** (*Debian, Devuan and Ubuntu*)
 * **Raspberry Pi 3/A/B/+** (*Debian, Devuan and Ubuntu*)
 * **Raspberry Pi 2/3/A/B/+** (*Debian, Devuan and Ubuntu*)
 * **Raspberry Pi 0/W/B/+** (*Debian and Devuan*)
 * [Raspberry Pi Hardware](https://www.raspberrypi.org/documentation/hardware/raspberrypi)
 
-## Dependencies for Debian Bullseye and Ubuntu Jammy Jellyfish
-* **Recommended host:** Ubuntu Jammy Jellyfish
+### Host dependencies for Debian Bullseye / Bookworm and Ubuntu Jammy Jellyfish
+* **Debian Bullseye** (recommended)
+* **Debian Bookworm** (testing)
+* **Ubuntu Jammy Jellyfish** (recommended)
 
 **Install options:**
 * Run the `./install.sh` script ***(recommended)***
@@ -17,7 +19,7 @@
 
 ---
 
-## Instructions
+### Instructions
 #### Install dependencies
 
 ```sh
@@ -124,7 +126,7 @@ in the userdata.txt file.
 Patches "-p1" placed in userpatches are applied during compilation.
 ```
 
-## Usage
+### Usage
 * Review the [Wiki](https://github.com/pyavitz/rpi-img-builder/wiki/Options-&-Scripts)
 * The boot partition is labelled BOOT
 #### BOOT: useraccount.txt

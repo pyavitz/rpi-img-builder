@@ -17,6 +17,11 @@ echo "nameserver ${NAMESERVER2}" >> /etc/resolv.conf
 mount -t proc proc proc/
 mount -t sysfs sys sys/
 
+if [[ -f "/etc/apt/trusted.gpg" ]] && [[ "$DISTRO" == "raspbian" ]]; then
+	mkdir -p /etc/apt/trusted.gpg.d
+	mv -f /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d/raspbian-archive-keyring.gpg
+fi
+
 apt-get update
 apt-get install -y apt-utils
 
@@ -28,7 +33,7 @@ set_timezone
 
 apt upgrade -y
 apt dist-upgrade -y
-if [[ "$DISTRO" == "debian" ]]; then
+if [[ "$DISTRO" == "debian" || "$DISTRO" == "raspbian" ]]; then
 	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} resolvconf openssh-client openssh-server
 fi
 if [[ "$DISTRO" == "devuan" ]]; then
