@@ -14,7 +14,6 @@ validation
 if [ $VERBOSE -eq 1 ]; then
 	set -x;
 fi
-HOST_ARCH=`uname -m`
 if [[ "$HOST_ARCH" == "aarch64" ]] && [[ "$ARCH" == "arm64" ]]; then
 	CROSSCOMPILE="0"
 fi
