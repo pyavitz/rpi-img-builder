@@ -17,7 +17,7 @@ if [ $CCACHE -eq 1 ]; then
 	fi
 fi
 if [ $CLANG -eq 1 ]; then
-	if [[ "$HOST_CODENAME" == "jammy" ]]; then
+	if [[ "$HOST_CODENAME" == "bookworm" || "$HOST_CODENAME" == "jammy" ]]; then
 		if [[ `command -v clang-14` ]] && [[ `command -v clang-15` ]]; then
 			:;
 		else

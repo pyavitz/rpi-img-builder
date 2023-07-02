@@ -77,7 +77,7 @@ Compiler        	WARNING: Only one may be selected
 Version:		# gcc-11
 GCC:			#
 Ccache:			#
-Clang:			# Supported: Jammy Jellyfish
+Clang:			# Supported: Debian Bookworm / Jammy Jellyfish
 
 Distribution
 Distro:			# Supported: debian, devuan and ubuntu
