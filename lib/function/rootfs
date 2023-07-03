@@ -116,12 +116,14 @@ if [[ "$DISTRO" == "debian" || "$DISTRO" == "kali" || "$DISTRO" == "ubuntu" ]]; 
 fi
 if [[ "$DISTRO" == "devuan" ]]; then
 	KEY="${KEY_DIR}/devuan-archive-keyring.gpg"
-	debootstrap --arch ${ARCH_EXT} --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VERSION} ${ROOT} http://deb.devuan.org/merged
+	SOURCE="http://deb.devuan.org/merged"
+	debootstrap --arch ${ARCH_EXT} --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VERSION} ${ROOT} ${SOURCE}
 	chroot ${ROOT} /debootstrap/debootstrap --second-stage
 fi
 if [[ "$DISTRO" == "raspbian" ]]; then
 	KEY="${KEY_DIR}/raspbian-archive-keyring.gpg"
-	debootstrap --arch ${ARCH_EXT} --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VERSION} ${ROOT} http://mirrordirector.raspbian.org/raspbian
+	SOURCE="http://raspbian.raspberrypi.org/raspbian"
+	debootstrap --arch ${ARCH_EXT} --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VERSION} ${ROOT} ${SOURCE}
 	chroot ${ROOT} /debootstrap/debootstrap --second-stage
 fi
 }

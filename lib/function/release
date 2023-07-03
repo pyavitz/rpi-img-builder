@@ -44,9 +44,11 @@ fi
 
 raspbian_release(){
 tee ${SOURCES_LIST} <<EOF
-deb http://mirrordirector.raspbian.org/raspbian ${DISTRO_VERSION} main contrib non-free
+deb http://raspbian.raspberrypi.org/raspbian ${DISTRO_VERSION} main contrib non-free rpi
+
+# optional
 #deb http://archive.raspbian.org/raspbian ${DISTRO_VERSION} main contrib non-free
-#deb http://raspbian.raspberrypi.org/raspbian ${DISTRO_VERSION} main contrib non-free rpi
+#deb http://mirrordirector.raspbian.org/raspbian ${DISTRO_VERSION} main contrib non-free
 EOF
 }
 
