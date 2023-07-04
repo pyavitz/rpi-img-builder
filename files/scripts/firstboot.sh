@@ -31,13 +31,9 @@ EOF
 }
 
 disable_bthelper(){
-if [[ `grep -w "Raspberry\ Pi\ 2" "/proc/cpuinfo"` ]]; then
-	update-rc.d -f bthelper remove
-fi
-if [[ `grep -w "Raspberry\ Pi\ Model\ B\ Rev\ 1" "/proc/cpuinfo"` ]]; then
-	update-rc.d -f bthelper remove
-fi
-if [[ `grep -w "Raspberry\ Pi\ Model\ B\ Rev\ 2" "/proc/cpuinfo"` ]]; then
+RPI_REV=`cat /proc/cpuinfo | grep Raspberry | sed 's/[^ ]* //' | sed 's/://g' | sed -e 's/^[ \t]*//'`
+if [[ "$RPI_REV" == "Raspberry Pi Model B Rev 1" || "$RPI_REV" == "Raspberry Pi Model B Rev 2" || \
+	"$RPI_REV" == "Raspberry Pi 2 Model B" || "$RPI_REV" == "Raspberry Pi 2 Model B rev 1.2" ]]; then
 	update-rc.d -f bthelper remove
 fi
 }
