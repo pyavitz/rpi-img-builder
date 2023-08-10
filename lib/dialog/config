@@ -39,10 +39,8 @@ exec 3>&1
 
 # store data to $VALUES variable
 VALUES=$(dialog --ok-label "Submit" --no-cancel \
-	  --backtitle "RASPBERRY PI IMAGE BUILDER" \
-	  --title "" \
-	  --form "" \
-0 36 0 \
+	--backtitle "RASPBERRY PI IMAGE BUILDER: CONFIG MENU" \
+	--title "" --form "" 0 36 0 \
 	"Name:"			1 1	"$NAME" 		1 7 23 0 \
 	"Username:"		2 1	"$USERNAME" 		2 11 19 0 \
 	"Password:"		3 1	"$PASSWORD"  		3 11 19 0 \

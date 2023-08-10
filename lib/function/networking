@@ -77,19 +77,20 @@ if [[ "$DISTRO" == "devuan" ]]; then
 		eth_udev-rule
 	fi
 fi
-if [[ "$DISTRO_VERSION" == "jammy" || "$DISTRO_VERSION" == "kinetic" || "$DISTRO_VERSION" == "lunar" ]]; then
-	# /etc/network/if-down.d/resolved: 12: mystatedir: not found
-	# /etc/network/if-up.d/resolved: 12: mystatedir: not found
-	if [[ -f "/etc/network/if-down.d/resolved" ]]; then
-		sed -i 's/mystatedir statedir ifindex interface/#mystatedir statedir ifindex interface/g' /etc/network/if-down.d/resolved
-		sed -i 's/return/exit 0/g' /etc/network/if-down.d/resolved
-	fi
-	if [[ -f "/etc/network/if-up.d/resolved" ]]; then
-		sed -i 's/mystatedir statedir ifindex interface/#mystatedir statedir ifindex interface/g' /etc/network/if-up.d/resolved
-		sed -i 's/return/exit 0/g' /etc/network/if-up.d/resolved
+if [[ "$DISTRO" == "ubuntu" ]]; then
+	if [[ "$DISTRO_VERSION" == "jammy" ]]; then
+		# /etc/network/if-down.d/resolved: 12: mystatedir: not found
+		# /etc/network/if-up.d/resolved: 12: mystatedir: not found
+		if [[ -f "/etc/network/if-down.d/resolved" ]]; then
+			sed -i 's/mystatedir statedir ifindex interface/#mystatedir statedir ifindex interface/g' /etc/network/if-down.d/resolved
+			sed -i 's/return/exit 0/g' /etc/network/if-down.d/resolved
+		fi
+		if [[ -f "/etc/network/if-up.d/resolved" ]]; then
+			sed -i 's/mystatedir statedir ifindex interface/#mystatedir statedir ifindex interface/g' /etc/network/if-up.d/resolved
+			sed -i 's/return/exit 0/g' /etc/network/if-up.d/resolved
+		fi
 	fi
 fi
-
 # rtl8821cu conf
 echo "options 8821cu rtw_power_mgnt=0 rtw_enusbss=0 rtw_switch_usb_mode=1" > /etc/modprobe.d/8821cu.conf
 chown root:root /etc/modprobe.d/8821cu.conf

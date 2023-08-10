@@ -19,9 +19,8 @@ set -o pipefail
 set -o nounset
 
 if [ $NETWORKMANAGER -eq 0 ]; then
-	if [[ "$DISTRO_VERSION" == "jammy" || "$DISTRO_VERSION" == "kinetic" || "$DISTRO_VERSION" == "lunar" ]]; then
-		# systemd-resolved breaks static ip when using ifupdown
-		# it will be disabled on jammy jellyfish
+	if [[ "$DISTRO_VERSION" == "jammy" ]]; then
+		# systemd-resolved breaks static ip when using ifupdown, disable on jammy jellyfish
 		unlink /etc/resolv.conf;
 		if [ -f /etc/resolv.conf ]; then
 			rm -f /etc/resolv.conf
@@ -76,10 +75,17 @@ if [[ "$DISTRO" == "devuan" ]]; then
 	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} openresolv ${FSPROG} ${NETWORKING} ${NETWORKING_EXTRA}
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
-	if [[ "$DISTRO_VERSION" == "kinetic" || "$DISTRO_VERSION" == "lunar" ]]; then
+	if [[ "$DISTRO_VERSION" == "kinetic" || "$DISTRO_VERSION" == "lunar" || "$DISTRO_VERSION" == "mantic" ]]; then
 		apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} systemd-resolved openssh-client openssh-server ${FSPROG} ${NETWORKING}
 	else
 		apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} openresolv openssh-client openssh-server ${FSPROG} ${NETWORKING}
+	fi
+	if [ $NETWORKMANAGER -eq 0 ]; then
+		if [[ "$DISTRO_VERSION" == "jammy" ]]; then
+			# disable systemd-networkd and mask systemd-networkd-wait-online
+			systemctl disable systemd-networkd
+			systemctl mask systemd-networkd-wait-online
+		fi
 	fi
 fi
 # apt clean
@@ -197,9 +203,7 @@ cd ~
 mkdir -p /usr/local/bin
 mkdir -p /usr/local/sbin
 if [[ "$BOARD_EXT" == "rpi-4" ]]; then
-	#wget -cq --show-progress ${URL}write2usb;
 	wget -cq --show-progress ${URL}deb-eeprom
-	#mv -f {write2usb,deb-eeprom} /usr/local/bin/;
 	mv -f deb-eeprom /usr/local/bin/
 fi
 if [ $NETWORKMANAGER -eq 0 ]; then

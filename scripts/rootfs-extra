@@ -41,7 +41,7 @@ if [[ "$DISTRO" == "devuan" ]]; then
 	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} openresolv
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
-	if [[ "$DISTRO_VERSION" == "kinetic" || "$DISTRO_VERSION" == "lunar" ]]; then
+	if [[ "$DISTRO_VERSION" == "kinetic" || "$DISTRO_VERSION" == "lunar" || "$DISTRO_VERSION" == "mantic" ]]; then
 		apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} systemd-resolved openssh-client openssh-server
 	else
 		apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} openresolv openssh-client openssh-server

@@ -36,12 +36,8 @@ fi
 source board.txt
 source lib/function/staging
 source lib/function/release
-# clean area if found
-if [[ -d "p1" ]]; then
-	make cleanup
-	make cleanup > /dev/null 2>&1
-	clear -x
-fi
+# clean
+if [[ -d "sysroot" ]] || [[ -d "p1" ]]; then make cleanup; clear -x; fi
 # check output
 if [[ -d "output/${BOARD}" ]] && [[ `ls output/${BOARD}/linux-*.deb` ]]; then
 	:;

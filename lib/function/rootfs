@@ -2,7 +2,8 @@
 
 # dev rootfs
 sysroot_partition(){
-truncate -s 2000MB "${ROOTFS_FOLDER}${RELEASE_NAME}"
+IMGSIZE="3072MB"
+truncate -s ${IMGSIZE} "${ROOTFS_FOLDER}${RELEASE_NAME}"
 echo -e "o
 n
 p
@@ -11,7 +12,7 @@ p
 a
 t
 b
-3906249
+5999999
 
 p
 w" | fdisk "${ROOTFS_FOLDER}${RELEASE_NAME}"
@@ -46,11 +47,6 @@ else
 	wget -cq --show-progress $URL$FILE
 	dpkg -i $FILE
 	rm -f $FILE
-fi
-if [[ -f "/usr/share/debootstrap/scripts/${DISTRO_VERSION}" ]]; then
-	:;
-else
-	ln -sr /usr/share/debootstrap/scripts/sid /usr/share/debootstrap/scripts/${DISTRO_VERSION}
 fi
 }
 
@@ -98,17 +94,27 @@ else
 	dpkg -i *.deb
 	rm -f *.deb
 fi
-if [[ "$DISTRO_VERSION" == "jammy" || "$DISTRO_VERSION" == "kinetic" || "$DISTRO_VERSION" == "lunar" ]]; then
-	if [[ -f "/usr/share/debootstrap/scripts/${DISTRO_VERSION}" ]]; then
-		:;
-	else
-		ln -sr /usr/share/debootstrap/scripts/gutsy /usr/share/debootstrap/scripts/${DISTRO_VERSION}
-	fi
+}
+
+debootstrap_script(){
+if [[ -f "/usr/share/debootstrap/scripts/${DISTRO_VERSION}" ]]; then
+	:;
+else
+	ln -sr /usr/share/debootstrap/scripts/${DEBOOTSTRAP_SCRIPT} /usr/share/debootstrap/scripts/${DISTRO_VERSION}
+	sleep .50
 fi
 }
 
 # debootstrap
 run_debootstrap(){
+if [[ "$DISTRO" == "devuan" ]]; then
+	DEBOOTSTRAP_SCRIPT="sid"
+	debootstrap_script
+fi
+if [[ "$DISTRO" == "ubuntu" ]]; then
+	DEBOOTSTRAP_SCRIPT="gutsy"
+	debootstrap_script
+fi
 KEY_DIR="/usr/share/keyrings"
 if [[ "$DISTRO" == "debian" || "$DISTRO" == "kali" || "$DISTRO" == "ubuntu" ]]; then
 	debootstrap --arch ${ARCH_EXT} --foreign ${DISTRO_VERSION} ${ROOT}

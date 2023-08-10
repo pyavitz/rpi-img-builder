@@ -12,10 +12,7 @@ source userdata.txt
 source lib/function/rootfs
 
 # clean
-if [[ -d "sysroot" ]]; then
-	make cleanup
-	clear -x
-fi
+if [[ -d "sysroot" ]] || [[ -d "p1" ]]; then make cleanup; clear -x; fi
 
 # verbosity
 if [ $VERBOSE -eq 1 ]; then
@@ -123,15 +120,12 @@ if [ $DEVROOTFS -eq 1 ]; then
 		umount "${ROOTFS_FOLDER}"
 	fi
 	rmdir "${ROOTFS_FOLDER}"
-	# just in case
-	make cleanup > /dev/null 2>&1
 fi
 
-if [[ -d "${ROOT}" ]]; then
-	rm -fdr ${ROOT}
-fi
+if [[ -d "${ROOT}" ]]; then umount ${ROOT}; sleep .50; rm -fdr ${ROOT}; fi
 
 if [[ "$HOST_MACHINE" == "Debian" || "$HOST_MACHINE" == "Ubuntu" ]]; then
+	# devuan release
 	if [[ -f "/usr/share/debootstrap/scripts/chimaera" ]]; then
 		rm -f /usr/share/debootstrap/scripts/chimaera;
 	fi
@@ -140,5 +134,6 @@ if [[ "$HOST_MACHINE" == "Debian" || "$HOST_MACHINE" == "Ubuntu" ]]; then
 	fi
 fi
 
-clear -x
+if [ $VERBOSE -eq 0 ]; then clear -x; fi
+
 exit 0
