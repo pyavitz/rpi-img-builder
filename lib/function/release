@@ -35,7 +35,17 @@ deb http://deb.devuan.org/devuan ${DISTRO_VERSION}-proposed-updates main contrib
 deb http://deb.devuan.org/merged ${DISTRO_VERSION}-security main contrib non-free
 deb http://deb.devuan.org/merged ${DISTRO_VERSION}-backports main contrib non-free
 EOF
-else
+fi
+if [[ "$DISTRO_VERSION" == "daedalus" ]]; then
+	tee ${SOURCES_LIST} <<EOF
+deb http://deb.devuan.org/merged ${DISTRO_VERSION} main contrib non-free non-free-firmware
+deb http://deb.devuan.org/merged ${DISTRO_VERSION}-updates main contrib non-free non-free-firmware
+deb http://deb.devuan.org/merged ${DISTRO_VERSION}-proposed-updates main contrib non-free non-free-firmware
+deb http://deb.devuan.org/merged ${DISTRO_VERSION}-security main contrib non-free
+deb http://deb.devuan.org/merged ${DISTRO_VERSION}-backports main contrib non-free non-free-firmware
+EOF
+fi
+if [[ "$DISTRO_VERSION" == "ceres" || "$DISTRO_VERSION" == "excalibur" || "$DISTRO_VERSION" == "testing" || "$DISTRO_VERSION" == "unstable" ]]; then
 	tee ${SOURCES_LIST} <<EOF
 deb http://deb.devuan.org/merged ${DISTRO_VERSION} main contrib non-free non-free-firmware
 EOF

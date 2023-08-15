@@ -82,7 +82,7 @@ Clang:			# Supported: Debian Bookworm / Jammy Jellyfish
 Distribution
 Distro:			# Supported: debian, devuan and ubuntu
 Release:		# Debian: bullseye, bookworm, testing, unstable and sid
-			# Devuan: chimaera, daedalus, testing, unstable and ceres
+			# Devuan: chimaera, daedalus, excalibur, testing, unstable and ceres
 			# Ubuntu: focal, jammy, kinetic and lunar
 NetworkManager		# 1 networkmanager | 0 ifupdown
 
