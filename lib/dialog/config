@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BUILDER="5.3"
+BUILDER="5.4"
 GCC=`ls -ls /usr/bin/gcc | sed 's/.*\(..\)/\1/' | sed 's/ //g'`
 ARCH=`uname -m`
 
@@ -100,7 +100,7 @@ echo DEVROOTFS= >> tmp0
 echo COMPRESS_IMG= >> tmp0
 echo USCRIPTS= >> tmp0
 echo USERACCT= >> tmp0
-echo 'USER_PKGS=""' >> tmp0
+echo 'USER_PKGS="htop libsensors-dev"' >> tmp0
 echo 'CLANG_VERSION="clang-15"' >> tmp0
 echo 'CLANG_LLVM="LLVM=-15 LLVM_IAS=1"' >> tmp0
 echo LTO_CLANG_THIN=0 >> tmp0
@@ -160,6 +160,9 @@ sed -i '57i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # customize your image
 custom_txt (){
+echo "# Default Image Size: 3072MB" > custom.txt
+echo 'IMGSIZE="3072MB"' >> custom.txt
+echo "" >> custom.txt
 echo "# Root Filesystem Types: ext4 btrfs xfs" > custom.txt
 echo 'FSTYPE="ext4"' >> custom.txt
 echo "" >> custom.txt

@@ -1,25 +1,12 @@
 #!/bin/bash
 
 partitions(){
-IMGSIZE="3072MB"
+if [[ "$OFFSET" == "8192" ]]; then IMG_OFFSET="4MiB"; fi
 truncate -s ${IMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
-echo -e "o
-n
-p
-1
-${OFFSET}
-526335
-a
-c
-t
-b
-n
-p
-2
-526336
-
-p
-w" | fdisk "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
+parted --script "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" \
+mklabel msdos \
+mkpart primary fat32 ${IMG_OFFSET} 256MiB \
+mkpart primary ext2 256MiB 100%
 IMAGE_LOOP_DEV="$(losetup --show -P -f ${IMAGE_FOLDER}${IMAGE_FILE_NAME})"
 IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
 IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p2"
