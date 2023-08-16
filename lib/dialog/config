@@ -163,7 +163,7 @@ custom_txt (){
 echo "# Default Image Size: 3072MB" > custom.txt
 echo 'IMGSIZE="3072MB"' >> custom.txt
 echo "" >> custom.txt
-echo "# Root Filesystem Types: ext4 btrfs xfs" > custom.txt
+echo "# Root Filesystem Types: ext4 btrfs xfs" >> custom.txt
 echo 'FSTYPE="ext4"' >> custom.txt
 echo "" >> custom.txt
 echo "# Hostname" >> custom.txt
