@@ -4,7 +4,7 @@ source lib/source
 
 jammy-ccompile64(){
 sudo debconf-apt-progress -- apt install -y \
-	build-essential bison bc git dialog patch dosfstools \
+	build-essential bison bc git dialog patch dosfstools mtools \
 	zip unzip qemu debootstrap qemu-user-static rsync kmod cpio flex \
 	libssl-dev libncurses5-dev parted fakeroot swig aria2 pv \
 	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs kpartx \
@@ -17,7 +17,7 @@ sudo debconf-apt-progress -- apt install -y \
 
 bullseye-ccompile64(){
 sudo debconf-apt-progress -- apt install -y \
-	build-essential bison bc git dialog patch kpartx zstd \
+	build-essential bison bc git dialog patch kpartx zstd mtools \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync make fdisk \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig libelf-dev \
 	crossbuild-essential-armel crossbuild-essential-armhf aria2 pv \
@@ -28,7 +28,7 @@ sudo debconf-apt-progress -- apt install -y \
 
 bookworm-ccompile64(){
 sudo debconf-apt-progress -- apt install -y \
-	build-essential bison bc git dialog patch kpartx zstd \
+	build-essential bison bc git dialog patch kpartx zstd mtools \
 	dosfstools zip unzip debootstrap qemu-user-static rsync make fdisk \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig libelf-dev \
 	crossbuild-essential-armel crossbuild-essential-armhf aria2 pv jq \

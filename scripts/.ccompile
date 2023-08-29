@@ -7,7 +7,7 @@ sudo debconf-apt-progress -- apt install -y \
 	build-essential bison bc git dialog patch fdisk distro-info-data \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync xfsprogs \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig kpartx \
-	aria2 pv lsb-release xz-utils curl e2fsprogs btrfs-progs jq \
+	aria2 pv lsb-release xz-utils curl e2fsprogs btrfs-progs jq mtools \
 	crossbuild-essential-arm64 crossbuild-essential-armhf crossbuild-essential-armel \
 	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-11-arm-linux-gnueabi \
 	gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf gcc-11-arm-linux-gnueabihf \
@@ -25,7 +25,7 @@ sudo debconf-apt-progress -- apt install -y \
 	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs xfsprogs \
 	fdisk gcc-9 gcc-10 gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf \
 	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-9-aarch64-linux-gnu \
-	gcc-10-aarch64-linux-gnu
+	gcc-10-aarch64-linux-gnu mtools
 }
 
 bookworm-ccompile(){
@@ -39,7 +39,7 @@ sudo debconf-apt-progress -- apt install -y \
 	gcc-11-aarch64-linux-gnu gcc-12-aarch64-linux-gnu gcc-12-arm-linux-gnueabihf \
 	colorized-logs gdisk jq wget btrfs-progs xfsprogs gcc-11-arm-linux-gnueabi \
 	gcc-12-arm-linux-gnueabi crossbuild-essential-armel python3-setuptools \
-	python3-pyelftools curl
+	python3-pyelftools curl mtools
 }
 
 if [[ "$HOST_ARCH" == "aarch64" ]]; then
