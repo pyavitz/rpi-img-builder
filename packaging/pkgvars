@@ -1,5 +1,9 @@
 #!/bin/bash
 
+COMPRESSION="xz"
+LINUX_IMAGE="linux-image-${SERIES}"
+LINUX_HEADERS="linux-headers-${SERIES}"
+
 linux_packaging(){
 echo "# packaging variables" > "scripts/package/pkgvars"
 echo board_series='"'$BOARD_EXT'"' >> "scripts/package/pkgvars"

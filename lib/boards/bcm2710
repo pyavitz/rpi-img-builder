@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # architecture
 ARCH="arm64"
 ARCH_EXT="arm64"
@@ -30,6 +32,3 @@ EXTRA="loglevel=5 net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm"
 # packaging
 KERNEL_IMG="kernel8.img"
 SERIES="bcm2710-${BOARD_EXT}"
-LINUX_IMAGE="linux-image-${SERIES}"
-LINUX_HEADERS="linux-headers-${SERIES}"
-COMPRESSION="xz"
