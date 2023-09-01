@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# check log and report
+check_log(){
+if [[ -f "${LOG_FILE}" ]]; then
+	PATHTOFILE=`echo ${LOG_FILE} | sed 's/..\/..\///g'`
+	if [[ `grep "Skipping patch" "${LOG_FILE}"` ]]; then
+		SKIPPING="true"
+		grep "Skipping patch" "${LOG_FILE}" | echo -en " ${PNK}[${FIN}"${WHT}skipping${FIN} ${WHT}`wc -l`${FIN}"${PNK}]${FIN}"
+	else
+		SKIPPING="false"
+	fi
+	if [[ `grep "FAILED" "${LOG_FILE}"` ]]; then
+		FAILED="true"
+		grep "FAILED" "${LOG_FILE}" | echo -en " ${PNK}[${FIN}"${RED}fails${FIN} ${WHT}`wc -l`${FIN}"${PNK}]${FIN}"
+		if [ $VERBOSE -eq 1 ]; then
+			echo -en " ${WHT}log: ${PATHTOFILE}${FIN}"
+			exit 0
+		fi
+	else
+		FAILED="false"
+	fi
+	if [[ "$SKIPPING" == "true" ]] && [[ "$FAILED" == "false" ]]; then
+		echo -en " ${PNK}[${FIN}${YLW}done${FIN}${PNK}]${FIN}"
+	fi
+	if [[ "$SKIPPING" == "false" ]] && [[ "$FAILED" == "false" ]]; then
+		echo -en " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
+	fi
+	echo -en " ${WHT}log: ${PATHTOFILE}${FIN}"
+	echo; echo -e ""
+fi
+}
+
+# linux user patch log
+linux_user_log(){
+LOG_DIR="../../output/logs"
+LOG_FILE="${LOG_DIR}/${BOARD}-user-patch.log"
+if [[ -f "${LOG_FILE}" ]]; then
+	mv -f ${LOG_FILE} ${LOG_FILE}.1
+	echo "Linux ${VERSION}" > ${LOG_FILE}
+	echo `date` >> ${LOG_FILE}
+else
+	mkdir -p ${LOG_DIR}
+	echo "Linux ${VERSION}" > ${LOG_FILE}
+	echo `date` >> ${LOG_FILE}
+fi
+}
+
+# user patches
+user_patches(){
+if [[ `ls ../../userpatches/*.patch` ]] > /dev/null 2>&1; then
+	linux_user_log
+	echo "" >> ${LOG_FILE}
+	echo "# APPLYING USER PATCHES" >> ${LOG_FILE}
+	echo -en "${WHT}User Patches${FIN} ${PNK}[${FIN}${WHT}applying${FIN}${PNK}]${FIN}"
+	for i in ../../userpatches/*.patch; do patch -N -p1 < $i; done >> ${LOG_FILE}
+	check_log
+	# clean
+	#if [[ `find . -name '*.orig'` ]]; then find . -name '*.orig' -delete; fi
+	#if [[ `find . -name '*.rej'` ]]; then find . -name '*.rej' -delete; fi
+fi
+}

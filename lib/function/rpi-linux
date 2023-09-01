@@ -54,15 +54,6 @@ sed -i 's/export INITRD=$want_initrd/export INITRD=No/g' scripts/package/buildde
 sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export INITRD=No/g' scripts/package/builddeb
 }
 
-userpatches(){
-if [[ `ls ../../userpatches/*.patch` ]] > /dev/null 2>&1; then
-	echo_patch
-	for i in ../../userpatches/*.patch; do patch -p1 < $i; done
-	echo_done
-	echo ""
-fi
-}
-
 firmware(){
 BINURL="https://github.com/raspberrypi/firmware/raw/master/boot/"
 mkdir -p firmware
@@ -83,9 +74,9 @@ if [[ "$BOARD_EXT" == "rpi-4" ]]; then
 	${DOWNLOAD} ${BINURL}start4x.elf
 	cd ..
 	if [[ `ls firmware/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf,LICENCE.broadcom,COPYING.linux}` ]] > /dev/null 2>&1; then
-		echo_bdone
+		echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
 	else
-		echo_fail
+		echo -en " ${YLW}[${FIN}${RED}failed${FIN}${YLW}]${FIN}"; echo ""
 		exit 0
 	fi
 else
@@ -100,9 +91,9 @@ else
 	${DOWNLOAD} ${BINURL}start_x.elf
 	cd ..
 	if [[ `ls firmware/{bootcode.bin,fixup.dat,fixup_cd.dat,fixup_db.dat,fixup_x.dat,start.elf,start_cd.elf,start_db.elf,start_x.elf,LICENCE.broadcom,COPYING.linux}` ]] > /dev/null 2>&1; then
-		echo_bdone
+		echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
 	else
-		echo_fail
+		echo -en " ${YLW}[${FIN}${RED}failed${FIN}${YLW}]${FIN}"; echo ""
 		exit 0
 	fi
 fi
@@ -116,15 +107,25 @@ if [[ -f "${KERNEL}-${VERSION}.tar.gz" ]]; then
 else
 	echo_kernel
 	${DOWNLOAD} ${RPIURL}rpi-${VERSION}.tar.gz
-	echo_bdone
+	echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
 fi
 extra_wireless
 }
 
+report_tarball_error (){
+echo "NOTICE: Tarball ${KERNEL}-${VERSION} is MIA. Please make a report."
+echo ""
+exit 0
+}
+
 extract(){
 echo ""
-echo_extract
-pv ${KERNEL}-${VERSION}.tar.gz | tar -xzf - -C .
+if [[ -f "${KERNEL}-${VERSION}.tar.gz" ]]; then
+	echo_extract
+	pv ${KERNEL}-${VERSION}.tar.gz | tar -xzf - -C .
+else
+	report_tarball_error
+fi
 }
 
 setup(){
@@ -140,7 +141,7 @@ if [ $RTL88XXCU -eq 1 ]; then
 fi
 export ARCH=${ARCH}
 if [[ "ARCH" == "arm" ]]; then
-	KERNEL=${KERNEL_VAR};
+	KERNEL=${KERNEL_VAR}
 fi
 }
 
@@ -212,6 +213,6 @@ rm -f scripts/package/{builddeb,mkdebian}
 cp -fr ../../packaging/{builddeb,mkdebian} scripts/package/
 chmod +x scripts/package/{builddeb,mkdebian}
 cp -f ../../packaging/headers-byteshift.patch headers-byteshift.patch
-userpatches
+user_patches
 linux_packaging
 }

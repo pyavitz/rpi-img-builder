@@ -6,13 +6,14 @@ source board.txt
 source userdata.txt
 source packaging/pkgvars
 source lib/function/rpi-commit
+source lib/function/patching
 source lib/function/wireless
 source lib/function/modconfig
 
 # prep
 validation
 if [ $VERBOSE -eq 1 ]; then
-	set -x;
+	set -x
 fi
 if [[ "$HOST_ARCH" == "aarch64" ]] && [[ "$ARCH" == "arm64" ]]; then
 	CROSSCOMPILE="0"
@@ -28,18 +29,18 @@ source_dir
 # commit
 echo
 echo -e -n "${WHT}Paste commit: ${FIN}"
-read commit
+read COMMIT
 
-if [ -e ${CKERNEL}-$commit ]; then
-	echo "";
-	echo -en "${WHT}${CKERNEL}-$commit${FIN}";
-	echo -en " ${PNK}[${FIN}${YLW}removing${FIN}${PNK}]${FIN} ";
-	rm -fdr ${CKERNEL}-$commit;
-	echo -en "${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}";
+if [[ -e "${CKERNEL}-${COMMIT}" ]]; then
+	echo ""
+	echo -en "${WHT}${CKERNEL}-${COMMIT}${FIN}"
+	echo -en " ${PNK}[${FIN}${YLW}removing${FIN}${PNK}]${FIN}"
+	rm -fdr ${CKERNEL}-${COMMIT}
+	echo -en " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
 fi
 
 ### Download kernel
-if [[ `wget -S --spider https://github.com/raspberrypi/linux/archive/$commit.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+if [[ `wget -S --spider https://github.com/raspberrypi/linux/archive/${COMMIT}.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
 	download
 else
 	echo ""
@@ -90,7 +91,7 @@ if [[ `ls *linux*.deb` ]] > /dev/null 2>&1; then
 	exit 0
 else
 	echo ""
-	echo -e "${CKERNEL}-$commit [FAILED]"
+	echo -e "${CKERNEL}-${COMMIT} [FAILED]"
 	read -p "Press enter to continue."
 	exit 1
 fi

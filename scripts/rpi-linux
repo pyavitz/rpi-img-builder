@@ -11,13 +11,14 @@ source board.txt
 source userdata.txt
 source packaging/pkgvars
 source lib/function/rpi-linux
+source lib/function/patching
 source lib/function/wireless
 source lib/function/modconfig
 
 # prep
 validation
 if [ $VERBOSE -eq 1 ]; then
-	set -x;
+	set -x
 fi
 if [[ "$HOST_ARCH" == "aarch64" ]] && [[ "$ARCH" == "arm64" ]]; then
 	CROSSCOMPILE="0"
@@ -31,12 +32,12 @@ fi
 compiler
 source_dir
 
-if [ -e ${KERNEL}-${VERSION} ]; then
-	echo "";
-	echo -en "${WHT}${KERNEL}-${VERSION}${FIN}";
-	echo -en " ${PNK}[${FIN}${YLW}removing${FIN}${PNK}]${FIN} ";
-	rm -fdr ${KERNEL}-${VERSION};
-	echo -en "${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}";
+if [[ -e "${KERNEL}-${VERSION}" ]]; then
+	echo ""
+	echo -en "${WHT}${KERNEL}-${VERSION}${FIN}"
+	echo -en " ${PNK}[${FIN}${YLW}removing${FIN}${PNK}]${FIN}"
+	rm -fdr ${KERNEL}-${VERSION}
+	echo -en " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
 fi
 
 # Download kernel
