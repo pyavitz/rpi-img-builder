@@ -27,9 +27,14 @@ fi
 compiler
 source_dir
 # commit
-echo
-echo -e -n "${WHT}Paste commit: ${FIN}"
-read COMMIT
+if [ $ENABLE_COMMIT -eq 1 ]; then
+	echo ""
+	echo -e "${WHT}Using commit: ${FIN}${COMMIT}"
+else
+	echo ""
+	echo -en "${WHT}Paste commit: ${FIN}"
+	read COMMIT
+fi
 
 if [[ -e "${CKERNEL}-${COMMIT}" ]]; then
 	echo ""

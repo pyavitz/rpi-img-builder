@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BUILDER="5.4"
+BUILDER="5.5"
 GCC=`ls -ls /usr/bin/gcc | sed 's/.*\(..\)/\1/' | sed 's/ //g'`
 ARCH=`uname -m`
 
@@ -101,6 +101,8 @@ echo COMPRESS_IMG= >> tmp0
 echo USCRIPTS= >> tmp0
 echo USERACCT= >> tmp0
 echo 'USER_PKGS="htop libsensors-dev"' >> tmp0
+echo 'ENABLE_COMMIT="0"' >> tmp0
+echo 'COMMIT=""' >> tmp0
 echo 'CLANG_VERSION="clang-15"' >> tmp0
 echo 'CLANG_LLVM="LLVM=-15 LLVM_IAS=1"' >> tmp0
 echo LTO_CLANG_THIN=0 >> tmp0
@@ -149,14 +151,15 @@ sed -i '5i### LINUX KERNEL' userdata.txt
 sed -i '10i### COMPILER' userdata.txt
 sed -i '14i### DISTRIBUTION' userdata.txt
 sed -i '18i### CUSTOM' userdata.txt
-sed -i '27i### CLANG/LLVM' userdata.txt
-sed -i '31i### COMPILER TUNING' userdata.txt
-sed -i '34i### WHOAMI AND HOST' userdata.txt
-sed -i '37i### LOCALES' userdata.txt
-sed -i '45i### TIMEZONE' userdata.txt
-sed -i '50i### NAME SERVER' userdata.txt
-sed -i '53i### EXTRA WIRELESS' userdata.txt
-sed -i '57i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '27i### CUSTOM LINUX KERNEL' userdata.txt
+sed -i '30i### CLANG/LLVM' userdata.txt
+sed -i '34i### COMPILER TUNING' userdata.txt
+sed -i '37i### WHOAMI AND HOST' userdata.txt
+sed -i '40i### LOCALES' userdata.txt
+sed -i '47i### TIMEZONE' userdata.txt
+sed -i '53i### NAME SERVER' userdata.txt
+sed -i '56i### EXTRA WIRELESS' userdata.txt
+sed -i '60i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # customize your image
 custom_txt (){

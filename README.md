@@ -116,9 +116,8 @@ MOTD="Raspberry Pi"
 ```
 
 #### User defconfig
-
 ```sh
-# config placement: defconfig/$NAME_defconfig
+# Config placement: defconfig/$NAME_defconfig
 The config menu will append _defconfig to the end of the name
 in the userdata.txt file.
 ```
@@ -127,6 +126,13 @@ in the userdata.txt file.
 
 ```sh
 Patches "-p1" placed in userpatches are applied during compilation.
+```
+
+#### Preferred commit
+```sh
+# Example
+ENABLE_COMMIT="1"
+COMMIT="9ed4f05ba2e2bcd9065831674e97b2b1283e866d"
 ```
 
 ### Usage
