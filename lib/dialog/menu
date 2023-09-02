@@ -1,28 +1,35 @@
 #!/bin/bash
-COUNT=0
 
-# userdata-txt
 source lib/source
 validation
+COUNT=0
+
+# create menu
+mkdir -p .cache
+cat lib/boards/* | grep -w "PRETTY_BOARD" | sed 's/PRETTY_BOARD="//g' | sed 's/"//g' > .cache/menu
 
 # menu list
 while IFS=$'\n' read -r opt; do
 	COUNT=$(( COUNT+1 ))
-	options+=($COUNT "$opt" off)
-done < lib/dialog/list
+	OPTIONS+=($COUNT "$opt" off)
+done < .cache/menu
 
 # dialog menu
-cmd=(dialog --backtitle "RASPBERRY PI IMAGE BUILDER" --title "B O A R D S" --cancel-label "Exit" --radiolist "" 0 0 0)
-choices=($("${cmd[@]}" "${options[@]}" 2>&1 1>/dev/tty))
+CMD=(dialog --backtitle "RASPBERRY PI IMAGE BUILDER" --title "B O A R D S" --cancel-label "Exit" --radiolist "" 0 0 0)
+CHOICES=($("${CMD[@]}" "${OPTIONS[@]}" 2>&1 1>/dev/tty))
 
 # selection
-for choice in "${choices[@]}"; do
+for choice in "${CHOICES[@]}"; do
 	BOARD=`ls lib/boards | head -n $choice | tail -n 1`
 	chmod +x lib/dialog/general
 	./lib/dialog/general $BOARD
 done
 
 # finish
+if [[ -f ".cache/menu" ]]; then
+	# clean
+	rm -fdr .cache
+fi
 clear -x
 echo -e "Program terminated."
 exit 0

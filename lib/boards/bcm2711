@@ -8,6 +8,9 @@ CROSS_COMPILE="aarch64-linux-gnu-"
 ROOTFS_ARCH="rootfs-${ARCH_EXT}"
 STATIC="qemu-aarch64-static"
 
+# menu
+PRETTY_BOARD="Raspberry Pi 4/400		BCM2711 / ARM64"
+
 # misc
 FAMILY="broadcom"
 FAMILY_EXT=""
