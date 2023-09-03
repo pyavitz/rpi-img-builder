@@ -1,4 +1,25 @@
 #!/bin/bash
+
+if [[ "$USER" == "root" ]]; then
+	:;
+else
+	if [[ `command -v sudo` ]]; then
+		export LANG=$LANG:C
+		if [[ $EUID -ne 0 ]]; then
+			sudo "$0" "$@" 
+			exit
+		fi
+	else
+		echo "Please run this as root or with sudo privileges."
+		exit 0
+	fi
+fi
+if [[ `curl -I https://github.com 2>&1 | grep 'HTTP/2 200'` ]]; then
+	:;
+else
+	echo -e "The script requires an internet connection."
+fi
+
 GHURL="https://raw.githubusercontent.com/pyavitz/rpi-img-builder/master/"
 MCURL="https://raw.githubusercontent.com/pyavitz/rpi-img-builder/menuconfig"
 MENUDIR="/usr/local/bin/"
@@ -16,6 +37,8 @@ if [[ `type -p menu-config` ]]; then
 	fi
 fi
 echo -e "[done]"
-sleep .50; clear -x; menu-config
+sleep .50
+clear -x
+menu-config
 
 exit 0
