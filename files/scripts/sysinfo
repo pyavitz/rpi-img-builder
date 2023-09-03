@@ -5,7 +5,6 @@ if [[ "$USER" == "root" ]]; then
 	:;
 else
 	if [[ `command -v sudo` ]]; then
-		export LANG=$LANG:C
 		if [[ $EUID -ne 0 ]]; then
 			sudo "$0" "$@"
 			exit
