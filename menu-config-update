@@ -1,12 +1,12 @@
 #!/bin/bash
 
+export LANG=$LANG:C
 if [[ "$USER" == "root" ]]; then
 	:;
 else
 	if [[ `command -v sudo` ]]; then
-		export LANG=$LANG:C
 		if [[ $EUID -ne 0 ]]; then
-			sudo "$0" "$@" 
+			sudo "$0" "$@"
 			exit
 		fi
 	else
