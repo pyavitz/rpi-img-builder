@@ -75,8 +75,7 @@ Menuconfig:		# Kernel menuconfig
 
 Compiler        	WARNING: Only one may be selected
 Version:		# gcc-11
-GCC:			#
-Ccache:			#
+Ccache:			# Recommended
 Clang:			# Supported: Debian Bookworm / Jammy Jellyfish
 
 Distribution
