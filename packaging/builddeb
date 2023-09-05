@@ -320,6 +320,7 @@ if [ -d /$boot_path/overlays ]; then
 	rm -fdr /$boot_path/overlays;
 fi
 
+sync
 exit 0
 EOF
 chmod 755 "$tmpdir/DEBIAN/preinst"
@@ -385,6 +386,7 @@ cd /usr/src/linux-headers-$version
 echo -e "Compiling headers ..."
 clean_headers > /dev/null 2>&1
 
+sync
 exit 0
 EOF
 	chmod 755 "$kernel_headers_dir/DEBIAN/postinst"
@@ -399,6 +401,7 @@ set -e
 
 rm -fdr /usr/src/linux-headers-*
 
+sync
 exit 0
 EOF
 chmod 755 "$kernel_headers_dir/DEBIAN/preinst"

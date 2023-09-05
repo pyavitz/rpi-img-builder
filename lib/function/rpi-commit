@@ -1,55 +1,13 @@
 #!/bin/bash
 DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
 
-source_dir(){
+source_dir (){
 mkdir -p ${SRC}
 cp -f board.txt ${SRC}/
 cd ${SRC}
 }
 
-compiler(){
-# install depends
-if [ $CCACHE -eq 1 ]; then
-	if [[ `command -v ccache` ]]; then
-		:;
-	else
-		apt install -y ccache
-	fi
-fi
-if [ $CLANG -eq 1 ]; then
-	if [[ "$HOST_CODENAME" == "bookworm" || "$HOST_CODENAME" == "jammy" ]]; then
-		if [[ `command -v clang-14` ]] && [[ `command -v clang-15` ]]; then
-			:;
-		else
-			apt install -y clang clang-14 clang-15 lld lld-14 lld-15 llvm
-		fi
-	else
-		echo -e "${HOST_CODENAME} is not supported."
-		exit 0
-	fi
-fi
-if [ $CCACHE -eq 1 ]; then
-	DEST="/usr/lib/ccache"
-	NATIVE="CC=${DEST}/${GCC_VERSION}"
-	CROSS="CC=${DEST}/${CROSS_COMPILE}${GCC_VERSION}"
-fi
-if [ $CLANG -eq 1 ]; then
-	NATIVE="CC=${CLANG_VERSION} ${CLANG_LLVM}"
-	if [[ "$BOARD" == "bcm2708" ]]; then
-		DEST="/usr/bin"
-		CROSS="CC=${DEST}/${CLANG_VERSION}"
-	else
-		CROSS="CC=${CLANG_VERSION} ${CLANG_LLVM}"
-	fi
-fi
-if [ $GCC -eq 1 ]; then
-	DEST="/usr/bin"
-	NATIVE="CC=${DEST}/${GCC_VERSION}"
-	CROSS="CC=${DEST}/${CROSS_COMPILE}${GCC_VERSION}"
-fi
-}
-
-firmware(){
+firmware (){
 BINURL="https://github.com/raspberrypi/firmware/raw/master/boot/"
 mkdir -p firmware
 rm -f firmware/*
@@ -94,7 +52,7 @@ else
 fi
 }
 
-download(){
+download (){
 RPIURL="https://github.com/raspberrypi/linux/archive/"
 echo ""
 if [[ -f "${CKERNEL}-${COMMIT}.tar.gz" ]]; then
@@ -113,7 +71,7 @@ echo ""
 exit 0
 }
 
-extract(){
+extract (){
 echo ""
 if [[ -f "${CKERNEL}-${COMMIT}.tar.gz" ]]; then
 	echo_extract
@@ -123,24 +81,16 @@ else
 fi
 }
 
-setup(){
-cd ${CKERNEL}-${COMMIT}
-if [ $RTL88XXAU -eq 1 ]; then
-	rtl8812au
-fi
-if [ $RTL88X2BU -eq 1 ]; then
-	rtl88x2bu
-fi
-if [ $RTL88XXCU -eq 1 ]; then
-	rtl8811cu
-fi
+setup (){
+cd ${KERNEL}-${VERSION}
+if [ $RTL88XXAU -eq 1 ]; then rtl8812au; fi
+if [ $RTL88X2BU -eq 1 ]; then rtl88x2bu; fi
+if [ $RTL88XXCU -eq 1 ]; then rtl8811cu; fi
 export ARCH=${ARCH}
-if [[ "ARCH" == "arm" ]]; then
-	KERNEL=${KERNEL_VAR}
-fi
+if [[ "ARCH" == "arm" ]]; then KERNEL=${KERNEL_VAR}; fi
 }
 
-cconfig(){
+cconfig (){
 echo_cconfig
 if [[ -f "../../defconfig/${MYCONFIG}" ]]; then
 	cp -f ../../defconfig/${MYCONFIG} arch/${ARCH}/configs/
@@ -152,57 +102,66 @@ else
 	read -p "Press enter to continue."
 	exit 1
 fi
-if [ $CROSSCOMPILE -eq 1 ]; then
-	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} ${CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=${CROSS_COMPILE} ${MYCONFIG}
-else
-	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} ${NATIVE} CFLAGS="${CFLAGS}" ${MYCONFIG}
-fi
-echo_done
+kbuild "${MYCONFIG}"
+echo ""
 }
 
-fconfig(){
+fconfig (){
 echo -e "${WHT}Making ${LINUX_DEFCONFIG}${FIN}."
-edit_defconfig
+linux_configs
 rtl8812au_module
 rtl88x2bu_module
 rtl8811cu_module
-if [ $LTO_CLANG_THIN -eq 1 ]; then
-	echo "CONFIG_LTO_CLANG_THIN=y" >> arch/${ARCH}/configs/${LINUX_DEFCONFIG}
-fi
-if [ $CROSSCOMPILE -eq 1 ]; then
-	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} ${CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=${CROSS_COMPILE} ${LINUX_DEFCONFIG}
-else
-	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} ${NATIVE} CFLAGS="${CFLAGS}" ${LINUX_DEFCONFIG}
-fi
-echo_done
+kbuild "${LINUX_DEFCONFIG}"
+echo ""
 }
 
-menuconfig(){
+save_defconfig (){
+if [[ -f "defconfig" ]]; then
+	echo ""
+	mkdir -p ../../$OUTPUT/
+	# minimal
+	cp -f defconfig ../../$OUTPUT/${BOARD}_defconfig
+	# full
+	cp -f .config ../../$OUTPUT/${BOARD}-config_defconfig
+	# path to files
+	ls -ls ../../$OUTPUT/${BOARD}_defconfig | sed 's/..\/..\///g'
+	ls -ls ../../$OUTPUT/${BOARD}-config_defconfig | sed 's/..\/..\///g'
+fi
+}
+
+menuconfig (){
 echo ""
 echo_menuconfig
-sleep 1s
-if [ $CROSSCOMPILE -eq 1 ]; then
-	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} ${CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=${CROSS_COMPILE} menuconfig
-else
-	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} ${NATIVE} CFLAGS="${CFLAGS}" menuconfig
-fi
+sleep .50
+kbuild "menuconfig"
+sleep .25
+kbuild "savedefconfig"
+echo "# ${BOARD} defconfig saved."
+options=("Continue" "Quit")
+select opt in "${options[@]}"
+do
+	case $opt in
+		"Continue")
+			save_defconfig
+			break
+			;;
+		"Quit")
+			save_defconfig
+			exit 0
+			;;
+		*) echo "invalid option $REPLY";;
+	esac
+done
 }
 
-ccompile(){
-echo -e "-- ${GRN}CC${FIN}"
-echo_build
+builddeb (){
+if [ $CROSSCOMPILE -eq 1 ]; then echo -e "${GRN}  CC${FIN}"; else echo -e "${GRN}  NC${FIN}"; fi
 echo ${BUILD_VERSION} > .version
-echo 'y' | make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} ${CROSS} CFLAGS="${CFLAGS}" CROSS_COMPILE=${CROSS_COMPILE} bindeb-pkg
+echo 'y' | kbuild "KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} bindeb-pkg"
 }
 
-ncompile(){
-echo -e "-- ${GRN}NC${FIN}"
-echo_build
-echo ${BUILD_VERSION} > .version
-echo 'y' | make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} ${NATIVE} CFLAGS="${CFLAGS}" bindeb-pkg
-}
-
-packaging(){
+packaging (){
 echo ""
 rm -f scripts/package/{builddeb,mkdebian}
 cp -fr ../../packaging/{builddeb,mkdebian} scripts/package/

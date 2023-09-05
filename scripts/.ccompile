@@ -13,7 +13,8 @@ sudo debconf-apt-progress -- apt install -y \
 	gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf gcc-11-arm-linux-gnueabihf \
 	gcc-9-aarch64-linux-gnu gcc-10-aarch64-linux-gnu gcc-11-aarch64-linux-gnu \
 	gcc-9 gcc-10 gcc-11 gcc-12 debian-archive-keyring debian-keyring make libelf-dev \
-	gcc-12-arm-linux-gnueabi gcc-12-arm-linux-gnueabihf gcc-12-aarch64-linux-gnu
+	gcc-12-arm-linux-gnueabi gcc-12-arm-linux-gnueabihf gcc-12-aarch64-linux-gnu \
+	gcc-9-plugin-dev gcc-10-plugin-dev gcc-11-plugin-dev gcc-12-plugin-dev
 }
 
 bullseye-ccompile(){
@@ -25,7 +26,7 @@ sudo debconf-apt-progress -- apt install -y \
 	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs xfsprogs \
 	fdisk gcc-9 gcc-10 gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf \
 	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-9-aarch64-linux-gnu \
-	gcc-10-aarch64-linux-gnu mtools
+	gcc-10-aarch64-linux-gnu mtools gcc-9-plugin-dev gcc-10-plugin-dev
 }
 
 bookworm-ccompile(){
@@ -39,7 +40,7 @@ sudo debconf-apt-progress -- apt install -y \
 	gcc-11-aarch64-linux-gnu gcc-12-aarch64-linux-gnu gcc-12-arm-linux-gnueabihf \
 	colorized-logs gdisk jq wget btrfs-progs xfsprogs gcc-11-arm-linux-gnueabi \
 	gcc-12-arm-linux-gnueabi crossbuild-essential-armel python3-setuptools \
-	python3-pyelftools curl mtools
+	python3-pyelftools curl mtools gcc-11-plugin-dev gcc-12-plugin-dev
 }
 
 if [[ "$HOST_ARCH" == "aarch64" ]]; then

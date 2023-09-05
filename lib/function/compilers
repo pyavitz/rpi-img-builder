@@ -1,0 +1,45 @@
+#!/bin/bash
+
+linux_compilers (){
+# install compilers
+if [ $CCACHE -eq 1 ]; then
+	if [[ `command -v ccache` ]]; then :; else apt install -y ccache; fi
+fi
+if [ $CLANG -eq 1 ]; then
+	if [[ "$HOST_CODENAME" == "bookworm" || "$HOST_CODENAME" == "jammy" ]]; then
+		if [[ `command -v clang-14` ]] && [[ `command -v clang-15` ]]; then :; else apt install -y clang clang-14 clang-15 lld lld-14 lld-15 llvm; fi
+	fi
+fi
+# compiler
+if [ $CCACHE -eq 1 ]; then
+	NATIVE="ccache ${GCC_VERSION}"
+	CROSS="ccache ${CROSS_COMPILE}${GCC_VERSION}"
+else
+	NATIVE="${GCC_VERSION}"
+	CROSS="${CROSS_COMPILE}${GCC_VERSION}"
+fi
+if [ $CLANG -eq 1 ]; then
+	if [[ "$ARCH_EXT" == "armel" ]]; then
+		echo -e "The builder does not support using clang to build ${ARCH_EXT}."
+		exit 0
+	fi
+	if [[ "$HOST_CODENAME" == "bookworm" || "$HOST_CODENAME" == "jammy" ]]; then
+		if [[ `command -v clang-14` ]] && [[ `command -v clang-15` ]]; then
+			NATIVE="${CLANG_VERSION}"
+			CROSS="${CLANG_VERSION}"
+		fi
+	else
+		echo -e "${HOST_CODENAME} is not supported."
+		exit 0
+	fi
+fi
+}
+
+kbuild (){
+if [ $CLANG -eq 1 ]; then CLANG_FLAGS="${CLANG_LLVM}"; fi
+if [ $CROSSCOMPILE -eq 1 ]; then
+	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} CC="${CROSS}" CFLAGS="${CFLAGS}" CROSS_COMPILE=${CROSS_COMPILE} ${CLANG_FLAGS} $1
+else
+	make -j${CORES} KBUILD_DEBARCH=${DEBARCH} ARCH=${ARCH} CC="${NATIVE}" CFLAGS="${CFLAGS}" ${CLANG_FLAGS} $1
+fi
+}

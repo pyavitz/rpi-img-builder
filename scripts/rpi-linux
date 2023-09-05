@@ -14,24 +14,19 @@ source lib/function/rpi-linux
 source lib/function/patching
 source lib/function/wireless
 source lib/function/modconfig
+source lib/function/compilers
 
 # prep
 validation
-if [ $VERBOSE -eq 1 ]; then
-	set -x
-fi
-if [[ "$HOST_ARCH" == "aarch64" ]] && [[ "$ARCH" == "arm64" ]]; then
-	CROSSCOMPILE="0"
-fi
-if [[ "$HOST_ARCH" == "aarch64" ]] && [[ "$ARCH" == "arm" ]]; then
-	CROSSCOMPILE="1"
-fi
-if [[ "$HOST_ARCH" == "x86_64"  ]] && [[ "$ARCH" == "arm" || "$ARCH" == "arm64" ]]; then
-	CROSSCOMPILE="1"
-fi
-compiler
+if [ $VERBOSE -eq 1 ]; then set -x; fi
+if [[ "$HOST_ARCH" == "aarch64" ]] && [[ "$ARCH" == "arm64" ]]; then CROSSCOMPILE="0"; fi
+if [[ "$HOST_ARCH" == "aarch64" ]] && [[ "$ARCH" == "arm" ]]; then CROSSCOMPILE="1"; fi
+if [[ "$HOST_ARCH" == "x86_64"  ]] && [[ "$ARCH" == "arm" || "$ARCH" == "arm64" ]]; then CROSSCOMPILE="1"; fi
+# compiler
+linux_compilers
+# source directory
 source_dir
-
+# rpi-linux
 if [[ -e "${KERNEL}-${VERSION}" ]]; then
 	echo ""
 	echo -en "${WHT}${KERNEL}-${VERSION}${FIN}"
@@ -39,8 +34,7 @@ if [[ -e "${KERNEL}-${VERSION}" ]]; then
 	rm -fdr ${KERNEL}-${VERSION}
 	echo -en " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
 fi
-
-# Download kernel
+# download
 if [[ `wget -S --spider https://raw.githubusercontent.com/raspberrypi/linux/rpi-${VERSION}/Makefile 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
 	download
 else
@@ -48,35 +42,19 @@ else
 	echo -e "${WHT}It appears the branch you selected is not available${FIN}?"
 	exit 0
 fi
-
-# Extract
+# extract
 extract
-
-# Setup
+# setup and firmware
 setup
 firmware
-
-# Packaging
+# packaging
 packaging
-
-# Defconfig
-if [ $CUSTOM_DEFCONFIG -eq 1 ]; then
-	cconfig
-else
-	fconfig
-fi
-
-# Menuconfig
-if [ $MENUCONFIG -eq 1 ]; then
-	menuconfig
-fi
-
-# Builddeb
-if [ $CROSSCOMPILE -eq 1 ]; then
-	ccompile
-else
-	ncompile
-fi
+# defconfig
+if [ $CUSTOM_DEFCONFIG -eq 1 ]; then cconfig; else fconfig; fi
+# menuconfig
+if [ $MENUCONFIG -eq 1 ]; then menuconfig; fi
+# builddeb
+builddeb
 echo ""
 # finish
 cd ..

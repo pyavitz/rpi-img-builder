@@ -1,6 +1,6 @@
 #!/bin/bash
 
-edit_defconfig(){
+linux_configs (){
 if [[ -f "arch/${ARCH}/configs/${LINUX_DEFCONFIG}" ]]; then
 	# remove localversion
 	if [[ `grep -w "CONFIG_LOCALVERSION=" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then
@@ -49,5 +49,8 @@ if [[ -f "arch/${ARCH}/configs/${LINUX_DEFCONFIG}" ]]; then
 	else
 		echo "CONFIG_RESET_ATTACK_MITIGATION=y" >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
 	fi
+fi
+if [ $CLANG -eq 1 ] && [[ "$ARCH" == "arm64" ]] && [[ -f "arch/${ARCH}/configs/${LINUX_DEFCONFIG}" ]]; then
+	if [[ `grep -w "CONFIG_LTO_CLANG_THIN=y" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then :; else echo "CONFIG_LTO_CLANG_THIN=y" >> arch/${ARCH}/configs/${LINUX_DEFCONFIG}; fi
 fi
 }

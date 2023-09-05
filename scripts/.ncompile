@@ -9,7 +9,8 @@ sudo debconf-apt-progress -- apt install -y \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
 	aria2 pv distro-info-data lsb-release xz-utils curl \
 	e2fsprogs btrfs-progs kpartx xfsprogs fdisk debian-archive-keyring \
-	debian-keyring make libelf-dev gcc-9 gcc-10 gcc-11 gcc-12
+	debian-keyring make libelf-dev gcc-9 gcc-10 gcc-11 gcc-12 \
+	gcc-9-plugin-dev gcc-10-plugin-dev gcc-11-plugin-dev gcc-12-plugin-dev
 }
 
 bullseye-ncompile(){
@@ -18,7 +19,8 @@ sudo debconf-apt-progress -- apt install -y \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
 	aria2 pv distro-info-data lsb-release xz-utils curl \
-	e2fsprogs btrfs-progs xfsprogs kpartx make libelf-dev zstd gcc-9 gcc-10
+	e2fsprogs btrfs-progs xfsprogs kpartx make libelf-dev zstd gcc-9 gcc-10 \
+	gcc-9-plugin-dev gcc-10-plugin-dev
 }
 
 bookworm-ncompile(){
@@ -27,7 +29,8 @@ sudo debconf-apt-progress -- apt install -y \
 	dosfstools zip unzip debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
 	aria2 pv distro-info-data lsb-release xz-utils curl jq \
-	e2fsprogs btrfs-progs xfsprogs kpartx make libelf-dev zstd gcc-11 gcc-12
+	e2fsprogs btrfs-progs xfsprogs kpartx make libelf-dev zstd gcc-11 gcc-12 \
+	gcc-11-plugin-dev gcc-12-plugin-dev
 }
 
 if [[ "$HOST_ARCH" == "x86_64" ]]; then
