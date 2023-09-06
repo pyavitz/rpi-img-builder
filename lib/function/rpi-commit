@@ -81,13 +81,23 @@ else
 fi
 }
 
+report_dir_error (){
+echo "NOTICE: Directory ${CKERNEL}-${COMMIT} is MIA. Please make a report."
+echo ""
+exit 0
+}
+
 setup (){
-cd ${CKERNEL}-${COMMIT}
-if [ $RTL88XXAU -eq 1 ]; then rtl8812au; fi
-if [ $RTL88X2BU -eq 1 ]; then rtl88x2bu; fi
-if [ $RTL88XXCU -eq 1 ]; then rtl8811cu; fi
-export ARCH=${ARCH}
-if [[ "ARCH" == "arm" ]]; then KERNEL=${KERNEL_VAR}; fi
+if [[ -d "${CKERNEL}-${COMMIT}" ]]; then
+	cd ${CKERNEL}-${COMMIT}
+	if [ $RTL88XXAU -eq 1 ]; then rtl8812au; fi
+	if [ $RTL88X2BU -eq 1 ]; then rtl88x2bu; fi
+	if [ $RTL88XXCU -eq 1 ]; then rtl8811cu; fi
+	export ARCH=${ARCH}
+	if [[ "ARCH" == "arm" ]]; then KERNEL=${KERNEL_VAR}; fi
+else
+	report_dir_error
+fi
 }
 
 cconfig (){
