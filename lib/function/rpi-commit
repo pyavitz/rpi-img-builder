@@ -82,7 +82,7 @@ fi
 }
 
 setup (){
-cd ${KERNEL}-${VERSION}
+cd ${CKERNEL}-${COMMIT}
 if [ $RTL88XXAU -eq 1 ]; then rtl8812au; fi
 if [ $RTL88X2BU -eq 1 ]; then rtl88x2bu; fi
 if [ $RTL88XXCU -eq 1 ]; then rtl8811cu; fi
