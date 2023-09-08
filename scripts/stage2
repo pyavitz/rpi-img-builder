@@ -174,8 +174,9 @@ ${USERNAME} ALL=(ALL) NOPASSWD: ALL
 EOF
 fi
 
-# User script (function 2)
+# User script
 if [ $USCRIPTS -eq 1 ]; then
+	# run_function2
 	echo ""
 	uscripts_stage2
 fi

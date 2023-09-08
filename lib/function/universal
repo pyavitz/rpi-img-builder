@@ -199,7 +199,7 @@ uscripts_stage1(){
 if [[ -f "files/userscripts/uscripts" ]]; then
 	mkdir -p p2/root/userscripts
 	cp -fr files/userscripts/* p2/root/userscripts/
-	if [ -f p2/root/userscripts/README.md ]; then
+	if [[ -f "p2/root/userscripts/README.md" ]]; then
 		rm -f p2/root/userscripts/README.md
 	fi
 	if [[ `grep -w "run_function1" "files/userscripts/uscripts"` ]]; then
@@ -225,6 +225,15 @@ if [[ -f "/root/userscripts/uscripts" ]]; then
 fi
 if [[ -e "/root/userscripts" ]]; then
 	rm -fdr /root/userscripts
+fi
+}
+
+uscripts_fin-stage1(){
+if [[ -f "files/userscripts/uscripts" ]]; then
+	if [[ `grep -w "run_function3" "files/userscripts/uscripts"` ]]; then
+		source files/userscripts/uscripts
+		run_function3
+	fi
 fi
 }
 

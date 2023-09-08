@@ -25,7 +25,9 @@ if [ $USERACCT -eq 0 ]; then
 	fi
 fi
 source lib/function/universal
+# start uscripts
 if [ $USCRIPTS -eq 1 ]; then
+	# run_function0
 	uscripts_pre-stage1
 fi
 # override the board file
@@ -163,6 +165,7 @@ if [ $USERACCT -eq 1 ]; then
 	cp -r files/useracct/* p2/root/useracct
 fi
 if [ $USCRIPTS -eq 1 ]; then
+	# run_function1
 	uscripts_stage1;
 fi
 stage1_kernel # universal
@@ -177,7 +180,7 @@ chroot p2 /root/stage2
 umount p2/dev/pts
 umount p2/dev
 umount p2/boot/broadcom
-# qemu remove static
+# clean
 if [ -e p2/usr/bin/${STATIC} ]; then
 	rm -f p2/usr/bin/${STATIC}
 fi
@@ -185,6 +188,12 @@ cp -f p2/root/kernel.txt .
 rm p2/root/stage2
 rm -f p2/root/*.txt
 rm -fdr p2/var/cache/debconf/*
+
+# finish uscripts
+if [ $USCRIPTS -eq 1 ]; then
+	# run_function3
+	uscripts_fin-stage1
+fi
 
 if [ -n "$PROXY" ]; then
 	rm p2/etc/apt/apt.conf.d/30proxy
