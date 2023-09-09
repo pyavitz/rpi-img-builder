@@ -188,8 +188,8 @@ EOF
 # user scripts
 uscripts_pre-stage1(){
 if [[ -f "files/userscripts/uscripts" ]]; then
-	if [[ `grep -w "run_function0" "files/userscripts/uscripts"` ]]; then
-		source files/userscripts/uscripts
+	source files/userscripts/uscripts
+	if [[ `type run_function0` ]] &>/dev/null; then
 		run_function0
 	fi
 fi
@@ -202,13 +202,7 @@ if [[ -f "files/userscripts/uscripts" ]]; then
 	if [[ -f "p2/root/userscripts/README.md" ]]; then
 		rm -f p2/root/userscripts/README.md
 	fi
-	if [[ `grep -w "run_function1" "files/userscripts/uscripts"` ]]; then
-		if [[ `grep -w "run_function0" "files/userscripts/uscripts"` ]]; then
-			# file already sourced
-			:;
-		else
-			source files/userscripts/uscripts
-		fi
+	if [[ `type run_function1` ]] &>/dev/null; then
 		run_function1
 	fi
 fi
@@ -216,22 +210,21 @@ fi
 
 uscripts_stage2(){
 if [[ -f "/root/userscripts/uscripts" ]]; then
-	if [[ `grep -w "run_function2" "/root/userscripts/uscripts"` ]]; then
-		echo -e "\e[1;33mRunning user scripts\e[0m."
-		source /root/userscripts/uscripts
+	source /root/userscripts/uscripts
+	if [[ `type run_function2` ]] &>/dev/null; then
+		echo ""
+		echo -e "\033[1mRunning user scripts\e[0m ..."
 		run_function2
-		echo -e "\e[1;33mDone\e[0m."
+		echo -e "\033[1mDone\e[0m."
 	fi
 fi
-if [[ -e "/root/userscripts" ]]; then
-	rm -fdr /root/userscripts
-fi
+if [[ -e "/root/userscripts" ]]; then rm -fdr /root/userscripts; fi
 }
 
 uscripts_fin-stage1(){
 if [[ -f "files/userscripts/uscripts" ]]; then
-	if [[ `grep -w "run_function3" "files/userscripts/uscripts"` ]]; then
-		source files/userscripts/uscripts
+	source files/userscripts/uscripts
+	if [[ `type run_function3` ]] &>/dev/null; then
 		run_function3
 	fi
 fi

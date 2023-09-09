@@ -26,10 +26,7 @@ if [ $USERACCT -eq 0 ]; then
 fi
 source lib/function/universal
 # start uscripts
-if [ $USCRIPTS -eq 1 ]; then
-	# run_function0
-	uscripts_pre-stage1
-fi
+if [ $USCRIPTS -eq 1 ]; then uscripts_pre-stage1; fi
 # override the board file
 if [[ -f "override.txt" ]]; then
 	. override.txt
@@ -164,10 +161,7 @@ if [ $USERACCT -eq 1 ]; then
 	mkdir -p p2/root/useracct
 	cp -r files/useracct/* p2/root/useracct
 fi
-if [ $USCRIPTS -eq 1 ]; then
-	# run_function1
-	uscripts_stage1;
-fi
+if [ $USCRIPTS -eq 1 ]; then uscripts_stage1; fi
 stage1_kernel # universal
 echo -e "${WHT}Starting chroot${FIN} ..."
 # Mount and chroot
@@ -181,19 +175,13 @@ umount p2/dev/pts
 umount p2/dev
 umount p2/boot/broadcom
 # clean
-if [ -e p2/usr/bin/${STATIC} ]; then
-	rm -f p2/usr/bin/${STATIC}
-fi
+if [ -e p2/usr/bin/${STATIC} ]; then rm -f p2/usr/bin/${STATIC}; fi
 cp -f p2/root/kernel.txt .
 rm p2/root/stage2
 rm -f p2/root/*.txt
 rm -fdr p2/var/cache/debconf/*
-
 # finish uscripts
-if [ $USCRIPTS -eq 1 ]; then
-	# run_function3
-	uscripts_fin-stage1
-fi
+if [ $USCRIPTS -eq 1 ]; then uscripts_fin-stage1; fi
 
 if [ -n "$PROXY" ]; then
 	rm p2/etc/apt/apt.conf.d/30proxy

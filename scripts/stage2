@@ -3,9 +3,7 @@ source /root/source.txt
 source /root/board.txt
 source /root/userdata.txt
 source /root/custom.txt
-if [ $VERBOSE -eq 1 ]; then
-	set -x
-fi
+if [ $VERBOSE -eq 1 ]; then set -x; fi
 if [[ -f "/root/services.txt" ]]; then
 	source /root/services.txt
 fi
@@ -39,10 +37,10 @@ export DEBIAN_FRONTEND="noninteractive"
 apt-get update
 apt-get install -y apt-utils
 
-# Locales
+# locales
 set_locales
 
-# Timezone
+# timezone
 set_timezone
 
 apt upgrade -y
@@ -55,7 +53,7 @@ if [[ "$DISTRO" == "ubuntu" ]]; then
 	apt_preferences
 	echo ""
 fi
-# Set network variables
+# network variables
 if [ $NETWORKMANAGER -eq 1 ]; then
 	NETWORKING="network-manager"
 	if [[ "$DISTRO" == "devuan" ]]; then
@@ -118,7 +116,7 @@ fi
 apt -y clean
 apt -y autoclean
 
-# User options
+# user options
 echo -n "${HOSTNAME}" > /etc/hostname;
 sed -i "1 a 127.0.1.1	${HOSTNAME}" /etc/hosts;
 if [ $USERACCT -eq 0 ]; then
@@ -166,7 +164,7 @@ if [ $ROOTPASSWD -eq 1 ]; then
 	echo "root:toor" | chpasswd
 fi
 
-# Sudoers file
+# sudoers file
 if [ $USERACCT -eq 0 ]; then
 	echo ""
 	tee /etc/sudoers.d/010_${USERNAME}-nopasswd <<EOF
@@ -174,14 +172,10 @@ ${USERNAME} ALL=(ALL) NOPASSWD: ALL
 EOF
 fi
 
-# User script
-if [ $USCRIPTS -eq 1 ]; then
-	# run_function2
-	echo ""
-	uscripts_stage2
-fi
+# user script
+if [ $USCRIPTS -eq 1 ]; then uscripts_stage2; fi
 
-# Skins
+# skins
 cd ~
 mkdir -p /usr/share/mc/skins
 mv -f darkgreen.ini /usr/share/mc/skins/darkgreen.ini
@@ -197,7 +191,7 @@ if [ $USERACCT -eq 0 ]; then
 	chown -R ${USERNAME}:${USERNAME} /home/${USERNAME};
 fi
 
-# Scripts
+# scripts
 echo ""
 echo "Moving scripts ..."
 cd ~
@@ -220,7 +214,7 @@ initrd_script
 mv -f firstboot.sh /usr/local/sbin/firstboot
 mv -f leds.sh /usr/local/sbin/leds
 if [[ "$DISTRO" == "devuan" ]]; then
-	# Inits
+	# inits
 	mv -f firstboot.init /etc/init.d/firstboot
 	mv -f leds.init /etc/init.d/leds
 	mv -f governor.init /etc/init.d/governor
@@ -241,7 +235,7 @@ chmod +x /usr/local/sbin/*
 chown -R root:root /usr/local/bin/
 chown -R root:root /usr/local/sbin/
 
-# MOTD
+# motd
 mkdir -p /etc/update-motd.d
 if [[ -f "/etc/update-motd.d/10-uname" ]]; then
 	rm -f /etc/update-motd.d/10-uname
@@ -267,10 +261,10 @@ rm -f /etc/motd
 echo "" > /etc/motd
 chown root:root /etc/motd
 
-# Extra firmware
+# rpi firmware
 extra_firmware
 
-# Udev rule
+# udev rules
 cd ~
 mkdir -p /etc/udev/rules.d/
 mkdir -p /lib/udev/rules.d/
@@ -285,10 +279,10 @@ if [[ -f "/root/60-rpi.gpio-common.rules" ]]; then
 	mv -f 60-rpi.gpio-common.rules /lib/udev/rules.d/
 fi
 
-# Wireless regdb
+# wireless regdb
 wireless_regdb
 
-# Network Setup
+# network Setup
 if [ $NETWORKMANAGER -eq 1 ]; then
 	networkmanager-setup > /dev/null 2>&1
 	networkmanager-credentials > /dev/null 2>&1
@@ -297,28 +291,28 @@ else
 	ifupdown-credentials > /dev/null 2>&1
 fi
 
-# Board information
+# board information
 if [[ -f "/root/board.txt" ]]; then
 	cp -f /root/board.txt /etc/opt/
 	ln -sr /etc/opt/board.txt /etc/opt/soc.txt
 	chown root:root /etc/opt/board.txt
 fi
 
-# ZSWAP virtual memory
+# zswap virtual memory
 if [[ -f "/etc/default/zramswap" ]]; then
 	sed -i 's/#ALLOCATION=256/ALLOCATION=1024/g' /etc/default/zramswap
 	sed -i 's/#SIZE=256/SIZE=1024/g' /etc/default/zramswap
 	sed -i 's/#PRIORITY=100/PRIORITY=100/g' /etc/default/zramswap
 fi
 
-# Adding sys-mods
+# adding sys-mods
 raspberrypi_sys_mods
 if [[ -f "/etc/sudoers.d/010_pi-nopasswd" ]]; then
 	# security risk
 	rm -f /etc/sudoers.d/010_pi-nopasswd
 fi
 
-# Pi Bluetooth
+# pi-bluetooth
 echo ""
 echo "Installing pi-bluetooth ..."
 if [[ "$DISTRO" == "ubuntu" ]]; then
@@ -333,54 +327,54 @@ cd ~
 dpkg -i pi-bluetooth_*.deb
 rm -fdR pi-bluetooth*
 
-#  Raspi userland
+#  userland
 rpi_userland
 
-# Adding eeprom
+# eeprom
 if [[ "$BOARD_EXT" == "rpi-4" ]]; then
 	bcm2711_eeprom
 fi
 
-# Remove zstd compression (not supported by older kernels)
+# remove zstd compression (not supported by older kernels)
 if [[ "$DISTRO" == "ubuntu" ]]; then
 	if [[ `grep -w "COMPRESS=zstd" "/etc/initramfs-tools/initramfs.conf"` ]]; then
 		sed -i 's/COMPRESS=zstd/COMPRESS=xz/g' /etc/initramfs-tools/initramfs.conf
 	fi
 fi
 
-# Kernel
+# kernel
 stage2_kernel # universal
 
-# BCM modules
+# brcm modules
 bcm_modules > /dev/null 2>&1
 if [[ "$BOARD" == "bcm2709" || "$BOARD" == "bcm2710" ]]; then
 	# audio module
 	echo "snd_bcm2835" >> /etc/modules
 fi
 
-# Clean misc files
+# clean misc files
 rm -f {*.patch,*led*,*eeprom*}
 
-# Whiptail color palette
+# whiptail color palette
 if [[ "$DISTRO" == "ubuntu" ]]; then
 	mkdir -p /etc/newt
 	palette-dark > /dev/null 2>&1
 	ln -sf /etc/newt/palette.dark  /etc/alternatives/newt-palette
 fi
 
-# RPi Hack
+# hack
 if [[ "$BOARD" == "bcm2708" ]] && [[ -f "/lib/ld-linux.so.3" ]]; then
 	ln -s /lib/ld-linux.so.3 /lib/ld-linux-armhf.so.3
 fi
 
-# Flush runtime journal
+# flush runtime journal
 if [[ -f "/etc/systemd/journald.conf" ]]; then
 	sed -i 's/#Storage=auto/Storage=volatile/g' /etc/systemd/journald.conf
 	sed -i 's/#SystemMaxFileSize=/SystemMaxFileSize=50M/g' /etc/systemd/journald.conf
 	sed -i 's/#SystemMaxFiles=100/SystemMaxFiles=5/g' /etc/systemd/journald.conf
 fi
 
-# Services
+# services
 echo ""
 echo "Checking Services ..."
 sleep 1s
@@ -397,7 +391,7 @@ else
 	systemd_services > /dev/null 2>&1
 fi
 
-# FIN
+# finish
 echo ""
 echo "Finalizing ..."
 echo ""
