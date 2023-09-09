@@ -2,20 +2,10 @@
 
 # dev rootfs
 sysroot_partition(){
-IMGSIZE="3072MB"
 truncate -s ${IMGSIZE} "${ROOTFS_FOLDER}${RELEASE_NAME}"
-echo -e "o
-n
-p
-1
-2048
-a
-t
-b
-5999999
-
-p
-w" | fdisk "${ROOTFS_FOLDER}${RELEASE_NAME}"
+parted --script "${ROOTFS_FOLDER}${RELEASE_NAME}" \
+mklabel msdos \
+mkpart primary ext2 1MiB 100%
 IMAGE_LOOP_DEV="$(losetup --show -P -f ${ROOTFS_FOLDER}${RELEASE_NAME})"
 IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p1"
 partprobe "${IMAGE_LOOP_DEV}"

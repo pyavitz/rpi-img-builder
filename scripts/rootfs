@@ -10,6 +10,12 @@ fi
 source board.txt
 source userdata.txt
 source lib/function/rootfs
+if [[ -f "custom.txt" ]]; then
+	. custom.txt
+else
+	echo "Missing custom.txt file."
+	exit 0
+fi
 
 # clean
 if [[ -d "sysroot" ]] || [[ -d "p1" ]]; then make cleanup; clear -x; fi
