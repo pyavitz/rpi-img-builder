@@ -72,11 +72,8 @@ Linux kernel
 Branch:			# Supported: 6.1.y and above
 Build:			# Kernel build version number
 Menuconfig:		# Kernel menuconfig
-
-Compiler        	WARNING: Only one may be selected
-Version:		# gcc-11
-Ccache:			# Recommended
-Clang:			# Supported: Debian Bookworm / Jammy Jellyfish
+Compiler:		# GNU Compiler Collection / Clang
+Ccache:			# Compiler cache
 
 Distribution
 Distro:			# Supported: debian, devuan and ubuntu
