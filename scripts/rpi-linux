@@ -9,16 +9,15 @@ if [[ -f "override.txt" ]]; then
 fi
 source board.txt
 source userdata.txt
+if [ $VERBOSE -eq 1 ]; then set -x; fi
 source packaging/pkgvars
 source lib/function/rpi-linux
 source lib/function/patching
-source lib/function/wireless
 source lib/function/modconfig
 source lib/function/compilers
 
 # prep
 validation
-if [ $VERBOSE -eq 1 ]; then set -x; fi
 if [[ "$HOST_ARCH" == "aarch64" ]] && [[ "$ARCH" == "arm64" ]]; then CROSSCOMPILE="0"; fi
 if [[ "$HOST_ARCH" == "aarch64" ]] && [[ "$ARCH" == "arm" ]]; then CROSSCOMPILE="1"; fi
 if [[ "$HOST_ARCH" == "x86_64"  ]] && [[ "$ARCH" == "arm" || "$ARCH" == "arm64" ]]; then CROSSCOMPILE="1"; fi
@@ -47,8 +46,8 @@ extract
 # setup and firmware
 setup
 firmware
-# packaging
-packaging
+# patching and packaging
+linux_patching
 # defconfig
 if [ $CUSTOM_DEFCONFIG -eq 1 ]; then cconfig; else fconfig; fi
 # menuconfig

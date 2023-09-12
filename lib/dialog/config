@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BUILDER="5.7"
+BUILDER="5.8"
 GCC=`ls -ls /usr/bin/gcc | sed 's/.*\(..\)/\1/' | sed 's/ //g'`
 ARCH=`uname -m`
 
@@ -112,9 +112,8 @@ echo "echo -n '${TIMEZONE}' > /etc/timezone" >> tmp0
 echo "}" >> tmp0
 echo NAMESERVER1='"'${USER_NAMESERVER1}'"' >> tmp0
 echo NAMESERVER2='"'${USER_NAMESERVER2}'"' >> tmp0
+echo RTW88=0 >> tmp0
 echo RTL88XXAU=0 >> tmp0
-echo RTL88X2BU=0 >> tmp0
-echo RTL88XXCU=0 >> tmp0
 echo builder=${BUILDER} >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
@@ -145,7 +144,7 @@ sed -i '33i### LOCALES' userdata.txt
 sed -i '41i### TIMEZONE' userdata.txt
 sed -i '46i### NAME SERVER' userdata.txt
 sed -i '49i### EXTRA WIRELESS' userdata.txt
-sed -i '53i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '52i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # customize your image
 custom_txt (){
@@ -183,7 +182,6 @@ clear -x
 if [[ -f "userdata.txt" ]]; then
 	sed -i 's/=0/="0"/g' userdata.txt
 	sed -i 's/=1/="1"/g' userdata.txt
-	sed -i 's/LLVM_IAS="1"/LLVM_IAS=1/g' userdata.txt
 	echo -e "userdata file created."
 	exit 0
 fi

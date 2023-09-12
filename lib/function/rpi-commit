@@ -7,51 +7,6 @@ cp -f board.txt ${SRC}/
 cd ${SRC}
 }
 
-firmware (){
-BINURL="https://github.com/raspberrypi/firmware/raw/master/boot/"
-mkdir -p firmware
-rm -f firmware/*
-cd firmware
-echo ""
-echo_firm
-${DOWNLOAD} ${BINURL}LICENCE.broadcom
-${DOWNLOAD} ${BINURL}COPYING.linux
-if [[ "$BOARD_EXT" == "rpi-4" ]]; then
-	${DOWNLOAD} ${BINURL}fixup4.dat
-	${DOWNLOAD} ${BINURL}fixup4cd.dat
-	${DOWNLOAD} ${BINURL}fixup4db.dat
-	${DOWNLOAD} ${BINURL}fixup4x.dat
-	${DOWNLOAD} ${BINURL}start4.elf
-	${DOWNLOAD} ${BINURL}start4cd.elf
-	${DOWNLOAD} ${BINURL}start4db.elf
-	${DOWNLOAD} ${BINURL}start4x.elf
-	cd ..
-	if [[ `ls firmware/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf,LICENCE.broadcom,COPYING.linux}` ]] > /dev/null 2>&1; then
-		echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
-	else
-		echo -en " ${YLW}[${FIN}${RED}failed${FIN}${YLW}]${FIN}"; echo ""
-		exit 0
-	fi
-else
-	${DOWNLOAD} ${BINURL}bootcode.bin
-	${DOWNLOAD} ${BINURL}fixup.dat
-	${DOWNLOAD} ${BINURL}fixup_cd.dat
-	${DOWNLOAD} ${BINURL}fixup_db.dat
-	${DOWNLOAD} ${BINURL}fixup_x.dat
-	${DOWNLOAD} ${BINURL}start.elf
-	${DOWNLOAD} ${BINURL}start_cd.elf
-	${DOWNLOAD} ${BINURL}start_db.elf
-	${DOWNLOAD} ${BINURL}start_x.elf
-	cd ..
-	if [[ `ls firmware/{bootcode.bin,fixup.dat,fixup_cd.dat,fixup_db.dat,fixup_x.dat,start.elf,start_cd.elf,start_db.elf,start_x.elf,LICENCE.broadcom,COPYING.linux}` ]] > /dev/null 2>&1; then
-		echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
-	else
-		echo -en " ${YLW}[${FIN}${RED}failed${FIN}${YLW}]${FIN}"; echo ""
-		exit 0
-	fi
-fi
-}
-
 download (){
 RPIURL="https://github.com/raspberrypi/linux/archive/"
 echo ""
@@ -62,7 +17,6 @@ else
 	${DOWNLOAD} ${RPIURL}${COMMIT}.tar.gz
 	echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
 fi
-extra_wireless
 }
 
 report_tarball_error (){
@@ -90,9 +44,6 @@ exit 0
 setup (){
 if [[ -d "${CKERNEL}-${COMMIT}" ]]; then
 	cd ${CKERNEL}-${COMMIT}
-	if [ $RTL88XXAU -eq 1 ]; then rtl8812au; fi
-	if [ $RTL88X2BU -eq 1 ]; then rtl88x2bu; fi
-	if [ $RTL88XXCU -eq 1 ]; then rtl8811cu; fi
 	export ARCH=${ARCH}
 	if [[ "ARCH" == "arm" ]]; then KERNEL=${KERNEL_VAR}; fi
 else
@@ -119,9 +70,6 @@ echo ""
 fconfig (){
 echo -e "${WHT}Making ${LINUX_DEFCONFIG}${FIN}."
 linux_configs
-rtl8812au_module
-rtl88x2bu_module
-rtl8811cu_module
 kbuild "${LINUX_DEFCONFIG}"
 echo ""
 }
@@ -169,14 +117,4 @@ builddeb (){
 if [ $CROSSCOMPILE -eq 1 ]; then echo -e "${GRN}  CC${FIN}"; else echo -e "${GRN}  NC${FIN}"; fi
 echo ${BUILD_VERSION} > .version
 echo 'y' | kbuild "KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} bindeb-pkg"
-}
-
-packaging (){
-echo ""
-rm -f scripts/package/{builddeb,mkdebian}
-cp -fr ../../packaging/{builddeb,mkdebian} scripts/package/
-chmod +x scripts/package/{builddeb,mkdebian}
-cp -f ../../packaging/headers-byteshift.patch headers-byteshift.patch
-user_patches
-linux_packaging
 }

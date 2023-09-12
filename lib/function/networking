@@ -14,6 +14,7 @@ chown root:root /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd
 install -Dm644 UPDATE.mem /lib/firmware/updates/renesas_usb_fw.mem
 rm -f UPDATE.mem
 ln -sr /lib/firmware /etc/firmware
+# realtek firmware
 if [[ `wget -S --spider https://kernel.googlesource.com/pub/scm/linux/kernel/git/firmware/linux-firmware.git/+archive/refs/heads/main/rtl_nic.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
 	mkdir -p /lib/firmware/updates/rtl_nic;
 	cd /lib/firmware/updates/rtl_nic;
@@ -24,12 +25,17 @@ if [[ `wget -S --spider https://kernel.googlesource.com/pub/scm/linux/kernel/git
 	fi
 fi
 cd ~
+git clone -q -b realtek https://github.com/pyavitz/firmware.git
+if [[ -d "firmware" ]]; then
+	cp -fr firmware/* /lib/firmware/updates/
+	rm -fdr firmware
+fi
 }
 
 # regulatory db
 wireless_regdb(){
 echo ""
-echo "Adding regulatory db ..."
+echo "Adding wireless regulatory db ..."
 git clone https://kernel.googlesource.com/pub/scm/linux/kernel/git/sforshee/wireless-regdb
 sleep 1s
 cd wireless-regdb
@@ -91,9 +97,6 @@ if [[ "$DISTRO" == "ubuntu" ]]; then
 		fi
 	fi
 fi
-# rtl8821cu conf
-echo "options 8821cu rtw_power_mgnt=0 rtw_enusbss=0 rtw_switch_usb_mode=1" > /etc/modprobe.d/8821cu.conf
-chown root:root /etc/modprobe.d/8821cu.conf
 
 # ifupdown interfaces and wpa_supplicant files
 tee /etc/network/interfaces <<EOF
@@ -141,37 +144,6 @@ network={
 EOF
 }
 
-# wireless conf files (network-manager)
-rtl88x2bu_conf(){
-mkdir -p /usr/lib/NetworkManager/conf.d/
-tee /usr/lib/NetworkManager/conf.d/rtl88x2bu.conf <<EOF
-# Certain drivers are known not to support changing the MAC address.
-# Disable touching the MAC address on such devices.
-
-[device-rtl88x2bu]
-match-device=driver:rtl88x2bu
-wifi.scan-rand-mac-address=no
-wifi.cloned-mac-address=preserve
-ethernet.cloned-mac-address=preserve
-EOF
-chown root:root /usr/lib/NetworkManager/conf.d/rtl88x2bu.conf
-}
-
-rtl8821cu_conf(){
-mkdir -p /usr/lib/NetworkManager/conf.d/
-tee /usr/lib/NetworkManager/conf.d/rtl8821cu.conf <<EOF
-# Certain drivers are known not to support changing the MAC address.
-# Disable touching the MAC address on such devices.
-
-[device-rtl8821cu]
-match-device=driver:rtl8821cu
-wifi.scan-rand-mac-address=no
-wifi.cloned-mac-address=preserve
-ethernet.cloned-mac-address=preserve
-EOF
-chown root:root /usr/lib/NetworkManager/conf.d/rtl8821cu.conf
-}
-
 networkmanager-setup(){
 if [ -f /etc/network/interfaces ]; then
 	rm -f /etc/network/interfaces
@@ -202,8 +174,6 @@ if [[ "$DISTRO" == "devuan" ]]; then
 		eth_udev-rule
 	fi
 fi
-rtl88x2bu_conf
-rtl8821cu_conf
 }
 
 ifupdown-credentials(){

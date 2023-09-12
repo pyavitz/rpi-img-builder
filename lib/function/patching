@@ -1,7 +1,54 @@
 #!/bin/bash
 
+# raspberry pi boot firmware
+firmware (){
+BINURL="https://github.com/raspberrypi/firmware/raw/master/boot/"
+mkdir -p firmware
+rm -f firmware/*
+cd firmware
+echo ""
+echo -en "Firmware"
+echo -en " ${PNK}[${FIN}${WHT}downloading${FIN}${PNK}]${FIN}"
+aria2c -q ${BINURL}LICENCE.broadcom
+aria2c -q ${BINURL}COPYING.linux
+if [[ "$BOARD_EXT" == "rpi-4" ]]; then
+	aria2c -q ${BINURL}fixup4.dat
+	aria2c -q ${BINURL}fixup4cd.dat
+	aria2c -q ${BINURL}fixup4db.dat
+	aria2c -q ${BINURL}fixup4x.dat
+	aria2c -q ${BINURL}start4.elf
+	aria2c -q ${BINURL}start4cd.elf
+	aria2c -q ${BINURL}start4db.elf
+	aria2c -q ${BINURL}start4x.elf
+	cd ..
+	if [[ `ls firmware/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf,LICENCE.broadcom,COPYING.linux}` ]] > /dev/null 2>&1; then
+		echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
+	else
+		echo -en " ${YLW}[${FIN}${RED}failed${FIN}${YLW}]${FIN}"; echo ""
+		exit 0
+	fi
+else
+	aria2c -q ${BINURL}bootcode.bin
+	aria2c -q ${BINURL}fixup.dat
+	aria2c -q ${BINURL}fixup_cd.dat
+	aria2c -q ${BINURL}fixup_db.dat
+	aria2c -q ${BINURL}fixup_x.dat
+	aria2c -q ${BINURL}start.elf
+	aria2c -q ${BINURL}start_cd.elf
+	aria2c -q ${BINURL}start_db.elf
+	aria2c -q ${BINURL}start_x.elf
+	cd ..
+	if [[ `ls firmware/{bootcode.bin,fixup.dat,fixup_cd.dat,fixup_db.dat,fixup_x.dat,start.elf,start_cd.elf,start_db.elf,start_x.elf,LICENCE.broadcom,COPYING.linux}` ]] > /dev/null 2>&1; then
+		echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
+	else
+		echo -en " ${YLW}[${FIN}${RED}failed${FIN}${YLW}]${FIN}"; echo ""
+		exit 0
+	fi
+fi
+}
+
 # check log and report
-check_log(){
+check_log (){
 if [[ -f "${LOG_FILE}" ]]; then
 	PATHTOFILE=`echo ${LOG_FILE} | sed 's/..\/..\///g'`
 	if [[ `grep "Skipping patch" "${LOG_FILE}"` ]]; then
@@ -27,12 +74,27 @@ if [[ -f "${LOG_FILE}" ]]; then
 		echo -en " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
 	fi
 	echo -en " ${WHT}log: ${PATHTOFILE}${FIN}"
-	echo; echo -e ""
+	echo -e ""
+fi
+}
+
+# linux patch log
+linux_log (){
+LOG_DIR="../../output/logs"
+LOG_FILE="${LOG_DIR}/${BOARD}-patch.log"
+if [[ -f "${LOG_FILE}" ]]; then
+	mv -f ${LOG_FILE} ${LOG_FILE}.1
+	echo "Linux ${VERSION}" > ${LOG_FILE}
+	echo `date` >> ${LOG_FILE}
+else
+	mkdir -p ${LOG_DIR}
+	echo "Linux ${VERSION}" > ${LOG_FILE}
+	echo `date` >> ${LOG_FILE}
 fi
 }
 
 # linux user patch log
-linux_user_log(){
+linux_user_log (){
 LOG_DIR="../../output/logs"
 LOG_FILE="${LOG_DIR}/${BOARD}-user-patch.log"
 if [[ -f "${LOG_FILE}" ]]; then
@@ -46,8 +108,39 @@ else
 fi
 }
 
+# linux apply patches
+linux_patches (){
+linux_log
+echo "" >> ${LOG_FILE}
+echo "# APPLYING PATCHES" >> ${LOG_FILE}
+echo -en "${WHT}Patches${FIN} ${PNK}[${FIN}${WHT}applying${FIN}${PNK}]${FIN}"
+if [[ -d "../../patches/all/${VERSION}" ]]; then
+	if [[ `ls ../../patches/all/${VERSION}/*.patch` ]] > /dev/null 2>&1; then
+		for i in ../../patches/all/${VERSION}/*.patch; do patch -N -p1 < $i; done >> ${LOG_FILE}
+	fi
+fi
+# wireless
+if [ $RTW88 -eq 1 ] && [[ -d "../../patches/wireless/rtw88/${VERSION}" ]]; then
+	if [[ `ls ../../patches/wireless/rtw88/${VERSION}/*.patch` ]] > /dev/null 2>&1; then
+		echo "# wireless/rtw88/${VERSION}" | sed -e 's/\(.*\)/\U\1/' >> ${LOG_FILE}
+		for i in ../../patches/wireless/rtw88/${VERSION}/*.patch; do patch -N -p1 < $i; done >> ${LOG_FILE}
+	fi
+	if [[ `ls ../../patches/wireless/rtw88/hack/*.patch` ]] > /dev/null 2>&1; then
+		echo "# wireless/rtw88/hack" | sed -e 's/\(.*\)/\U\1/' >> ${LOG_FILE}
+		for i in ../../patches/wireless/rtw88/hack/*.patch; do patch -N -p1 < $i; done >> ${LOG_FILE}
+	fi
+fi
+if [ $RTL88XXAU -eq 1 ] && [[ -d "../../patches/wireless/rtl88xxau/${VERSION}" ]]; then
+	if [[ `ls ../../patches/wireless/rtl88xxau/${VERSION}/*.patch` ]] > /dev/null 2>&1; then
+		echo "# wireless/rtl88xxau/${VERSION}" | sed -e 's/\(.*\)/\U\1/' >> ${LOG_FILE}
+		for i in ../../patches/wireless/rtl88xxau/${VERSION}/*.patch; do patch -N -p1 < $i; done >> ${LOG_FILE}
+	fi
+fi
+check_log
+}
+
 # user patches
-user_patches(){
+user_patches (){
 if [[ `ls ../../userpatches/*.patch` ]] > /dev/null 2>&1; then
 	linux_user_log
 	echo "" >> ${LOG_FILE}
@@ -59,4 +152,17 @@ if [[ `ls ../../userpatches/*.patch` ]] > /dev/null 2>&1; then
 	#if [[ `find . -name '*.orig'` ]]; then find . -name '*.orig' -delete; fi
 	#if [[ `find . -name '*.rej'` ]]; then find . -name '*.rej' -delete; fi
 fi
+}
+
+# patching and packaging
+linux_patching (){
+#echo ""
+rm -f scripts/package/{builddeb,mkdebian}
+cp -fr ../../packaging/{builddeb,mkdebian} scripts/package/
+chmod +x scripts/package/{builddeb,mkdebian}
+cp -f ../../packaging/headers-byteshift.patch headers-byteshift.patch
+linux_patches
+user_patches
+linux_packaging
+echo -e ""
 }

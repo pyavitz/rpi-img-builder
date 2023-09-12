@@ -11,7 +11,7 @@ HOST_CODENAME=`cat /etc/os-release | grep -w "VERSION_CODENAME" | sed 's/VERSION
 HOST_ARCH=`uname -m`
 
 # validate
-validation(){
+validation (){
 BUILDER=`grep "builder=" "userdata.txt" | sed 's/builder=//g'`
 UD="userdata.txt"
 if [ -f "$UD" ]; then
@@ -26,7 +26,7 @@ else
 		fi
 	done
 fi
-if [[ "$BUILDER" == "5.7" ]]; then
+if [[ "$BUILDER" == "5.8" ]]; then
 	:;
 else
 	echo -e "The ${WHT}$UD${FIN} file has expired. Please create a new one."
@@ -55,7 +55,7 @@ SYSMODS="debhelper d-shlibs rfkill dosfstools psmisc"
 FIRMWARE="firmware-linux-nonfree firmware-linux firmware-misc-nonfree \
           firmware-realtek firmware-ralink"
 
-override_board(){
+override_board (){
 if [[ -z "$ARCH_EXT" ]]; then
 	:;
 else

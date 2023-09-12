@@ -1,0 +1,56 @@
+From f194d5ad1cda8a9edbafc62871e4d0ba307498bd Mon Sep 17 00:00:00 2001
+From: Patrick Yavitz <pyavitz@xxxxx.com>
+Date: Sat, 5 Aug 2023 22:24:15 -0400
+Subject: [PATCH] HACK: net: wireless: nl80211: remove WARNING and TRACE
+
+[   12.358788] WARNING: CPU: 1 PID: 545 at net/wireless/nl80211.c:19289 cfg80211_ch_switch_started_notify+0xc8/0xd4 [cfg80211]
+[   12.358875] Modules linked in: 88XXau cfg80211 rfkill zram zsmalloc binfmt_misc uio_pdrv_genirq fuse ip_tables x_tables rtc_meson_vrtc
+[   12.358924] CPU: 1 PID: 545 Comm: RTW_CMD_THREAD Not tainted 6.4.8 #1
+[   12.358933] Hardware name: Hardkernel ODROID-C4 (DT)
+[   12.358938] pstate: 60400009 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+[   12.358946] pc : cfg80211_ch_switch_started_notify+0xc8/0xd4 [cfg80211]
+[   12.359002] lr : cfg80211_ch_switch_started_notify+0xc0/0xd4 [cfg80211]
+[   12.359058] sp : ffff80000acf3ca0
+[   12.359063] x29: ffff80000acf3ca0 x28: ffff000002cedd80 x27: ffff80000abdc270
+[   12.359078] x26: 0000000000000001 x25: 0000000000000000 x24: 0000000000000000
+[   12.359093] x23: 0000000000000000 x22: ffff0000028c9000 x21: ffff80000acf3d58
+[   12.359108] x20: ffff0000028c8000 x19: ffff00000770b000 x18: 0000000000000000
+[   12.359122] x17: 000000000000002e x16: 0000000000000000 x15: 000000000017059d
+[   12.359136] x14: 0000000000000001 x13: 0000000000000000 x12: ffff80000abdb954
+[   12.359151] x11: ffff80000abdbdd0 x10: 000000000000007f x9 : 0000000000000040
+[   12.359165] x8 : ffff0000028c8870 x7 : ffff0000028c8898 x6 : 00000000000003e8
+[   12.359179] x5 : 0000000000000000 x4 : 0000000000000000 x3 : 0000000000000000
+[   12.359193] x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000000
+[   12.359207] Call trace:
+[   12.359213]  cfg80211_ch_switch_started_notify+0xc8/0xd4 [cfg80211]
+[   12.359271]  rtw_cfg80211_ch_switch_notify+0x140/0x164 [88XXau]
+[   12.359370]  join_cmd_hdl+0x25c/0x398 [88XXau]
+[   12.359459]  rtw_cmd_thread+0x318/0x4b0 [88XXau]
+[   12.359546]  kthread+0x114/0x118
+[   12.359557]  ret_from_fork+0x10/0x20
+[   12.359567] ---[ end trace 0000000000000000 ]---
+
+Signed-off-by: Patrick Yavitz <pyavitz@xxxxx.com>
+---
+ net/wireless/nl80211.c | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index 087c0c442e23..8e0742937c44 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -19037,11 +19037,6 @@ void cfg80211_ch_switch_started_notify(struct net_device *dev,
+ 	struct wiphy *wiphy = wdev->wiphy;
+ 	struct cfg80211_registered_device *rdev = wiphy_to_rdev(wiphy);
+ 
+-	ASSERT_WDEV_LOCK(wdev);
+-	WARN_INVALID_LINK_ID(wdev, link_id);
+-
+-	trace_cfg80211_ch_switch_started_notify(dev, chandef, link_id);
+-
+ 	nl80211_ch_switch_notify(rdev, dev, link_id, chandef, GFP_KERNEL,
+ 				 NL80211_CMD_CH_SWITCH_STARTED_NOTIFY,
+ 				 count, quiet);
+-- 
+2.39.2
+
