@@ -120,19 +120,23 @@ if [[ -d "../../patches/all/${VERSION}" ]]; then
 	fi
 fi
 # wireless
-if [ $RTW88 -eq 1 ] && [[ -d "../../patches/wireless/rtw88/${VERSION}" ]]; then
-	if [[ `ls ../../patches/wireless/rtw88/${VERSION}/*.patch` ]] > /dev/null 2>&1; then
+if [ $RTW88 -eq 1 ] && [[ -d "../../patches/wireless/rtw88" ]]; then
+	if [[ `ls ../../patches/wireless/rtw88/*.patch` ]] > /dev/null 2>&1; then
+		rm -fr drivers/net/wireless/realtek/rtw88/*
 		echo "# wireless/rtw88/${VERSION}" | sed -e 's/\(.*\)/\U\1/' >> ${LOG_FILE}
-		for i in ../../patches/wireless/rtw88/${VERSION}/*.patch; do patch -N -p1 < $i; done >> ${LOG_FILE}
+		for i in ../../patches/wireless/rtw88/*.patch; do patch -N -p1 < $i; done >> ${LOG_FILE}
 	fi
 	if [[ `ls ../../patches/wireless/rtw88/hack/*.patch` ]] > /dev/null 2>&1; then
 		echo "# wireless/rtw88/hack" | sed -e 's/\(.*\)/\U\1/' >> ${LOG_FILE}
 		for i in ../../patches/wireless/rtw88/hack/*.patch; do patch -N -p1 < $i; done >> ${LOG_FILE}
 	fi
 fi
-if [ $RTL88XXAU -eq 1 ] && [[ -d "../../patches/wireless/rtl88xxau/${VERSION}" ]]; then
-	if [[ `ls ../../patches/wireless/rtl88xxau/${VERSION}/*.patch` ]] > /dev/null 2>&1; then
+if [ $RTL88XXAU -eq 1 ] && [[ -d "../../patches/wireless/rtl88xxau" ]]; then
+	if [[ `ls ../../patches/wireless/rtl88xxau/*.patch` ]] > /dev/null 2>&1; then
 		echo "# wireless/rtl88xxau/${VERSION}" | sed -e 's/\(.*\)/\U\1/' >> ${LOG_FILE}
+		for i in ../../patches/wireless/rtl88xxau/*.patch; do patch -N -p1 < $i; done >> ${LOG_FILE}
+	fi
+	if [[ `ls ../../patches/wireless/rtl88xxau/${VERSION}/*.patch` ]] > /dev/null 2>&1; then
 		for i in ../../patches/wireless/rtl88xxau/${VERSION}/*.patch; do patch -N -p1 < $i; done >> ${LOG_FILE}
 	fi
 fi
