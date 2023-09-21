@@ -19,7 +19,7 @@ deb http://deb.debian.org/debian-security ${DISTRO_VERSION}-security main contri
 deb http://deb.debian.org/debian ${DISTRO_VERSION}-backports main contrib non-free non-free-firmware
 EOF
 fi
-if [[ "$DISTRO_VERSION" == "sid" || "$DISTRO_VERSION" == "testing" || "$DISTRO_VERSION" == "unstable" ]]; then
+if [[ "$DISTRO_VERSION" == "sid" || "$DISTRO_VERSION" == "testing" || "$DISTRO_VERSION" == "trixie" || "$DISTRO_VERSION" == "unstable" ]]; then
 	tee ${SOURCES_LIST} <<EOF
 deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free non-free-firmware
 EOF
