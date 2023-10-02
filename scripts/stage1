@@ -87,7 +87,7 @@ else
 	exit 0
 fi
 # config dot txt
-if [[ "$BOARD_EXT" == "rpi-4" ]]; then
+if [[ "$BOARD_EXT" == "rpi-4" || "$BOARD_EXT" == "rpi-5" ]]; then
 	bcm2711_config > /dev/null 2>&1
 else
 	${BOARD}_config > /dev/null 2>&1

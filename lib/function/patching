@@ -11,7 +11,7 @@ echo -en "Firmware"
 echo -en " ${PNK}[${FIN}${WHT}downloading${FIN}${PNK}]${FIN}"
 aria2c -q ${BINURL}LICENCE.broadcom
 aria2c -q ${BINURL}COPYING.linux
-if [[ "$BOARD_EXT" == "rpi-4" ]]; then
+if [[ "$BOARD_EXT" == "rpi-4" || "$BOARD_EXT" == "rpi-5" ]]; then
 	aria2c -q ${BINURL}fixup4.dat
 	aria2c -q ${BINURL}fixup4cd.dat
 	aria2c -q ${BINURL}fixup4db.dat

@@ -170,7 +170,7 @@ fi
 
 # Install dtbs
 if [ -d $tmpdir/$boot_path ]; then :; else mkdir -p "$tmpdir/$boot_path"; fi
-if [ "$board_series" = "rpi-4" ]; then
+if [ "$board_series" = "rpi-4" ] || [ "$board_series" = "rpi-5" ]; then
 	# path 1
 	if [ -f $tmpdir/usr/lib/$linux_packagename/bcm2711-rpi-4-b.dtb ]; then
 		cp -r "$tmpdir/usr/lib/$linux_packagename/bcm2711-rpi-4-b.dtb" "$tmpdir/$boot_path/bcm2711-rpi-4-b.dtb"
@@ -184,6 +184,9 @@ if [ "$board_series" = "rpi-4" ]; then
 	if [ -f $tmpdir/usr/lib/$linux_packagename/bcm2711-rpi-cm4s.dtb ]; then
 		cp -r "$tmpdir/usr/lib/$linux_packagename/bcm2711-rpi-cm4s.dtb" "$tmpdir/$boot_path/bcm2711-rpi-cm4s.dtb"
 	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/bcm2712-rpi-5-b.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/bcm2712-rpi-5-b.dtb" "$tmpdir/$boot_path/bcm2712-rpi-5-b.dtb"
+	fi
 	# path 2
 	if [ -f $tmpdir/usr/lib/$linux_packagename/broadcom/bcm2711-rpi-4-b.dtb ]; then
 		cp -r "$tmpdir/usr/lib/$linux_packagename/broadcom/bcm2711-rpi-4-b.dtb" "$tmpdir/$boot_path/bcm2711-rpi-4-b.dtb"
@@ -196,6 +199,9 @@ if [ "$board_series" = "rpi-4" ]; then
 	fi
 	if [ -f $tmpdir/usr/lib/$linux_packagename/broadcom/bcm2711-rpi-cm4s.dtb ]; then
 		cp -r "$tmpdir/usr/lib/$linux_packagename/broadcom/bcm2711-rpi-cm4s.dtb" "$tmpdir/$boot_path/bcm2711-rpi-cm4s.dtb"
+	fi
+	if [ -f $tmpdir/usr/lib/$linux_packagename/broadcom/bcm2712-rpi-5-b.dtb ]; then
+		cp -r "$tmpdir/usr/lib/$linux_packagename/broadcom/bcm2712-rpi-5-b.dtb" "$tmpdir/$boot_path/bcm2712-rpi-5-b.dtb"
 	fi
 fi
 if [ "$board_series" = "rpi-3" ] || [ "$board_series" = "rpi-2+3" ]; then

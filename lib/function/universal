@@ -59,7 +59,7 @@ EEPROM_VERSION=$(curl --silent -L ${CHANGELOG} | awk '{if (NR==10) {print substr
 if [[ `wget -S --spider ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
 	download_eeprom
 else
-	EEPROM_VERSION="13.12"
+	EEPROM_VERSION="16.1"
 	download_eeprom
 fi
 }
@@ -69,7 +69,7 @@ wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
 wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz
 }
 
-bcm2711_eeprom(){
+eeprom_support(){
 ERURL="https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/"
 CHANGELOG="https://raw.githubusercontent.com/raspberrypi/rpi-eeprom/debian/bullseye/debian/changelog"
 echo ""
