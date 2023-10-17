@@ -5,8 +5,8 @@ if [[ "$OFFSET" == "8192" ]]; then IMG_OFFSET="4MiB"; fi
 truncate -s ${IMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
 parted --script "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" \
 mklabel msdos \
-mkpart primary fat32 ${IMG_OFFSET} 256MiB \
-mkpart primary ext2 256MiB 100%
+mkpart primary fat32 ${IMG_OFFSET} 512MiB \
+mkpart primary ext2 512MiB 100%
 #parted --script "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" set 1 lba off
 parted --script "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" set 1 boot on
 IMAGE_LOOP_DEV="$(losetup --show -P -f ${IMAGE_FOLDER}${IMAGE_FILE_NAME})"
