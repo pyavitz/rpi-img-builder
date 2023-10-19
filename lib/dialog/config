@@ -7,6 +7,11 @@ ARCH=`uname -m`
 NAME=""
 USERNAME=""
 PASSWORD=""
+CCACHE="0"
+NETWORKMANAGER="1"
+RTW88="0"
+RTL88XXAU="0"
+USERACCT="0"
 LOCALE="en_US.UTF-8"
 TIMEZONE="America/New_York"
 USER_NAMESERVER1="8.8.8.8"
@@ -20,17 +25,14 @@ VERSION="6.1.y"
 BUILD_VERSION="1"
 MENUCONFIG="0"
 COMPILER="gcc-$GCC"
-CCACHE="0"
 DISTRO="debian"
 DISTRO_VERSION="bookworm"
-NETWORKMANAGER="1"
 CUSTOM_DEFCONFIG="0"
 MYCONFIG=""
 VERBOSE="0"
 DEVROOTFS="1"
 COMPRESS_IMG="0"
 USCRIPTS="0"
-USERACCT="0"
 
 # open fd
 exec 3>&1
@@ -112,8 +114,8 @@ echo "echo -n '${TIMEZONE}' > /etc/timezone" >> tmp0
 echo "}" >> tmp0
 echo NAMESERVER1='"'${USER_NAMESERVER1}'"' >> tmp0
 echo NAMESERVER2='"'${USER_NAMESERVER2}'"' >> tmp0
-echo RTW88=0 >> tmp0
-echo RTL88XXAU=0 >> tmp0
+echo RTW88='"'${RTW88}'"' >> tmp0
+echo RTL88XXAU='"'${RTL88XXAU}'"' >> tmp0
 echo builder=${BUILDER} >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
