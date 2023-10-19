@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # stage 1
-stage1_kernel(){
+stage1_kernel (){
 if [[ `ls ${OUTPUT}/{linux-image-*.deb,linux-headers-*.deb}` ]] > /dev/null 2>&1; then
 	cp ${OUTPUT}/*.deb p2/root
 else
@@ -14,7 +14,7 @@ fi
 }
 
 # stage 2
-raspberrypi_sys_mods(){
+raspberrypi_sys_mods (){
 echo ""
 echo "Installing raspi-sys-mods ..."
 git clone https://github.com/RPi-Distro/raspberrypi-sys-mods.git
@@ -45,7 +45,7 @@ fi
 }
 
 # rpi-eeprom
-find_eeprom(){
+find_eeprom (){
 EEPROM_VERSION=$(curl --silent -L ${CHANGELOG} | awk '{if (NR==1) {print substr($2, 1, length($2)-3)}}' | sed 's/[()]//g')
 if [[ `wget -S --spider ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
 	download_eeprom
@@ -54,7 +54,7 @@ else
 fi
 }
 
-finding_eeprom(){
+finding_eeprom (){
 EEPROM_VERSION=$(curl --silent -L ${CHANGELOG} | awk '{if (NR==10) {print substr($2, 1, length($2)-3)}}' | sed 's/[()]//g')
 if [[ `wget -S --spider ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
 	download_eeprom
@@ -64,12 +64,12 @@ else
 fi
 }
 
-download_eeprom(){
+download_eeprom (){
 wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
 wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz
 }
 
-eeprom_support(){
+eeprom_support (){
 ERURL="https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/"
 CHANGELOG="https://raw.githubusercontent.com/raspberrypi/rpi-eeprom/debian/bullseye/debian/changelog"
 echo ""
@@ -100,7 +100,7 @@ rm -fdr eeprom
 }
 
 # userland
-rpi_userland(){
+rpi_userland (){
 echo ""
 echo "Installing userland ..."
 rm -f /etc/profile
@@ -129,7 +129,7 @@ ldconfig
 }
 
 # modules
-bcm_modules(){
+bcm_modules (){
 rm -f /etc/modules
 tee /etc/modules <<EOF
 # /etc/modules: kernel modules to load at boot time.
@@ -144,7 +144,7 @@ chown root:root /etc/modules
 }
 
 # linux kernel
-stage2_kernel(){
+stage2_kernel (){
 echo ""
 echo "Installing kernel ..."
 apt update
@@ -171,7 +171,7 @@ echo FSTYPE='"'${FSTYPE}'"' >> /etc/opt/board.txt
 }
 
 # whiptail color palette (ubuntu)
-palette-dark(){
+palette-dark (){
 tee /etc/newt/palette.dark <<EOF
 root=,black
 checkbox=,black
@@ -186,7 +186,7 @@ EOF
 }
 
 # user scripts
-uscripts_pre-stage1(){
+uscripts_pre-stage1 (){
 if [[ -f "files/userscripts/uscripts" ]]; then
 	source files/userscripts/uscripts
 	if [[ `type run_function0` ]] &>/dev/null; then
@@ -195,7 +195,7 @@ if [[ -f "files/userscripts/uscripts" ]]; then
 fi
 }
 
-uscripts_stage1(){
+uscripts_stage1 (){
 if [[ -f "files/userscripts/uscripts" ]]; then
 	mkdir -p p2/root/userscripts
 	cp -fr files/userscripts/* p2/root/userscripts/
@@ -208,7 +208,7 @@ if [[ -f "files/userscripts/uscripts" ]]; then
 fi
 }
 
-uscripts_stage2(){
+uscripts_stage2 (){
 if [[ -f "/root/userscripts/uscripts" ]]; then
 	source /root/userscripts/uscripts
 	if [[ `type run_function2` ]] &>/dev/null; then
@@ -221,7 +221,7 @@ fi
 if [[ -e "/root/userscripts" ]]; then rm -fdr /root/userscripts; fi
 }
 
-uscripts_fin-stage1(){
+uscripts_fin-stage1 (){
 if [[ -f "files/userscripts/uscripts" ]]; then
 	source files/userscripts/uscripts
 	if [[ `type run_function3` ]] &>/dev/null; then
@@ -231,7 +231,7 @@ fi
 }
 
 # initrd script
-initrd_script(){
+initrd_script (){
 cd ~
 if [[ -f "/root/99-initrd" ]]; then
 	mkdir -p /etc/initramfs/post-update.d/
@@ -242,7 +242,7 @@ fi
 }
 
 # ubuntu apt preferences
-apt_preferences(){
+apt_preferences (){
 echo
 echo Blacking listing packages.
 tee /etc/apt/preferences <<EOF
@@ -254,7 +254,7 @@ echo Done.
 }
 
 # defrag
-defrag_p2(){
+defrag_p2 (){
 if [[ "$FSTYPE" == "ext4" ]]; then
 	e4defrag -c ${P_VALUE}
 fi
@@ -267,7 +267,7 @@ fi
 }
 
 # shrink
-ext4_shrink(){
+ext4_shrink (){
 echo ""
 chmod +x scripts/shrink
 scripts/shrink -s ${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img
@@ -317,18 +317,24 @@ rm -f kpart.txt
 }
 
 # fin and compress
-finish_image(){
+finish_image (){
 IMAGE_TIME="$(date +%T | sed 's/://g' | sed 's/..$//')"
 IMAGE_FIN_NAME="${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}-${IMAGE_TIME}.img"
 if [[ -f "${IMAGE_FILE_NAME}" ]]; then
 	mv -f ${IMAGE_FILE_NAME} ${IMAGE_FIN_NAME}
 fi
 if [ $COMPRESS_IMG -eq 1 ]; then
-	echo ""; echo_compress
-	xz -zev --threads=${CORES} ${IMAGE_FIN_NAME}
-	if [[ -f "${IMAGE_FIN_NAME}.xz" ]]; then
-		sha256sum ${IMAGE_FIN_NAME}.xz > ${IMAGE_FIN_NAME}.xz.sha256
-		sha256sum --check ${IMAGE_FIN_NAME}.xz.sha256
+	if [[ -f "${IMAGE_FIN_NAME}" ]]; then
+		echo -e ""
+		echo_compress
+		xz -zev --threads=${CORES} ${IMAGE_FIN_NAME}
+		if [[ -f "${IMAGE_FIN_NAME}.xz" ]]; then
+			sha256sum ${IMAGE_FIN_NAME}.xz > ${IMAGE_FIN_NAME}.xz.sha256
+			sha256sum --check ${IMAGE_FIN_NAME}.xz.sha256
+		fi
+	else
+		echo -e ""
+		echo -e "${IMAGE_FIN_NAME} not found?"
 	fi
 fi
 }
