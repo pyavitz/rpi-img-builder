@@ -78,13 +78,6 @@ help:
 	@echo ""
 	@${HEADER}
 	@echo ""
-	@echo "\e[1;37mBoards:\e[0m"
-	@echo "   bcm2711\t\t\tRaspberry Pi 4B/400 (arm64)"
-	@echo "   bcm2711v7\t\t\tRaspberry Pi 4B/400 (armhf)"
-	@echo "   bcm2710\t\t\tRaspberry Pi 2/3/A/B/W/+ (arm64)"
-	@echo "   bcm2709\t\t\tRaspberry Pi 2/3/A/B/W/+ (armhf)"
-	@echo "   bcm2708\t\t\tRaspberry Pi 0/W/B/+ (armel)"
-	@echo ""
 	@echo "\e[1;37mCommands:\e[0m"
 	@echo "   make ccompile\t\tInstall x86-64 cross dependencies"
 	@echo "   make ccompile64\t\tInstall Arm64 cross dependencies"
@@ -97,6 +90,7 @@ help:
 	@echo "   make dialogrc\t\tSet builder theme"
 	@echo "   make check\t\t\tLatest revision of selected branch"
 	@echo ""
+	@echo "   make list\t\t\tList boards"
 	@echo "   make all board=xxx\t\tKernel > rootfs > image"
 	@echo "   make kernel board=xxx\tBuilds linux kernel package"
 	@echo "   make rootfs board=xxx\tCreate rootfs tarball"
@@ -172,6 +166,11 @@ ifdef arch
 endif
 	# Root Filesystem
 	$(call create_rootfs)
+
+# LIST BOARDS
+list:
+	# Boards
+	@cat lib/boards/* | grep -w "PRETTY_BOARD=" | sed 's/PRETTY_BOARD=//g' | sed 's/"//g' | sed 's/BCM/bcm/g' | sed 's/bcm2711 \/ ARMHF/bcm2711v7 \/ ARMHF/g'
 
 # clean and purge
 cleanup:
