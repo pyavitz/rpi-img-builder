@@ -43,16 +43,13 @@ make dialogrc   # Set builder theme (optional)
 ```
 
 #### Command list
-* Raspberry Pi 4B/400 = bcm2711 (arm64) / bcm2711v7 (armhf)
-* Raspberry Pi 2/3/A/B/W/+ = bcm2710 (arm64) / bcm2709 (armhf)
-* Raspberry Pi 0/1/W = bcm2708 (armel)
 
 ```sh
-make all board=XXX	# Kernel > Rootfs > Image (run at own risk)
-make kernel board=XXX
-make commit board=XXX	# Linux source pulled from commmit
-make rootfs board=XXX
-make image board=XXX
+make list		# List boards
+make all board=xxx	# Kernel > rootfs > image
+make kernel board=xxx	# Builds linux kernel package
+make rootfs board=xxx	# Create rootfs tarball
+make image board=xxx	# Make bootable image
 ```
 
 #### Miscellaneous
