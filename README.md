@@ -1,11 +1,17 @@
-<img src="https://socialify.git.ci/pyavitz/rpi-img-builder/image?description=1&font=KoHo&forks=1&issues=1&logo=https%3A%2F%2Fupload.wikimedia.org%2Fwikipedia%2Fde%2Fthumb%2Fc%2Fcb%2FRaspberry_Pi_Logo.svg%2F475px-Raspberry_Pi_Logo.svg.png&owner=1&pattern=Charlie%20Brown&stargazers=1&theme=Dark" alt="rpi-img-builder" width="640" height="320" />
+<details>
+<summary><h3>Boards</h3></summary>
 
-### The boards and distributions that are currently supported
-* **Raspberry Pi 4B/400** (*Debian, Devuan and Ubuntu*)
-* **Raspberry Pi 3/A/B/+** (*Debian, Devuan and Ubuntu*)
-* **Raspberry Pi 2/3/A/B/+** (*Debian, Devuan and Ubuntu*)
-* **Raspberry Pi 0/W/B/+** (*Debian and Devuan*)
-* [Raspberry Pi Hardware](https://www.raspberrypi.org/documentation/hardware/raspberrypi)
+```py
+Raspberry Pi Zero/W/1		bcm2708 / ARMEL
+Raspberry Pi Zero/W/2/3		bcm2709 / ARMHF
+Raspberry Pi Zero/W/2/3		bcm2710 / ARM64
+Raspberry Pi 4/400		bcm2711 / ARM64
+Raspberry Pi 4/400		bcm2711v7 / ARMHF
+Raspberry Pi 5			bcm2712 / ARM64
+```
+</details>
+
+[Raspberry Pi Hardware](https://www.raspberrypi.org/documentation/hardware/raspberrypi)
 
 ### Host dependencies for Debian Bullseye / Bookworm and Ubuntu Jammy Jellyfish
 * **Debian Bullseye** (recommended)
