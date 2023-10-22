@@ -1,3 +1,6 @@
+# header
+HEADER=./scripts/.header
+
 # menu
 MENU=./lib/dialog/menu
 CONF=./lib/dialog/config
@@ -73,8 +76,7 @@ endef
 
 help:
 	@echo ""
-	@echo "\t\t\e[1;31mRaspberry Pi Image Builder\e[0m"
-	@echo "\t\t\e[1;37m**************************\e[0m"
+	@${HEADER}
 	@echo ""
 	@echo "\e[1;37mBoards:\e[0m"
 	@echo "   bcm2711\t\t\tRaspberry Pi 4B/400 (arm64)"

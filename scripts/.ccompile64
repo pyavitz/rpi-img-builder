@@ -6,7 +6,7 @@ jammy-ccompile64(){
 sudo debconf-apt-progress -- apt install -y \
 	build-essential bison bc git dialog patch dosfstools mtools \
 	zip unzip qemu debootstrap qemu-user-static rsync kmod cpio flex \
-	libssl-dev libncurses5-dev parted fakeroot swig aria2 pv \
+	libssl-dev libncurses5-dev parted fakeroot swig aria2 pv figlet \
 	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs kpartx \
 	debian-archive-keyring crossbuild-essential-armel crossbuild-essential-armhf \
 	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-11-arm-linux-gnueabi \
@@ -21,7 +21,7 @@ sudo debconf-apt-progress -- apt install -y \
 	build-essential bison bc git dialog patch kpartx zstd mtools \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync make fdisk \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig libelf-dev \
-	crossbuild-essential-armel crossbuild-essential-armhf aria2 pv \
+	crossbuild-essential-armel crossbuild-essential-armhf aria2 pv figlet \
 	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs xfsprogs \
 	gcc-9 gcc-10 gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf \
 	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-9-plugin-dev gcc-10-plugin-dev
@@ -32,7 +32,7 @@ sudo debconf-apt-progress -- apt install -y \
 	build-essential bison bc git dialog patch kpartx zstd mtools \
 	dosfstools zip unzip debootstrap qemu-user-static rsync make fdisk \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig libelf-dev \
-	crossbuild-essential-armel crossbuild-essential-armhf aria2 pv jq \
+	crossbuild-essential-armel crossbuild-essential-armhf aria2 pv jq figlet \
 	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs xfsprogs \
 	gcc-11 gcc-12 gcc-11-arm-linux-gnueabihf gcc-12-arm-linux-gnueabihf \
 	gcc-11-arm-linux-gnueabi gcc-12-arm-linux-gnueabi gcc-11-plugin-dev gcc-12-plugin-dev

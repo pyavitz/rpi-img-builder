@@ -7,7 +7,7 @@ sudo debconf-apt-progress -- apt install -y \
 	build-essential bison bc git dialog patch fdisk distro-info-data \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync xfsprogs \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig kpartx \
-	aria2 pv lsb-release xz-utils curl e2fsprogs btrfs-progs jq mtools \
+	aria2 pv lsb-release xz-utils curl e2fsprogs btrfs-progs jq mtools figlet \
 	crossbuild-essential-arm64 crossbuild-essential-armhf crossbuild-essential-armel \
 	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-11-arm-linux-gnueabi \
 	gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf gcc-11-arm-linux-gnueabihf \
@@ -20,7 +20,7 @@ sudo debconf-apt-progress -- apt install -y \
 bullseye-ccompile(){
 sudo debconf-apt-progress -- apt install -y \
 	build-essential bison bc git dialog patch kpartx zstd aria2 pv jq \
-	dosfstools zip unzip qemu debootstrap qemu-user-static rsync make \
+	dosfstools zip unzip qemu debootstrap qemu-user-static rsync make figlet \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig libelf-dev \
 	crossbuild-essential-arm64 crossbuild-essential-armel crossbuild-essential-armhf \
 	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs xfsprogs \
@@ -33,7 +33,7 @@ bookworm-ccompile(){
 sudo debconf-apt-progress -- apt install -y \
 	build-essential bison bc git dialog patch dosfstools zip unzip parted \
 	debootstrap qemu-user-static rsync kmod cpio flex libssl-dev libncurses5-dev \
-	device-tree-compiler libfdt-dev python3-distutils python3-dev swig fakeroot \
+	device-tree-compiler libfdt-dev python3-distutils python3-dev swig fakeroot figlet \
 	lzop lz4 aria2 pv crossbuild-essential-arm64 crossbuild-essential-armhf u-boot-tools \
 	distro-info-data lsb-release libelf-dev fdisk kpartx ccache xz-utils gcc-11 gcc-12 \
 	python-is-python3 python-dev-is-python3 zstd gcc-arm-none-eabi gcc-11-arm-linux-gnueabihf \

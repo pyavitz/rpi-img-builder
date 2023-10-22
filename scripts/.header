@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [[ `command -v figlet` ]]; then :; else sudo apt install -y figlet; echo ""; fi
+
+GRN="\e[0;32m"
+PNK="\e[0;35m"
+TXT="\033[1m"
+FIN="\e[0m"
+
+BUILDER=`figlet -f term -l "Raspberry Pi Image Builder"`
+GIT_BRANCH=`git branch`
+
+if [[ -f "userdata.txt" ]]; then
+	VERSION=`grep "builder=" "userdata.txt" | sed 's/builder=//g'`
+	BUILDER_VER=" ${PNK}(${FIN}${GRN}${VERSION}${FIN}${PNK})${FIN}"
+else
+	BUILDER_VER=""
+fi
+
+echo -en "${TXT}${BUILDER}${FIN} ${PNK}(${FIN}${GRN}${GIT_BRANCH}${FIN}${PNK})${FIN}${BUILDER_VER}"
+echo ""
+
+exit 0
