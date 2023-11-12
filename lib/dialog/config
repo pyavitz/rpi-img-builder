@@ -1,12 +1,13 @@
 #!/bin/bash
 
-BUILDER="5.8"
+BUILDER="6.0"
 GCC=`ls -ls /usr/bin/gcc | sed 's/.*\(..\)/\1/' | sed 's/ //g'`
 ARCH=`uname -m`
+MYNAME=`echo $USER | sed -e "s/\b\(.\)/\u\1/g"`
 
-NAME=""
-USERNAME=""
-PASSWORD=""
+NAME="$MYNAME"
+USERNAME="$USER"
+PASSWORD="board"
 CCACHE="0"
 NETWORKMANAGER="1"
 RTW88="0"
@@ -99,8 +100,8 @@ echo 'ENABLE_COMMIT="0"' >> tmp0
 echo 'COMMIT=""' >> tmp0
 echo CORES=\`nproc\` >> tmp0
 echo 'CFLAGS=""' >> tmp0
-echo 'KBUSER="$USER"' >> tmp0
-echo 'KBHOST="raspberrypi"' >> tmp0
+echo 'KBUSER="playboy"' >> tmp0
+echo 'KBHOST="penguin"' >> tmp0
 echo "set_locales(){" >> tmp0
 echo "apt install -y locales" >> tmp0
 echo "export LANGUAGE=${LOCALE}" >> tmp0
@@ -150,8 +151,8 @@ sed -i '52i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # customize your image
 custom_txt (){
-echo "# Default Image Size: 3072MB" > custom.txt
-echo 'IMGSIZE="3072MB"' >> custom.txt
+echo "# Image Size: 3072MB 3584MB 4096MB" > custom.txt
+echo 'IMGSIZE="4096MB"' >> custom.txt
 echo "" >> custom.txt
 echo "# Root Filesystem Types: ext4 btrfs xfs" >> custom.txt
 echo 'FSTYPE="ext4"' >> custom.txt

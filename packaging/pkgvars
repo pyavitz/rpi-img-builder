@@ -1,15 +1,27 @@
 #!/bin/bash
 
 COMPRESSION="xz"
+PLATFORM="broadcom"
 LINUX_IMAGE="linux-image-${SERIES}"
 LINUX_HEADERS="linux-headers-${SERIES}"
 
 linux_packaging(){
+# install target
+if [[ "$ARCH" == "arm" ]]; then
+	LINUX_PATH="usr/lib/${LINUX_IMAGE}"
+fi
+if [[ "$ARCH" == "arm64" ]]; then
+	LINUX_PATH="usr/lib/${LINUX_IMAGE}/${PLATFORM}"
+fi
+OVERLAY_PATH="usr/lib/${LINUX_IMAGE}/overlays"
+INSTALL_PATH="boot/${PLATFORM}"
 echo "# packaging variables" > "scripts/package/pkgvars"
-echo board_series='"'$BOARD_EXT'"' >> "scripts/package/pkgvars"
+echo board_series='"'$SERIES'"' >> "scripts/package/pkgvars"
 echo kernel_img='"'$KERNEL_IMG'"' >> "scripts/package/pkgvars"
 echo linux_packagename='"'$LINUX_IMAGE'"' >> "scripts/package/pkgvars"
 echo headers_packagename='"'$LINUX_HEADERS'"' >> "scripts/package/pkgvars"
 echo compression='"'$COMPRESSION'"' >> "scripts/package/pkgvars"
-echo boot_path='"'boot/broadcom'"' >> "scripts/package/pkgvars"
+echo linux_path='"'$LINUX_PATH'"' >> "scripts/package/pkgvars"
+echo overlays_path='"'$OVERLAY_PATH'"' >> "scripts/package/pkgvars"
+echo boot_path='"'$INSTALL_PATH'"' >> "scripts/package/pkgvars"
 }

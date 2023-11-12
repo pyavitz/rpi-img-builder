@@ -1,6 +1,6 @@
 #!/bin/bash
 
-partitions(){
+partitions (){
 if [[ "$OFFSET" == "8192" ]]; then IMG_OFFSET="4MiB"; fi
 truncate -s ${IMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
 parted --script "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" \
@@ -27,7 +27,7 @@ umount p2
 $MOUNT_ROOTFS
 }
 
-filesystem(){
+filesystem (){
 MAKE_BOOTFS="mkfs -t vfat -n BOOT ${IMAGE_LOOP_DEV_BOOT}"
 BOOT_PATH="/boot/broadcom"
 if [[ "$FSTYPE" == "ext4" ]]; then
@@ -50,7 +50,7 @@ if [[ "$FSTYPE" == "xfs" ]]; then
 fi
 }
 
-create_fstab(){
+create_fstab (){
 tee p2/etc/fstab <<EOF
 UUID=${BOOT_UUID}	${BOOT_PATH}	vfat	defaults,flush 0 2
 UUID=${ROOT_UUID}	/	${ROOTFS_TABLE}
@@ -58,7 +58,7 @@ tmpfs	/tmp		tmpfs	defaults,nosuid 0 0
 EOF
 }
 
-partition_uuid(){
+partition_uuid (){
 BOOT_UUID=$(blkid -o export -- "${IMAGE_LOOP_DEV_BOOT}" | sed -ne 's/^UUID=//p')
 ROOT_UUID=$(blkid -o export -- "${IMAGE_LOOP_DEV_ROOTFS}" | sed -ne 's/^UUID=//p')
 ROOT_PARTUUID=$(blkid -o export -- "${IMAGE_LOOP_DEV_ROOTFS}" | sed -ne 's/^PARTUUID=//p')
@@ -68,13 +68,13 @@ echo ROOT_PARTUUID='"'$ROOT_PARTUUID'"' >> part-uuid.txt
 source part-uuid.txt
 }
 
-cmdline(){
+cmdline (){
 tee p1/cmdline.txt <<EOF
 ${CONSOLE} root=PARTUUID=${ROOT_PARTUUID} ${ROOTFSTYPE} fsck.repair=yes ${EXTRA} rootwait
 EOF
 }
 
-bcm2711_config(){
+config_dot_txt (){
 tee p1/config.txt <<EOF
 arm_64bit=1
 initramfs initrd.gz followkernel
@@ -129,6 +129,7 @@ disable_overscan=1
 # uncomment to overclock: https://www.tomshardware.com/how-to/overclock-any-raspberry-pi
 #arm_freq=
 #gpu_freq=
+#core_freq=
 #over_voltage=
 #force_turbo=1
 
@@ -152,6 +153,8 @@ enable_uart=0
 # disable wifi and bluetooth
 #dtoverlay=disable-wifi
 #dtoverlay=disable-bt
+#dtoverlay=pi3-disable-wifi
+#dtoverlay=pi3-disable-bt
 
 # remove test rainbow
 disable_splash=1
@@ -171,261 +174,5 @@ dtoverlay=vc4-kms-v3d
 #dtoverlay=vc4-fkms-v3d
 max_framebuffers=2
 arm_boost=1
-EOF
-}
-
-bcm2710_config(){
-tee p1/config.txt <<EOF
-arm_64bit=1
-initramfs initrd.gz followkernel
-
-# uncomment if you get no picture on HDMI for a default "safe" mode
-#hdmi_safe=1
-
-# uncomment this if your display has a black border of unused pixels visible
-# and your display can output without overscan
-disable_overscan=1
-
-# uncomment the following to adjust overscan. Use positive numbers if console
-# goes off screen, and negative if there is too much border
-#overscan_left=16
-#overscan_right=16
-#overscan_top=16
-#overscan_bottom=16
-
-# uncomment to force a console size. By default it will be display's size minus
-# overscan.
-#framebuffer_width=1280
-#framebuffer_height=720
-
-# uncomment if hdmi display is not detected and composite is being output
-#hdmi_force_hotplug=1
-
-# uncomment to force a specific HDMI mode (this will force VGA)
-#hdmi_group=1
-#hdmi_mode=1
-
-# uncomment to force a HDMI mode rather than DVI. This can make audio work in
-# DMT (computer monitor) modes
-#hdmi_drive=2
-
-# uncomment to increase signal to HDMI, if you have interference, blanking, or
-# no display
-#config_hdmi_boost=4
-
-# uncomment for composite PAL
-#sdtv_mode=2
-
-# camera
-#start_x=1
-#gpu_mem=128
-
-# automatically load overlays for detected cameras
-#camera_auto_detect=1
-
-# automatically load overlays for detected DSI displays
-#display_auto_detect=1
-
-# uncomment to overclock: https://www.tomshardware.com/how-to/overclock-any-raspberry-pi
-#arm_freq=
-#core_freq=
-#over_voltage=
-
-# uncomment some or all of these to enable the optional hardware interfaces
-#dtparam=i2c_arm=on
-#dtparam=i2s=on
-#dtparam=spi=on
-
-# uncomment this to enable infrared communication.
-#dtoverlay=gpio-ir,gpio_pin=17
-#dtoverlay=gpio-ir-tx,gpio_pin=18
-
-# additional overlays and parameters are documented /boot/overlays/README
-
-# enable audio (loads snd_bcm2835)
-dtparam=audio=on
-
-# enable uart
-enable_uart=0
-
-# disable wifi and bluetooth
-#dtoverlay=pi3-disable-wifi
-#dtoverlay=pi3-disable-bt
-
-# remove test rainbow
-disable_splash=1
-
-# disables the warning overlays
-#avoid_warnings=1
-EOF
-}
-
-bcm2709_config(){
-tee p1/config.txt <<EOF
-initramfs initrd.gz followkernel
-
-# uncomment if you get no picture on HDMI for a default "safe" mode
-#hdmi_safe=1
-
-# uncomment this if your display has a black border of unused pixels visible
-# and your display can output without overscan
-disable_overscan=1
-
-# uncomment the following to adjust overscan. Use positive numbers if console
-# goes off screen, and negative if there is too much border
-#overscan_left=16
-#overscan_right=16
-#overscan_top=16
-#overscan_bottom=16
-
-# uncomment to force a console size. By default it will be display's size minus
-# overscan.
-#framebuffer_width=1280
-#framebuffer_height=720
-
-# uncomment if hdmi display is not detected and composite is being output
-#hdmi_force_hotplug=1
-
-# uncomment to force a specific HDMI mode (this will force VGA)
-#hdmi_group=1
-#hdmi_mode=1
-
-# uncomment to force a HDMI mode rather than DVI. This can make audio work in
-# DMT (computer monitor) modes
-#hdmi_drive=2
-
-# uncomment to increase signal to HDMI, if you have interference, blanking, or
-# no display
-#config_hdmi_boost=4
-
-# uncomment for composite PAL
-#sdtv_mode=2
-
-# camera
-#start_x=1
-#gpu_mem=128
-
-# automatically load overlays for detected cameras
-#camera_auto_detect=1
-
-# automatically load overlays for detected DSI displays
-#display_auto_detect=1
-
-# uncomment to overclock: https://www.tomshardware.com/how-to/overclock-any-raspberry-pi
-#arm_freq=
-#core_freq=
-#over_voltage=
-
-# uncomment some or all of these to enable the optional hardware interfaces
-#dtparam=i2c_arm=on
-#dtparam=i2s=on
-#dtparam=spi=on
-
-# uncomment this to enable infrared communication.
-#dtoverlay=gpio-ir,gpio_pin=17
-#dtoverlay=gpio-ir-tx,gpio_pin=18
-
-# additional overlays and parameters are documented /boot/overlays/README
-
-# enable audio (loads snd_bcm2835)
-dtparam=audio=on
-
-# enable uart
-enable_uart=0
-
-# disable wifi and bluetooth
-#dtoverlay=pi3-disable-wifi
-#dtoverlay=pi3-disable-bt
-
-# remove test rainbow
-disable_splash=1
-
-# disables the warning overlays
-#avoid_warnings=1
-EOF
-}
-
-bcm2708_config(){
-tee p1/config.txt <<EOF
-initramfs initrd.gz followkernel
-
-# uncomment if you get no picture on HDMI for a default "safe" mode
-#hdmi_safe=1
-
-# uncomment this if your display has a black border of unused pixels visible
-# and your display can output without overscan
-disable_overscan=1
-
-# uncomment the following to adjust overscan. Use positive numbers if console
-# goes off screen, and negative if there is too much border
-#overscan_left=16
-#overscan_right=16
-#overscan_top=16
-#overscan_bottom=16
-
-# uncomment to force a console size. By default it will be display's size minus
-# overscan.
-#framebuffer_width=1280
-#framebuffer_height=720
-
-# uncomment if hdmi display is not detected and composite is being output
-#hdmi_force_hotplug=1
-
-# uncomment to force a specific HDMI mode (this will force VGA)
-#hdmi_group=1
-#hdmi_mode=1
-
-# uncomment to force a HDMI mode rather than DVI. This can make audio work in
-# DMT (computer monitor) modes
-#hdmi_drive=2
-
-# uncomment to increase signal to HDMI, if you have interference, blanking, or
-# no display
-#config_hdmi_boost=4
-
-# uncomment for composite PAL
-#sdtv_mode=2
-
-# camera
-#start_x=1
-#gpu_mem=128
-
-# automatically load overlays for detected cameras
-#camera_auto_detect=1
-
-# automatically load overlays for detected DSI displays
-#display_auto_detect=1
-
-# uncomment to overclock: https://www.tomshardware.com/how-to/overclock-any-raspberry-pi
-#arm_freq=
-#core_freq=
-#over_voltage=
-
-# uncomment some or all of these to enable the optional hardware interfaces
-#dtparam=i2c_arm=on
-#dtparam=i2s=on
-#dtparam=spi=on
-
-# uncomment this to enable infrared communication.
-#dtoverlay=gpio-ir,gpio_pin=17
-#dtoverlay=gpio-ir-tx,gpio_pin=18
-
-# additional overlays and parameters are documented /boot/overlays/README
-
-# enable audio (loads snd_bcm2835)
-dtparam=audio=on
-
-# enable uart
-enable_uart=0
-
-# disable wifi and bluetooth
-#dtoverlay=disable-wifi
-#dtoverlay=disable-bt
-
-# remove test rainbow
-disable_splash=1
-
-# disables the warning overlays
-#avoid_warnings=1
 EOF
 }
