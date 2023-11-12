@@ -6,19 +6,22 @@ source custom.txt
 MAKE_OUTPUT="output/$1"
 BTITLE=`echo $FAMILY: $MOTD: $BOARD: $ARCH_EXT | sed 's/bcm2711v7/bcm2711/g' | sed -e 's/\(.*\)/\U\1/'`
 if [[ "$BOARD" == "bcm2708" ]]; then
-	TITLE=`echo $MOTD $BOARD | sed 's/bcm2708/0\/1\/W/g'`;
+	TITLE=`echo $MOTD $BOARD | sed 's/bcm2708/Zero\/W\/1/g'`;
 fi
 if [[ "$BOARD" == "bcm2709" ]]; then
-	TITLE=`echo $MOTD $BOARD | sed 's/bcm2709/2\/Zero2W\/3/g'`;
+	TITLE=`echo $MOTD $BOARD | sed 's/bcm2709/Zero\/W\/2\/3/g'`;
 fi
 if [[ "$BOARD" == "bcm2710" ]]; then
-	TITLE=`echo $MOTD $BOARD | sed 's/bcm2710/2\/Zero2W\/3/g'`;
+	TITLE=`echo $MOTD $BOARD | sed 's/bcm2710/Zero\/W\/2\/3/g'`;
 fi
 if [[ "$BOARD" == "bcm2711" ]]; then
 	TITLE=`echo $MOTD $BOARD | sed 's/bcm2711/4\/400/g'`;
 fi
 if [[ "$BOARD" == "bcm2711v7" ]]; then
 	TITLE=`echo $MOTD $BOARD | sed 's/bcm2711v7/4\/400/g'`;
+fi
+if [[ "$BOARD" == "bcm2712" ]]; then
+	TITLE=`echo $MOTD $BOARD | sed 's/bcm2712/5/g'`;
 fi
 DIALOG_CANCEL=1
 DIALOG_ESC=255
