@@ -172,11 +172,14 @@ fi
 
 # Update dtb list
 for dtclist in `cat dtclist.txt`; do ls $tmpdir/$linux_path/$dtclist 2>/dev/null | tee -a dtclist.new > /dev/null 2>&1; done
+grep ".dtb" "dtclist.txt" | echo "  CHKLIST `wc -l`"
 rm -f "dtclist.txt"; mv -f "dtclist.new" "dtclist.txt"
 
 # Installing dtb files
 if [ -d $tmpdir/$linux_path ]; then
 	mkdir -p "$tmpdir/$boot_path"
+	grep ".dtb" "dtclist.txt" | echo "  CHKINST `wc -l`"
+	grep ".dtb" "dtclist.txt" | sed 's/^/  DTBINST /' | sed "s/.\/debian\/tmp\/usr\/lib\/$linux_name/boot/g"
 	for dtclist in `cat dtclist.txt`; do cp -r "$dtclist" 2>/dev/null "$tmpdir/$boot_path"; done
 	rm -f dtclist.txt
 	# install overlays
