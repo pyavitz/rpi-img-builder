@@ -38,10 +38,15 @@ apt-get update
 apt-get install -y apt-utils
 
 # locales
-set_locales
+apt install -y locales
+export LANGUAGE=${LOCALE}
+export LANG=${LOCALE}
+export LC_ALL=${LOCALE_LC_ALL}
+locale-gen ${LOCALE}
 
 # timezone
-set_timezone
+ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
+echo -n "${TIMEZONE}" > /etc/timezone
 
 apt upgrade -y
 apt dist-upgrade -y

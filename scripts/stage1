@@ -173,7 +173,7 @@ umount p2/dev
 umount p2/boot/broadcom
 # clean
 if [ -e p2/usr/bin/${STATIC} ]; then rm -f p2/usr/bin/${STATIC}; fi
-cp -f p2/root/kernel.txt .
+cp -f p2/root/kernel.release .
 rm p2/root/stage2
 rm -f p2/root/*.txt
 rm -fdr p2/var/cache/debconf/*
@@ -184,7 +184,7 @@ if [ -n "$PROXY" ]; then
 	rm p2/etc/apt/apt.conf.d/30proxy
 fi
 rm p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
-if [[ -f "kernel.txt" ]]; then source kernel.txt; fi
+if [[ -f "kernel.release" ]]; then source kernel.release; fi
 
 # Finish
 if [[ "$FSTYPE" == "ext4" ]] && [[ "$ARCH" == "arm" ]]; then
@@ -213,6 +213,6 @@ if [[ "$FSTYPE" == "ext4" ]]; then
 	ext4_shrink
 fi
 finish_image
-rm -f {part-uuid.txt,board.txt,kernel.txt}
+rm -f {part-uuid.txt,board.txt,kernel.release}
 
 exit 0

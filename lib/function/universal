@@ -162,9 +162,9 @@ if [ -f /usr/src/linux-headers-*/include/config/kernel.release ]; then
 else
 	KERNEL_RELEASE=`ls /boot/config-* | sed 's/\/boot\/config-//g'`
 fi
-echo -e INSTALLED_KERNEL='"'$KERNEL_RELEASE'"' > /root/kernel.txt
-# add fstype to the board.txt and kernel.txt file
-echo FSTYPE='"'${FSTYPE}'"' >> /root/kernel.txt
+echo -e INSTALLED_KERNEL='"'$KERNEL_RELEASE'"' > /root/kernel.release
+# add fstype to the board.txt and kernel.release file
+echo FSTYPE='"'${FSTYPE}'"' >> /root/kernel.release
 echo "" >> /etc/opt/board.txt
 echo "# filesystem" >> /etc/opt/board.txt
 echo FSTYPE='"'${FSTYPE}'"' >> /etc/opt/board.txt

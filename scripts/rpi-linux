@@ -25,24 +25,8 @@ if [[ "$HOST_ARCH" == "x86_64"  ]] && [[ "$ARCH" == "arm" || "$ARCH" == "arm64" 
 linux_compilers
 # source directory
 source_dir
-# rpi-linux
-if [[ -e "${KERNEL}-${VERSION}" ]]; then
-	echo ""
-	echo -en "${WHT}${KERNEL}-${VERSION}${FIN}"
-	echo -en " ${PNK}[${FIN}${YLW}removing${FIN}${PNK}]${FIN}"
-	rm -fdr ${KERNEL}-${VERSION}
-	echo -en " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
-fi
 # download
-if [[ `wget -S --spider https://raw.githubusercontent.com/raspberrypi/linux/rpi-${VERSION}/Makefile 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
-	download
-else
-	echo ""
-	echo -e "${WHT}It appears the branch you selected is not available${FIN}?"
-	exit 0
-fi
-# extract
-extract
+download
 # setup and firmware
 setup
 firmware
