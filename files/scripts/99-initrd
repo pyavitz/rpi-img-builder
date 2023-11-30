@@ -5,12 +5,12 @@ initrd_boot="/boot/initrd.gz"
 
 if [[ -d "/boot" ]]; then
 	if [[ `ls  /boot/initrd.img-*` ]] > /dev/null 2>&1; then
-		echo "Creating initrd.gz."
+		echo "Generating ${initrd_boot}"
 		rm -fr /boot/{initrd.gz,initrd.img-*-bak}
 		cp -f /boot/initrd.img-* ${initrd_boot}
-	fi
-	if [[ -d "/boot/broadcom" ]]; then
-		rm -fr /boot/broadcom/{initrd.gz,initrd.img-*-bak}
-		cp -f /boot/initrd.img-* ${initrd_brcm}
+		if [[ -d "/boot/broadcom" ]]; then
+			rm -fr /boot/broadcom/{initrd.gz,initrd.img-*-bak}
+			cp -f /boot/initrd.img-* ${initrd_brcm}
+		fi
 	fi
 fi
