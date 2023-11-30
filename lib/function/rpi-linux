@@ -1,5 +1,5 @@
 #!/bin/bash
-DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
+GIT_URL="https://github.com/raspberrypi/linux"
 
 source_dir (){
 mkdir -p ${SRC}
@@ -13,37 +13,89 @@ sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export I
 }
 
 download (){
-RPIURL="https://github.com/raspberrypi/linux/archive/"
 echo ""
-if [[ -f "${KERNEL}-${VERSION}.tar.gz" ]]; then
-	:;
+if [[ `wget -S --spider ${GIT_URL}/blob/rpi-${VERSION}/Makefile 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+	download_options
+	if [[ "$GIT_FAST" == "true" ]]; then verify_commit; fi
+	if [[ -d "${KERNEL}-${VERSION}" ]] && [[ -d "${KERNEL}-${VERSION}.backup" ]]; then
+		echo -en "${KERNEL}-${VERSION}"
+		echo -en " ${PNK}[${FIN}${YLW}cleaning${FIN}${PNK}]${FIN}"
+		rm -fdr ${KERNEL}-${VERSION}
+		echo -en " ${PNK}[${FIN}${WHT}restoring${FIN}${PNK}]${FIN}"
+		mv -f ${KERNEL}-${VERSION}.backup ${KERNEL}-${VERSION}
+		cd ${KERNEL}-${VERSION}; git pull -q; make clean; cd ..
+		echo -en " ${PNK}[${FIN}${WHT}creating backup${FIN}${PNK}]${FIN}"
+		cp -r ${KERNEL}-${VERSION} ${KERNEL}-${VERSION}.backup
+		echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
+	else
+		echo -e "This may take a while ..."
+		echo ""
+		git clone ${GIT_OPT} -b rpi-${VERSION} ${GIT_URL}.git ${KERNEL}-${VERSION}
+		sleep .50
+		cd ${KERNEL}-${VERSION}; git pull -q; make clean; cd ..
+		echo ""
+		echo -en "${KERNEL}-${VERSION}"
+		echo -en " ${PNK}[${FIN}${WHT}creating backup${FIN}${PNK}]${FIN}"
+		cp -r ${KERNEL}-${VERSION} ${KERNEL}-${VERSION}.backup
+		echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
+	fi
 else
-	echo_kernel
-	${DOWNLOAD} ${RPIURL}rpi-${VERSION}.tar.gz
+	echo ""
+	echo -e "Git branch ${VERSION} is not available?"
+	exit 0
+fi
+}
+
+download_options (){
+GIT_HASH=`git ls-remote --heads ${GIT_URL}.git | grep -w "refs/heads/rpi-${VERSION}" | sed -n '1p' | sed "s/refs\/heads\/rpi-${VERSION}//g" | sed s/'\s'//g`
+if [[ -f "../.cache/git_fast.${KERNEL}-${VERSION}" ]]; then
+	source ../.cache/git_fast.${KERNEL}-${VERSION}
+	if [[ "$GIT_FAST" == "true" ]]; then GIT_OPT="--depth 1"; else GIT_OPT=""; fi
+else
+	echo -e "How would you like to handle downloads?"
+	options=("fast" "slow")
+	select opt in "${options[@]}"
+	do
+		case $opt in
+			"fast")
+				mkdir -p ../.cache
+				echo 'GIT_FAST="true"' > ../.cache/git_fast.${KERNEL}-${VERSION}
+				echo GIT_COMMIT='"'${GIT_HASH}'"' >> ../.cache/git_fast.${KERNEL}-${VERSION}
+				GIT_OPT="--depth 1"
+				echo -e ""
+				break
+				;;
+			"slow")
+				mkdir -p .cache
+				echo 'GIT_FAST="false"' > ../.cache/git_fast.${KERNEL}-${VERSION}
+				GIT_OPT=""
+				echo -e ""
+				break
+				;;
+			*)
+				echo "invalid option"
+				;;
+		esac
+	done
+fi
+}
+
+verify_commit (){
+echo -en "commit"
+if [[ "$GIT_COMMIT" == "$GIT_HASH" ]]; then
+	echo -en " ${PNK}[${FIN}${WHT}${GIT_COMMIT}${FIN}${PNK}]${FIN}"
+	echo -e " ${PNK}[${FIN}${GRN}ok${FIN}${PNK}]${FIN}"
+else
+	echo -en " ${PNK}[${FIN}${WHT}${GIT_HASH}${FIN}${PNK}]${FIN}"
+	echo -en " ${PNK}[${FIN}${WHT}updating${FIN}${PNK}]${FIN}"
+	sed -i 's/^GIT_COMMIT=.*/GIT_COMMIT="'"${GIT_HASH}"'"/' ../.cache/git_fast.${KERNEL}-${VERSION}
 	echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
+	echo -en "${KERNEL}-${VERSION}"
+	echo -en " ${PNK}[${FIN}${YLW}purging${FIN}${PNK}]${FIN}"
+	rm -fdr ${KERNEL}-${VERSION} ${KERNEL}-${VERSION}.backup
+	echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
+	echo ""
 fi
-}
-
-report_tarball_error (){
-echo "NOTICE: Tarball ${KERNEL}-${VERSION} is MIA. Please make a report."
-echo ""
-exit 0
-}
-
-extract (){
-echo ""
-if [[ -f "${KERNEL}-${VERSION}.tar.gz" ]]; then
-	echo_extract
-	pv ${KERNEL}-${VERSION}.tar.gz | tar -xzf - -C .
-else
-	report_tarball_error
-fi
-}
-
-report_dir_error (){
-echo "NOTICE: Directory ${KERNEL}-${VERSION} is MIA. Please make a report."
-echo ""
-exit 0
 }
 
 setup (){
@@ -121,5 +173,5 @@ done
 builddeb (){
 if [ $CROSSCOMPILE -eq 1 ]; then echo -e "${GRN}  CC${FIN}"; else echo -e "${GRN}  NC${FIN}"; fi
 echo ${BUILD_VERSION} > .version
-echo 'y' | kbuild "KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} bindeb-pkg"
+echo 'y' | kbuild "LOCALVERSION= KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} bindeb-pkg"
 }

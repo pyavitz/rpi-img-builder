@@ -26,10 +26,7 @@ for choice in "${CHOICES[@]}"; do
 done
 
 # finish
-if [[ -f ".cache/menu" ]]; then
-	# clean
-	rm -fdr .cache
-fi
+if [[ -f ".cache/menu" ]]; then rm -f .cache/menu; fi
 clear -x
 echo -e "Program terminated."
 exit 0

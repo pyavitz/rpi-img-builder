@@ -28,8 +28,8 @@ CLN=./scripts/clean
 CLEAN=sudo ./scripts/clean
 
 # purge
-PURGE=$(shell sudo rm -fdr source)
-PURGEALL=$(shell sudo rm -fdr source output)
+PURGE=$(shell sudo rm -fdr source; if [ -d .cache ]; then sudo rm -f .cache/git_fast.*; fi)
+PURGEALL=$(shell sudo rm -fdr source output; if [ -d .cache ]; then sudo rm -f .cache/git_fast.*; fi)
 
 # miscellaneous
 XCHECK=./scripts/check
