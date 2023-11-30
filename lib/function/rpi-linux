@@ -52,7 +52,8 @@ if [[ -f "../.cache/git_fast.${KERNEL}-${VERSION}" ]]; then
 	source ../.cache/git_fast.${KERNEL}-${VERSION}
 	if [[ "$GIT_FAST" == "true" ]]; then GIT_OPT="--depth 1"; else GIT_OPT=""; fi
 else
-	while : do
+	while :
+	do
 	echo -e "How would you like to handle downloads?"
 	echo -e " 1) shallow clone (default)"
 	echo -e " 2) full clone"
