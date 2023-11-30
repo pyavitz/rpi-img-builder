@@ -52,29 +52,40 @@ if [[ -f "../.cache/git_fast.${KERNEL}-${VERSION}" ]]; then
 	source ../.cache/git_fast.${KERNEL}-${VERSION}
 	if [[ "$GIT_FAST" == "true" ]]; then GIT_OPT="--depth 1"; else GIT_OPT=""; fi
 else
+	while : do
 	echo -e "How would you like to handle downloads?"
-	options=("fast" "slow")
-	select opt in "${options[@]}"
-	do
-		case $opt in
-			"fast")
-				mkdir -p ../.cache
-				echo 'GIT_FAST="true"' > ../.cache/git_fast.${KERNEL}-${VERSION}
-				echo GIT_COMMIT='"'${GIT_HASH}'"' >> ../.cache/git_fast.${KERNEL}-${VERSION}
-				GIT_OPT="--depth 1"
-				echo -e ""
-				break
-				;;
-			"slow")
-				mkdir -p .cache
-				echo 'GIT_FAST="false"' > ../.cache/git_fast.${KERNEL}-${VERSION}
-				GIT_OPT=""
-				echo -e ""
-				break
-				;;
-			*)
-				echo "invalid option"
-				;;
+	echo -e " 1) shallow clone (default)"
+	echo -e " 2) full clone"
+	echo -e ""
+	read -t10 -s -p ""
+	if [ $? -gt 128 ]; then
+		echo -e "Default selected."
+		mkdir -p ../.cache
+		echo 'GIT_FAST="true"' > ../.cache/git_fast.${KERNEL}-${VERSION}
+		echo GIT_COMMIT='"'${GIT_HASH}'"' >> ../.cache/git_fast.${KERNEL}-${VERSION}
+		GIT_OPT="--depth 1"
+		echo -e ""
+		break
+	fi
+	case $REPLY in
+		[1]*)
+			mkdir -p ../.cache
+			echo 'GIT_FAST="true"' > ../.cache/git_fast.${KERNEL}-${VERSION}
+			echo GIT_COMMIT='"'${GIT_HASH}'"' >> ../.cache/git_fast.${KERNEL}-${VERSION}
+			GIT_OPT="--depth 1"
+			echo -e ""
+			break
+			;;
+		[2]*)
+			mkdir -p .cache
+			echo 'GIT_FAST="false"' > ../.cache/git_fast.${KERNEL}-${VERSION}
+			GIT_OPT=""
+			echo -e ""
+			break
+			;;
+		*)
+			echo -e "Enter 1 or 2"
+			;;
 		esac
 	done
 fi
