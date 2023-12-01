@@ -230,17 +230,6 @@ if [[ -f "files/userscripts/uscripts" ]]; then
 fi
 }
 
-# initrd script
-initrd_script (){
-cd ~
-if [[ -f "/root/99-initrd" ]]; then
-	mkdir -p /etc/initramfs/post-update.d/
-	mv -f 99-initrd /etc/initramfs/post-update.d/
-	chmod +x /etc/initramfs/post-update.d/99-initrd
-	chown root:root /etc/initramfs/post-update.d/99-initrd
-fi
-}
-
 # ubuntu apt preferences
 apt_preferences (){
 echo
