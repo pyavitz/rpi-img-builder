@@ -68,20 +68,7 @@ EOF
 ifupdown-setup(){
 rm -f /etc/network/interfaces
 if [[ "$DISTRO" == "devuan" ]]; then
-	ln -sr /etc/network/if-up.d/00check-network-cable /etc/network/if-pre-up.d/00check-network-cable
-	sed -i 's/#CONFIGURE_INTERFACES=yes/CONFIGURE_INTERFACES=yes/g' /etc/default/networking
-	sed -i 's/#WAIT_ONLINE_METHOD=ifup/WAIT_ONLINE_METHOD=ifup/g' /etc/default/networking
-	sed -i 's/#WAIT_ONLINE_TIMEOUT=300/WAIT_ONLINE_TIMEOUT=10/g' /etc/default/networking
-	if [ -f /etc/default/network-test ]; then
-		sed -i 's/DO_ARPING=${DO_ARPING:-yes}/DO_ARPING=${DO_ARPING:-no}/g' /etc/default/network-test
-		sed -i 's/DO_SYSLOG=${DO_SYSLOG:-yes}/DO_SYSLOG=${DO_SYSLOG:-no}/g' /etc/default/network-test
-	fi
-	if [[ "$BOARD" == "bcm2710" ]]; then
-		eth_udev-rule
-	fi
-	if [[ "$BOARD" == "bcm2709" ]]; then
-		eth_udev-rule
-	fi
+	if [[ "$BOARD" == "bcm2709" || "$BOARD" == "bcm2710" ]]; then eth_udev-rule; fi
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
 	if [[ "$DISTRO_VERSION" == "jammy" ]]; then

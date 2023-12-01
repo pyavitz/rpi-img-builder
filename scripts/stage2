@@ -52,30 +52,18 @@ apt upgrade -y
 apt dist-upgrade -y
 apt autoremove -y
 if [[ "$DISTRO" == "ubuntu" ]]; then
-	if [ -f "$UNMINIMIZE" ]; then
-		echo 'y' | unminimize
-	fi
+	if [ -f "$UNMINIMIZE" ]; then echo 'y' | unminimize; fi
 	apt_preferences
 	echo ""
 fi
 # network variables
-if [ $NETWORKMANAGER -eq 1 ]; then
-	NETWORKING="network-manager"
-	if [[ "$DISTRO" == "devuan" ]]; then
-		NETWORKING_EXTRA=""
-	fi
-else
-	NETWORKING="ifupdown"
-	if [[ "$DISTRO" == "devuan" ]]; then
-		NETWORKING_EXTRA="ifupdown-extra"
-	fi
-fi
+if [ $NETWORKMANAGER -eq 1 ]; then NETWORKING="network-manager"; else NETWORKING="ifupdown"; fi
 if [[ "$DISTRO" == "debian" || "$DISTRO" == "raspbian" ]]; then
 	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} resolvconf openssh-client openssh-server ${FSPROG} ${NETWORKING}
 fi
 if [[ "$DISTRO" == "devuan" ]]; then
 	apt install -y openssh-client openssh-server --no-install-recommends
-	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} openresolv ${FSPROG} ${NETWORKING} ${NETWORKING_EXTRA}
+	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} openresolv ${FSPROG} ${NETWORKING}
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
 	if [[ "$DISTRO_VERSION" == "kinetic" || "$DISTRO_VERSION" == "lunar" || "$DISTRO_VERSION" == "mantic" ]]; then
