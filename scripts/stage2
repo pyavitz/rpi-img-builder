@@ -212,11 +212,6 @@ if [[ "$DISTRO" == "devuan" ]]; then
 	mv -f governor.init /etc/init.d/governor
 	mv -f bthelper.init /etc/init.d/bthelper
 	mv -f zramswap.init /etc/init.d/zramswap
-	if [ $NETWORKMANAGER -eq 1 ]; then
-		rm -f network.init
-	else
-		mv -f network.init /etc/init.d/network
-	fi
 	mv -f credentials.init /etc/init.d/credentials
 fi
 mv -f growpart /usr/bin/

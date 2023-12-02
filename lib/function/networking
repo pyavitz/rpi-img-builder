@@ -154,12 +154,7 @@ else
 	echo "wifi.powersave = 2" >> /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf
 fi
 if [[ "$DISTRO" == "devuan" ]]; then
-	if [[ "$BOARD" == "bcm2710" ]]; then
-		eth_udev-rule
-	fi
-	if [[ "$BOARD" == "bcm2709" ]]; then
-		eth_udev-rule
-	fi
+	if [[ "$BOARD" == "bcm2709" || "$BOARD" == "bcm2710" ]]; then eth_udev-rule; fi
 fi
 }
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Systemd services
-led_service(){
+led_service (){
 tee /etc/systemd/system/leds.service <<EOF
 [Unit]
 Description=LEDs
@@ -18,7 +18,7 @@ EOF
 systemctl enable leds
 }
 
-firstboot_service(){
+firstboot_service (){
 tee /etc/systemd/system/firstboot.service <<EOF
 [Unit]
 Description=Resize ROOTFS partition
@@ -38,7 +38,7 @@ WantedBy=multi-user.target
 EOF
 }
 
-credentials_service(){
+credentials_service (){
 tee /etc/systemd/system/credentials.service <<EOF
 [Unit]
 Description=Credentials
@@ -56,7 +56,7 @@ WantedBy=multi-user.target
 EOF
 }
 
-governor_service(){
+governor_service (){
 tee /etc/systemd/system/governor.service <<EOF
 [Unit]
 Description=Governor
@@ -73,7 +73,7 @@ WantedBy=multi-user.target
 EOF
 }
 
-rc-local_service(){
+rc-local_service (){
 tee /etc/systemd/system/rc-local.service <<EOF
 [Unit]
 Description=/etc/rc.local
@@ -109,7 +109,7 @@ EOF
 chmod +x /etc/rc.local
 }
 
-systemd_services(){
+systemd_services (){
 systemctl enable rc-local
 systemctl enable ifplugd
 systemctl enable zramswap
@@ -135,16 +135,12 @@ fi
 }
 
 # devuan
-sysvinit_services(){
+sysvinit_services (){
 chmod +x /etc/init.d/governor
 chmod +x /etc/init.d/firstboot
 chmod +x /etc/init.d/leds
 chmod +x /etc/init.d/bthelper
 chmod +x /etc/init.d/zramswap
-if [ $NETWORKMANAGER -eq 0 ]; then
-	chmod +x /etc/init.d/network;
-	update-rc.d -f networking remove;
-fi
 chmod +x /etc/init.d/credentials
 update-rc.d -f hwclock.sh remove
 update-rc.d firstboot defaults S
