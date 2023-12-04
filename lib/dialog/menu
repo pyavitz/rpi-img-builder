@@ -6,7 +6,7 @@ COUNT=0
 
 # create menu
 mkdir -p .cache
-cat lib/boards/* | grep -w "PRETTY_BOARD" | sed 's/PRETTY_BOARD="//g' | sed 's/"//g' > .cache/menu
+cat lib/boards/* | grep -w "PRETTY_BOARD" | sed 's/PRETTY_BOARD="//g' | sed 's/"//g' | sudo tee .cache/menu >/dev/null
 
 # menu list
 while IFS=$'\n' read -r opt; do
@@ -26,7 +26,7 @@ for choice in "${CHOICES[@]}"; do
 done
 
 # finish
-if [[ -f ".cache/menu" ]]; then rm -f .cache/menu; fi
+if [[ -f ".cache/menu" ]]; then sudo rm -f .cache/menu; fi
 clear -x
 echo -e "Program terminated."
 exit 0
