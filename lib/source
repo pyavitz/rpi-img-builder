@@ -9,10 +9,11 @@ CKERNEL="linux"
 HOST_MACHINE=`cat /etc/os-release | grep -w NAME | sed 's/NAME=//g' | sed 's/"//g' | sed 's/ GNU\/Linux//g'`
 HOST_CODENAME=`cat /etc/os-release | grep -w "VERSION_CODENAME" | sed 's/VERSION_CODENAME=//g'`
 HOST_ARCH=`uname -m`
+EXPIRED="The userdata.txt file has expired. Create a new one."
 
 # validate
 validation (){
-BUILDER=`grep "builder=" "userdata.txt" | sed 's/builder=//g'`
+BUILDER=`grep "BUILDER=" "userdata.txt" | sed 's/BUILDER=//g'`
 UD="userdata.txt"
 if [ -f "$UD" ]; then
 	:;
@@ -26,12 +27,7 @@ else
 		fi
 	done
 fi
-if [[ "$BUILDER" == "6.1" ]]; then
-	:;
-else
-	echo -e "The ${WHT}$UD${FIN} file has expired. Please create a new one."
-	exit 0;
-fi
+if [[ "$BUILDER" == "6.1" ]]; then :; else echo -e "${EXPIRED}"; exit 0; fi
 }
 
 # packages

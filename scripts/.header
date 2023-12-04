@@ -11,7 +11,7 @@ BUILDER=`figlet -f term -l "Raspberry Pi Image Builder"`
 GIT_BRANCH=`git branch`
 
 if [[ -f "userdata.txt" ]]; then
-	VERSION=`grep "builder=" "userdata.txt" | sed 's/builder=//g'`
+	VERSION=`grep "BUILDER=" "userdata.txt" | sed 's/BUILDER=//g'`
 	BUILDER_VER=" ${PNK}(${FIN}${GRN}${VERSION}${FIN}${PNK})${FIN}"
 else
 	BUILDER_VER=""

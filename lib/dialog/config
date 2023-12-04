@@ -119,7 +119,7 @@ echo NAMESERVER1='"'${NAMESERVER1}'"' >> tmp0
 echo NAMESERVER2='"'${NAMESERVER2}'"' >> tmp0
 echo "RTW88=${RTW88}" >> tmp0
 echo "RTL88XXAU=${RTL88XXAU}" >> tmp0
-echo builder=${BUILDER} >> tmp0
+echo BUILDER=${BUILDER} >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
 echo '"' >> tmp2
