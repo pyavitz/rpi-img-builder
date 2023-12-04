@@ -13,6 +13,14 @@ echo ""
 echo -en "${TXT}Raspberry Pi Image Builder:${FIN}"
 echo -e " ${PNK}[${FIN}${GRN}${GIT_BRANCH}${FIN}${PNK}]${FIN}"
 
+if [[ `command -v sudo` ]]; then
+	:;
+else
+	echo ""
+	echo -e "Missing dependency: sudo"
+	echo -e "https://wiki.debian.org/sudo"
+	exit 0
+fi
 if [[ `command -v curl` ]]; then
 	:;
 else
