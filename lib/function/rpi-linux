@@ -62,7 +62,7 @@ else
 	echo -e " 1) shallow clone (default)"
 	echo -e " 2) full clone"
 	echo -e ""
-	read -t10 -s -p ""
+	read -t10 -s ""
 	if [ $? -gt 128 ]; then
 		echo -e "Default selected."
 		mkdir -p ../.cache
@@ -82,7 +82,7 @@ else
 			break
 			;;
 		[2]*)
-			mkdir -p .cache
+			mkdir -p ../.cache
 			echo 'GIT_FAST="false"' > ../.cache/git_fast.${KERNEL}-${VERSION}
 			GIT_OPT=""
 			echo -e ""
