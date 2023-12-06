@@ -62,7 +62,7 @@ else
 	echo -e " 1) shallow clone (default)"
 	echo -e " 2) full clone"
 	echo -e ""
-	read -t10 -s ""
+	read -t10 -p ""
 	if [ $? -gt 128 ]; then
 		echo -e "Default selected."
 		mkdir -p ../.cache
