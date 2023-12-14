@@ -169,10 +169,16 @@ disable_splash=1
 otg_mode=1
 
 [pi4]
-# enable DRM VC4 V3D driver on top of the dispmanx display stack
+# Enable DRM VC4 V3D driver on top of the dispmanx display stack
 dtoverlay=vc4-kms-v3d
 #dtoverlay=vc4-fkms-v3d
 max_framebuffers=2
 arm_boost=1
+
+# USB boot requires high current (5 volt 5 amp) power supply.
+# To disable this check set usb_max_current_enable=1 in config.txt
+# or press the power button to temporarily enable usb_max_current_enable
+# and continue booting.
+#usb_max_current_enable=1
 EOF
 }
