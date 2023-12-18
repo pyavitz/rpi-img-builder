@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # dev rootfs
-sysroot_partition(){
+sysroot_partition (){
 truncate -s ${IMGSIZE} "${ROOTFS_FOLDER}${RELEASE_NAME}"
 parted --script "${ROOTFS_FOLDER}${RELEASE_NAME}" \
 mklabel msdos \
@@ -17,7 +17,7 @@ umount ${ROOT}
 mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" ${ROOT}
 }
 
-sysroot_setup(){
+sysroot_setup (){
 SOURCES_LIST="${ROOT}/etc/apt/sources.list"
 mkdir -p ${ROOT}/etc/apt/apt.conf.d ${ROOT}/etc/dpkg/dpkg.cfg.d
 echo "force-unsafe-io" > "${ROOT}/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
@@ -28,19 +28,22 @@ else
 fi
 }
 
-devuan_keyring(){
+devuan_keyring (){
 URL="https://pkgmaster.devuan.org/devuan/pool/main/d/devuan-keyring/"
-FILE="devuan-keyring_2022.09.04_all.deb"
-if ls /usr/share/keyrings/{devuan-archive-keyring.gpg,devuan-keyring.gpg} > /dev/null 2>&1; then
-	:;
+FILE="devuan-keyring_2023.10.07_all.deb"
+if [[ `dpkg -l | grep "devuan-keyring"` ]]; then
+	if [[ `dpkg -l | grep "devuan-keyring" | tr -d -c 0-9` == "20231007" ]]; then
+		:;
+	else
+		apt purge -y devuan-keyring
+		wget -cq --show-progress ${URL}${FILE}; dpkg -i ${FILE}; rm -f ${FILE}
+	fi
 else
-	wget -cq --show-progress $URL$FILE
-	dpkg -i $FILE
-	rm -f $FILE
+	wget -cq --show-progress ${URL}${FILE}; dpkg -i ${FILE}; rm -f ${FILE}
 fi
 }
 
-raspbian_keyring(){
+raspbian_keyring (){
 if [[ -f "/usr/share/keyrings/raspbian-archive-keyring.gpg" ]]; then
 	:;
 else
@@ -48,7 +51,7 @@ else
 fi
 }
 
-ubuntu_setup(){
+ubuntu_setup (){
 if [[ "$HOST_ARCH" == "x86_64" ]]; then
 	MACHINE="amd64"
 fi
@@ -86,7 +89,7 @@ else
 fi
 }
 
-debootstrap_script(){
+debootstrap_script (){
 if [[ -f "/usr/share/debootstrap/scripts/${DISTRO_VERSION}" ]]; then
 	:;
 else
@@ -96,7 +99,7 @@ fi
 }
 
 # debootstrap
-run_debootstrap(){
+run_debootstrap (){
 if [[ "$DISTRO" == "devuan" ]]; then
 	DEBOOTSTRAP_SCRIPT="sid"
 	debootstrap_script
