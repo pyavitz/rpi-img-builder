@@ -2,7 +2,8 @@
 source lib/function/echoes
 source lib/source
 validation
-source board.txt
+if [[ -f "board.txt" ]] && [[ -f "override.txt" ]]; then . override.txt; override_board; fi
+if [[ -f "board.txt" ]]; then . board.txt; else noboard; fi
 source userdata.txt
 if [ $VERBOSE -eq 1 ]; then set -x; fi
 source packaging/pkgvars

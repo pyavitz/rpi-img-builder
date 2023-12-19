@@ -30,6 +30,15 @@ fi
 if [[ "$BUILDER" == "6.1" ]]; then :; else echo -e "${EXPIRED}"; exit 0; fi
 }
 
+# board dot txt
+noboard (){
+echo -e "board.txt was not found."
+echo -e "Run again with the correct spelling and or command."
+echo -e ""
+read -p "Press enter to continue."
+exit 0
+}
+
 # packages
 PKGS="tzdata keyboard-configuration sudo man-db dbus initramfs-tools whiptail \
 	fonty-rg patch curl wget apt-transport-https dirmngr cmake rsync \

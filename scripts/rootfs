@@ -2,12 +2,8 @@
 source lib/function/echoes
 source lib/source
 validation
-# override the board file
-if [[ -f "override.txt" ]]; then
-	. override.txt
-	override_board
-fi
-source board.txt
+if [[ -f "board.txt" ]] && [[ -f "override.txt" ]]; then . override.txt; override_board; fi
+if [[ -f "board.txt" ]]; then . board.txt; else noboard; fi
 source userdata.txt
 source lib/function/rootfs
 if [[ -f "custom.txt" ]]; then
