@@ -25,7 +25,7 @@ index 3da820aa9b31..e046a9891c43 100755
  #EXTRA_CFLAGS += -Wno-error=cast-function-type
  #EXTRA_CFLAGS += -Wno-parentheses-equality
 +EXTRA_CFLAGS += -Wno-error=incompatible-pointer-types
-+EXTRA_CFLAGS += -Wno-stringop-overread
++#EXTRA_CFLAGS += -Wno-stringop-overread
  #EXTRA_CFLAGS += -Wno-pointer-bool-conversion
  EXTRA_CFLAGS += -Wno-unknown-pragmas
  #EXTRA_CFLAGS += -Wno-unused
