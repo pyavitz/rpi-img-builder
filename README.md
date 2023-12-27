@@ -100,7 +100,7 @@ User service:		# Create user during first boot (bypass the user information abov
 #### Customize image
 * custom.txt
 ```sh
-# Default Image Size: 3072MB
+# Image Size
 IMGSIZE="4096MB"
 
 # Root Filesystem Types: ext4 btrfs xfs
