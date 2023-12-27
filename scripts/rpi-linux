@@ -9,7 +9,7 @@ if [ $VERBOSE -eq 1 ]; then set -x; fi
 source packaging/pkgvars
 source lib/function/rpi-linux
 source lib/function/patching
-source lib/function/modconfig
+source lib/function/defconfig
 source lib/function/compilers
 
 # prep

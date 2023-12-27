@@ -269,6 +269,7 @@ if [ $RAM -ne 0 ]; then IMAGE_FOLDER="ram/"; fi
 mkdir -p "$IMAGE_FOLDER"
 if [ $RAM -ne 0 ]; then mount -t tmpfs -o size=4G tmpfs $IMAGE_FOLDER; fi
 partition > /dev/null 2>&1; uuid
+echo ""
 echo -en "Shrinking ${PNK}[${FIN}${WHT}${IMGSIZE}${FIN}${PNK}]${FIN}"
 cp -fr BOOT/* p1/
 if [ $VERBOSE -eq 1 ]; then
