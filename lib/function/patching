@@ -1,66 +1,32 @@
 #!/bin/bash
 
-# raspberry pi boot firmware
+# boot firmware
 firmware (){
-BINURL="https://github.com/raspberrypi/firmware/raw/master/boot/"
-mkdir -p firmware
-rm -f firmware/*
-cd firmware
+FIRMWARE="https://github.com/raspberrypi/firmware.git"
 echo ""
 echo -en "Firmware"
 echo -en " ${PNK}[${FIN}${WHT}downloading${FIN}${PNK}]${FIN}"
-aria2c -q ${BINURL}LICENCE.broadcom
-aria2c -q ${BINURL}COPYING.linux
-if [[ "$ARCH_EXT" == "armhf" || "$ARCH_EXT" == "arm64" ]]; then
-	aria2c -q ${BINURL}fixup4.dat
-	aria2c -q ${BINURL}fixup4cd.dat
-	aria2c -q ${BINURL}fixup4db.dat
-	aria2c -q ${BINURL}fixup4x.dat
-	aria2c -q ${BINURL}start4.elf
-	aria2c -q ${BINURL}start4cd.elf
-	aria2c -q ${BINURL}start4db.elf
-	aria2c -q ${BINURL}start4x.elf
-	aria2c -q ${BINURL}bootcode.bin
-	aria2c -q ${BINURL}fixup.dat
-	aria2c -q ${BINURL}fixup_cd.dat
-	aria2c -q ${BINURL}fixup_db.dat
-	aria2c -q ${BINURL}fixup_x.dat
-	aria2c -q ${BINURL}start.elf
-	aria2c -q ${BINURL}start_cd.elf
-	aria2c -q ${BINURL}start_db.elf
-	aria2c -q ${BINURL}start_x.elf
-	cd ..
-	echo -en " ${PNK}[${FIN}${WHT}checking${FIN}${PNK}]${FIN}"
-	if [[ `ls firmware/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf}` ]] > /dev/null 2>&1; then
-		:;
-	else
-		echo -en " ${YLW}[${FIN}${RED}failed${FIN}${YLW}]${FIN}"; echo ""
-		exit 0
-	fi
-	if [[ `ls firmware/{bootcode.bin,fixup.dat,fixup_cd.dat,fixup_db.dat,fixup_x.dat,start.elf,start_cd.elf,start_db.elf,start_x.elf}` ]] > /dev/null 2>&1; then
-		echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
-	else
-		echo -en " ${YLW}[${FIN}${RED}failed${FIN}${YLW}]${FIN}"; echo ""
-		exit 0
-	fi
+rm -fdr firmware
+git clone -q -n --filter=tree:0 --sparse ${FIRMWARE} tmp &> /dev/null
+cd tmp
+git sparse-checkout set --no-cone --quiet boot &> /dev/null
+git checkout --quiet &> /dev/null
+rm -fdr boot/{overlays,*.dtb,kernel*}
+mv boot ../firmware
+cd ..
+rm -fdr tmp
+echo -en " ${PNK}[${FIN}${WHT}checking${FIN}${PNK}]${FIN}"
+if [[ `ls firmware/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf}` ]] > /dev/null 2>&1; then
+	:;
+else
+	echo -en " ${YLW}[${FIN}${RED}failed${FIN}${YLW}]${FIN}"; echo ""
+	exit 0
 fi
-if [[ "$ARCH_EXT" == "armel" ]]; then
-	aria2c -q ${BINURL}bootcode.bin
-	aria2c -q ${BINURL}fixup.dat
-	aria2c -q ${BINURL}fixup_cd.dat
-	aria2c -q ${BINURL}fixup_db.dat
-	aria2c -q ${BINURL}fixup_x.dat
-	aria2c -q ${BINURL}start.elf
-	aria2c -q ${BINURL}start_cd.elf
-	aria2c -q ${BINURL}start_db.elf
-	aria2c -q ${BINURL}start_x.elf
-	cd ..
-	if [[ `ls firmware/{bootcode.bin,fixup.dat,fixup_cd.dat,fixup_db.dat,fixup_x.dat,start.elf,start_cd.elf,start_db.elf,start_x.elf}` ]] > /dev/null 2>&1; then
-		echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
-	else
-		echo -en " ${YLW}[${FIN}${RED}failed${FIN}${YLW}]${FIN}"; echo ""
-		exit 0
-	fi
+if [[ `ls firmware/{bootcode.bin,fixup.dat,fixup_cd.dat,fixup_db.dat,fixup_x.dat,start.elf,start_cd.elf,start_db.elf,start_x.elf}` ]] > /dev/null 2>&1; then
+	echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
+else
+	echo -en " ${YLW}[${FIN}${RED}failed${FIN}${YLW}]${FIN}"; echo ""
+	exit 0
 fi
 }
 
