@@ -101,10 +101,13 @@ User service:		# Create user during first boot (bypass the user information abov
 * custom.txt
 ```sh
 # Default Image Size: 3072MB
-IMGSIZE="3072MB"
+IMGSIZE="4096MB"
 
 # Root Filesystem Types: ext4 btrfs xfs
 FSTYPE="ext4"
+
+# Shrink Image
+SHRINK="true"
 
 # Hostname
 HOSTNAME="raspberrypi"

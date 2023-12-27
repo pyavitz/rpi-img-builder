@@ -2,7 +2,7 @@
 
 source lib/function/config
 # builder and profile versions
-BUILDER="6.1"
+BUILDER="6.2"
 PROFILE="1.0"
 
 GCC=`ls -ls /usr/bin/gcc | sed 's/.*\(..\)/\1/' | sed 's/ //g'`

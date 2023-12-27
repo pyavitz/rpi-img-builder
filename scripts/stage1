@@ -24,7 +24,7 @@ if [ $USERACCT -eq 0 ]; then
 		exit 0
 	fi
 fi
-source lib/function/universal
+source lib/function/miscellaneous
 # start uscripts
 if [ $USCRIPTS -eq 1 ]; then uscripts_pre-stage1; fi
 if [[ -f "board.txt" ]] && [[ -f "override.txt" ]]; then . override.txt; override_board; fi
@@ -32,7 +32,7 @@ if [[ -f "board.txt" ]]; then . board.txt; else noboard; fi
 source lib/function/staging
 source lib/function/release
 # clean
-if [[ -d "sysroot" ]] || [[ -d "p1" ]]; then make cleanup; clear -x; fi
+if [[ -d "sysroot" ]] || [[ -d "p1" ]] || [[ -d "BOOT" ]]; then make cleanup; clear -x; fi
 # check output
 if [[ -d "output/${BOARD}" ]] && [[ `ls output/${BOARD}/linux-*.deb` ]]; then
 	:;
@@ -41,11 +41,7 @@ else
 	exit 0
 fi
 # verbose
-if [ $VERBOSE -eq 1 ]; then
-	set -eux -o pipefail
-else
-	set -eu -o pipefail
-fi
+if [ $VERBOSE -eq 1 ]; then set -eux -o pipefail; else set -eu -o pipefail; fi
 
 CAP_DISTRO=`echo "${DISTRO}" | sed -e "s/\b\(.\)/\u\1/g"`
 CAP_RELEASE=`echo "${DISTRO_VERSION}" | sed -e "s/\b\(.\)/\u\1/g"`
@@ -57,22 +53,10 @@ PROXY=""
 IMAGE_FOLDER="img/"
 IMAGE_DATE="$(date +%F)"
 IMAGE_FILE_NAME="${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img"
-if [ $RAM -ne 0 ]; then
-	IMAGE_FOLDER="ram/"
-fi
+if [ $RAM -ne 0 ]; then IMAGE_FOLDER="ram/"; fi
 mkdir -p "$IMAGE_FOLDER"
-if [ $RAM -ne 0 ]; then
-	mount -t tmpfs -o size=3G tmpfs $IMAGE_FOLDER;
-fi
-
-if [ $VERBOSE -eq 1 ]; then
-	partitions
-	partition_uuid
-else
-	partitions > /dev/null 2>&1
-	partition_uuid > /dev/null 2>&1
-fi
-
+if [ $RAM -ne 0 ]; then mount -t tmpfs -o size=4G tmpfs $IMAGE_FOLDER; fi
+if [ $VERBOSE -eq 1 ]; then partition; uuid; else partition > /dev/null 2>&1; uuid > /dev/null 2>&1; fi
 # command line
 cmdline > /dev/null 2>&1
 if [[ -f "p1/cmdline.txt" ]]; then
@@ -94,9 +78,7 @@ else
 	echo_fail
 	exit 0
 fi
-if [[ "$ARCH" == "arm" ]]; then
-	sed -i '1d' p1/config.txt
-fi
+if [[ "$ARCH" == "arm" ]]; then sed -i '1d' p1/config.txt; fi
 
 # extract rootfs
 if [[ -f "${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz" ]]; then
@@ -114,18 +96,11 @@ mkdir -p p2/etc/apt/apt.conf.d p2/etc/dpkg/dpkg.cfg.d
 echo "force-unsafe-io" > "p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
 
 # qemu static
-mkdir -p p2/usr/bin;
+mkdir -p p2/usr/bin
 cp $(command -v "${STATIC}") p2/usr/bin
-if [[ ! -z $P_VALUE ]]; then
-	SOURCES_LIST="${P_VALUE}/etc/apt/sources.list"
-fi
-if [ $VERBOSE -eq 1 ]; then
-	choose_release
-	create_fstab
-else
-	choose_release > /dev/null 2>&1
-	create_fstab > /dev/null 2>&1
-fi
+
+if [[ ! -z $P_VALUE ]]; then SOURCES_LIST="${P_VALUE}/etc/apt/sources.list"; fi
+if [ $VERBOSE -eq 1 ]; then choose_release; fstab; else choose_release > /dev/null 2>&1; fstab > /dev/null 2>&1; fi
 
 if [ -n "$PROXY" ] ; then
 	tee "p2/etc/apt/apt.conf.d/30proxy" <<EOF
@@ -136,7 +111,7 @@ fi
 # setup stage2
 cp scripts/stage2 p2/root
 cp lib/function/services p2/root/services.txt
-cp lib/function/universal p2/root/universal.txt
+cp lib/function/miscellaneous p2/root/miscellaneous.txt
 cp lib/function/networking p2/root/networking.txt
 cp lib/source p2/root/source.txt
 cp userdata.txt p2/root
@@ -155,7 +130,7 @@ if [ $USERACCT -eq 1 ]; then
 	cp -r files/useracct/* p2/root/useracct
 fi
 if [ $USCRIPTS -eq 1 ]; then uscripts_stage1; fi
-stage1_kernel # universal
+stage1_kernel # miscellaneous
 echo -e "${WHT}Starting chroot${FIN} ..."
 # Mount and chroot
 mkdir -p p2/boot/broadcom
@@ -175,39 +150,23 @@ rm -f p2/root/*.txt
 rm -fdr p2/var/cache/debconf/*
 # finish uscripts
 if [ $USCRIPTS -eq 1 ]; then uscripts_fin-stage1; fi
-
-if [ -n "$PROXY" ]; then
-	rm p2/etc/apt/apt.conf.d/30proxy
-fi
+if [ -n "$PROXY" ]; then rm p2/etc/apt/apt.conf.d/30proxy; fi
 rm p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
 if [[ -f "kernel.release" ]]; then source kernel.release; fi
 
 # Finish
-if [[ "$FSTYPE" == "ext4" ]] && [[ "$ARCH" == "arm" ]]; then
-	# add removable 100mb file to ensure space on the img after shrinking
-	dd if="/dev/urandom" of="p2/block.img" bs=100MB count=1 > /dev/null 2>&1
-fi
-defrag_p2
+if [[ "$FSTYPE" == "ext4" ]]; then e4defrag -c ${P_VALUE}; fi
+if [[ "$FSTYPE" == "btrfs" ]]; then btrfs filesystem defragment -f -r ${P_VALUE} > /dev/null 2>&1; fi
+if [[ "$FSTYPE" == "xfs" ]]; then xfs_fsr ${P_VALUE}; fi
 umount p2
 umount p1
-if [[ "$FSTYPE" == "ext4" ]]; then
-	echo ""
-	tune2fs -O^has_journal "${IMAGE_LOOP_DEV_ROOTFS}"
-	fsck -fy "${IMAGE_LOOP_DEV_ROOTFS}"
-	resize2fs -M "${IMAGE_LOOP_DEV_ROOTFS}"
-	tune2fs -Ohas_journal "${IMAGE_LOOP_DEV_ROOTFS}"
-fi
 losetup -d "${IMAGE_LOOP_DEV}"
 mv "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" "${IMAGE_FILE_NAME}"
-if [ $RAM -ne 0 ]; then
-	umount "${IMAGE_FOLDER}"
-fi
+if [ $RAM -ne 0 ]; then umount "${IMAGE_FOLDER}"; fi
 rmdir "${IMAGE_FOLDER}"
 rmdir p1 p2
 
-if [[ "$FSTYPE" == "ext4" ]]; then
-	ext4_shrink
-fi
+if [[ "$SHRINK" == "true" ]]; then shrink; fi
 finish_image
 rm -f {part-uuid.txt,board.txt,kernel.release}
 

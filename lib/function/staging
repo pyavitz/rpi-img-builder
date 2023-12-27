@@ -1,6 +1,6 @@
 #!/bin/bash
 
-partitions (){
+partition (){
 if [[ "$OFFSET" == "8192" ]]; then IMG_OFFSET="4MiB"; fi
 truncate -s ${IMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
 parted --script "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" \
@@ -50,7 +50,8 @@ if [[ "$FSTYPE" == "xfs" ]]; then
 fi
 }
 
-create_fstab (){
+fstab (){
+rm -f p2/etc/fstab
 tee p2/etc/fstab <<EOF
 UUID=${BOOT_UUID}	${BOOT_PATH}	vfat	defaults,flush 0 2
 UUID=${ROOT_UUID}	/	${ROOTFS_TABLE}
@@ -58,17 +59,14 @@ tmpfs	/tmp		tmpfs	defaults,nosuid 0 0
 EOF
 }
 
-partition_uuid (){
+uuid (){
 BOOT_UUID=$(blkid -o export -- "${IMAGE_LOOP_DEV_BOOT}" | sed -ne 's/^UUID=//p')
 ROOT_UUID=$(blkid -o export -- "${IMAGE_LOOP_DEV_ROOTFS}" | sed -ne 's/^UUID=//p')
 ROOT_PARTUUID=$(blkid -o export -- "${IMAGE_LOOP_DEV_ROOTFS}" | sed -ne 's/^PARTUUID=//p')
-echo BOOT_UUID='"'$BOOT_UUID'"' > part-uuid.txt
-echo ROOT_UUID='"'$ROOT_UUID'"' >> part-uuid.txt
-echo ROOT_PARTUUID='"'$ROOT_PARTUUID'"' >> part-uuid.txt
-source part-uuid.txt
 }
 
 cmdline (){
+rm -f p1/cmdline.txt
 tee p1/cmdline.txt <<EOF
 ${CONSOLE} root=PARTUUID=${ROOT_PARTUUID} ${ROOTFSTYPE} fsck.repair=yes ${EXTRA} rootwait
 EOF

@@ -1,13 +1,20 @@
 #!/bin/bash
 
-# cleanup
+cleanup (){
 umount p2/proc p2/sys p2/dev p2/run > /dev/null 2>&1
 umount sysroot/proc sysroot/sys sysroot/dev/pts sysroot/dev sysroot/run > /dev/null 2>&1
-umount -l p1 p2 sysroot > /dev/null 2>&1
-rm -fdr p1 p2 img sysroot > /dev/null 2>&1
+umount -l p1 p2 sysroot BOOT ROOTFS > /dev/null 2>&1
+rm -fdr p1 p2 img sysroot BOOT ROOTFS > /dev/null 2>&1
 rm -f {part-uuid.txt,kernel.release,kpart*,gcc.txt,ccache.txt,clang.txt}
 losetup -d /dev/loop* > /dev/null 2>&1
 sleep 1s
 losetup -d /dev/loop* > /dev/null 2>&1
-echo -e "[ DONE ]"
+if [[ -f "shrink.img" ]]; then kpartx -d shrink.img; fi
+rm -f shrink.img
+}
+
+echo -en "Cleaning"
+cleanup > /dev/null 2>&1
+echo -e " [done]"
+
 exit 0

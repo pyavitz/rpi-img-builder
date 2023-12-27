@@ -14,7 +14,7 @@ else
 fi
 
 # clean
-if [[ -d "sysroot" ]] || [[ -d "p1" ]]; then make cleanup; clear -x; fi
+if [[ -d "sysroot" ]] || [[ -d "p1" ]] || [[ -d "BOOT" ]]; then make cleanup; clear -x; fi
 
 # verbosity
 if [ $VERBOSE -eq 1 ]; then
@@ -56,10 +56,7 @@ fi
 
 ROOT="sysroot"
 RELEASE_TARBALL=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
-if [[ -f "$RELEASE_TARBALL" ]]; then
-	ls -ls $RELEASE_TARBALL
-	exit 0
-fi
+if [[ -f "$RELEASE_TARBALL" ]]; then ls -ls $RELEASE_TARBALL; exit 0; fi
 echo ""
 echo -e "${WHT}Starting debootstrap${FIN} ..."
 # start debootstrap
@@ -68,13 +65,9 @@ if [ $DEVROOTFS -eq 1 ]; then
 	RAM=0
 	ROOTFS_FOLDER="img/"
 	RELEASE_NAME=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}
-	if [ $RAM -ne 0 ]; then
-		IMAGE_FOLDER="ram/"
-	fi
+	if [ $RAM -ne 0 ]; then IMAGE_FOLDER="ram/"; fi
 	mkdir -p "$ROOTFS_FOLDER"
-	if [ $RAM -ne 0 ]; then
-		mount -t tmpfs -o size=3G tmpfs $ROOTFS_FOLDER
-	fi
+	if [ $RAM -ne 0 ]; then mount -t tmpfs -o size=4G tmpfs $ROOTFS_FOLDER; fi
 	if [ $VERBOSE -eq 1 ]; then
 		sysroot_partition
 	else
@@ -118,9 +111,7 @@ cd ..
 if [ $DEVROOTFS -eq 1 ]; then
 	losetup -d "${IMAGE_LOOP_DEV}"
 	rm -f "${ROOTFS_FOLDER}${RELEASE_NAME}"
-	if [ $RAM -ne 0 ]; then
-		umount "${ROOTFS_FOLDER}"
-	fi
+	if [ $RAM -ne 0 ]; then umount "${ROOTFS_FOLDER}"; fi
 	rmdir "${ROOTFS_FOLDER}"
 fi
 
@@ -138,7 +129,5 @@ if [[ "$HOST_MACHINE" == "Debian" || "$HOST_MACHINE" == "Ubuntu" ]]; then
 		rm -f /usr/share/debootstrap/scripts/excalibur
 	fi
 fi
-
-if [ $VERBOSE -eq 0 ]; then clear -x; fi
 
 exit 0

@@ -2,11 +2,14 @@
 
 custom_txt (){
 cat <<EOF > "custom.txt"
-# Image Size: 3072MB 3584MB 4096MB
+# Image Size: 3584MB 4096MB
 IMGSIZE="4096MB"
 
 # Root Filesystem Types: ext4 btrfs xfs
 FSTYPE="ext4"
+
+# Shrink Image
+SHRINK="true"
 
 # Hostname
 HOSTNAME="raspberrypi"
