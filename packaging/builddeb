@@ -36,8 +36,14 @@ create_package() {
 	dpkg-deb -Z$compression --build "$pdir" ..
 }
 
-if [ -f scripts/package/pkgvars ]; then
+if [ -f "scripts/package/pkgvars" ]; then
 	. scripts/package/pkgvars
+	if [ -f "dtclist.txt" ] && [ -f "initrd" ] && [ -f "headers-byteshift.patch" ]; then
+		:;
+	else
+		echo -e "A builddeb dependency file is missing."
+		exit 0
+	fi
 else
 	echo "Missing: pkgvars"
 	exit 0

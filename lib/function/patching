@@ -147,7 +147,7 @@ rm -f scripts/package/{builddeb,mkdebian}
 cp -fr ../../packaging/{builddeb,mkdebian} scripts/package/
 chmod +x scripts/package/{builddeb,mkdebian}
 if [[ -f "../../packaging/dtclist.txt" ]] && [[ -f "../../packaging/initrd" ]] && [[ -f "../../packaging/headers-byteshift.patch" ]]; then
-	cp ../../packaging/dtclist.txt dtclist.txt; cp ../../packaging/initrd initrd; cp ../../packaging/headers-byteshift.patch headers-byteshift.patch
+	cp -fr ../../packaging/{dtclist.txt,initrd,headers-byteshift.patch} .
 else
 	echo -e "An essential builddeb file is missing."
 	exit 0
