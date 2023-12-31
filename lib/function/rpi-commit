@@ -13,7 +13,7 @@ echo ""
 if [[ -f "${CKERNEL}-${COMMIT}.tar.gz" ]]; then
 	:;
 else
-	echo_kernel
+	echo -e "${WHT}Downloading ${CKERNEL}-${COMMIT}${FIN} ..."
 	${DOWNLOAD} ${RPIURL}${COMMIT}.tar.gz
 	echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
 fi
