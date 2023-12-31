@@ -273,9 +273,9 @@ echo ""
 echo -en "Shrinking ${PNK}[${FIN}${WHT}${IMGSIZE}${FIN}${PNK}]${FIN}"
 cp -fr BOOT/* p1/
 if [ $VERBOSE -eq 1 ]; then
-	if [[ "$FSTYPE" == "btrfs" ]]; then rsync -avhpzx --progress --stats --human-readable ROOTFS/@/ p2/; else rsync -avhpzx --progress --stats --human-readable ROOTFS/ p2/; fi
+	if [[ "$FSTYPE" == "btrfs" ]]; then rsync -avpxSH --progress --stats --human-readable ROOTFS/@/ p2/; else rsync -avpxSH --progress --stats --human-readable ROOTFS/ p2/; fi
 else
-	if [[ "$FSTYPE" == "btrfs" ]]; then rsync -ahpzx ROOTFS/@/ p2/ > /dev/null; else rsync -ahpzx ROOTFS/ p2/ > /dev/null; fi
+	if [[ "$FSTYPE" == "btrfs" ]]; then rsync -apxSH ROOTFS/@/ p2/ > /dev/null; else rsync -apxSH ROOTFS/ p2/ > /dev/null; fi
 fi
 sleep .75
 echo -en " ${PNK}[${FIN}${YLW}cleaning${FIN}${PNK}]${FIN}"

@@ -146,7 +146,7 @@ umount p2/boot/broadcom
 if [ -e p2/usr/bin/${STATIC} ]; then rm -f p2/usr/bin/${STATIC}; fi
 cp -f p2/root/kernel.release .
 rm p2/root/stage2
-rm -f p2/root/*.txt
+rm -f p2/root/{*.txt,kernel.release}
 rm -fdr p2/var/cache/debconf/*
 # finish uscripts
 if [ $USCRIPTS -eq 1 ]; then uscripts_fin-stage1; fi
