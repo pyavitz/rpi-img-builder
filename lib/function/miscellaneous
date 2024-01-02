@@ -241,60 +241,6 @@ EOF
 echo Done.
 }
 
-# shrink
-shrink (){
-RELEASE=`cat /etc/os-release | grep -w VERSION_CODENAME | sed 's/VERSION_CODENAME=//g'`
-IMAGE_FILE="${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img"
-if [[ -f "${IMAGE_FILE}" ]]; then mv -f ${IMAGE_FILE} shrink.img; else echo "Shrink failed! Missing file ${IMAGE_FILE}."; exit 0; fi
-KPARTX="$(kpartx -av shrink.img)"
-if [[ "$RELEASE" == "jammy" ]]; then
-	# snapd woes; grep for higher loop numbers.
-	LOOP=`grep -o 'loop[0-9]\+p.' <<<"$KPARTX"`
-else
-	LOOP=`grep -o 'loop.p.' <<<"$KPARTX"`
-fi
-B_LOOP=`echo "$LOOP" | sed -n '1p'`
-R_LOOP=`echo "$LOOP" | sed -n '2p'`
-BOOT_LOOP="/dev/mapper/$B_LOOP"
-ROOTFS_LOOP="/dev/mapper/$R_LOOP"
-BOOT="${BOOT_LOOP}"
-ROOTFS="${ROOTFS_LOOP}"
-mkdir -p BOOT; mkdir -p ROOTFS
-sleep .50
-mount "${BOOT}" BOOT; mount "${ROOTFS}" ROOTFS
-sleep .50
-DU=`du -sm ROOTFS | sed 's/ROOTFS//g' | sed s/'\s'//g`
-if [[ "$FSTYPE" == "ext4" ]]; then IMGSIZE="$(($DU+1024))MB"; else IMGSIZE="$(($DU+1280))MB"; fi
-if [ $RAM -ne 0 ]; then IMAGE_FOLDER="ram/"; fi
-mkdir -p "$IMAGE_FOLDER"
-if [ $RAM -ne 0 ]; then mount -t tmpfs -o size=4G tmpfs $IMAGE_FOLDER; fi
-partition > /dev/null 2>&1; uuid
-echo ""
-echo -en "Shrinking ${PNK}[${FIN}${WHT}${IMGSIZE}${FIN}${PNK}]${FIN}"
-cp -fr BOOT/* p1/
-if [ $VERBOSE -eq 1 ]; then
-	if [[ "$FSTYPE" == "btrfs" ]]; then rsync -avpxSH --progress --stats --human-readable ROOTFS/@/ p2/; else rsync -avpxSH --progress --stats --human-readable ROOTFS/ p2/; fi
-else
-	if [[ "$FSTYPE" == "btrfs" ]]; then rsync -apxSH ROOTFS/@/ p2/ > /dev/null; else rsync -apxSH ROOTFS/ p2/ > /dev/null; fi
-fi
-sleep .75
-echo -en " ${PNK}[${FIN}${YLW}cleaning${FIN}${PNK}]${FIN}"
-umount BOOT; umount ROOTFS
-sleep .75
-rm -fdr BOOT; rm -fdr ROOTFS
-kpartx -d shrink.img
-rm -f shrink.img
-fstab > /dev/null 2>&1
-cmdline > /dev/null 2>&1
-umount p2; umount p1
-losetup -d "${IMAGE_LOOP_DEV}"
-mv "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" "${IMAGE_FILE_NAME}"
-if [ $RAM -ne 0 ]; then umount "${IMAGE_FOLDER}"; fi
-rmdir "${IMAGE_FOLDER}"
-rmdir p1 p2
-echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
-}
-
 # fin and compress
 finish_image (){
 IMAGE_TIME="$(date +%T | sed 's/://g' | sed 's/..$//')"

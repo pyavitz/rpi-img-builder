@@ -48,10 +48,8 @@ PKGS="tzdata keyboard-configuration sudo man-db dbus initramfs-tools whiptail \
 	bison flex mc nano figlet toilet dialog python3 python3-setuptools \
 	ntfs-3g bc zram-tools libncursesw5-dev libssl-dev autopoint autoconf \
 	automake pkg-config libtool fake-hwclock avahi-utils distro-info-data \
-	lsb-release liblzo2-2 bluetooth bluez bluez-tools gpiod python3-libgpiod"
-
-# filesystems
-FSPROG="e2fsprogs btrfs-progs xfsprogs"
+	lsb-release liblzo2-2 bluetooth bluez bluez-tools gpiod python3-libgpiod \
+	e2fsprogs btrfs-progs xfsprogs"
 
 # sys-mods
 SYSMODS="debhelper d-shlibs rfkill dosfstools psmisc"
