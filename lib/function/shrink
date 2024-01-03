@@ -6,31 +6,17 @@
 calculate (){
 DU=`du -sh ROOTFS | sed 's/ROOTFS//g' | sed s/'\s'//g | sed 's/G//g'`
 CALC=$(echo $DU + 1.0 | bc | sed 's/\.//g')
-FUDGE=$(echo $CALC | head -c 1)
-if [[ "$FUDGE" == "1" ]]; then
-	CALC=$(echo $DU + 0.9 | bc | sed 's/\.//g')
-	IMGSIZE="${CALC}00MB"
-fi
-if [[ "$FUDGE" == "2" ]]; then
-	# default is 1.0
-	IMGSIZE="${CALC}00MB"
-fi
-if [[ "$FUDGE" == "3" ]]; then
-	CALC=$(echo $DU + 1.2 | bc | sed 's/\.//g')
-	IMGSIZE="${CALC}00MB"
-fi
-if [[ "$FUDGE" == "4" ]]; then
-	CALC=$(echo $DU + 1.3 | bc | sed 's/\.//g')
-	IMGSIZE="${CALC}00MB"
-fi
-if [[ "$FUDGE" == "5" ]]; then
-	CALC=$(echo $DU + 1.4 | bc | sed 's/\.//g')
-	IMGSIZE="${CALC}00MB"
-fi
-if [[ "$FUDGE" == "6" ]]; then
-	CALC=$(echo $DU + 1.5 | bc | sed 's/\.//g')
-	IMGSIZE="${CALC}00MB"
-fi
+GB=$(echo $CALC | head -c 1)
+if [[ "$GB" == "1" ]]; then CALC=$(echo $DU + 0.9 | bc | sed 's/\.//g'); fi
+if [[ "$GB" == "2" ]]; then :; fi
+if [[ "$GB" == "3" ]]; then CALC=$(echo $DU + 1.2 | bc | sed 's/\.//g'); fi
+if [[ "$GB" == "4" ]]; then CALC=$(echo $DU + 1.3 | bc | sed 's/\.//g'); fi
+if [[ "$GB" == "5" ]]; then CALC=$(echo $DU + 1.4 | bc | sed 's/\.//g'); fi
+if [[ "$GB" == "6" ]]; then CALC=$(echo $DU + 1.5 | bc | sed 's/\.//g'); fi
+if [[ "$GB" == "7" ]]; then CALC=$(echo $DU + 1.6 | bc | sed 's/\.//g'); fi
+if [[ "$GB" == "8" ]]; then CALC=$(echo $DU + 1.7 | bc | sed 's/\.//g'); fi
+if [[ "$GB" == "9" ]]; then CALC=$(echo $DU + 1.8 | bc | sed 's/\.//g'); fi
+IMGSIZE="${CALC}00MB"
 }
 
 # shrink
