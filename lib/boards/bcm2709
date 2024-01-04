@@ -25,7 +25,7 @@ P_VALUE="p2"
 
 # output
 BOARD="bcm2709"
-BOARD_EXT="rpi-2+3"
+BOARD_EXT="rpi"
 OUTPUT="output/${BOARD}"
 IMG_EXP="${BOARD_EXT}-*.img*"
 
