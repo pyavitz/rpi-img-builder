@@ -21,6 +21,7 @@ IMGSIZE="${CALC}00MB"
 
 # shrink
 shrink (){
+export LC_ALL=C.UTF-8
 RELEASE=`cat /etc/os-release | grep -w VERSION_CODENAME | sed 's/VERSION_CODENAME=//g'`
 IMAGE_FILE="${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${IMAGE_DATE}.img"
 if [[ -f "${IMAGE_FILE}" ]]; then mv -f ${IMAGE_FILE} shrink.img; else echo "Shrink failed! Missing file ${IMAGE_FILE}."; exit 0; fi
