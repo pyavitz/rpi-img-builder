@@ -127,21 +127,31 @@ if [[ "$DISTRO" == "devuan" ]]; then
 elif [[ "$DISTRO" == "ubuntu" ]]; then
 	DEBOOTSTRAP_SCRIPT="gutsy"
 	debootstrap_script
-elif [[ "$DISTRO" == "debian" || "$DISTRO" == "kali" || "$DISTRO" == "ubuntu" ]]; then
+fi
+
+if [[ "$DISTRO" == "debian" || "$DISTRO" == "kali" || "$DISTRO" == "ubuntu" ]]; then
 	debootstrap --arch ${ARCH_EXT} --foreign ${DISTRO_VERSION} ${ROOT}
-	chroot ${ROOT} /debootstrap/debootstrap --second-stage
 elif [[ "$DISTRO" == "devuan" ]]; then
 	KEY="${KEY_DIR}/devuan-archive-keyring.gpg"
 	SOURCE="http://deb.devuan.org/merged"
 	debootstrap --arch ${ARCH_EXT} --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VERSION} ${ROOT} ${SOURCE}
-	chroot ${ROOT} /debootstrap/debootstrap --second-stage
 elif [[ "$DISTRO" == "raspbian" ]]; then
 	KEY="${KEY_DIR}/raspbian-archive-keyring.gpg"
 	SOURCE="http://raspbian.raspberrypi.org/raspbian"
 	debootstrap --arch ${ARCH_EXT} --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VERSION} ${ROOT} ${SOURCE}
-	chroot ${ROOT} /debootstrap/debootstrap --second-stage
 else
 	echo "E (run_debootstrap): Variable DISTRO not set."
+	exit 1
+fi
+
+echo "I: debootstrap's stage 1 (arch-independent) was successful."
+
+if ! chroot ${ROOT} /debootstrap/debootstrap --second-stage ; then
+	echo "E: The execution of 'chroot ${ROOT} /debootstrap/debootstrap --second-stage' failed."
+	echo "   Current working directory: $(pwd)"
+	echo "   Please investigate."
+	echo "   The following is a list of file formats that the system knows to execute, created with 'update-binfmts --display'. This should include a reference to aarch64 and qemu:"
+	update-binfmts --display
 	exit 1
 fi
 }
