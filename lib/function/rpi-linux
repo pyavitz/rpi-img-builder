@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -e
+
 GIT_URL="https://github.com/raspberrypi/linux"
 
 source_dir (){

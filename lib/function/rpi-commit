@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -e
+
 DOWNLOAD="aria2c -c --download-result=hide --console-log-level=error --disable-ipv6=true --summary-interval=0 --show-files=false"
 
 source_dir (){

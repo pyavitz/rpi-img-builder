@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 partition (){
 if [[ "$OFFSET" == "8192" ]]; then IMG_OFFSET="4MiB"; fi
 truncate -s ${IMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"

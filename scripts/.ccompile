@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 source lib/source
 
 jammy-ccompile(){
@@ -41,6 +43,10 @@ sudo debconf-apt-progress -- apt install -y \
 	colorized-logs gdisk jq wget btrfs-progs xfsprogs gcc-11-arm-linux-gnueabi \
 	gcc-12-arm-linux-gnueabi crossbuild-essential-armel python3-setuptools \
 	python3-pyelftools curl mtools gcc-11-plugin-dev gcc-12-plugin-dev
+}
+
+trixie-ccompile(){
+	bookworm-ccompile
 }
 
 if [[ "$HOST_ARCH" == "aarch64" ]]; then

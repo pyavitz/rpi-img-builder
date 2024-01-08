@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -e
+
 source lib/function/echoes
 source lib/source
 validation
@@ -10,7 +13,7 @@ if [[ -f "custom.txt" ]]; then
 	. custom.txt
 else
 	echo "Missing custom.txt file."
-	exit 0
+	exit 1
 fi
 
 # clean
@@ -22,25 +25,31 @@ if [ $VERBOSE -eq 1 ]; then
 else
 	set -eu -o pipefail
 fi
+
+if [[ -z "$DISTRO" ]]; then
+	echo "E: Variable DISTRO not defined."
+	exit 1
+fi
+
 # restrictions
 if [[ "$HOST_ARCH" == "aarch64" ]] && [[ "$DISTRO" == "raspbian" ]]; then
 	echo -e "Aarch64 is currently not supported."
 	echo -e "To build an Raspbian IMG you need to use x86_64."
 	echo -e ""
 	read -p "Press enter to continue."
-	exit 0
+	exit 1
 fi
 if [[ "$ROOTFS_ARCH" == "rootfs-armel" ]] && [[ "$DISTRO" == "ubuntu" ]]; then
 	echo -e "Ubuntu does not support ${ARCH_EXT}."
 	echo -e ""
 	read -p "Press enter to continue."
-	exit 0
+	exit 1
 fi
 if [[ "$ROOTFS_ARCH" == "rootfs-armel" || "$ROOTFS_ARCH" == "rootfs-arm64" ]] && [[ "$DISTRO" == "raspbian" ]]; then
 	echo -e "Raspbian does not support ${ARCH_EXT}."
 	echo -e ""
 	read -p "Press enter to continue."
-	exit 0
+	exit 1
 fi
 # keyrings and setups
 if [[ "$DISTRO" == "devuan" || "$DISTRO" == "raspbian" ]]; then
@@ -54,6 +63,13 @@ else
 	fi
 fi
 
+for v in DISTRO DISTRO_VERSION ROOTFS_ARCH ROOT
+do
+	if [[ -z "$$v" ]]; then
+		echo "E: Variable $v not defined"
+		exit 1
+	fi
+done
 ROOT="sysroot"
 RELEASE_TARBALL=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
 if [[ -f "$RELEASE_TARBALL" ]]; then ls -ls $RELEASE_TARBALL; exit 0; fi
@@ -119,15 +135,9 @@ if [[ -d "${ROOT}" ]]; then umount ${ROOT}; sleep .50; rm -fdr ${ROOT}; fi
 
 if [[ "$HOST_MACHINE" == "Debian" || "$HOST_MACHINE" == "Ubuntu" ]]; then
 	# devuan release
-	if [[ -f "/usr/share/debootstrap/scripts/chimaera" ]]; then
-		rm -f /usr/share/debootstrap/scripts/chimaera
-	fi
-	if [[ -f "/usr/share/debootstrap/scripts/daedalus" ]]; then
-		rm -f /usr/share/debootstrap/scripts/daedalus
-	fi
-	if [[ -f "/usr/share/debootstrap/scripts/excalibur" ]]; then
-		rm -f /usr/share/debootstrap/scripts/excalibur
-	fi
+	rm -f /usr/share/debootstrap/scripts/chimaera
+	rm -f /usr/share/debootstrap/scripts/daedalus
+	rm -f /usr/share/debootstrap/scripts/excalibur
 fi
 
 exit 0

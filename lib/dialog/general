@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Do not continue upon first occurring error
+set -e
+
+if ! command -v dialog > /dev/null ; then
+	echo "E: Could not find Debian's configuration dialog tool."
+	echo "   Run 'sudo apt install dialog' - and you likely miss other tools, too."
+	exit 1
+fi
+
 source lib/boards/$1
 source userdata.txt
 source custom.txt

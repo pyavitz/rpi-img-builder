@@ -1,7 +1,12 @@
 #!/bin/bash
 
+set -e
+
 debian_release(){
-if [[ "$DISTRO_VERSION" == "bullseye" ]]; then
+if [[ -z "$DISTRO_VERSION" ]]; then
+	echo "E: Variable DISTRO_VERSION not set or empty."
+	exit 1
+elif [[ "$DISTRO_VERSION" == "bullseye" ]]; then
 	tee ${SOURCES_LIST} <<EOF
 deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free
 deb http://deb.debian.org/debian ${DISTRO_VERSION}-updates main contrib non-free
@@ -9,8 +14,7 @@ deb http://deb.debian.org/debian ${DISTRO_VERSION}-proposed-updates main contrib
 deb http://deb.debian.org/debian-security ${DISTRO_VERSION}-security main contrib non-free
 deb http://deb.debian.org/debian ${DISTRO_VERSION}-backports main contrib non-free
 EOF
-fi
-if [[ "$DISTRO_VERSION" == "bookworm" ]]; then
+elif [[ "$DISTRO_VERSION" == "bookworm" ]]; then
 	tee ${SOURCES_LIST} <<EOF
 deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free non-free-firmware
 deb http://deb.debian.org/debian ${DISTRO_VERSION}-updates main contrib non-free non-free-firmware
@@ -18,16 +22,21 @@ deb http://deb.debian.org/debian ${DISTRO_VERSION}-proposed-updates main contrib
 deb http://deb.debian.org/debian-security ${DISTRO_VERSION}-security main contrib non-free non-free-firmware
 deb http://deb.debian.org/debian ${DISTRO_VERSION}-backports main contrib non-free non-free-firmware
 EOF
-fi
-if [[ "$DISTRO_VERSION" == "sid" || "$DISTRO_VERSION" == "testing" || "$DISTRO_VERSION" == "trixie" || "$DISTRO_VERSION" == "unstable" ]]; then
+elif [[ "$DISTRO_VERSION" == "sid" || "$DISTRO_VERSION" == "testing" || "$DISTRO_VERSION" == "trixie" || "$DISTRO_VERSION" == "unstable" ]]; then
 	tee ${SOURCES_LIST} <<EOF
 deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free non-free-firmware
 EOF
+else
+	echo "E: Unknown Debian version '$DISTRO_VERSION'."
+	exit 1
 fi
 }
 
 devuan_release(){
-if [[ "$DISTRO_VERSION" == "chimaera" ]]; then
+if [[ -z "$DISTRO_VERSION" ]]; then
+	echo "E: Variable DISTRO_VERSION not set or empty."
+	exit 1
+elif [[ "$DISTRO_VERSION" == "chimaera" ]]; then
 	tee ${SOURCES_LIST} <<EOF
 deb http://deb.devuan.org/merged ${DISTRO_VERSION} main contrib non-free
 deb http://deb.devuan.org/merged ${DISTRO_VERSION}-updates main contrib non-free
@@ -35,8 +44,7 @@ deb http://deb.devuan.org/devuan ${DISTRO_VERSION}-proposed-updates main contrib
 deb http://deb.devuan.org/merged ${DISTRO_VERSION}-security main contrib non-free
 deb http://deb.devuan.org/merged ${DISTRO_VERSION}-backports main contrib non-free
 EOF
-fi
-if [[ "$DISTRO_VERSION" == "daedalus" ]]; then
+elif [[ "$DISTRO_VERSION" == "daedalus" ]]; then
 	tee ${SOURCES_LIST} <<EOF
 deb http://deb.devuan.org/merged ${DISTRO_VERSION} main contrib non-free non-free-firmware
 deb http://deb.devuan.org/merged ${DISTRO_VERSION}-updates main contrib non-free non-free-firmware
@@ -44,11 +52,13 @@ deb http://deb.devuan.org/merged ${DISTRO_VERSION}-proposed-updates main contrib
 deb http://deb.devuan.org/merged ${DISTRO_VERSION}-security main contrib non-free
 deb http://deb.devuan.org/merged ${DISTRO_VERSION}-backports main contrib non-free non-free-firmware
 EOF
-fi
-if [[ "$DISTRO_VERSION" == "ceres" || "$DISTRO_VERSION" == "excalibur" || "$DISTRO_VERSION" == "testing" || "$DISTRO_VERSION" == "unstable" ]]; then
+elif [[ "$DISTRO_VERSION" == "ceres" || "$DISTRO_VERSION" == "excalibur" || "$DISTRO_VERSION" == "testing" || "$DISTRO_VERSION" == "unstable" ]]; then
 	tee ${SOURCES_LIST} <<EOF
 deb http://deb.devuan.org/merged ${DISTRO_VERSION} main contrib non-free non-free-firmware
 EOF
+else
+	echo "E: Unknown Devuan version '$DISTRO_VERSION'."
+	exit 1
 fi
 }
 
@@ -90,6 +100,6 @@ if [[ "$DISTRO" == "debian" || "$DISTRO" == "devuan" || "$DISTRO" == "raspbian" 
 	${DISTRO}_release
 else
 	echo "${CAP_DISTRO} ${CAP_RELEASE} is not supported."
-	exit 0
+	exit 1
 fi
 }

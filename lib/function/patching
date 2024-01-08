@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # boot firmware
 firmware (){
 FIRMWARE="https://github.com/raspberrypi/firmware.git"

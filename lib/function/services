@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Systemd services
 led_service (){
 tee /etc/systemd/system/leds.service <<EOF

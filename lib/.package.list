@@ -36,6 +36,9 @@ sudo apt install -y build-essential bison bc git dialog patch kpartx zstd aria2 
 	gcc-11-arm-linux-gnueabi gcc-12-arm-linux-gnueabi gcc-11-aarch64-linux-gnu \
 	gcc-12-aarch64-linux-gnu
 
+### Trixie ( AMD64/x86_64 )
+sudo apt install -y build-essential bison bc git dialog patch kpartx zstd aria2 pv dosfstools zip unzip debootstrap qemu-user-static rsync make jq kmod cpio flex libssl-dev libncurses-dev parted fakeroot swig libelf-dev crossbuild-essential-arm64 crossbuild-essential-armel crossbuild-essential-armhf distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs xfsprogs fdisk gcc-11 gcc-12 gcc-11-arm-linux-gnueabihf gcc-12-arm-linux-gnueabihf gcc-11-arm-linux-gnueabi gcc-12-arm-linux-gnueabi gcc-13-arm-linux-gnueabi gcc-11-aarch64-linux-gnu gcc-12-aarch64-linux-gnu gcc-13-aarch64-linux-gnu
+
 ### Bookworm ( ARM64/CC )
 sudo apt install -y build-essential bison bc git dialog patch kpartx zstd \
 	dosfstools zip unzip debootstrap qemu-user-static rsync make fdisk \
@@ -46,6 +49,13 @@ sudo apt install -y build-essential bison bc git dialog patch kpartx zstd \
 	gcc-11-arm-linux-gnueabi gcc-12-arm-linux-gnueabi
 
 ### Bookworm ( ARM64/NC )
+sudo apt install -y build-essential bison bc git dialog patch fdisk \
+	dosfstools zip unzip debootstrap qemu-user-static rsync \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
+	aria2 pv distro-info-data lsb-release xz-utils curl jq \
+	e2fsprogs btrfs-progs xfsprogs kpartx make libelf-dev zstd gcc-11 gcc-12
+
+### Trixie ( ARM64/NC )
 sudo apt install -y build-essential bison bc git dialog patch fdisk \
 	dosfstools zip unzip debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \

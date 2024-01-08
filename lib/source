@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Do not continue upon first occurring error
+set -e
+
 # variables
 SRC="source"
 KERNEL="linux-rpi"

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # DU does not provide an accurate calculation of disk usage on ROOTFS.
 # This function adds space for the BOOT partition "512MB" and more or
 # less depending on the overall size of the ROOTFS partition.

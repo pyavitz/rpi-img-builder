@@ -1,7 +1,16 @@
 #!/bin/bash
 
+set -e
+
 # dev rootfs
 sysroot_partition (){
+for v in IMGSIZE ROOTFS_FOLDER RELEASE_NAME IMAGE_LOOP_DEV ROOT IMAGE_LOOP_DEV_ROOTFS
+do
+	if [[ -z "$$v" ]]; then
+		echo "E: Variable $v empty."
+		exit 1
+	fi
+done
 truncate -s ${IMGSIZE} "${ROOTFS_FOLDER}${RELEASE_NAME}"
 parted --script "${ROOTFS_FOLDER}${RELEASE_NAME}" \
 mklabel msdos \
@@ -18,6 +27,13 @@ mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" ${ROOT}
 }
 
 sysroot_setup (){
+for v in VERBOSE ROOT
+do
+	if [[ -z "$$v" ]]; then
+		echo "E: Variable $v empty."
+		exit 1
+	fi
+done
 SOURCES_LIST="${ROOT}/etc/apt/sources.list"
 mkdir -p ${ROOT}/etc/apt/apt.conf.d ${ROOT}/etc/dpkg/dpkg.cfg.d
 echo "force-unsafe-io" > "${ROOT}/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
@@ -100,29 +116,32 @@ fi
 
 # debootstrap
 run_debootstrap (){
+if [[ -z "$ROOT" ]]; then
+	echo "E (run_debootstrap): Variable ROOT not set."
+	exit 1
+fi
+KEY_DIR="/usr/share/keyrings"
 if [[ "$DISTRO" == "devuan" ]]; then
 	DEBOOTSTRAP_SCRIPT="sid"
 	debootstrap_script
-fi
-if [[ "$DISTRO" == "ubuntu" ]]; then
+elif [[ "$DISTRO" == "ubuntu" ]]; then
 	DEBOOTSTRAP_SCRIPT="gutsy"
 	debootstrap_script
-fi
-KEY_DIR="/usr/share/keyrings"
-if [[ "$DISTRO" == "debian" || "$DISTRO" == "kali" || "$DISTRO" == "ubuntu" ]]; then
+elif [[ "$DISTRO" == "debian" || "$DISTRO" == "kali" || "$DISTRO" == "ubuntu" ]]; then
 	debootstrap --arch ${ARCH_EXT} --foreign ${DISTRO_VERSION} ${ROOT}
 	chroot ${ROOT} /debootstrap/debootstrap --second-stage
-fi
-if [[ "$DISTRO" == "devuan" ]]; then
+elif [[ "$DISTRO" == "devuan" ]]; then
 	KEY="${KEY_DIR}/devuan-archive-keyring.gpg"
 	SOURCE="http://deb.devuan.org/merged"
 	debootstrap --arch ${ARCH_EXT} --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VERSION} ${ROOT} ${SOURCE}
 	chroot ${ROOT} /debootstrap/debootstrap --second-stage
-fi
-if [[ "$DISTRO" == "raspbian" ]]; then
+elif [[ "$DISTRO" == "raspbian" ]]; then
 	KEY="${KEY_DIR}/raspbian-archive-keyring.gpg"
 	SOURCE="http://raspbian.raspberrypi.org/raspbian"
 	debootstrap --arch ${ARCH_EXT} --foreign --force-check-gpg --keyring=$KEY ${DISTRO_VERSION} ${ROOT} ${SOURCE}
 	chroot ${ROOT} /debootstrap/debootstrap --second-stage
+else
+	echo "E (run_debootstrap): Variable DISTRO not set."
+	exit 1
 fi
 }
