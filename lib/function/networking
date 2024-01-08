@@ -134,9 +134,7 @@ EOF
 }
 
 networkmanager-setup(){
-if [ -f /etc/network/interfaces ]; then
-	rm -f /etc/network/interfaces
-fi
+rm -f /etc/network/interfaces
 tee /etc/network/interfaces <<EOF
 source /etc/network/interfaces.d/*
 
@@ -146,9 +144,7 @@ EOF
 echo "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev" > /etc/wpa_supplicant/wpa_supplicant.conf
 chown root:root /etc/network/interfaces
 chown root:root /etc/wpa_supplicant/wpa_supplicant.conf
-if [[ -f "/usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf" ]]; then
-	rm -f /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf
-fi
+rm -f /usr/lib/NetworkManager/conf.d/10-globally-managed-devices.conf
 if [[ -f "/etc/NetworkManager/conf.d/default-wifi-powersave-on.conf" ]]; then
 	sed -i 's/wifi.powersave = 3/wifi.powersave = 2/g' /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf
 else

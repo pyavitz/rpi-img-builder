@@ -35,15 +35,9 @@ dpkg-buildpackage -us -uc
 cd ~
 dpkg -i raspberrypi-sys-mods*.deb
 rm -fdr raspberrypi-sys-mods*
-if [ -f /etc/apt/sources.list.d/vscode.list ]; then
-	rm -f /etc/apt/sources.list.d/vscode.list
-fi
-if [ -f /etc/apt/trusted.gpg.d/microsoft.gpg ]; then
-	rm -f /etc/apt/trusted.gpg.d/microsoft.gpg
-fi
-if [ -f /etc/apt/preferences.d/3rd_parties.pref ]; then
-	rm -f /etc/apt/preferences.d/3rd_parties.pref
-fi
+rm -f /etc/apt/sources.list.d/vscode.list
+rm -f /etc/apt/trusted.gpg.d/microsoft.gpg
+rm -f /etc/apt/preferences.d/3rd_parties.pref
 }
 
 # rpi-eeprom
@@ -200,9 +194,7 @@ uscripts_stage1 (){
 if [[ -f "files/userscripts/uscripts" ]]; then
 	mkdir -p p2/root/userscripts
 	cp -fr files/userscripts/* p2/root/userscripts/
-	if [[ -f "p2/root/userscripts/README.md" ]]; then
-		rm -f p2/root/userscripts/README.md
-	fi
+	rm -f p2/root/userscripts/README.md
 	if [[ `type run_function1` ]] &>/dev/null; then
 		run_function1
 	fi
@@ -219,7 +211,7 @@ if [[ -f "/root/userscripts/uscripts" ]]; then
 		echo -e "\033[1mDone\e[0m."
 	fi
 fi
-if [[ -e "/root/userscripts" ]]; then rm -fdr /root/userscripts; fi
+rm -fdr /root/userscripts
 }
 
 uscripts_fin-stage1 (){
