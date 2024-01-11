@@ -160,6 +160,12 @@ disable_splash=1
 # disables the warning overlays
 #avoid_warnings=1
 
+# USB boot requires high current (5 volt 5 amp) power supply.
+# To disable this check set usb_max_current_enable=1 in config.txt
+# or press the power button to temporarily enable usb_max_current_enable
+# and continue booting.
+#usb_max_current_enable=1
+
 [cm4]
 # Enable host mode on the 2711 built-in XHCI USB controller.
 # This line should be removed if the legacy DWC2 controller is required
@@ -172,11 +178,5 @@ dtoverlay=vc4-kms-v3d
 #dtoverlay=vc4-fkms-v3d
 max_framebuffers=2
 arm_boost=1
-
-# USB boot requires high current (5 volt 5 amp) power supply.
-# To disable this check set usb_max_current_enable=1 in config.txt
-# or press the power button to temporarily enable usb_max_current_enable
-# and continue booting.
-#usb_max_current_enable=1
 EOF
 }
