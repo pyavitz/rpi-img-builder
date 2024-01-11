@@ -185,7 +185,7 @@ echo "Moving scripts ..."
 cd ~
 mkdir -p /usr/local/bin
 mkdir -p /usr/local/sbin
-if [[ "$BOARD_EXT" == "rpi-3" || "$BOARD_EXT" == "rpi-4" || "$BOARD_EXT" == "rpi-5" ]]; then
+if [[ "$BOARD_EXT" =~ ^(rpi-2+3|rpi-3|rpi-4|rpi-5)$ ]]; then
 	wget -cq --show-progress ${URL}deb-eeprom
 	mv -f deb-eeprom /usr/local/bin/
 fi
@@ -313,7 +313,7 @@ rm -fdR pi-bluetooth*
 rpi_userland
 
 # eeprom
-if [[ "$BOARD_EXT" == "rpi-2+3" || "$BOARD_EXT" == "rpi-3" || "$BOARD_EXT" == "rpi-4" || "$BOARD_EXT" == "rpi-5" ]]; then
+if [[ "$BOARD_EXT" =~ ^(rpi-2+3|rpi-3|rpi-4|rpi-5)$ ]]; then
 	eeprom_support
 fi
 

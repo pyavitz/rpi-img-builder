@@ -25,7 +25,7 @@ P_VALUE="p2"
 
 # output
 BOARD="bcm2711v7"
-BOARD_EXT="rpi"
+BOARD_EXT="rpi-4"
 OUTPUT="output/${BOARD}"
 IMG_EXP="${BOARD_EXT}-*.img*"
 
@@ -35,4 +35,4 @@ EXTRA="loglevel=5 net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm"
 
 # packaging
 KERNEL_IMG="kernel7l.img"
-SERIES="bcm2711-${BOARD_EXT}"
+SERIES="bcm2711-rpi"
