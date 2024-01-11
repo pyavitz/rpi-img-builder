@@ -5,7 +5,9 @@ source lib/function/config
 BUILDER="6.2"
 PROFILE="1.0"
 
+if [[ `command -v dialog` ]]; then :; else sudo apt install dialog; fi
 GCC=`ls -ls /usr/bin/gcc | sed 's/.*\(..\)/\1/' | sed 's/ //g'`
+if [[ "$GCC" == "cc" ]]; then GCC="11"; fi
 ARCH=`uname -m`
 MYNAME=`echo $USER | sed -e "s/\b\(.\)/\u\1/g"`
 
