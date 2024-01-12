@@ -18,6 +18,14 @@ else
 fi
 
 echo -en "${TXT}${BUILDER}${FIN} ${PNK}(${FIN}${GRN}${GIT_BRANCH}${FIN}${PNK})${FIN}${BUILDER_VER}"
-echo ""
+if [[ -f "/etc/os-release" ]] && [[ `command -v uname` ]]; then
+	# host machine
+	HOST_MACHINE=`cat /etc/os-release | grep -w NAME | sed 's/NAME=//g' | sed 's/"//g' | sed 's/ GNU\/Linux//g'`
+	HOST_CODENAME=`cat /etc/os-release | grep -w "VERSION_CODENAME" | sed 's/VERSION_CODENAME=//g' | sed -e "s/\b\(.\)/\u\1/g"`
+	HOST_ARCH=`uname -m`
+	echo -e ""
+	echo -en "${TXT}Host machine${FIN} ${PNK}(${FIN}${GRN}${HOST_MACHINE} ${HOST_CODENAME}${FIN}${PNK})${FIN} ${PNK}(${FIN}${GRN}${HOST_ARCH}${FIN}${PNK})${FIN}"
+fi
+echo -e ""
 
 exit 0
