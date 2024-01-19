@@ -32,6 +32,10 @@ mount -t sysfs sys sys/
 
 export DEBIAN_FRONTEND="noninteractive"
 
+# do not accept new config files in an unattended install
+mkdir -p /etc/apt/apt.conf.d
+echo 'Dpkg::Options {"--force-confold";};' > /etc/apt/apt.conf.d/71debconf
+
 apt-get update
 apt-get install -y apt-utils
 
@@ -368,6 +372,7 @@ else
 fi
 
 # finish
+rm -f /etc/apt/apt.conf.d/71debconf
 echo ""
 echo "Finalizing ..."
 echo ""
