@@ -219,14 +219,11 @@ chown -R root:root /usr/local/sbin/
 
 # motd
 mkdir -p /etc/update-motd.d
-if [[ -f "/etc/update-motd.d/10-uname" ]]; then
-	rm -f /etc/update-motd.d/10-uname
-fi
+rm -f /etc/update-motd.d/{10-uname,00-header}
 if [[ -f "/etc/update-motd.d/10-help-text" ]]; then
 	rm -f /etc/update-motd.d/10-help-text
-fi
-if [[ -f "/etc/update-motd.d/00-header" ]]; then
-	rm -f /etc/update-motd.d/00-header
+	echo '#!/bin/sh' > /etc/update-motd.d/10-help-text
+	chmod +x /etc/update-motd.d/10-help-text
 fi
 mv -f {00-header,15-brand,20-sysinfo,90-dynamic-motd} /etc/update-motd.d/
 chmod +x /etc/update-motd.d/*
