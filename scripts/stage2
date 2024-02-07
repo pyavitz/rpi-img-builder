@@ -342,6 +342,9 @@ if [[ "$DISTRO" == "ubuntu" ]]; then
 	ln -sf /etc/newt/palette.dark  /etc/alternatives/newt-palette
 fi
 
+# xorg confs
+if [[ "$BOARD_EXT" =~ ^(rpi-4|rpi-5)$ ]]; then xorg_confs; fi
+
 # hack
 if [[ "$BOARD" == "bcm2708" ]] && [[ -f "/lib/ld-linux.so.3" ]]; then
 	ln -s /lib/ld-linux.so.3 /lib/ld-linux-armhf.so.3
