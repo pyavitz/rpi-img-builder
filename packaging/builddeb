@@ -56,8 +56,8 @@ libc_headers_dir="$objtree/debian/headertmp"
 dbg_dir="$objtree/debian/dbgtmp"
 libc_headers_packagename=linux-libc-dev
 dbg_packagename=$packagename-dbg
-packagename=$linux_packagename
-kernel_headers_packagename=$headers_packagename
+packagename=$linux_name
+kernel_headers_packagename=$headers_name
 
 if [ "$ARCH" = "um" ] ; then
 	packagename=user-mode-linux-$version
