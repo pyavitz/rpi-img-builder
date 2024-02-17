@@ -180,7 +180,6 @@ if [[ -f "/root/ifupdown.credentials" ]]; then
 	echo 'NAMESERVERS=""' >> /boot/broadcom/credentials.txt
 	echo "" >> /boot/broadcom/credentials.txt
 	echo "# change hostname" >> /boot/broadcom/credentials.txt
-	echo 'CHANGE="false"' >> /boot/broadcom/credentials.txt
 	echo HOSTNAME='"'$CURRENT_HOSTNAME'"' >> /boot/broadcom/credentials.txt
 fi
 }
@@ -206,7 +205,6 @@ if [[ -f "/root/networkmanager.credentials" ]]; then
 	echo 'DNS=""' >> /boot/broadcom/credentials.txt
 	echo "" >> /boot/broadcom/credentials.txt
 	echo "# change hostname" >> /boot/broadcom/credentials.txt
-	echo 'CHANGE="false"' >> /boot/broadcom/credentials.txt
 	echo HOSTNAME='"'$CURRENT_HOSTNAME'"' >> /boot/broadcom/credentials.txt
 fi
 }
