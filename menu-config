@@ -116,6 +116,7 @@ CHOICE=$(
 export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray'
 whiptail --backtitle "${RELEASE}: System Settings" --title "Menu Config" --menu "" --nocancel 0 25 0 \
 	"W)" "Wireless          Configure wireless network interface" \
+	"C)" "Configuration     Reconfigure config.txt" \
 	"" "" \
 	"1)" "Security          User security management" \
 	"2)" "Hostname          Change system hostname" \
@@ -129,11 +130,10 @@ whiptail --backtitle "${RELEASE}: System Settings" --title "Menu Config" --menu 
 )
 case $CHOICE in
 	"W)")
-		if [[ `command -v nmtui` ]]; then
-			sudo nmtui
-		else
-			swh -m
-		fi
+		if [[ `command -v nmtui` ]]; then sudo nmtui; else swh -m; fi
+		;;
+	"C)")
+		sudo nano /boot/broadcom/config.txt
 		;;
 	"")
 		;;
