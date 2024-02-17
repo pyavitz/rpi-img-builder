@@ -85,10 +85,6 @@ else
 	exit 0
 fi
 if [[ "$ARCH" == "arm" ]]; then sed -i '1d' p1/config.txt; fi
-if [[ "$BOARD_EXT" == "rpi-5" ]]; then
-	sed -i 's/dtoverlay=vc4-kms-v3d/#dtoverlay=vc4-kms-v3d/g' p1/config.txt
-	sed -i 's/#dtoverlay=vc4-kms-v3d-pi5/dtoverlay=vc4-kms-v3d-pi5/g' p1/config.txt
-fi
 
 # extract rootfs
 if [[ -f "${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz" ]]; then
