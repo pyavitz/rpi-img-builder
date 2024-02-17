@@ -314,9 +314,7 @@ rm -fdR pi-bluetooth*
 rpi_userland
 
 # eeprom
-if [[ "$BOARD_EXT" =~ ^(rpi-2+3|rpi-3|rpi-4|rpi-5)$ ]]; then
-	eeprom_support
-fi
+if [[ "$BOARD_EXT" =~ ^(rpi-2+3|rpi-3|rpi-4|rpi-5)$ ]]; then eeprom_support; fi
 
 # remove zstd compression (not supported by older kernels)
 if [[ "$DISTRO" == "ubuntu" ]]; then
@@ -327,6 +325,9 @@ fi
 
 # kernel
 stage2_kernel # miscellaneous
+
+# foundation support
+if [[ -d "/boot/broadcom" ]]; then ln -s /boot/broadcom /boot/firmware; fi
 
 # brcm modules
 bcm_modules > /dev/null 2>&1
