@@ -153,6 +153,8 @@ enable_uart=0
 #dtoverlay=disable-bt
 #dtoverlay=pi3-disable-wifi
 #dtoverlay=pi3-disable-bt
+#dtoverlay=disable-wifi-pi5
+#dtoverlay=disable-bt-pi5
 
 # remove test rainbow
 disable_splash=1
@@ -160,25 +162,27 @@ disable_splash=1
 # disables the warning overlays
 avoid_warnings=1
 
-# Don't have the firmware create an initial video= setting in cmdline.txt.
-# Use the kernel's default instead.
-#disable_fw_kms_setup=1
+# gpio fan (headers)
+#dtoverlay=gpio-fan,gpiopin=12,temp=55000
 
 [cm4]
 otg_mode=1
 
 [pi4]
 dtoverlay=vc4-kms-v3d,cma-512
+#dtoverlay=vc4-kms-v3d-pi4
 #dtoverlay=vc4-fkms-v3d
-max_framebuffers=1
+max_framebuffers=2
 arm_boost=1
+#disable_fw_kms_setup=1
 
 [pi5]
 dtoverlay=vc4-kms-v3d,cma-512
 #dtoverlay=vc4-kms-v3d-pi5
 #dtoverlay=vc4-fkms-v3d
-max_framebuffers=1
+max_framebuffers=0
 arm_boost=1
 usb_max_current_enable=1
+disable_fw_kms_setup=1
 EOF
 }
