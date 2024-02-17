@@ -326,9 +326,6 @@ fi
 # kernel
 stage2_kernel # miscellaneous
 
-# foundation support
-if [[ -d "/boot/broadcom" ]]; then ln -s /boot/broadcom /boot/firmware; fi
-
 # brcm modules
 bcm_modules > /dev/null 2>&1
 echo "snd_bcm2835" >> /etc/modules

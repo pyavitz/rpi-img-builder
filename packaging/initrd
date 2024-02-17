@@ -10,6 +10,8 @@ if [[ -d "/boot" ]] && [[ `ls  /boot/initrd.img-*` ]] > /dev/null 2>&1; then
 	if [[ -d "/boot/broadcom" ]]; then
 		rm -fr /boot/broadcom/{initrd.gz,initrd.img-*-bak}
 		cp -f /boot/initrd.img-* ${INITRD_BRCM}
+		rm -fdr /boot/firmware
+		ln -s /boot/broadcom /boot/firmware
 	fi
 fi
 
