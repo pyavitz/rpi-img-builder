@@ -98,8 +98,8 @@ else
 fi
 sourcename="rpi-img-builder"
 # set by pkgvars
-packagename=$linux_packagename
-kernel_headers_packagename=$headers_packagename
+packagename=$linux_name
+kernel_headers_packagename=$headers_name
 # end of pkgvars
 dbg_packagename=$packagename-dbg
 debarch=
