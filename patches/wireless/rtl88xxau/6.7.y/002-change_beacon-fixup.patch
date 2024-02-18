@@ -1,0 +1,37 @@
+From 5fdaac494aa97383473b7c23911003ef443c9b7e Mon Sep 17 00:00:00 2001
+From: Patrick Yavitz <pyavitz@xxxxx.com>
+Date: Mon, 22 Jan 2024 14:03:35 -0500
+Subject: [PATCH] change_beacon linux 6.7 fixup
+
+https://github.com/aircrack-ng/rtl8812au/pull/1134
+
+Signed-off-by: Patrick Yavitz <pyavitz@xxxxx.com>
+---
+ .../realtek/rtl88xxau/os_dep/linux/ioctl_cfg80211.c       | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/net/wireless/realtek/rtl88xxau/os_dep/linux/ioctl_cfg80211.c b/drivers/net/wireless/realtek/rtl88xxau/os_dep/linux/ioctl_cfg80211.c
+index 45b724ef9a58..37eaf35e60f4 100644
+--- a/drivers/net/wireless/realtek/rtl88xxau/os_dep/linux/ioctl_cfg80211.c
++++ b/drivers/net/wireless/realtek/rtl88xxau/os_dep/linux/ioctl_cfg80211.c
+@@ -5278,9 +5278,17 @@ static int cfg80211_rtw_start_ap(struct wiphy *wiphy, struct net_device *ndev,
+ 	return ret;
+ }
+ 
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 7, 0))
++static int cfg80211_rtw_change_beacon(struct wiphy *wiphy, struct net_device *ndev,
++		struct cfg80211_ap_update *params)
++{
++	struct cfg80211_beacon_data *info = &params->beacon; 
++#else
+ static int cfg80211_rtw_change_beacon(struct wiphy *wiphy, struct net_device *ndev,
+ 		struct cfg80211_beacon_data *info)
+ {
++#endif
++
+ 	int ret = 0;
+ 	_adapter *adapter = (_adapter *)rtw_netdev_priv(ndev);
+ 
+-- 
+2.39.2
+
