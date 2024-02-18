@@ -49,6 +49,7 @@ make dialogrc   # Set builder theme (optional)
 make list		# List boards
 make all board=xxx	# Kernel > rootfs > image
 make kernel board=xxx	# Builds linux kernel package
+make commit board=xxx	# Builds linux kernel package
 make rootfs board=xxx	# Create rootfs tarball
 make image board=xxx	# Make bootable image
 ```

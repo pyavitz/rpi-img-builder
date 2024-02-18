@@ -93,6 +93,7 @@ help:
 	@echo "   make list\t\t\tList boards"
 	@echo "   make all board=xxx\t\tKernel > rootfs > image"
 	@echo "   make kernel board=xxx\tBuilds linux kernel package"
+	@echo "   make commit board=xxx\tBuilds linux kernel package"
 	@echo "   make rootfs board=xxx\tCreate rootfs tarball"
 	@echo "   make image board=xxx\t\tMake bootable image"
 	@echo ""
