@@ -287,7 +287,7 @@ $EE
 $EE "cmdline.txt"
 rm -f /mnt/${P_BOOT}/cmdline.txt
 tee /mnt/${P_BOOT}/cmdline.txt <<EOF
-${CONSOLE} root=PARTUUID=${ROOT_PARTUUID} ${ROOTFSTYPE} fsck.repair=yes ${EXTRA} rootwait
+${CMDLINE}
 EOF
 $EE
 $EE "fstab"
