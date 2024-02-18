@@ -124,7 +124,7 @@ whiptail --backtitle "${RELEASE}: System Settings" --title "Menu Config" --menu 
 	"5)" "Timezone          Change regional settings" \
 	"6)" "Governor          Dynamic frequency scaling" \
 	"" "" \
-	"C)" "Configuration     Edit the config.txt" \
+	"C)" "Kernel            Edit the config.txt" \
 	"U)" "Update            Menu interface configuration tool" \
 	"Q)" "Quit .." 3>&2 2>&1 1>&3
 )
@@ -154,7 +154,7 @@ case $CHOICE in
 		;;
 	"")
 		;;
-	"C)")
+	"K)")
 		sudo nano /boot/broadcom/config.txt
 		;;
 	"U)")
