@@ -4,20 +4,44 @@
 CPUT=$(/opt/vc/bin/vcgencmd measure_temp | egrep -o '[0-9]*\.[0-9]*')
 CPU=`lscpu | grep "Model name" | sed -n 1p | sed 's/Model name://g' | sed -r '1s/\s+//g'`
 CPUM=`lscpu | grep "CPU max MHz" | sed -n 1p | sed 's/CPU max MHz://g' | sed -r '1s/\s+//g' | sed 's/.0000//g'`
+if [[ `ls /sys/class/hwmon/hwmon*[0-9]*/pwm1` ]] > /dev/null 2>&1; then
+	if [[ `ls /sys/class/hwmon/hwmon*[0-9]*/fan1_input` ]] > /dev/null 2>&1 || \
+	[[ `ls /sys/class/hwmon/hwmon*[0-9]*/pwm1_enable` ]] > /dev/null 2>&1; then
+		FAN="true"
+		HWMON=`ls /sys/class/hwmon/hwmon*[0-9]*/pwm1 | grep -ohE 'hwmon[0-9][^ ]' | sed 's/.$//'`
+	fi
+else
+	FAN="false"
+fi
 NETWORK=$(ip -o -4 -br a | grep -v '^lo'| sed 's/^/ /' | sed 's/\/..//' | sed -r '1s/\s+/ /g' | sed -r '2s/\s+/ /g')
 ETH=`echo -e Wired:`
 WLAN=`echo -e Wireless:`
 USB=`echo -e Tether:`
+HA=`echo -e Hassio:`
+DOCKER=`echo -e Docker:`
+
+fan_pwr (){
+PWM=`cat /sys/class/hwmon/${HWMON}/pwm1`
+if [[ "$PWM" == "0" ]]; then
+	echo -e "Fan:         OFF, PWR ${PWM}"
+else
+	echo -e "Fan:         ON, PWR ${PWM}"
+fi
+}
 
 # display
-echo -e "== DISK"
+echo -e "── \e[1mDISK\e[0m"
 df -h | egrep '(Filesystem)|(/dev/mmc)|(/dev/root)|(/dev/sd)|(/dev/nvme)'
 echo ""
-echo -e "== NETWORK"
+echo -e "── \e[1mNETWORK\e[0m"
 echo -e "Hostname:    $(hostname)"
-echo -e "$NETWORK" | sed "s/^[ \t]*//" | sed "s/eth0/$ETH       eth0/g" | sed "s/eth1/$ETH       eth1/g" | sed "s/wlan0/$WLAN    wlan0/g" | sed "s/wlan1/$WLAN    wlan1/g" | sed "s/usb0/$USB      usb0/g"
+echo -e "$NETWORK" | sed "s/^[ \t]*//" | \
+	sed "s/eth0/$ETH       eth0/g" | sed "s/eth1/$ETH       eth1/g" | sed "s/eth2/$ETH       eth2/g" | \
+	sed "s/wlan0/$WLAN    wlan0/g" | sed "s/wlan1/$WLAN    wlan1/g" | sed "s/wlan2/$WLAN    wlan2/g" | \
+	sed "s/usb0/$USB      usb0/g" | sed "s/usb1/$USB      usb1/g" | \
+	sed "s/hassio/$HA      hassio/g" | sed "s/docker0/$DOCKER      docker0/g"
 echo ""
-echo -e "== SYSTEM"
+echo -e "── \e[1mSYSTEM\e[0m"
 if [[ -f "/sys/devices/system/cpu/present" ]]; then
 	echo -en "Processor:  " $CPU; echo -en " @ $CPUM"; echo -e "MHz $CPUT°C";
 else
@@ -25,6 +49,7 @@ else
 	echo -e "Cores:      " $(cat /sys/devices/system/cpu/cpu*/cpufreq/cpuinfo_cur_freq);
 fi
 echo -e "Online:     " $(lscpu | grep -w "On-line CPU(s) list:" | sed "s/On-line CPU(s) list:/ /g" | sed -e "s/\s\{3,\}//g")
+if [[ "$FAN" == "true" ]]; then fan_pwr; fi
 echo -e "Governor:   " $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
 echo -e "Memory:     " $(free -h | sed 's/i//g' | sed 's/Mem://g' | awk '{print $1" "$2}' | sed -n 'n;p')
 echo -e "Entropy:    " $(cat /proc/sys/kernel/random/entropy_avail)
