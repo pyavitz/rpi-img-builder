@@ -1,0 +1,321 @@
+#!/bin/bash
+
+# MODEL
+MODEL=$(tr -d '\0' </proc/device-tree/model)
+
+# LANGUAGE
+export LC_ALL=$(locale -a|grep -ix 'c.utf-\?8' || echo C)
+
+# CAUTION
+WARNING (){
+export NEWT_COLORS='root=,black'
+whiptail --msgbox "    $WARNING_MSG" 0 0
+exit 0
+}
+
+if [ "$USER" != "root" ]; then
+        echo "Please run this as root or with sudo privileges."
+        exit 1
+fi
+if [[ -f "/etc/opt/board.txt" ]]; then
+	. /etc/opt/board.txt
+else
+	WARNING_MSG="Your board is not supported."
+	WARNING
+fi
+if [[ -f "/etc/default/transfer" ]]; then
+	. /etc/default/transfer
+else
+	echo 'DISCLAIMER="true"' | tee /etc/default/transfer > /dev/null 2>&1
+	echo 'VERBOSITY="0"' | tee -a /etc/default/transfer > /dev/null 2>&1
+	. /etc/default/transfer
+fi
+
+# STYLE
+BLD="\033[1m"
+ITL="\033[3m"
+FIN="\033[0m"
+EE="echo -e"
+EN="echo -en"
+
+$EE
+$EE "${BLD}Would you like to transfer the current install to another drive?${FIN}"
+$EN "${ITL}YES / NO:${FIN} "
+read CHOICE
+if [[ "$CHOICE" == "YES" || "$CHOICE" == "Yes" || "$CHOICE" == "yes" ]]; then
+	if [[ "$DISCLAIMER" == "true" ]]; then
+		export NEWT_COLORS='root=,black'
+		whiptail --title "DISCLAIMER" --msgbox "BETA: USE AT OWN RISK" 0 0
+		sed -i 's/DISCLAIMER="true"/DISCLAIMER="false"/g' /etc/default/transfer
+	fi
+else
+	$EE "Program Terminated."
+	exit 0
+fi
+# CURRENT
+$EE ""
+$EE "${BLD}${ITL}CURRENT PARTITION SCHEME${FIN}"
+if [[ `findmnt -v -n -o SOURCE /boot/broadcom` ]]; then
+	CB_NODE=`findmnt -v -n -o SOURCE /boot/broadcom`
+	CB_FSTYPE=`findmnt -v -n -o FSTYPE /boot/broadcom`
+	$EN "BOOT: ${BLD}${CB_NODE}${FIN} "
+	$EE "FSTYPE: ${BLD}${CB_FSTYPE}${FIN}"
+fi
+if [[ `findmnt -v -n -o SOURCE /` ]]; then
+	CR_NODE=`findmnt -v -n -o SOURCE /`
+	CR_FSTYPE=`findmnt -v -n -o FSTYPE /`
+	$EN "ROOT: ${BLD}${CR_NODE}${FIN} "
+	$EE "FSTYPE: ${BLD}${CR_FSTYPE}${FIN}"
+fi
+
+# AVAILABLE 
+if [[ `ls /dev/sd*[a-z]` ]] > /dev/null 2>&1 || \
+	[[ `ls /dev/nvme*[0-9]` ]] > /dev/null 2>&1 || \
+		[[ `ls /dev/mmcblk[0-9]` ]] > /dev/null 2>&1; then
+	$EE ""
+	$EE "${BLD}${ITL}AVAILABLE DRIVES${FIN}"
+	if [[ `ls /dev/sd*[a-z]` ]] > /dev/null 2>&1; then
+		HD_CHK=`findmnt -v -n -o SOURCE / | sed 's/.$//'`
+		ls /dev/sd*[a-z]
+	fi
+	if [[ `ls /dev/nvme*[0-9]` ]] > /dev/null 2>&1; then
+		NVME_CHK=`findmnt -v -n -o SOURCE / | sed 's/..$//'`
+		ls /dev/nvme*[0-9]n1
+	fi
+	if [[ `ls /dev/mmcblk[0-9]` ]] > /dev/null 2>&1; then
+		MMC_CHK=`findmnt -v -n -o SOURCE / | sed 's/..$//'`
+		ls /dev/mmcblk[0-9]
+	fi
+	if [[ `lsblk | grep boot0` ]]; then
+		EMMC=`ls /dev/mmcblk*boot0 | sed 's/boot0//g'`
+		if [[ "$EMMC" == "$MMC_CHK" ]]; then
+			$EE ""
+			$EE "${BLD}eMMC Detected:${FIN} $EMMC"
+		fi
+	fi
+else
+	$EE ""
+	$EE "There are no available drives to transfer to."
+	exit 0
+fi
+
+# CHOOSE DRIVE
+$EE ""
+$EE "${BLD}From the list of AVAILABLE DRIVES above, write in the device node"
+$EN "you want to transfer the current install to:${FIN} "
+$EN "/dev/"
+read NODE
+DEVICE_NODE="/dev/${NODE}"
+if [[ -e "$DEVICE_NODE" ]]; then
+	:;
+else
+	$EE
+	$EE "${BLD}WARNING:${FIN} The drive you selected is not available or invalid."
+	exit 0
+fi
+if [[ "$HD_CHK" == "$DEVICE_NODE" || "$NVME_CHK" == "$DEVICE_NODE" || "$MMC_CHK" == "$DEVICE_NODE" ]]; then
+	$EE
+	$EE "${BLD}WARNING:${FIN} The drive you selected is currently in use."
+	exit 0
+fi
+if [[ "$EMMC" == "$DEVICE_NODE" ]]; then
+	EMMC_TRUE="true"
+else
+	EMMC_TRUE="false"	
+fi
+
+# FILESYSTEM TYPES
+B_FSTYPE="vfat"
+$EE ""
+$EE "${BLD}Filesystem Types${FIN}"
+$EE "${ITL}ROOT OPTIONS: ${FIN}btrfs ext4 f2fs xfs"
+$EE ""
+$EN "ROOT Partition: "
+read R_FSTYPE
+
+# BOOT PARTITION VARIABLES
+BOOTFS="mkfs.vfat -n"
+BOOTFS_TABLE="/boot/broadcom	vfat	defaults,flush 0 2"
+P_BOOT="p1"
+P_ROOTFS="p2"
+BOOT_LABEL="BOOT"
+if [[ `ls $DEVICE_NODE | grep "/dev/sd"` ]]; then
+	P_BOOT=`echo $P_BOOT | sed 's/p//g'`
+	P_ROOTFS=`echo $P_ROOTFS | sed 's/p//g'`
+fi
+MAKE_BOOTFS="${BOOTFS} ${BOOT_LABEL} ${DEVICE_NODE}${P_BOOT}"
+
+# ROOT PARTITION VARIABLES
+if [[ "$R_FSTYPE" == "btrfs" || "$R_FSTYPE" == "ext4" || "$R_FSTYPE" == "f2fs" || "$R_FSTYPE" == "xfs" ]]; then
+	if [[ "$R_FSTYPE" == "btrfs" ]]; then
+		MAKE_ROOTFS="mkfs.btrfs -f -L ROOTFS ${DEVICE_NODE}${P_ROOTFS}"
+		MOUNT_ROOTFS="mount -o compress=lzo,noatime,subvol=@ ${DEVICE_NODE}${P_ROOTFS} /mnt/${P_ROOTFS}"
+		ROOTFS_TABLE="btrfs	defaults,compress=lzo,noatime,subvol=@ 0 1"
+		ROOT_FSTYPE="rootfstype=btrfs rootflags=subvol=@"
+		RESIZEFS="btrfs filesystem resize max /mnt/${P_ROOTFS}"
+	fi
+	if [[ "$R_FSTYPE" == "ext4" ]]; then
+		MAKE_ROOTFS="mkfs.ext4 -L ROOTFS ${DEVICE_NODE}${P_ROOTFS}"
+		MOUNT_ROOTFS="mount -o defaults,noatime ${DEVICE_NODE}${P_ROOTFS} /mnt/${P_ROOTFS}"
+		ROOTFS_TABLE="ext4	defaults,noatime,commit=600,errors=remount-ro 0 1"
+		ROOT_FSTYPE="rootfstype=ext4"
+		RESIZEFS="resize2fs ${DEVICE_NODE}${P_ROOTFS}"
+	fi
+	if [[ "$R_FSTYPE" == "f2fs" ]]; then
+		MAKE_ROOTFS="mkfs.f2fs -f -l ROOTFS ${DEVICE_NODE}${P_ROOTFS}"
+		MOUNT_ROOTFS="mount -o rw,acl,active_logs=6,background_gc=on,user_xattr ${DEVICE_NODE}${P_ROOTFS} /mnt/${P_ROOTFS}"
+		ROOTFS_TABLE="f2fs	rw,acl,active_logs=6,background_gc=on,user_xattr 0 0"
+		ROOT_FSTYPE="rootfstype=f2fs"
+		RESIZEFS="resize.f2fs ${DEVICE_NODE}${P_ROOTFS}"
+	fi
+	if [[ "$R_FSTYPE" == "xfs" ]]; then
+		MAKE_ROOTFS="mkfs.xfs -f -L ROOTFS ${DEVICE_NODE}${P_ROOTFS}"
+		MOUNT_ROOTFS="mount -o defaults,noatime ${DEVICE_NODE}${P_ROOTFS} /mnt/${P_ROOTFS}"
+		ROOTFS_TABLE="xfs	defaults,noatime 0 1"
+		ROOT_FSTYPE="rootfstype=xfs"
+		RESIZEFS="xfs_growfs -d /mnt/${P_ROOTFS}"
+	fi
+else
+	$EE ""
+	$EE "Filesystem ${R_FSTYPE} is not supported or invalid."
+	exit 0
+fi
+
+# SUMMARY
+$EE ""
+$EE "${BLD}Summary List${FIN}"
+$EE "Board: $MODEL"
+$EN "Platform: "; $EE "$FAMILY" | sed -e 's/\(.*\)/\U\1/'
+$EE "Drive: $DEVICE_NODE"
+$EN "Partitions: "; $EE "$P_VALUE" | sed 's/p//g'
+$EE "eMMC Transfer: $EMMC_TRUE"
+$EN "BOOT FSTYPE: "; $EE "$B_FSTYPE"
+$EN "ROOT FSTYPE: "; $EE "$R_FSTYPE"
+$EE ""
+options=("Continue" "Quit")
+select opt in "${options[@]}"
+do
+	case $opt in
+		"Continue")
+			break
+			;;
+		"Quit")
+			$EE "Program Terminated."
+			exit 0
+			;;
+		*) echo "invalid option $REPLY";;
+	esac
+done
+
+partitions (){
+# wipe drive
+sfdisk --delete $DEVICE_NODE
+sleep 1
+kpartx $DEVICE_NODE
+sleep .25
+kpartx -u $DEVICE_NODE
+sleep 1
+# fin
+parted --script "${DEVICE_NODE}" \
+mklabel msdos \
+mkpart primary fat32 ${PART_OFFSET} ${BSIZE} \
+mkpart primary ext2 ${BSIZE} 100%
+parted --script "${DEVICE_NODE}" set 1 boot on
+partprobe "${DEVICE_NODE}"
+sleep 1.25
+if [[ `ls "${DEVICE_NODE}${P_ROOTFS}"` ]]; then
+	mkdir -p /mnt/${P_BOOT}
+	mkdir -p /mnt/${P_ROOTFS}
+	echo 'y' | $MAKE_BOOTFS
+	echo 'y' | $MAKE_ROOTFS
+	sleep .50
+	mount "${DEVICE_NODE}${P_BOOT}" /mnt/${P_BOOT}
+	mount "${DEVICE_NODE}${P_ROOTFS}" /mnt/${P_ROOTFS}
+	if [[ "$R_FSTYPE" == "btrfs" ]]; then
+		btrfs subvolume create /mnt/${P_ROOTFS}/@
+	fi
+	sync
+	umount /mnt/${P_ROOTFS}
+	sleep .50
+	if [[ "$R_FSTYPE" == "f2fs" ]]; then
+		$RESIZEFS
+		sleep .75
+	fi
+	$MOUNT_ROOTFS
+	if [[ "$R_FSTYPE" == "btrfs" || "$R_FSTYPE" == "ext4" || "$R_FSTYPE" == "xfs"  ]]; then
+		bash growpart ${DEVICE_NODE} 2
+		sleep .75
+		$RESIZEFS
+	fi
+else
+	export NEWT_COLORS='root=,black'
+	whiptail --msgbox "    Partitioning failed!" 0 0
+	exit 0
+fi
+}
+
+# OFFSET FIRST PARTITION BY
+PART_OFFSET="4MiB"
+BSIZE="512MiB"
+if [[ "$VERBOSITY" = "1" ]]; then
+	partitions
+else
+	$EE
+	$EN "Partitioning $DEVICE_NODE "
+	partitions > /dev/null 2>&1
+	$EE "[done]"
+fi
+
+# TRANSFER
+transfer (){
+cd /
+cp -ax /boot/broadcom/* /mnt/${P_BOOT}/
+cp -axv . /mnt/${P_ROOTFS}
+}
+
+if [[ "$VERBOSITY" = "1" ]]; then
+	transfer
+else
+	$EN "Transferring to $DEVICE_NODE "
+	transfer > /dev/null 2>&1
+	$EE "[done]"
+fi
+
+# FINISH
+finish (){
+$EE
+$EE "cmdline.txt"
+rm -f /mnt/${P_BOOT}/cmdline.txt
+tee /mnt/${P_BOOT}/cmdline.txt <<EOF
+${CONSOLE} root=PARTUUID=${ROOT_PARTUUID} ${ROOTFSTYPE} fsck.repair=yes ${EXTRA} rootwait
+EOF
+$EE
+$EE "fstab"
+rm -f /mnt/${P_ROOTFS}/etc/fstab
+tee /mnt/${P_ROOTFS}/etc/fstab <<EOF
+UUID=${BOOT_UUID}	${BOOTFS_TABLE}
+UUID=${ROOT_UUID}	/	${ROOTFS_TABLE}
+tmpfs	/tmp		tmpfs	defaults,nosuid 0 0
+EOF
+}
+
+BOOT_UUID=$(blkid -o export -- ${DEVICE_NODE}${P_BOOT} | sed -ne 's/^UUID=//p')
+BOOT_PARTUUID=$(blkid -o export -- ${DEVICE_NODE}${P_BOOT} | sed -ne 's/^PARTUUID=//p')
+ROOT_UUID=$(blkid -o export -- ${DEVICE_NODE}${P_ROOTFS} | sed -ne 's/^UUID=//p')
+ROOT_PARTUUID=$(blkid -o export -- ${DEVICE_NODE}${P_ROOTFS} | sed -ne 's/^PARTUUID=//p')
+CMDLINE="${CONSOLE} root=PARTUUID=${ROOT_PARTUUID} ${ROOT_FSTYPE} fsck.repair=yes ${EXTRA} rootwait"
+if [[ "$VERBOSITY" = "1" ]]; then
+	finish
+else
+	finish > /dev/null 2>&1
+fi
+rm -fdr /mnt/${P_ROOTFS}/mnt/*
+umount /mnt/${P_BOOT}
+umount /mnt/${P_ROOTFS}
+rm -fdr /mnt/${P_BOOT}
+rm -fdr /mnt/${P_ROOTFS}
+
+$EE ""
+$EE "${BLD}Transfer complete.${FIN}"
+
+exit 0

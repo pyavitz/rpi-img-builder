@@ -201,7 +201,7 @@ fi
 wget -cq --show-progress ${URL}governor
 wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/rpi-img-builder/menuconfig/menu-config
 wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/rpi-img-builder/menuconfig/menu-config-update
-mv -f {governor,setup,sysinfo,smon,menu-config,menu-config-update} /usr/local/bin/
+mv -f {governor,setup,sysinfo,smon,menu-config,menu-config-update,transfer} /usr/local/bin/
 mv -f firstboot.sh /usr/local/sbin/firstboot
 mv -f leds.sh /usr/local/sbin/leds
 if [[ "$DISTRO" == "devuan" ]]; then
