@@ -32,14 +32,19 @@ fi
 
 fan_pwr (){
 PWM=`cat /sys/class/hwmon/${HWMON}/pwm1`
-if [[ "$PWM" == "0" ]]; then
-	echo -e "Fan:         OFF, PWR ${PWM}"
+if [[ `lsmod | grep emc2305` ]]; then
+	RPM=`cat /sys/class/hwmon/${HWMON}/fan1_input`
+	echo -e "Fan:         RPM ${RPM}, PWR ${PWM}"
 else
-	echo -e "Fan:         ON, PWR ${PWM}"
+	if [[ "$PWM" == "0" ]]; then
+		echo -e "Fan:         OFF, PWR ${PWM}"
+	else
+		echo -e "Fan:         ON, PWR ${PWM}"
+	fi
 fi
 }
 
-run(){
+run (){
 if [[ -f "/proc/device-tree/model" ]]; then
 	MODEL=$(tr -d '\0' </proc/device-tree/model)
 	echo -en "== $MODEL"
