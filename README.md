@@ -181,7 +181,7 @@ HOSTNAME="raspberrypi"		# Hostname
 For headless use: ssh user@ipaddress
 ```
 #### System Menu: `menu-config`
-<img src="https://i.imgur.com/5zyY8uI.png" alt="Main Menu" />
+<img src="https://i.imgur.com/vwFVBzF.png" alt="Main Menu" />
 
 ---
 
