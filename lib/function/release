@@ -1,79 +1,66 @@
 #!/bin/bash
 
-debian_release(){
-if [[ "$DISTRO_VERSION" == "bullseye" ]]; then
+debian_release (){
+DEB_URL="http://deb.debian.org/debian"
+if [[ "$DISTRO_VERSION" == "bullseye" ]]; then POOL="main contrib non-free"; else POOL="main contrib non-free non-free-firmware"; fi
+if [[ "$DISTRO_VERSION" =~ ^(bullseye|bookworm)$ ]]; then
 	tee ${SOURCES_LIST} <<EOF
-deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free
-deb http://deb.debian.org/debian ${DISTRO_VERSION}-updates main contrib non-free
-deb http://deb.debian.org/debian ${DISTRO_VERSION}-proposed-updates main contrib non-free
-deb http://deb.debian.org/debian-security ${DISTRO_VERSION}-security main contrib non-free
-deb http://deb.debian.org/debian ${DISTRO_VERSION}-backports main contrib non-free
+deb ${DEB_URL} ${DISTRO_VERSION} ${POOL}
+deb ${DEB_URL} ${DISTRO_VERSION}-updates ${POOL}
+deb ${DEB_URL} ${DISTRO_VERSION}-proposed-updates ${POOL}
+deb ${DEB_URL}-security ${DISTRO_VERSION}-security ${POOL}
+deb ${DEB_URL} ${DISTRO_VERSION}-backports ${POOL}
 EOF
-fi
-if [[ "$DISTRO_VERSION" == "bookworm" ]]; then
+else
 	tee ${SOURCES_LIST} <<EOF
-deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free non-free-firmware
-deb http://deb.debian.org/debian ${DISTRO_VERSION}-updates main contrib non-free non-free-firmware
-deb http://deb.debian.org/debian ${DISTRO_VERSION}-proposed-updates main contrib non-free non-free-firmware
-deb http://deb.debian.org/debian-security ${DISTRO_VERSION}-security main contrib non-free non-free-firmware
-deb http://deb.debian.org/debian ${DISTRO_VERSION}-backports main contrib non-free non-free-firmware
-EOF
-fi
-if [[ "$DISTRO_VERSION" == "sid" || "$DISTRO_VERSION" == "testing" || "$DISTRO_VERSION" == "trixie" || "$DISTRO_VERSION" == "unstable" ]]; then
-	tee ${SOURCES_LIST} <<EOF
-deb http://deb.debian.org/debian ${DISTRO_VERSION} main contrib non-free non-free-firmware
+deb ${DEB_URL} ${DISTRO_VERSION} ${POOL}
 EOF
 fi
 }
 
-devuan_release(){
-if [[ "$DISTRO_VERSION" == "chimaera" ]]; then
+devuan_release (){
+DEB_URL="http://deb.devuan.org/merged"
+if [[ "$DISTRO_VERSION" == "chimaera" ]]; then POOL="main contrib non-free"; else POOL="main contrib non-free non-free-firmware"; fi
+if [[ "$DISTRO_VERSION" =~ ^(chimaera|daedalus)$ ]]; then
 	tee ${SOURCES_LIST} <<EOF
-deb http://deb.devuan.org/merged ${DISTRO_VERSION} main contrib non-free
-deb http://deb.devuan.org/merged ${DISTRO_VERSION}-updates main contrib non-free
-deb http://deb.devuan.org/devuan ${DISTRO_VERSION}-proposed-updates main contrib non-free
-deb http://deb.devuan.org/merged ${DISTRO_VERSION}-security main contrib non-free
-deb http://deb.devuan.org/merged ${DISTRO_VERSION}-backports main contrib non-free
+deb ${DEB_URL} ${DISTRO_VERSION} ${POOL}
+deb ${DEB_URL} ${DISTRO_VERSION}-updates ${POOL}
+deb ${DEB_URL} ${DISTRO_VERSION}-proposed-updates ${POOL}
+deb ${DEB_URL} ${DISTRO_VERSION}-security ${POOL}
+deb ${DEB_URL} ${DISTRO_VERSION}-backports ${POOL}
 EOF
-fi
-if [[ "$DISTRO_VERSION" == "daedalus" ]]; then
+else
 	tee ${SOURCES_LIST} <<EOF
-deb http://deb.devuan.org/merged ${DISTRO_VERSION} main contrib non-free non-free-firmware
-deb http://deb.devuan.org/merged ${DISTRO_VERSION}-updates main contrib non-free non-free-firmware
-deb http://deb.devuan.org/merged ${DISTRO_VERSION}-proposed-updates main contrib non-free non-free-firmware
-deb http://deb.devuan.org/merged ${DISTRO_VERSION}-security main contrib non-free
-deb http://deb.devuan.org/merged ${DISTRO_VERSION}-backports main contrib non-free non-free-firmware
-EOF
-fi
-if [[ "$DISTRO_VERSION" == "ceres" || "$DISTRO_VERSION" == "excalibur" || "$DISTRO_VERSION" == "testing" || "$DISTRO_VERSION" == "unstable" ]]; then
-	tee ${SOURCES_LIST} <<EOF
-deb http://deb.devuan.org/merged ${DISTRO_VERSION} main contrib non-free non-free-firmware
+deb ${DEB_URL} ${DISTRO_VERSION} ${POOL}
 EOF
 fi
 }
 
-raspbian_release(){
+raspbian_release (){
+DEB_URL="http://raspbian.raspberrypi.org/raspbian"
+POOL="main contrib non-free"
 tee ${SOURCES_LIST} <<EOF
-deb http://raspbian.raspberrypi.org/raspbian ${DISTRO_VERSION} main contrib non-free rpi
+deb ${DEB_URL} ${DISTRO_VERSION} ${POOL} rpi
 
 # optional
-#deb http://archive.raspbian.org/raspbian ${DISTRO_VERSION} main contrib non-free
-#deb http://mirrordirector.raspbian.org/raspbian ${DISTRO_VERSION} main contrib non-free
+#deb http://archive.raspbian.org/raspbian ${DISTRO_VERSION} ${POOL}
+#deb http://mirrordirector.raspbian.org/raspbian ${DISTRO_VERSION} ${POOL}
 EOF
 }
 
-ubuntu_release(){
+ubuntu_release (){
+DEB_URL="http://ports.ubuntu.com/ubuntu-ports/"
 tee ${SOURCES_LIST} <<EOF
-deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION} main restricted
-deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-updates main restricted
-deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION} universe
-deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-updates universe
-deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION} multiverse
-deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-updates multiverse
-deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-backports main restricted universe multiverse
-deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-security main restricted
-deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-security universe
-deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-security multiverse
+deb ${DEB_URL} ${DISTRO_VERSION} main restricted
+deb ${DEB_URL} ${DISTRO_VERSION}-updates main restricted
+deb ${DEB_URL} ${DISTRO_VERSION} universe
+deb ${DEB_URL} ${DISTRO_VERSION}-updates universe
+deb ${DEB_URL} ${DISTRO_VERSION} multiverse
+deb ${DEB_URL} ${DISTRO_VERSION}-updates multiverse
+deb ${DEB_URL} ${DISTRO_VERSION}-backports main restricted universe multiverse
+deb ${DEB_URL} ${DISTRO_VERSION}-security main restricted
+deb ${DEB_URL} ${DISTRO_VERSION}-security universe
+deb ${DEB_URL} ${DISTRO_VERSION}-security multiverse
 
 ## Uncomment the following two lines to add software from Canonical's
 ## 'partner' repository.
@@ -84,12 +71,12 @@ deb http://ports.ubuntu.com/ubuntu-ports/ ${DISTRO_VERSION}-security multiverse
 EOF
 }
 
-choose_release(){
+choose_release (){
 rm -f ${SOURCES_LIST}
-if [[ "$DISTRO" == "debian" || "$DISTRO" == "devuan" || "$DISTRO" == "raspbian" || "$DISTRO" == "ubuntu" ]]; then
+if [[ "$DISTRO" =~ ^(debian|devuan|raspbian|ubuntu)$ ]]; then
 	${DISTRO}_release
 else
 	echo "${CAP_DISTRO} ${CAP_RELEASE} is not supported."
-	exit 0
+	exit 1
 fi
 }
