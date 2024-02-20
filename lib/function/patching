@@ -152,6 +152,7 @@ else
 	echo -e "An essential builddeb file is missing."
 	exit 0
 fi
+if [[ -f "../../packaging/logo/${LINUX_LOGO}" ]]; then cp -f "../../packaging/logo/${LINUX_LOGO}" "drivers/video/logo/logo_linux_clut224.ppm"; fi
 linux_patches
 user_patches
 linux_packaging

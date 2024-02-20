@@ -23,6 +23,17 @@ CUSTOM="${BUILDER}"
 EOF
 }
 
+kernel_txt (){
+cat <<EOF > "kernel.txt"
+### KERNEL PREFERENCES
+
+LINUX_LOGO="linux_clut224.ppm"
+
+### DO NOT EDIT BELOW THIS LINE
+KERNEL_PREFERENCES="$BUILDER"
+EOF
+}
+
 profile_txt (){
 cat <<EOF > "profile.txt"
 # User data defaults

@@ -158,6 +158,14 @@ else
 	custom_txt
 fi
 
+# kernel preferences
+if [[ -f "kernel.txt" ]]; then
+	. kernel.txt
+	if [[ "$KERNEL_PREFERENCES" == "$BUILDER" ]]; then :; else kernel_txt; fi
+else
+	kernel_txt
+fi
+
 # clear screen
 clear -x
 
