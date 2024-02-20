@@ -163,7 +163,7 @@ disable_splash=1
 avoid_warnings=1
 
 # gpio fan (headers)
-#dtoverlay=gpio-fan,gpiopin=12,temp=55000
+#dtoverlay=gpio-fan,gpiopin=12,temp=55000,hyst=2000
 
 [cm4]
 otg_mode=1
