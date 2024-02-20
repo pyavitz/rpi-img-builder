@@ -31,8 +31,9 @@ else
 fi
 
 fan_pwr (){
+MODEL=$(tr -d '\0' </proc/device-tree/model)
 PWM=`cat /sys/class/hwmon/${HWMON}/pwm1`
-if [[ `lsmod | grep emc2305` ]]; then
+if [[ "$MODEL" == "Raspberry Pi 5 Model B Rev 1.0" ]] && [[ `lsmod | grep -w "pwm_fan"` ]]; then
 	RPM=`cat /sys/class/hwmon/${HWMON}/fan1_input`
 	echo -e "Fan:         RPM ${RPM}, PWR ${PWM}"
 else
