@@ -6,49 +6,12 @@ if [[ -f "arch/${ARCH}/configs/${LINUX_DEFCONFIG}" ]]; then
 	if [[ `grep -w "CONFIG_LOCALVERSION=" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then
 		sed -i 's/CONFIG_LOCALVERSION=/# CONFIG_LOCALVERSION=/g' arch/${ARCH}/configs/${LINUX_DEFCONFIG};
 	fi
-	# module sig
-	if [[ `grep -w "CONFIG_MODULE_SIG=y" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then
-		:;
-	else
-		echo "CONFIG_MODULE_SIG=y" >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
-	fi
-	# cifs posix
-	if [[ `grep -w "CONFIG_CIFS_POSIX=y" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then
-		:;
-	else
-		echo "CONFIG_CIFS_POSIX=y" >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
-	fi
-	# efi
-	if [[ `grep -w "CONFIG_EFI=y" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then
-		:;
-	else
-		echo "CONFIG_EFI=y" >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
-	fi
-	if [[ `grep -w "CONFIG_DMI=y" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then
-		:;
-	else
-		echo "CONFIG_DMI=y" >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
-	fi
-	if [[ `grep -w "CONFIG_SYSFB_SIMPLEFB=y" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then
-		:;
-	else
-		echo "CONFIG_SYSFB_SIMPLEFB=y" >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
-	fi
-	if [[ `grep -w "CONFIG_EFI_ARMSTUB_DTB_LOADER=y" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then
-		:;
-	else
-		echo "CONFIG_EFI_ARMSTUB_DTB_LOADER=y" >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
-	fi
-	if [[ `grep -w "CONFIG_EFI_BOOTLOADER_CONTROL=y" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then
-		:;
-	else
-		echo "CONFIG_EFI_BOOTLOADER_CONTROL=y" >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
-	fi
-	if [[ `grep -w "CONFIG_RESET_ATTACK_MITIGATION=y" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then
-		:;
-	else
-		echo "CONFIG_RESET_ATTACK_MITIGATION=y" >> arch/${ARCH}/configs/${LINUX_DEFCONFIG};
-	fi
+	# insert additional modules
+	echo -e ${MODULES} | tr ' ' '\n' | tee -a modlist.txt > /dev/null 2>&1
+	for MODLIST in `cat modlist.txt`; do
+		if [[ `grep -w "${MODLIST}" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then :; else echo "${MODLIST}" >> "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"; fi
+		rm -f modlist.txt
+	done
 fi
 if [ $CLANG -eq 1 ] && [[ "$ARCH" == "arm64" ]] && [[ -f "arch/${ARCH}/configs/${LINUX_DEFCONFIG}" ]]; then
 	if [[ `grep -w "CONFIG_LTO_CLANG_THIN=y" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then :; else echo "CONFIG_LTO_CLANG_THIN=y" >> arch/${ARCH}/configs/${LINUX_DEFCONFIG}; fi
