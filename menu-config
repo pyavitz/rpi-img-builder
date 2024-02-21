@@ -174,11 +174,8 @@ case $CHOICE in
 		exit 0
 		;;
 	"Q)")
-		clear -x
-		/etc/update-motd.d/00-header
-		/etc/update-motd.d/15-brand
-		/etc/update-motd.d/20-sysinfo
 		echo ""
+		echo "Program terminated."
 		exit 0
 		;;
 	esac
