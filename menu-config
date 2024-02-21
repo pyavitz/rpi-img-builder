@@ -174,7 +174,6 @@ case $CHOICE in
 		exit 0
 		;;
 	"Q)")
-		echo ""
 		echo "Program terminated."
 		exit 0
 		;;
