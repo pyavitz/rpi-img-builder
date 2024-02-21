@@ -184,5 +184,19 @@ max_framebuffers=0
 arm_boost=1
 usb_max_current_enable=1
 disable_fw_kms_setup=1
+
+# pwm fan
+#dtparam=fan_temp0=50000
+#dtparam=fan_temp0_hyst=2000
+#dtparam=fan_temp0_speed=75
+#dtparam=fan_temp1=55000
+#dtparam=fan_temp1_hyst=2000
+#dtparam=fan_temp1_speed=125
+#dtparam=fan_temp2=60000
+#dtparam=fan_temp2_hyst=3000
+#dtparam=fan_temp2_speed=175
+#dtparam=fan_temp3=65000
+#dtparam=fan_temp3_hyst=3000
+#dtparam=fan_temp3_speed=250
 EOF
 }
