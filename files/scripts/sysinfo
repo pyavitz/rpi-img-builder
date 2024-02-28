@@ -29,6 +29,12 @@ if [[ `ls /sys/class/hwmon/hwmon*[0-9]*/pwm1` ]] > /dev/null 2>&1; then
 else
 	FAN="false"
 fi
+if [[ `ls /sys/class/nvme/nvme[0-9]/hwmon[0-9]/temp[0-9]_input` ]] > /dev/null 2>&1; then
+	NVME="true"
+	SSDT=$(cat /sys/class/nvme/nvme[0-9]/hwmon[0-9]/temp[0-9]_input | cut -c1-2 | sed s/$/°C/ | tr '\n' ' ')
+else
+	NVME="false"
+fi
 
 fan_pwr (){
 MODEL=$(tr -d '\0' </proc/device-tree/model)
@@ -58,6 +64,7 @@ if [[ -f "/sys/devices/system/cpu/present" ]]; then
 fi
 echo -e "Online:     " $(lscpu | grep -w "On-line CPU(s) list:" | sed "s/On-line CPU(s) list:/ /g" | sed -e "s/\s\{3,\}//g")
 if [[ "$FAN" == "true" ]]; then fan_pwr; fi
+if [[ "$NVME" == "true" ]]; then echo -e "NVMe:        ${SSDT}"; fi
 echo -e "Governor:   " $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
 echo -e "Memory:     " $(free -h | sed 's/i//g' | sed 's/Mem://g' | awk '{print $1" "$2}' | sed -n 'n;p')
 echo -e "Entropy:    " $(cat /proc/sys/kernel/random/entropy_avail)
