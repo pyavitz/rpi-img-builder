@@ -109,6 +109,9 @@ if [ $RTW88 -eq 1 ] && [[ -d "../../patches/wireless/rtw88" ]]; then
 		echo "# wireless/rtw88/${VERSION}" | sed -e 's/\(.*\)/\U\1/' >> ${LOG_FILE}
 		for i in ../../patches/wireless/rtw88/*.patch; do patch -N -p1 < $i; done >> ${LOG_FILE}
 	fi
+	if [[ `ls ../../patches/wireless/rtw88/${VERSION}/*.patch` ]] > /dev/null 2>&1; then
+		for i in ../../patches/wireless/rtw88/${VERSION}/*.patch; do patch -N -p1 < $i; done >> ${LOG_FILE}
+	fi
 	if [[ `ls ../../patches/wireless/rtw88/hack/*.patch` ]] > /dev/null 2>&1; then
 		echo "# wireless/rtw88/hack" | sed -e 's/\(.*\)/\U\1/' >> ${LOG_FILE}
 		for i in ../../patches/wireless/rtw88/hack/*.patch; do patch -N -p1 < $i; done >> ${LOG_FILE}

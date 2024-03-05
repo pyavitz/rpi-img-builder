@@ -1,0 +1,26 @@
+From 4263afa80a9e2bbb2127b0162a8d01b0c823ad5c Mon Sep 17 00:00:00 2001
+From: Patrick Yavitz <pyavitz@xxxxx.com>
+Date: Mon, 5 Feb 2024 17:57:36 -0500
+Subject: [PATCH] drivers: net: wireless: realtek: rtw88: main.c: 6.1.y fixup
+
+Signed-off-by: Patrick Yavitz <pyavitz@xxxxx.com>
+---
+ drivers/net/wireless/realtek/rtw88/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/realtek/rtw88/main.c b/drivers/net/wireless/realtek/rtw88/main.c
+index 4a33d2e47f..06469babab 100644
+--- a/drivers/net/wireless/realtek/rtw88/main.c
++++ b/drivers/net/wireless/realtek/rtw88/main.c
+@@ -2181,7 +2181,7 @@ void rtw_core_deinit(struct rtw_dev *rtwdev)
+ 		release_firmware(wow_fw->firmware);
+ 
+ 	destroy_workqueue(rtwdev->tx_wq);
+-	timer_delete_sync(&rtwdev->tx_report.purge_timer);
++	del_timer_sync(&rtwdev->tx_report.purge_timer);
+ 	spin_lock_irqsave(&rtwdev->tx_report.q_lock, flags);
+ 	skb_queue_purge(&rtwdev->tx_report.queue);
+ 	spin_unlock_irqrestore(&rtwdev->tx_report.q_lock, flags);
+-- 
+2.39.2
+
