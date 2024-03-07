@@ -53,6 +53,14 @@ else
 		ubuntu_setup
 	fi
 fi
+# check for qemu
+if [[ `command -v ${STATIC}` ]]; then
+	:;
+else
+	echo -e "Missing depends: ${STATIC}"
+	echo -e "Run ./install.sh"
+	exit 1
+fi
 
 ROOT="sysroot"
 RELEASE_TARBALL=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz

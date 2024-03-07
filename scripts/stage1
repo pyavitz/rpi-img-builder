@@ -48,6 +48,14 @@ else
 fi
 # verbose
 if [ $VERBOSE -eq 1 ]; then set -eux -o pipefail; else set -eu -o pipefail; fi
+# check for qemu
+if [[ `command -v ${STATIC}` ]]; then
+	:;
+else
+	echo -e "Missing depends: ${STATIC}"
+	echo -e "Run ./install.sh"
+	exit 1
+fi
 
 CAP_DISTRO=`echo "${DISTRO}" | sed -e "s/\b\(.\)/\u\1/g"`
 CAP_RELEASE=`echo "${DISTRO_VERSION}" | sed -e "s/\b\(.\)/\u\1/g"`
