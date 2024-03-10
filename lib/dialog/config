@@ -2,7 +2,7 @@
 
 source lib/function/config
 # builder and profile versions
-BUILDER="6.4"
+BUILDER="6.5"
 PROFILE="1.0"
 
 if [[ `command -v dialog` ]]; then :; else sudo apt install dialog; fi
@@ -35,7 +35,7 @@ else
 	profile_txt
 fi
 ROOTPASSWD="0"
-VERSION="6.1.y"
+VERSION="6.6.y"
 BUILD_VERSION="1"
 MENUCONFIG="0"
 COMPILER="gcc-$GCC"
