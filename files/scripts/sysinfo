@@ -15,10 +15,24 @@ else
 	fi
 fi
 
-CPU=`lscpu | grep "Model name" | sed -n 1p | sed 's/Model name://g' | sed -r '1s/\s+//g'`
-CPUM=`lscpu | grep "CPU max MHz" | sed -n 1p | sed 's/CPU max MHz://g' | sed -r '1s/\s+//g' | sed 's/.0000//g'`
+PRESENT=`cat /sys/devices/system/cpu/present`
+CPU0=`lscpu | grep "Model name" | sed -n 1p | sed 's/Model name://g' | sed -r '1s/\s+//g'`
+CPU0M=`lscpu | grep "CPU max MHz" | sed -n 1p | sed 's/CPU max MHz://g' | sed -r '1s/\s+//g' | sed 's/.0000//g'`
+if [[ -f "/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq" ]]; then
+	sleep .25
+	CPU0C=$(cat /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_cur_freq | sed 's/...$//');
+fi
+CPU1=`lscpu | grep "Model name" | sed -n 2p | sed 's/Model name://g' | sed -r '1s/\s+//g'`
+CPU1M=`lscpu | grep "CPU max MHz" | sed -n 2p | sed 's/CPU max MHz://g' | sed -r '1s/\s+//g' | sed 's/.0000//g'`
+if [[ -f "/sys/devices/system/cpu/cpu4/cpufreq/cpuinfo_cur_freq" ]]; then
+	sleep .25
+	CPU1C=$(cat /sys/devices/system/cpu/cpu4/cpufreq/cpuinfo_cur_freq | sed 's/...$//');
+fi
 if [[ -f "/sys/class/thermal/thermal_zone0/temp" ]]; then
 	CPU0T=$(cat /sys/class/thermal/thermal_zone0/temp|cut -c1-2);
+fi
+if [[ -f "/sys/class/thermal/thermal_zone1/temp" ]]; then
+	CPU1T=$(cat /sys/class/thermal/thermal_zone1/temp|cut -c1-2);
 fi
 if [[ `ls /sys/class/hwmon/hwmon*[0-9]*/pwm1` ]] > /dev/null 2>&1; then
 	if [[ `ls /sys/class/hwmon/hwmon*[0-9]*/fan1_input` ]] > /dev/null 2>&1 || \
@@ -31,13 +45,38 @@ else
 fi
 if [[ `ls /sys/class/nvme/nvme[0-9]/hwmon[0-9]/temp[0-9]_input` ]] > /dev/null 2>&1; then
 	NVME="true"
-	SSDT=$(cat /sys/class/nvme/nvme[0-9]/hwmon[0-9]/temp[0-9]_input | cut -c1-2 | sed s/$/°C/ | tr '\n' ' ')
+	NVMET=$(cat /sys/class/nvme/nvme[0-9]/hwmon[0-9]/temp[0-9]_input | cut -c1-2 | sed s/$/°C/ | tr '\n' ' ')
 else
 	NVME="false"
 fi
+if [[ `ls /sys/class/scsi_device/[0-9]:[0-9]:[0-9]:[0-9]/device/hwmon/hwmon[0-9]/temp1_input` ]] > /dev/null 2>&1; then
+	SSD="true"
+	SSDT=$(cat /sys/class/scsi_device/[0-9]:[0-9]:[0-9]:[0-9]/device/hwmon/hwmon[0-9]/temp1_input | cut -c1-2 | sed s/$/°C/ | tr '\n' ' ')
+else
+	SSD="false"
+fi
+# functions
+count_high (){
+echo -en "Processors:  "$CPU0; echo -en " @ $CPU0M"; echo -en "MHz $CPU0T°C"
+echo -en "," $CPU1; echo -en " @ $CPU1M"; echo -e "MHz $CPU1T°C"
+echo -en "Frequencies: "$CPU0C; echo -en "MHz $CPU1C"; echo -e "MHz"
+}
+
+count_low (){
+echo -en "Processor:   "$CPU0; echo -en " @ $CPU0M"; echo -e "MHz $CPU0T°C"
+echo -en "Frequency:   "$CPU0C; echo -e "MHz"
+}
+
+cpu_hwinfo (){
+if [[ "$PRESENT" == "0-7" || "$PRESENT" == "0-5" ]]; then
+	count_high;
+fi
+if [[ "$PRESENT" == "0-3" || "$PRESENT" == "0-1" || "$PRESENT" == "0" ]]; then
+	count_low;
+fi
+}
 
 fan_pwr (){
-MODEL=$(tr -d '\0' </proc/device-tree/model)
 PWM=`cat /sys/class/hwmon/${HWMON}/pwm1`
 if [[ `ls /sys/class/hwmon/${HWMON}/fan1_input` ]] > /dev/null 2>&1; then
 	RPM=`cat /sys/class/hwmon/${HWMON}/fan1_input`
@@ -54,24 +93,22 @@ fi
 run (){
 if [[ -f "/proc/device-tree/model" ]]; then
 	MODEL=$(tr -d '\0' </proc/device-tree/model)
-	echo -en "== $MODEL"
+	echo -en "── $MODEL"
 	echo -e " (`uname -r`)"
 fi
-echo -e "CPU Usage:  " `top -b -n1 | grep "Cpu(s)" | awk '{print $2 + $4}'`
-if [[ -f "/sys/devices/system/cpu/present" ]]; then
-	echo -en "Processor:  " $CPU; echo -en " @ $CPUM"; echo -e "MHz $CPU0T°C";
-	echo -e "Cur freq:   " $(cat /sys/devices/system/cpu/cpu*/cpufreq/cpuinfo_cur_freq);
-fi
+echo -e "CPU usage:  " `top -b -n1 | grep "Cpu(s)" | awk '{print $2 + $4}'`
+if [[ -f "/sys/devices/system/cpu/present" ]]; then cpu_hwinfo; fi
 echo -e "Online:     " $(lscpu | grep -w "On-line CPU(s) list:" | sed "s/On-line CPU(s) list:/ /g" | sed -e "s/\s\{3,\}//g")
 if [[ "$FAN" == "true" ]]; then fan_pwr; fi
-if [[ "$NVME" == "true" ]]; then echo -e "NVMe:        ${SSDT}"; fi
+if [[ "$NVME" == "true" ]]; then echo -e "NVMe:        ${NVMET}"; fi
+if [[ "$SSD" == "true" ]]; then echo -e "SSD:         ${SSDT}"; fi
 echo -e "Governor:   " $(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor)
 echo -e "Memory:     " $(free -h | sed 's/i//g' | sed 's/Mem://g' | awk '{print $1" "$2}' | sed -n 'n;p')
 echo -e "Entropy:    " $(cat /proc/sys/kernel/random/entropy_avail)
 echo -e "Uptime:     " $(uptime)
 }
 
-update_sysinfo(){
+update_sysinfo (){
 if [[ -f "/usr/local/bin/sysinfo" ]]; then
 	mv /usr/local/bin/sysinfo /usr/local/bin/sysinfo.orig
 	mv /usr/local/bin/smon /usr/local/bin/smon.orig
@@ -94,7 +131,7 @@ if [[ -f "/usr/local/bin/sysinfo" ]]; then
 fi
 }
 
-update_motd(){
+update_motd (){
 # remove
 if [[ -f "/etc/default/dynamic-motd" ]]; then rm -f /etc/default/dynamic-motd; fi
 if [[ -f "/etc/update-motd.d/00-header" ]]; then rm -f /etc/update-motd.d/00-header; fi
