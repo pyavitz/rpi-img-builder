@@ -341,7 +341,7 @@ if [[ "$DISTRO" == "ubuntu" ]]; then
 fi
 
 # xorg confs
-#if [[ "$BOARD_EXT" =~ ^(rpi-4|rpi-5)$ ]]; then xorg_confs; fi
+if [[ "$BOARD_EXT" =~ ^(rpi-4|rpi-5)$ ]]; then xorg_confs; fi
 
 # hack
 if [[ "$BOARD" == "bcm2708" ]] && [[ -f "/lib/ld-linux.so.3" ]]; then

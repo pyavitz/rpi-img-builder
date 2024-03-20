@@ -186,12 +186,12 @@ EOF
 
 xorg_confs (){
 mkdir -p /etc/X11/xorg.conf.d
-cat <<EOF > "/etc/X11/xorg.conf.d/99-vc4.conf"
+cat <<EOF > "/etc/X11/xorg.conf.d/99-v3d.conf"
 Section "OutputClass"
-	Identifier "vc4"
-	MatchDriver "vc4"
-	Driver "modesetting"
-	Option "PrimaryGPU" "true"
+  Identifier "vc4"
+  MatchDriver "vc4"
+  Driver "modesetting"
+  Option "PrimaryGPU" "true"
 EndSection
 EOF
 }
