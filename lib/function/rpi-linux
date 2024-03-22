@@ -21,14 +21,13 @@ if [[ `wget -S --spider ${GIT_URL}/blob/rpi-${VERSION}/Makefile 2>&1 | grep 'HTT
 		echo -en "${KERNEL}-${VERSION}"
 		echo -en " ${PNK}[${FIN}${YLW}cleaning${FIN}${PNK}]${FIN}"
 		rm -fdr ${KERNEL}-${VERSION}
-		echo -en " ${PNK}[${FIN}${WHT}>>${FIN}${PNK}]${FIN}"
+		echo -en " ${PNK}[${FIN}${WHT}restoring${FIN}${PNK}]${FIN}"
 		mv -f ${KERNEL}-${VERSION}.backup ${KERNEL}-${VERSION}
 		if [[ "$GIT_FAST" == "false" ]]; then
 			cd ${KERNEL}-${VERSION}; git pull -q; make clean; cd ..
 		else
 			cd ${KERNEL}-${VERSION}; make clean; cd ..
 		fi
-		echo -en " ${PNK}[${FIN}${WHT}restoring${FIN}${PNK}]${FIN}"
 		cp -r ${KERNEL}-${VERSION} ${KERNEL}-${VERSION}.backup
 		echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
 	else
@@ -60,6 +59,12 @@ fi
 
 download_options (){
 GIT_HASH=`git ls-remote --heads ${GIT_URL}.git | grep -w "refs/heads/rpi-${VERSION}" | sed -n '1p' | sed "s/refs\/heads\/rpi-${VERSION}//g" | sed s/'\s'//g`
+if [[ -f "../.cache/git_fast.${KERNEL}-${VERSION}" ]] && [[ -d "${KERNEL}-${VERSION}" ]]; then
+	:;
+else
+	rm -f ../.cache/git_fast.${KERNEL}-${VERSION}
+	rm -fdr ${KERNEL}-${VERSION}
+fi
 if [[ -f "../.cache/git_fast.${KERNEL}-${VERSION}" ]]; then
 	source ../.cache/git_fast.${KERNEL}-${VERSION}
 	if [[ "$GIT_FAST" == "true" ]]; then GIT_OPT="--depth 1"; else GIT_OPT=""; fi
