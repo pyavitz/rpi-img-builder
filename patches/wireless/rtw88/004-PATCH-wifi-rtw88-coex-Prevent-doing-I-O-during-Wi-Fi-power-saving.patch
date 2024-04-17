@@ -1,0 +1,61 @@
+From 3b25c78f92268d44d0c3c8201a302f49a841c0a1 Mon Sep 17 00:00:00 2001
+From: Ping-Ke Shih <pkshih@realtek.com>
+Subject: [PATCH] wifi: rtw88: coex: Prevent doing I/O during Wi-Fi power saving
+Date: Wed, 20 Mar 2024 15:50:47 +0800
+
+From: Ching-Te Ku <ku920601@realtek.com>
+
+Fix Wi-Fi 2.4Ghz throughput drop over than 40% when Bluetooh is idle.
+The code flow will read registers during Wi-Fi power saving, and be
+returned, which results in incorrect counters to do mechanism judgment.
+Adjust the code flow. Will leave Wi-Fi power save mode first then update
+counters.
+
+Signed-off-by: Ching-Te Ku <ku920601@realtek.com>
+Signed-off-by: Ping-Ke Shih <pkshih@realtek.com>
+---
+ drivers/net/wireless/realtek/rtw88/coex.c | 4 +++-
+ drivers/net/wireless/realtek/rtw88/main.c | 5 ++---
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/wireless/realtek/rtw88/coex.c b/drivers/net/wireless/realtek/rtw88/coex.c
+index 86467d2f8888..de3332eb7a22 100644
+--- a/drivers/net/wireless/realtek/rtw88/coex.c
++++ b/drivers/net/wireless/realtek/rtw88/coex.c
+@@ -3937,7 +3937,9 @@ void rtw_coex_display_coex_info(struct rtw_dev *rtwdev, struct seq_file *m)
+ 	lte_coex = rtw_coex_read_indirect_reg(rtwdev, 0x38);
+ 	bt_coex = rtw_coex_read_indirect_reg(rtwdev, 0x54);
+ 
+-	if (!coex_stat->bt_disabled && !coex_stat->bt_mailbox_reply) {
++	if (!coex_stat->wl_under_ips &&
++	    (!coex_stat->wl_under_lps || coex_stat->wl_force_lps_ctrl) &&
++	    !coex_stat->bt_disabled && !coex_stat->bt_mailbox_reply) {
+ 		rtw_coex_get_bt_supported_version(rtwdev,
+ 				&coex_stat->bt_supported_version);
+ 		rtw_coex_get_bt_patch_version(rtwdev, &coex_stat->patch_ver);
+diff --git a/drivers/net/wireless/realtek/rtw88/main.c b/drivers/net/wireless/realtek/rtw88/main.c
+index ffba6b88f392..81ef4717dbf4 100644
+--- a/drivers/net/wireless/realtek/rtw88/main.c
++++ b/drivers/net/wireless/realtek/rtw88/main.c
+@@ -227,9 +227,6 @@ static void rtw_watch_dog_work(struct work_struct *work)
+ 	else
+ 		clear_bit(RTW_FLAG_BUSY_TRAFFIC, rtwdev->flags);
+ 
+-	rtw_coex_wl_status_check(rtwdev);
+-	rtw_coex_query_bt_hid_list(rtwdev);
+-
+ 	if (busy_traffic != test_bit(RTW_FLAG_BUSY_TRAFFIC, rtwdev->flags))
+ 		rtw_coex_wl_status_change_notify(rtwdev, 0);
+ 
+@@ -257,6 +254,8 @@ static void rtw_watch_dog_work(struct work_struct *work)
+ 
+ 	/* make sure BB/RF is working for dynamic mech */
+ 	rtw_leave_lps(rtwdev);
++	rtw_coex_wl_status_check(rtwdev);
++	rtw_coex_query_bt_hid_list(rtwdev);
+ 
+ 	rtw_phy_dynamic_mechanism(rtwdev);
+ 
+-- 
+2.25.1
+
