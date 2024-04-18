@@ -139,9 +139,6 @@ if [[ `ls ../../patches/userpatches/*.patch` ]] > /dev/null 2>&1; then
 	echo -en "${WHT}User Patches${FIN} ${PNK}[${FIN}${WHT}applying${FIN}${PNK}]${FIN}"
 	for i in ../../patches/userpatches/*.patch; do patch -N -p1 < $i; done >> ${LOG_FILE}
 	check_log
-	# clean
-	#if [[ `find . -name '*.orig'` ]]; then find . -name '*.orig' -delete; fi
-	#if [[ `find . -name '*.rej'` ]]; then find . -name '*.rej' -delete; fi
 fi
 }
 
@@ -158,6 +155,12 @@ else
 fi
 if [[ -v "LINUX_LOGO" ]] && [[ ! -z "$LINUX_LOGO" ]]; then
 	if [[ -f "../../packaging/logo/${LINUX_LOGO}" ]]; then cp -f "../../packaging/logo/${LINUX_LOGO}" "drivers/video/logo/logo_linux_clut224.ppm"; fi
+fi
+if [[ -f "arch/${ARCH}/Kconfig" ]] && [[ "$ARCH" == "arm64" ]]; then
+	# REVERT: arm64/Kconfig: Don't set DMA_BOUNCE_UNALIGNED_KMALLOC
+	# If enabled, DMA_BOUNCE_UNALIGNED_KMALLOC causes the swiotlb buffers (64MB, by default) to be allocated, even on systems
+	# where the DMA controller can reach all of RAM.
+	sed -i 's/	# select DMA_BOUNCE_UNALIGNED_KMALLOC/	select DMA_BOUNCE_UNALIGNED_KMALLOC/g' arch/arm64/Kconfig
 fi
 linux_patches
 user_patches
