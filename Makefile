@@ -130,6 +130,10 @@ endif
 ifdef version
 	@$(shell sed -i "s/^VERSION=.*/VERSION="'"${version}"'"/" userdata.txt)
 endif
+# verbose
+ifdef verbose
+	@$(shell sed -i "s/^VERBOSE=.*/VERBOSE="'"${verbose}"'"/" userdata.txt)
+endif
 # architecture
 ifdef arch
 	@echo 'ARCH_EXT="$(arch)"' > override.txt
@@ -149,6 +153,10 @@ ifdef distro
 endif
 ifdef release
 	@$(shell sed -i "s/^DISTRO_VERSION=.*/DISTRO_VERSION="'"${release}"'"/" userdata.txt)
+endif
+# verbose
+ifdef verbose
+	@$(shell sed -i "s/^VERBOSE=.*/VERBOSE="'"${verbose}"'"/" userdata.txt)
 endif
 # architecture
 ifdef arch
@@ -174,6 +182,10 @@ ifdef distro
 endif
 ifdef release
 	@$(shell sed -i "s/^DISTRO_VERSION=.*/DISTRO_VERSION="'"${release}"'"/" userdata.txt)
+endif
+# verbose
+ifdef verbose
+	@$(shell sed -i "s/^VERBOSE=.*/VERBOSE="'"${verbose}"'"/" userdata.txt)
 endif
 # architecture
 ifdef arch
