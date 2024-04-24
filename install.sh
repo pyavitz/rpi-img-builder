@@ -52,10 +52,15 @@ else
 			echo -en "${PNK}[${FIN}${GRN}Debian Bookworm${FIN}${PNK}]${FIN}"
 			echo ""
 		else
-			echo -ne "${PNK}[${FIN}${RED}failed${FIN}${PNK}]${FIN}"
-			echo ""
-			echo -e "${TXT}The OS you are running is not supported${FIN}."
-			exit 0
+			if [[ "$HOST_CODENAME" == "noble" ]]; then
+				echo -en "${PNK}[${FIN}${GRN}Ubuntu Noble Numbat${FIN}${PNK}]${FIN}"
+				echo ""
+			else
+				echo -ne "${PNK}[${FIN}${RED}failed${FIN}${PNK}]${FIN}"
+				echo ""
+				echo -e "${TXT}The OS you are running is not supported${FIN}."
+				exit 0
+			fi
 		fi
 	fi
 fi

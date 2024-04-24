@@ -3,13 +3,15 @@
 linux_compilers (){
 # install and setup compilers
 DEB_CLANG_DEPENDS="clang clang-14 clang-15 clang-16 lld lld-14 lld-15 lld-16 llvm"
-UBU_CLANG_DEPENDS="clang clang-14 clang-15 lld lld-14 lld-15 llvm"
+UBU_JAMMY_CLANG_DEPENDS="clang clang-14 clang-15 lld lld-14 lld-15 llvm"
+UBU_NOBLE_CLANG_DEPENDS="clang clang-14 clang-15 clang-16 clang-17 clang-18 lld lld-14 lld-15 lld-16 lld-17 lld-18 llvm"
 if [ $CCACHE -eq 1 ]; then
 	if [[ `command -v ccache` ]]; then :; else apt install -y ccache; fi
 fi
 if [[ "$COMPILER" == "clang" ]] && [[ "$HOST_CODENAME" == "bookworm" ]]; then COMPILER="clang-16"; fi
 if [[ "$COMPILER" == "clang" ]] && [[ "$HOST_CODENAME" == "jammy" ]]; then COMPILER="clang-15"; fi
-if [[ "$COMPILER" =~ ^(clang|clang-14|clang-15|clang-16)$ ]]; then
+if [[ "$COMPILER" == "clang" ]] && [[ "$HOST_CODENAME" == "noble" ]]; then COMPILER="clang-18"; fi
+if [[ "$COMPILER" =~ ^(clang|clang-14|clang-15|clang-16|clang-17|clang-18)$ ]]; then
 	CLANG="1"
 	CLANG_LLVM=`echo LLVM=${COMPILER} LLVM_IAS=1 | sed 's/clang//g'`
 else
@@ -20,7 +22,12 @@ if [ $CLANG -eq 1 ]; then
 		if [[ `command -v clang-14` ]] && [[ `command -v clang-15` ]] && [[ `command -v clang-16` ]]; then :; else apt install -y ${DEB_CLANG_DEPENDS}; fi
 	fi
 	if [[ "$HOST_CODENAME" == "jammy" ]]; then
-		if [[ `command -v clang-14` ]] && [[ `command -v clang-15` ]]; then :; else apt install -y ${UBU_CLANG_DEPENDS}; fi
+		if [[ `command -v clang-14` ]] && [[ `command -v clang-15` ]]; then :; else apt install -y ${UBU_JAMMY_CLANG_DEPENDS}; fi
+	fi
+	if [[ "$HOST_CODENAME" == "noble" ]]; then
+		if [[ `command -v clang-14` ]] && [[ `command -v clang-15` ]] \
+		&& [[ `command -v clang-16` ]] && [[ `command -v clang-17` ]] \
+		&& [[ `command -v clang-18` ]]; then :; else apt install -y ${UBU_NOBLE_CLANG_DEPENDS}; fi
 	fi
 	if [[ "$ARCH_EXT" == "armel" ]]; then
 		echo -e "The builder does not support using clang to build ${ARCH_EXT}."

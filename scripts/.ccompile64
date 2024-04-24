@@ -2,20 +2,6 @@
 
 source lib/source
 
-jammy-ccompile64(){
-sudo debconf-apt-progress -- apt install -y \
-	build-essential bison bc git dialog patch dosfstools mtools \
-	zip unzip qemu debootstrap qemu-user-static rsync kmod cpio flex \
-	libssl-dev libncurses5-dev parted fakeroot swig aria2 pv figlet \
-	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs kpartx \
-	debian-archive-keyring crossbuild-essential-armel crossbuild-essential-armhf \
-	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-11-arm-linux-gnueabi \
-	gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf gcc-11-arm-linux-gnueabihf \
-	gcc-12-arm-linux-gnueabi gcc-12-arm-linux-gnueabihf gcc-9 gcc-10 gcc-11 gcc-12 \
-	debian-keyring make libelf-dev xfsprogs fdisk gcc-9-plugin-dev gcc-10-plugin-dev \
-	gcc-11-plugin-dev gcc-12-plugin-dev
-}
-
 bullseye-ccompile64(){
 sudo debconf-apt-progress -- apt install -y \
 	build-essential bison bc git dialog patch kpartx zstd mtools \
@@ -38,6 +24,36 @@ sudo debconf-apt-progress -- apt install -y \
 	gcc-11-arm-linux-gnueabi gcc-12-arm-linux-gnueabi gcc-11-plugin-dev gcc-12-plugin-dev
 }
 
+jammy-ccompile64(){
+sudo debconf-apt-progress -- apt install -y \
+	build-essential bison bc git dialog patch dosfstools mtools \
+	zip unzip qemu debootstrap qemu-user-static rsync kmod cpio flex \
+	libssl-dev libncurses5-dev parted fakeroot swig aria2 pv figlet \
+	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs kpartx \
+	debian-archive-keyring crossbuild-essential-armel crossbuild-essential-armhf \
+	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-11-arm-linux-gnueabi \
+	gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf gcc-11-arm-linux-gnueabihf \
+	gcc-12-arm-linux-gnueabi gcc-12-arm-linux-gnueabihf gcc-9 gcc-10 gcc-11 gcc-12 \
+	debian-keyring make libelf-dev xfsprogs fdisk gcc-9-plugin-dev gcc-10-plugin-dev \
+	gcc-11-plugin-dev gcc-12-plugin-dev
+}
+
+noble-ccompile64(){
+sudo debconf-apt-progress -- apt install -y \
+	build-essential bison bc git dialog patch fdisk distro-info-data \
+	dosfstools zip unzip debootstrap qemu-user-static rsync xfsprogs \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig kpartx \
+	aria2 pv lsb-release xz-utils curl e2fsprogs btrfs-progs jq mtools figlet \
+	crossbuild-essential-arm64 crossbuild-essential-armhf crossbuild-essential-armel \
+	gcc-9-arm-linux-gnueabi gcc-10-arm-linux-gnueabi gcc-11-arm-linux-gnueabi \
+	gcc-12-arm-linux-gnueabi gcc-13-arm-linux-gnueabi gcc-14-arm-linux-gnueabi \
+	gcc-9-arm-linux-gnueabihf gcc-10-arm-linux-gnueabihf gcc-11-arm-linux-gnueabihf \
+	gcc-12-arm-linux-gnueabihf gcc-13-arm-linux-gnueabihf gcc-14-arm-linux-gnueabihf \
+	gcc-9 gcc-10 gcc-11 gcc-12 gcc-13 gcc-14 debian-archive-keyring debian-keyring make \
+	libelf-dev gcc-9-plugin-dev gcc-10-plugin-dev gcc-11-plugin-dev gcc-12-plugin-dev \
+	gcc-12-plugin-dev gcc-14-plugin-dev
+}
+
 if [[ "$HOST_ARCH" == "x86_64" ]]; then
 	echo ""
 	echo -e "You are running: $HOST_ARCH"
@@ -45,7 +61,7 @@ if [[ "$HOST_ARCH" == "x86_64" ]]; then
 	exit 0
 fi
 
-if [[ "$HOST_CODENAME" == "bullseye" || "$HOST_CODENAME" == "bookworm" || "$HOST_CODENAME" == "jammy" ]]; then
+if [[ "$HOST_CODENAME" =~ ^(bullseye|bookworm|jammy|noble)$ ]]; then
 	echo ""
 	${HOST_CODENAME}-ccompile64
 else
