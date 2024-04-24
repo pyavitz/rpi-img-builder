@@ -125,18 +125,6 @@ if [ $DEVROOTFS -eq 1 ]; then
 fi
 
 if [[ -d "${ROOT}" ]]; then umount ${ROOT}; sleep .50; rm -fdr ${ROOT}; fi
-
-if [[ "$HOST_MACHINE" == "Debian" || "$HOST_MACHINE" == "Ubuntu" ]]; then
-	# devuan release
-	if [[ -f "/usr/share/debootstrap/scripts/chimaera" ]]; then
-		rm -f /usr/share/debootstrap/scripts/chimaera
-	fi
-	if [[ -f "/usr/share/debootstrap/scripts/daedalus" ]]; then
-		rm -f /usr/share/debootstrap/scripts/daedalus
-	fi
-	if [[ -f "/usr/share/debootstrap/scripts/excalibur" ]]; then
-		rm -f /usr/share/debootstrap/scripts/excalibur
-	fi
-fi
+if [[ "$HOST_MACHINE" =~ ^(Debian|Ubuntu)$ ]] && [[ "$DISTRO" == "devuan" ]]; then rm -f ${DEBOOTSTRAP_DIR}/{chimaera,daedalus,excalibur}; fi
 
 exit 0

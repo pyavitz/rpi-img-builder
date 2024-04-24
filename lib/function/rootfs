@@ -90,10 +90,11 @@ fi
 }
 
 debootstrap_script (){
-if [[ -f "/usr/share/debootstrap/scripts/${DISTRO_VERSION}" ]]; then
+DEBOOTSTRAP_DIR="/usr/share/debootstrap/scripts"
+if [[ -f "${DEBOOTSTRAP_DIR}/${DISTRO_VERSION}" ]]; then
 	:;
 else
-	ln -sr /usr/share/debootstrap/scripts/${DEBOOTSTRAP_SCRIPT} /usr/share/debootstrap/scripts/${DISTRO_VERSION}
+	ln -sr ${DEBOOTSTRAP_DIR}/${DEBOOTSTRAP_SCRIPT} ${DEBOOTSTRAP_DIR}/${DISTRO_VERSION}
 	sleep .50
 fi
 }
