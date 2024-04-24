@@ -14,7 +14,7 @@ Raspberry Pi 5			bcm2712 / ARM64
 * [Raspberry Pi Hardware](https://www.raspberrypi.org/documentation/hardware/raspberrypi)
 * [The config dot txt](https://www.raspberrypi.com/documentation/computers/config_txt.html#what-is-config-txt)
 
-### Host dependencies for Debian Bullseye / Bookworm and Ubuntu Jammy Jellyfish
+### Host dependencies for Debian Bookworm and Ubuntu Jammy Jellyfish / Noble Numbat
 * **Debian Bookworm** (recommended)
 * **Ubuntu Jammy Jellyfish** (recommended)
 * **Ubuntu Noble Numbat** (testing)
