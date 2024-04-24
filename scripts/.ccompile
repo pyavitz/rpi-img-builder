@@ -58,7 +58,7 @@ sudo debconf-apt-progress -- apt install -y \
 	gcc-12-aarch64-linux-gnu gcc-13-aarch64-linux-gnu gcc-14-aarch64-linux-gnu \
 	gcc-9 gcc-10 gcc-11 gcc-12 gcc-13 gcc-14 debian-archive-keyring debian-keyring make \
 	libelf-dev gcc-9-plugin-dev gcc-10-plugin-dev gcc-11-plugin-dev gcc-12-plugin-dev \
-	gcc-12-plugin-dev gcc-14-plugin-dev
+	gcc-13-plugin-dev gcc-14-plugin-dev
 }
 
 if [[ "$HOST_ARCH" == "aarch64" ]]; then
