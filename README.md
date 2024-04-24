@@ -83,8 +83,8 @@ Ccache:			# Compiler cache
 Distribution
 Distro:			# Supported: debian, devuan and ubuntu
 Release:		# Debian: bullseye, bookworm, testing, unstable and sid
-			# Devuan: chimaera, daedalus, excalibur, testing, unstable and ceres
-			# Ubuntu: focal, jammy, kinetic and lunar
+			# Devuan: chimaera and daedalus (broken: excalibur, testing, unstable, ceres)
+			# Ubuntu: focal, jammy and noble
 NetworkManager		# 1 networkmanager | 0 ifupdown
 
 Customize
