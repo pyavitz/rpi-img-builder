@@ -1,5 +1,6 @@
 #!/bin/bash
 
+#set -x
 source lib/source
 RED="\e[0;31m"
 GRN="\e[0;32m"
@@ -19,14 +20,21 @@ else
 	echo ""
 	echo -e "Missing dependency: sudo"
 	echo -e "https://wiki.debian.org/sudo"
-	exit 0
+	exit 1
 fi
 if [[ `command -v curl` ]]; then
 	:;
 else
 	echo ""
 	echo -e "Missing dependency: curl"
-	sudo apt install -y curl wget
+	exit 1
+fi
+if [[ `command -v make` ]]; then
+	:;
+else
+	echo ""
+	echo -e "Missing dependency: make"
+	exit 1
 fi
 echo -en "${TXT}Checking Internet Connection:${FIN} "
 if [[ `curl -I https://github.com 2>&1 | grep 'HTTP/2 200'` ]]; then
@@ -36,112 +44,57 @@ else
 	echo -en "${PNK}[${FIN}${RED}failed${FIN}${PNK}]${FIN}"
 	echo ""
 	echo -e "${TXT}Please check your internet connection and try again${FIN}."
-	exit 0
+	exit 1
 fi
 echo -en "${TXT}Checking Host Machine:${FIN} "
 sleep .50
-if [[ "$HOST_CODENAME" == "jammy" ]]; then
-	echo -en "${PNK}[${FIN}${GRN}Ubuntu Jammy Jellyfish${FIN}${PNK}]${FIN}"
+if [[ "$HOST_CODENAME" =~ ^(bookworm|bullseye|jammy|noble)$ ]]; then
+	echo -en "${PNK}[${FIN}${GRN}${HOST_PRETTY}${FIN}${PNK}]${FIN}"
 	echo ""
 else
-	if [[ "$HOST_CODENAME" == "bullseye" ]]; then
-		echo -en "${PNK}[${FIN}${GRN}Debian Bullseye${FIN}${PNK}]${FIN}"
-		echo ""
-	else
-		if [[ "$HOST_CODENAME" == "bookworm" ]]; then
-			echo -en "${PNK}[${FIN}${GRN}Debian Bookworm${FIN}${PNK}]${FIN}"
-			echo ""
-		else
-			if [[ "$HOST_CODENAME" == "noble" ]]; then
-				echo -en "${PNK}[${FIN}${GRN}Ubuntu Noble Numbat${FIN}${PNK}]${FIN}"
-				echo ""
-			else
-				echo -ne "${PNK}[${FIN}${RED}failed${FIN}${PNK}]${FIN}"
-				echo ""
-				echo -e "${TXT}The OS you are running is not supported${FIN}."
-				exit 0
-			fi
-		fi
-	fi
+	echo -ne "${PNK}[${FIN}${RED}failed${FIN}${PNK}]${FIN}"
+	echo ""
+	echo -e "${TXT}The OS you are running is not supported${FIN}."
+	exit 1
 fi
 echo ""
-if [[ "$HOST_ARCH" == "x86_64" || "$HOST_ARCH" == "aarch64" ]]; then
-	:;
-else
-	echo -e "ARCH: $HOST_ARCH is not supported by this script."
-	exit 0
-fi
-
-if [[ "$HOST_ARCH" == "x86_64" ]]; then
-	echo -e "${TXT}Starting install ...${FIN}"
-	sleep .50
-	if [[ `command -v make` ]]; then
-		sudo apt update
-		sudo apt upgrade -y
-		make ccompile
-	else
-		sleep 1s
-		sudo apt update
-		sudo apt upgrade -y
-		sudo apt install -y make
-		make ccompile
+if [[ "$HOST_ARCH" =~ ^(aarch64|x86_64)$ ]]; then
+	if [[ "$HOST_ARCH" == "x86_64" ]]; then
+		echo -e "${TXT}Starting install ...${FIN}"
+		sudo apt update; sudo apt upgrade -y; make ccompile
 	fi
-fi
-
-if [[ "$HOST_ARCH" == "aarch64" ]]; then
-	echo -e -n "${TXT}"
-	echo -e "Arm64 detected. Select the dependencies you would like installed."
-	options=("Cross Compiling" "Native Compiling" "Quit")
-	select opt in "${options[@]}"
-	do
-		case $opt in
-			"Cross Compiling")
-			if [[ `command -v make` ]]; then
+	if [[ "$HOST_ARCH" == "aarch64" ]]; then
+		echo -e -n "${TXT}"
+		echo -e "Arm64 detected. Select the dependencies you would like installed."
+		options=("Cross Compile" "Native Compile" "Quit")
+		select opt in "${options[@]}"
+		do
+			case $opt in
+				"Cross Compile")
 				echo ""
 				echo -e "${TXT}Starting install ...${FIN}"
-				sleep 1s
-				sudo apt update
-				sudo apt upgrade -y
-				make ccompile64
-			else
-				echo ""
-				echo -e "${TXT}Starting install ...${FIN}"
-				sleep 1s
-				sudo apt update
-				sudo apt upgrade -y
-				sudo apt install -y make
-				make ccompile64
-			fi
+				sudo apt update; sudo apt upgrade -y; make ccompile64
 				break
 				;;
-			"Native Compiling")
-			if [[ `command -v make` ]]; then
+				"Native Compile")
 				echo ""
 				echo -e "${TXT}Starting install ...${FIN}"
-				sleep 1s
-				sudo apt update
-				sudo apt upgrade -y
-				make ncompile
-			else
-				echo ""
-				echo -e "${TXT}Starting install ...${FIN}"
-				sleep 1s
-				sudo apt update
-				sudo apt upgrade -y
-				sudo apt install -y make
-				make ncompile
-			fi
+				sudo apt update; sudo apt upgrade -y; make ncompile
 				break
 				;;
-			"Quit")
+				"Quit")
 				break
 				;;
-			*)
+				*)
 				echo "invalid option $REPLY"
 				;;
-		esac
-	done
-	echo -e -n "${FIN}"
+			esac
+		done
+		echo -e -n "${FIN}"
+	fi
+else
+	echo -e "ARCH: $HOST_ARCH is not supported by this script."
+	exit 1
 fi
 
 # install builder theme
