@@ -115,7 +115,7 @@ do
 CHOICE=$(
 export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray'
 whiptail --backtitle "${RELEASE}: System Settings" --title "Menu Config" --menu "" --nocancel 0 25 0 \
-	"N)" "Networking          Configure network interfaces" \
+	"N)" "Networking        Configure network interfaces" \
 	"" "" \
 	"1)" "Security          User security management" \
 	"2)" "Hostname          Change system hostname" \
