@@ -11,7 +11,7 @@ else
 		fi
 	else
 		echo "Please run this as root or with sudo privileges."
-		exit 0
+		exit 1
 	fi
 fi
 if [[ `curl -I https://github.com 2>&1 | grep 'HTTP/2 200'` ]]; then
@@ -20,23 +20,25 @@ else
 	echo -e "The script requires an internet connection."
 fi
 
-GHURL="https://raw.githubusercontent.com/pyavitz/rpi-img-builder/master/"
-MCURL="https://raw.githubusercontent.com/pyavitz/rpi-img-builder/menuconfig"
-MENUDIR="/usr/local/bin/"
 clear -x
 echo -en "Updating menu "
-if [[ `type -p menu-config` ]]; then
-	sudo mv -f /usr/local/bin/menu-config /usr/local/bin/menu-config.orig
-	sudo wget -cq $MCURL/menu-config -P $MENUDIR
-	sleep .50
-	sudo chmod +x $(command -v menu-config)
+git clone -q https://github.com/pyavitz/rpi-img-builder.git -b menuconfig /tmp/menuconfig
+if [[ -f "/tmp/menuconfig/menu-config" ]]; then
+	if [[ -f "/usr/local/bin/menu-config" ]]; then
+		sudo mv -f /usr/local/bin/menu-config /usr/local/bin/menu-config.orig
+		sudo cp /tmp/menuconfig/menu-config /usr/local/bin/menu-config
+		sudo chmod +x $(command -v menu-config)
+	fi
 	if [[ `type -p menu-config` ]]; then
 		sudo rm -f /usr/local/bin/menu-config.orig
 	else
 		sudo mv -f /usr/local/bin/menu-config.orig /usr/local/bin/menu-config
 	fi
+	rm -fdr /tmp/menuconfig
+	echo -e "[done]"
+else
+	echo -e "[failed]"
 fi
-echo -e "[done]"
 sleep .50
 clear -x
 menu-config
