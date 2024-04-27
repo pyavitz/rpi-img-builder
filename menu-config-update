@@ -21,7 +21,7 @@ else
 fi
 
 clear -x
-echo -en "Updating menu "
+echo -en "Updating menu"
 git clone -q https://github.com/pyavitz/rpi-img-builder.git -b menuconfig /tmp/menuconfig
 if [[ -f "/tmp/menuconfig/menu-config" ]]; then
 	if [[ -f "/usr/local/bin/menu-config" ]]; then
@@ -35,11 +35,11 @@ if [[ -f "/tmp/menuconfig/menu-config" ]]; then
 		sudo mv -f /usr/local/bin/menu-config.orig /usr/local/bin/menu-config
 	fi
 	rm -fdr /tmp/menuconfig
-	echo -e "[done]"
+	echo -e " [done]"
+	sleep .75
 else
-	echo -e "[failed]"
+	read -p " [failed]"
 fi
-sleep .50
 clear -x
 menu-config
 
