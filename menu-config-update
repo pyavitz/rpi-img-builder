@@ -23,21 +23,24 @@ fi
 clear -x
 echo -en "Updating menu"
 git clone -q https://github.com/pyavitz/rpi-img-builder.git -b menuconfig /tmp/menuconfig
-if [[ -f "/tmp/menuconfig/menu-config" ]]; then
-	if [[ -f "/usr/local/bin/menu-config" ]]; then
-		sudo mv -f /usr/local/bin/menu-config /usr/local/bin/menu-config.orig
-		sudo cp /tmp/menuconfig/menu-config /usr/local/bin/menu-config
-		sudo chmod +x $(command -v menu-config)
-	fi
-	if [[ `type -p menu-config` ]]; then
-		sudo rm -f /usr/local/bin/menu-config.orig
-	else
-		sudo mv -f /usr/local/bin/menu-config.orig /usr/local/bin/menu-config
-	fi
+if [[ -f "/tmp/menuconfig/menu-config" ]] && [[ `type -p menu-config` ]]; then
+	sudo mv -f /usr/local/bin/menu-config /usr/local/bin/menu-config.orig
+	sudo cp /tmp/menuconfig/menu-config /usr/local/bin/menu-config
+	sudo chmod +x $(command -v menu-config)
+	echo -en " ..."
+else
+	rm -fdr /tmp/menuconfig
+	read -p " [failed]"
+	exit 1
+fi
+if [[ `type -p menu-config` ]] && [[ -f "/usr/local/bin/menu-config.orig" ]]; then
+	sudo rm -f /usr/local/bin/menu-config.orig
 	rm -fdr /tmp/menuconfig
 	echo -e " [done]"
 	sleep .75
 else
+	sudo mv -f /usr/local/bin/menu-config.orig /usr/local/bin/menu-config
+	rm -fdr /tmp/menuconfig
 	read -p " [failed]"
 fi
 clear -x
