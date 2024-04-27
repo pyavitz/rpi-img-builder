@@ -28,6 +28,7 @@ if [[ -f "/tmp/menuconfig/menu-config" ]] && [[ `type -p menu-config` ]]; then
 	sudo cp /tmp/menuconfig/menu-config /usr/local/bin/menu-config
 	sudo chmod +x $(command -v menu-config)
 	echo -en " ..."
+	sleep .90
 else
 	rm -fdr /tmp/menuconfig
 	read -p " [failed]"
