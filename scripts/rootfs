@@ -6,6 +6,8 @@ if [[ -f "board.txt" ]] && [[ -f "override.txt" ]]; then . override.txt; overrid
 if [[ -f "board.txt" ]]; then . board.txt; else noboard; fi
 source userdata.txt
 source lib/function/rootfs
+source lib/function/release
+
 if [[ -f "custom.txt" ]]; then
 	. custom.txt
 else
@@ -17,11 +19,7 @@ fi
 if [[ -d "sysroot" ]] || [[ -d "p1" ]] || [[ -d "BOOT" ]] || [[ -f "shrink.img" ]]; then make cleanup; clear -x; fi
 
 # verbosity
-if [ $VERBOSE -eq 1 ]; then
-	set -eux -o pipefail
-else
-	set -eu -o pipefail
-fi
+if [ $VERBOSE -eq 1 ]; then set -eux -o pipefail; else set -eu -o pipefail; fi
 # restrictions
 if [[ "$HOST_ARCH" == "aarch64" ]] && [[ "$DISTRO" == "raspbian" ]]; then
 	echo -e "Aarch64 is currently not supported."
@@ -61,26 +59,28 @@ else
 	echo -e "Run ./install.sh"
 	exit 1
 fi
+if [[ `command -v mmdebstrap` ]]; then
+	:;
+else
+	echo -e "Missing depends: mmdebstrap"
+	apt install -y mmdebstrap
+fi
 
 ROOT="sysroot"
+SOURCES_LIST="${ROOT}/etc/apt/sources.list"
 RELEASE_TARBALL=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
 if [[ -f "$RELEASE_TARBALL" ]]; then ls -ls $RELEASE_TARBALL; exit 0; fi
 echo ""
 echo -e "${WHT}Starting debootstrap${FIN} ..."
 # start debootstrap
 if [ $DEVROOTFS -eq 1 ]; then
-	source lib/function/release
 	RAM=0
 	ROOTFS_FOLDER="img/"
 	RELEASE_NAME=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}
 	if [ $RAM -ne 0 ]; then IMAGE_FOLDER="ram/"; fi
 	mkdir -p "$ROOTFS_FOLDER"
 	if [ $RAM -ne 0 ]; then mount -t tmpfs -o size=4G tmpfs $ROOTFS_FOLDER; fi
-	if [ $VERBOSE -eq 1 ]; then
-		sysroot_partition
-	else
-		sysroot_partition > /dev/null 2>&1
-	fi
+	if [ $VERBOSE -eq 1 ]; then sysroot_partition; else sysroot_partition > /dev/null 2>&1; fi
 fi
 mkdir -p ${ROOT}/usr/bin
 cp $(command -v "${STATIC}") ${ROOT}/usr/bin
@@ -100,23 +100,19 @@ if [ $DEVROOTFS -eq 1 ]; then
 	rm -f ${ROOT}/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
 	rm -f ${ROOT}/etc/apt/sources.list
 fi
+
 # clean up
-if [[ -f "${ROOT}/usr/bin/qemu-aarch64-static" ]]; then
-	rm -f ${ROOT}/usr/bin/qemu-aarch64-static
-fi
-if [[ -f "${ROOT}/usr/bin/qemu-arm-static" ]]; then
-	rm -f ${ROOT}/usr/bin/qemu-arm-static
-fi
+rm -f ${ROOT}/usr/bin/${STATIC}
+if [[ -e "${ROOT}/lost+found" ]]; then rm -fdr ${ROOT}/lost+found; fi
 rm -fdr ${ROOT}/var/cache/debconf/*
+rm -fdr ${ROOT}/*usr-is-merged*
 
 # finish
-echo
+echo ""
 echo -e "== Archiving: ${RELEASE_TARBALL}"
 cd ${ROOT}
-rm -fdr {bin.usr-is-merged,lib.usr-is-merged,sbin.usr-is-merged}
 XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - * | (pv -terb > ../$RELEASE_TARBALL)
 cd ..
-
 if [ $DEVROOTFS -eq 1 ]; then
 	losetup -d "${IMAGE_LOOP_DEV}"
 	rm -f "${ROOTFS_FOLDER}${RELEASE_NAME}"

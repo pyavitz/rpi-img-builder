@@ -4,7 +4,7 @@ source lib/source
 
 bullseye-ccompile64(){
 sudo debconf-apt-progress -- apt install -y \
-	build-essential bison bc git dialog patch kpartx zstd mtools \
+	build-essential bison bc git dialog patch kpartx zstd mtools mmdebstrap \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync make fdisk \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig libelf-dev \
 	crossbuild-essential-armel crossbuild-essential-armhf aria2 pv figlet \
@@ -16,7 +16,7 @@ sudo debconf-apt-progress -- apt install -y \
 
 bookworm-ccompile64(){
 sudo debconf-apt-progress -- apt install -y \
-	build-essential bison bc git dialog patch kpartx zstd mtools \
+	build-essential bison bc git dialog patch kpartx zstd mtools mmdebstrap \
 	dosfstools zip unzip debootstrap qemu-user-static rsync make fdisk \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig libelf-dev \
 	crossbuild-essential-armel crossbuild-essential-armhf aria2 pv jq figlet \
@@ -28,7 +28,7 @@ sudo debconf-apt-progress -- apt install -y \
 
 jammy-ccompile64(){
 sudo debconf-apt-progress -- apt install -y \
-	build-essential bison bc git dialog patch dosfstools mtools \
+	build-essential bison bc git dialog patch dosfstools mtools mmdebstrap \
 	zip unzip qemu debootstrap qemu-user-static rsync kmod cpio flex \
 	libssl-dev libncurses5-dev parted fakeroot swig aria2 pv figlet \
 	distro-info-data lsb-release xz-utils curl e2fsprogs btrfs-progs kpartx \
@@ -42,7 +42,7 @@ sudo debconf-apt-progress -- apt install -y \
 
 noble-ccompile64(){
 sudo debconf-apt-progress -- apt install -y \
-	build-essential bison bc git dialog patch fdisk distro-info-data \
+	build-essential bison bc git dialog patch fdisk distro-info-data mmdebstrap \
 	dosfstools zip unzip debootstrap qemu-user-static rsync xfsprogs \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig kpartx \
 	aria2 pv lsb-release xz-utils curl e2fsprogs btrfs-progs jq mtools figlet \

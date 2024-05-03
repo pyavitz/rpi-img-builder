@@ -4,7 +4,7 @@ source lib/source
 
 bullseye-ncompile(){
 sudo debconf-apt-progress -- apt install -y \
-	build-essential bison bc git dialog patch fdisk jq mtools \
+	build-essential bison bc git dialog patch fdisk jq mtools mmdebstrap \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
 	aria2 pv distro-info-data lsb-release xz-utils curl figlet \
@@ -14,7 +14,7 @@ sudo debconf-apt-progress -- apt install -y \
 
 bookworm-ncompile(){
 sudo debconf-apt-progress -- apt install -y \
-	build-essential bison bc git dialog patch fdisk mtools \
+	build-essential bison bc git dialog patch fdisk mtools mmdebstrap \
 	dosfstools zip unzip debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
 	aria2 pv distro-info-data lsb-release xz-utils curl jq figlet \
@@ -24,7 +24,7 @@ sudo debconf-apt-progress -- apt install -y \
 
 jammy-ncompile(){
 sudo debconf-apt-progress -- apt install -y \
-	build-essential bison bc git dialog patch jq mtools \
+	build-essential bison bc git dialog patch jq mtools mmdebstrap \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
 	aria2 pv distro-info-data lsb-release xz-utils curl figlet \
@@ -36,7 +36,7 @@ sudo debconf-apt-progress -- apt install -y \
 
 noble-ncompile(){
 sudo debconf-apt-progress -- apt install -y \
-	build-essential bison bc git dialog patch jq mtools \
+	build-essential bison bc git dialog patch jq mtools mmdebstrap \
 	dosfstools zip unzip debootstrap qemu-user-static rsync \
 	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
 	aria2 pv distro-info-data lsb-release xz-utils curl figlet \
