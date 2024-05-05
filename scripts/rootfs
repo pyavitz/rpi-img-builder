@@ -72,6 +72,7 @@ RELEASE_TARBALL=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
 if [[ -f "$RELEASE_TARBALL" ]]; then ls -ls $RELEASE_TARBALL; exit 0; fi
 CAP_DISTRO=`echo "${DISTRO}" | sed -e "s/\b\(.\)/\u\1/g"`
 CAP_RELEASE=`echo "${DISTRO_VERSION}" | sed -e "s/\b\(.\)/\u\1/g"`
+echo -e ""
 echo -e "${WHT}Distribution${FIN} ${PNK}[${FIN}${GRN}${CAP_DISTRO} ${CAP_RELEASE}${FIN}${PNK}]${FIN}"
 echo -e ""
 echo -e "${WHT}Running bootstrap${FIN} ..."
