@@ -70,9 +70,12 @@ ROOT="sysroot"
 SOURCES_LIST="${ROOT}/etc/apt/sources.list"
 RELEASE_TARBALL=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
 if [[ -f "$RELEASE_TARBALL" ]]; then ls -ls $RELEASE_TARBALL; exit 0; fi
-echo ""
-echo -e "${WHT}Starting debootstrap${FIN} ..."
-# start debootstrap
+CAP_DISTRO=`echo "${DISTRO}" | sed -e "s/\b\(.\)/\u\1/g"`
+CAP_RELEASE=`echo "${DISTRO_VERSION}" | sed -e "s/\b\(.\)/\u\1/g"`
+echo -e "${WHT}Distribution${FIN} ${PNK}[${FIN}${GRN}${CAP_DISTRO} ${CAP_RELEASE}${FIN}${PNK}]${FIN}"
+echo -e ""
+echo -e "${WHT}Running bootstrap${FIN} ..."
+# start bootstrap
 if [ $DEVROOTFS -eq 1 ]; then
 	RAM=0
 	ROOTFS_FOLDER="img/"
@@ -109,7 +112,7 @@ rm -fdr ${ROOT}/*usr-is-merged*
 
 # finish
 echo ""
-echo -e "== Archiving: ${RELEASE_TARBALL}"
+echo -e "── Archiving ${PNK}[${FIN}${WHT}${RELEASE_TARBALL}${FIN}${PNK}]${FIN}"
 cd ${ROOT}
 XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - * | (pv -terb > ../$RELEASE_TARBALL)
 cd ..
