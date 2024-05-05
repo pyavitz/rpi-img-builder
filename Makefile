@@ -120,6 +120,9 @@ kernel:
 ifdef build
 	@$(shell sed -i "s/^BUILD_VERSION=.*/BUILD_VERSION="'"${build}"'"/" userdata.txt)
 endif
+ifdef compiler
+	@$(shell sed -i "s/^COMPILER=.*/COMPILER="'"${compiler}"'"/" userdata.txt)
+endif
 ifdef menuconfig
 	@$(shell sed -i "s/^MENUCONFIG=.*/MENUCONFIG="'"${menuconfig}"'"/" userdata.txt)
 endif

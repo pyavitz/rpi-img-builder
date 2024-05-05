@@ -8,6 +8,10 @@ UBU_NOBLE_CLANG_DEPENDS="clang clang-14 clang-15 clang-16 clang-17 clang-18 lld 
 if [ $CCACHE -eq 1 ]; then
 	if [[ `command -v ccache` ]]; then :; else apt install -y ccache; fi
 fi
+if [[ "$COMPILER" == "gcc" ]]; then
+	GCC=`ls -ls /usr/bin/gcc | sed 's/.*\(..\)/\1/' | sed 's/ //g'`
+	COMPILER="gcc-${GCC}"
+fi
 if [[ "$COMPILER" == "clang" ]] && [[ "$HOST_CODENAME" == "bookworm" ]]; then COMPILER="clang-16"; fi
 if [[ "$COMPILER" == "clang" ]] && [[ "$HOST_CODENAME" == "jammy" ]]; then COMPILER="clang-15"; fi
 if [[ "$COMPILER" == "clang" ]] && [[ "$HOST_CODENAME" == "noble" ]]; then COMPILER="clang-18"; fi
