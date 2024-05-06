@@ -114,7 +114,7 @@ done
 }
 
 builddeb (){
-if [ $CROSSCOMPILE -eq 1 ]; then echo -e "${GRN}  CC${FIN}"; else echo -e "${GRN}  NC${FIN}"; fi
+if [ $CROSSCOMPILE -eq 1 ]; then echo -e "${GRN}  CC${FIN}      ${CROSS_COMPILE}${COMPILER}"; else echo -e "${GRN}  NC${FIN}      ${COMPILER}"; fi
 echo ${BUILD_VERSION} > .version
 echo 'y' | kbuild "LOCALVERSION= KBUILD_BUILD_USER=${KBUSER} KBUILD_BUILD_HOST=${KBHOST} bindeb-pkg"
 }
