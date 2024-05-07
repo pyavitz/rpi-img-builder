@@ -4,6 +4,8 @@ linux_configs (){
 if [[ -f "arch/${ARCH}/configs/${LINUX_DEFCONFIG}" ]]; then
 	# remove localversion
 	if [[ `grep -w "CONFIG_LOCALVERSION=" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then sed -i 's/CONFIG_LOCALVERSION=/# CONFIG_LOCALVERSION=/g' arch/${ARCH}/configs/${LINUX_DEFCONFIG}; fi
+	# hardcode i2c-dev
+	if [[ `grep -w "CONFIG_I2C_CHARDEV=m" "arch/${ARCH}/configs/${LINUX_DEFCONFIG}"` ]]; then sed -i 's/CONFIG_I2C_CHARDEV=m/CONFIG_I2C_CHARDEV=y/g' arch/${ARCH}/configs/${LINUX_DEFCONFIG}; fi
 fi
 if [[ -v "MODULES" ]] && [[ ! -z "$MODULES" ]]; then
 	# insert additional modules
