@@ -2,7 +2,6 @@
 source lib/function/echoes
 source lib/source
 validation
-if [[ -f "board.txt" ]] && [[ -f "override.txt" ]]; then . override.txt; override_board; fi
 if [[ -f "board.txt" ]]; then . board.txt; else noboard; fi
 source kernel.txt
 source userdata.txt

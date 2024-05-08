@@ -34,8 +34,6 @@ PURGEALL=$(shell sudo rm -fdr source output; if [ -d .cache ]; then sudo rm -f .
 # miscellaneous
 XCHECK=./scripts/check
 CHECK=./scripts/check
-XCOMP=./scripts/compress
-COMP=sudo ./scripts/compress
 
 # dependencies
 CCOMPILE=./scripts/.ccompile
@@ -48,6 +46,15 @@ BOARDS=$(shell sudo rm -f board.txt; if [ -f lib/boards/${board} ]; then sudo cp
 ifdef board
 include lib/boards/${board}
 endif
+
+define create_config
+	@chmod go=rx files/inits/*
+	@chmod go=rx files/scripts/*
+	@chmod go=r files/misc/*
+	@chmod go=r files/users/*
+	@chmod +x ${CONF}
+	@${CONF}
+endef
 
 define build_kernel
 	@${BOARDS}
@@ -74,6 +81,7 @@ define create_rootfs
 	@${ROOTFS}
 endef
 
+.ONESHELL:
 help:
 	@echo ""
 	@${HEADER}
@@ -100,23 +108,36 @@ help:
 
 # make commands
 ccompile:
-	# Installing x86_64 cross dependencies:
+	# X86_64 dependencies:
 	@chmod +x ${CCOMPILE}
 	@${CCOMPILE}
 	
 ccompile64:
-	# Installing arm64 cross dependencies:
+	# Aarch64 dependencies:
 	@chmod +x ${CCOMPILE64}
 	@${CCOMPILE64}
 
 ncompile:
-	# Installing native dependencies:
+	# Aarch64 native dependencies:
 	@chmod +x ${NCOMPILE}
 	@${NCOMPILE}
 
+# USER DATA
+config:
+ifdef edit
+	@if [ -f ${edit}.txt ]; then nano ${edit}.txt; else echo "${edit}.txt: file not found"; fi
+	exit
+endif
+	$(call create_config)
+
+# MENU
+menu:
+	@chmod +x ${MENU}
+	@${MENU}
+
+# LINUX
 kernel:
-	@rm -f override.txt
-# userdata dot txt
+# edit user data file
 ifdef build
 	@$(shell sed -i "s/^BUILD_VERSION=.*/BUILD_VERSION="'"${build}"'"/" userdata.txt)
 endif
@@ -130,81 +151,55 @@ ifdef myconfig
 	@$(shell sed -i "s/^CUSTOM_DEFCONFIG=.*/CUSTOM_DEFCONFIG="'"1"'"/" userdata.txt)
 	@$(shell sed -i "s/^MYCONFIG=.*/MYCONFIG="'"${myconfig}_defconfig"'"/" userdata.txt)
 endif
+ifdef verbose
+	@$(shell sed -i "s/^VERBOSE=.*/VERBOSE="'"${verbose}"'"/" userdata.txt)
+endif
 ifdef version
 	@$(shell sed -i "s/^VERSION=.*/VERSION="'"${version}"'"/" userdata.txt)
 endif
-# verbose
-ifdef verbose
-	@$(shell sed -i "s/^VERBOSE=.*/VERBOSE="'"${verbose}"'"/" userdata.txt)
-endif
-# architecture
-ifdef arch
-	@echo 'ARCH_EXT="$(arch)"' > override.txt
-endif
-	# Compiling kernel
 	$(call build_kernel)
 
 commit:
-	# Compiling kernel
 	$(call build_commit)
 
-image:
-	@rm -f override.txt
-# distro and release
+# ROOT FILESYSTEM
+rootfs:
+# edit user data file
 ifdef distro
 	@$(shell sed -i "s/^DISTRO=.*/DISTRO="'"${distro}"'"/" userdata.txt)
 endif
 ifdef release
 	@$(shell sed -i "s/^DISTRO_VERSION=.*/DISTRO_VERSION="'"${release}"'"/" userdata.txt)
 endif
-# verbose
 ifdef verbose
 	@$(shell sed -i "s/^VERBOSE=.*/VERBOSE="'"${verbose}"'"/" userdata.txt)
 endif
-# architecture
-ifdef arch
-	@echo 'ARCH_EXT="$(arch)"' > override.txt
+	$(call create_rootfs)
+
+# IMAGE
+image:
+# edit user data file
+ifdef distro
+	@$(shell sed -i "s/^DISTRO=.*/DISTRO="'"${distro}"'"/" userdata.txt)
 endif
-	# Creating image
+ifdef release
+	@$(shell sed -i "s/^DISTRO_VERSION=.*/DISTRO_VERSION="'"${release}"'"/" userdata.txt)
+endif
+ifdef verbose
+	@$(shell sed -i "s/^VERBOSE=.*/VERBOSE="'"${verbose}"'"/" userdata.txt)
+endif
 	$(call build_image)
 
 all:
-	# Compiling kernel
 	$(call build_kernel)
-	# Creating ROOTFS tarball
 	$(call create_rootfs)
-	# Creating image
 	$(call build_image)
 
-# root filesystem
-rootfs:
-	@rm -f override.txt
-# distro and release
-ifdef distro
-	@$(shell sed -i "s/^DISTRO=.*/DISTRO="'"${distro}"'"/" userdata.txt)
-endif
-ifdef release
-	@$(shell sed -i "s/^DISTRO_VERSION=.*/DISTRO_VERSION="'"${release}"'"/" userdata.txt)
-endif
-# verbose
-ifdef verbose
-	@$(shell sed -i "s/^VERBOSE=.*/VERBOSE="'"${verbose}"'"/" userdata.txt)
-endif
-# architecture
-ifdef arch
-	@echo 'ARCH_EXT="$(arch)"' > override.txt
-endif
-	# Root Filesystem
-	$(call create_rootfs)
-
-# LIST BOARDS
 list:
 	# Boards
 	@cat lib/boards/* | grep -w "PRETTY_BOARD=" | sed 's/PRETTY_BOARD=//g' | sed 's/"//g' | sed 's/BCM/bcm/g' | sed 's/bcm2711 \/ ARMHF/bcm2711v7 \/ ARMHF/g'
 
-# clean and purge
 cleanup:
-	# Cleaning up
 	@chmod +x ${CLN}
 	@${CLEAN}
 
@@ -216,44 +211,15 @@ purge-all:
 	# Removing source and output directory
 	@${PURGEALL}
 
-# miscellaneous
 dialogrc:
-	# Builder theme set
 	@${DIALOGRC}
 
 check:
-	# Check kernel revisions
 	@chmod +x ${XCHECK}
 	@${CHECK}
 
-# userdata reset
 reset:
-	# Resetting userdata.txt file
 	@$(shell sed -i "s/^BUILD_VERSION=.*/BUILD_VERSION="'"1"'"/" userdata.txt)
 	@$(shell sed -i "s/^MENUCONFIG=.*/MENUCONFIG="'"0"'"/" userdata.txt)
 	@$(shell sed -i "s/^CUSTOM_DEFCONFIG=.*/CUSTOM_DEFCONFIG="'"0"'"/" userdata.txt)
 	@$(shell sed -i "s/^MYCONFIG=.*/MYCONFIG="'"_defconfig"'"/" userdata.txt)
-
-# kernel run
-run:
-	@chmod +x ${XRUN}
-	@${RUN}
-
-compress:
-	@chmod +x ${XCOMP}
-	@${COMP}
-
-# menu
-menu:
-	# User menu interface
-	@chmod +x ${MENU}
-	@${MENU}
-
-config:
-	# User config menu
-	@chmod go=rx files/inits/*
-	@chmod go=rx files/scripts/*
-	@chmod go=r files/misc/*
-	@chmod go=r files/users/*
-	@chmod +x ${CONF}
-	@${CONF}
