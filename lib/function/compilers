@@ -5,7 +5,8 @@ linux_compilers (){
 DEB_CLANG_DEPENDS="clang clang-14 clang-15 clang-16 lld lld-14 lld-15 lld-16 llvm"
 UBU_JAMMY_CLANG_DEPENDS="clang clang-14 clang-15 lld lld-14 lld-15 llvm"
 UBU_NOBLE_CLANG_DEPENDS="clang clang-14 clang-15 clang-16 clang-17 clang-18 lld lld-14 lld-15 lld-16 lld-17 lld-18 llvm"
-if [[ "$COMPILER" =~ ^(clang|clang-14|clang-15|clang-16|clang-17|clang-18)$ ]]; then
+COMPILER_CLANG=`echo ${COMPILER} | sed 's/[0-9]//g' | sed 's/-//g'`
+if [[ "$COMPILER_CLANG" == "clang" ]]; then
 	if [[ "$HOST_CODENAME" == "bookworm" ]]; then
 		if [[ `command -v clang-14` ]] && [[ `command -v clang-15` ]] \
 		&& [[ `command -v clang-16` ]]; then :; else apt install -y ${DEB_CLANG_DEPENDS}; fi
@@ -31,7 +32,7 @@ if [[ "$COMPILER" =~ ^(clang|gcc)$ ]]; then
 	CVER=`readlink /usr/bin/${COMPILER} | sed "s/[^0-9.]*//g" | sed 's/\.//g'`
 	COMPILER="${COMPILER}-${CVER}"
 fi
-if [[ "$COMPILER" =~ ^(clang|clang-14|clang-15|clang-16|clang-17|clang-18)$ ]]; then
+if [[ "$COMPILER_CLANG" == "clang" ]]; then
 	CLANG="1"
 	CLANG_LLVM=`echo LLVM=${COMPILER} LLVM_IAS=1 | sed 's/clang//g'`
 else
