@@ -37,7 +37,7 @@ if [[ -f "board.txt" ]]; then . board.txt; else noboard; fi
 source lib/function/staging
 source lib/function/release
 # clean
-if [[ -d "sysroot" ]] || [[ -d "p1" ]] || [[ -d "BOOT" ]] || [[ -f "shrink.img" ]]; then make cleanup; clear -x; fi
+if [[ -d "sysroot" ]] || [[ -d "p1" ]] || [[ -d "BOOT" ]] || [[ -f "shrink.img" ]]; then make clean; clear -x; fi
 # check output
 if [[ -d "output/${BOARD}" ]] && [[ `ls output/${BOARD}/linux-*.deb` ]]; then
 	:;
