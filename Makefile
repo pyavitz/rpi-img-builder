@@ -1,3 +1,7 @@
+.ONESHELL:
+.SILENT:
+.PHONY: clean list
+
 # header
 HEADER=./scripts/.header
 
@@ -81,7 +85,6 @@ define create_rootfs
 	@${ROOTFS}
 endef
 
-.ONESHELL:
 help:
 	@echo ""
 	@${HEADER}
@@ -92,7 +95,7 @@ help:
 	@echo "   make ncompile\t\tInstall native dependencies"
 	@echo "   make config\t\t\tCreate user data file"
 	@echo "   make menu\t\t\tUser menu interface"
-	@echo "   make cleanup\t\t\tClean up rootfs and image errors"
+	@echo "   make clean\t\t\tClean up rootfs and image errors"
 	@echo "   make purge\t\t\tRemove source directory"
 	@echo "   make purge-all\t\tRemove source and output directory"
 	@echo "   make dialogrc\t\tSet builder theme"
@@ -199,7 +202,7 @@ list:
 	# Boards
 	@cat lib/boards/* | grep -w "PRETTY_BOARD=" | sed 's/PRETTY_BOARD=//g' | sed 's/"//g' | sed 's/BCM/bcm/g' | sed 's/bcm2711 \/ ARMHF/bcm2711v7 \/ ARMHF/g'
 
-cleanup:
+clean:
 	@chmod +x ${CLN}
 	@${CLEAN}
 

@@ -56,7 +56,7 @@ make image board=xxx	# Make bootable image
 #### Miscellaneous
 
 ```sh
-make cleanup    # Clean up rootfs and image errors
+make clean      # Clean up rootfs and image errors
 make purge      # Remove source directory
 make purge-all  # Remove source and output directory
 make commands   # List more commands
