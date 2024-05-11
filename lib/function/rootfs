@@ -20,11 +20,7 @@ mount -o defaults,noatime "${IMAGE_LOOP_DEV_ROOTFS}" ${ROOT}
 sysroot_setup (){
 mkdir -p ${ROOT}/etc/apt/apt.conf.d ${ROOT}/etc/dpkg/dpkg.cfg.d
 echo "force-unsafe-io" > "${ROOT}/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
-if [ $VERBOSE -eq 1 ]; then
-	choose_release
-else
-	choose_release > /dev/null 2>&1
-fi
+if [ $VERBOSE -eq 1 ]; then choose_release; else choose_release > /dev/null 2>&1; fi
 }
 
 devuan_keyring (){
@@ -50,41 +46,24 @@ else
 fi
 }
 
-ubuntu_setup (){
-if [[ "$HOST_ARCH" == "x86_64" ]]; then
-	MACHINE="amd64"
-fi
-if [[ "$HOST_ARCH" == "aarch64" ]]; then
-	MACHINE="arm64"
-fi
+ubuntu_keyring (){
 URL="https://github.com/pyavitz/debian-image-builder/releases/download/dpkg/"
-FILE1="dpkg_1.21.2_$MACHINE.deb"
-FILE2="debootstrap_1.0.126+nmu1_all.deb"
-FILE3="ubuntu-keyring_2020.06.17.1-1_all.deb"
-FILE4="ubuntu-archive-keyring_2020.06.17.1-1_all.deb"
-FILE5="ubuntu-cloud-keyring_2020.06.17.1-1_all.deb"
-FILE6="ubuntu-dbgsym-keyring_2020.06.17.1-1_all.deb"
-if [[ `grep -w "Ubuntu" "/etc/os-release"` ]] && [[ `grep -w "VERSION_CODENAME=jammy" "/etc/os-release"` ]]; then
-	:;
-else
-	if [[ `apt show dpkg | grep "Version: 1.21"` ]] > /dev/null 2>&1; then
+FILE1="ubuntu-keyring_2023.11.28.1-0.2_all.deb"
+FILE2="ubuntu-archive-keyring_2023.11.28.1-0.2_all.deb"
+if [[ `dpkg -l | grep "ubuntu-keyring"` ]]; then
+	if [[ `dpkg -l | grep "ubuntu-keyring" | tr -d -c 0-9` == "20231128102" ]]; then
 		:;
 	else
-		wget -cq $URL$FILE1
-		wget -cq $URL$FILE2
-		dpkg -i *.deb
-		rm -f *.deb
+		apt purge -y ubuntu-keyring 
+		if [[ `dpkg -l | grep "ubuntu-archive-keyring"` ]]; then apt purge -y ubuntu-archive-keyring; fi
+		if [[ `dpkg -l | grep "ubuntu-dbgsym-keyring"` ]]; then apt purge -y ubuntu-dbgsym-keyring; fi
+		if [[ `dpkg -l | grep "ubuntu-cloud-keyring"` ]]; then apt purge -y ubuntu-cloud-keyring; fi
+		wget -cq --show-progress ${URL}${FILE1}; wget -cq --show-progress ${URL}${FILE2}
+		dpkg -i *.deb; rm -f *.deb
 	fi
-fi
-if [ -e /usr/share/keyrings/ubuntu-archive-keyring.gpg ]; then
-	:;
 else
-	wget -cq --show-progress $URL$FILE3
-	wget -cq --show-progress $URL$FILE4
-	wget -cq --show-progress $URL$FILE5
-	wget -cq --show-progress $URL$FILE6
-	dpkg -i *.deb
-	rm -f *.deb
+	wget -cq --show-progress ${URL}${FILE1}; wget -cq --show-progress ${URL}${FILE2}
+	dpkg -i *.deb; rm -f *.deb
 fi
 }
 

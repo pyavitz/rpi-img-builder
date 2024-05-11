@@ -40,16 +40,8 @@ if [[ "$ROOTFS_ARCH" == "rootfs-armel" || "$ROOTFS_ARCH" == "rootfs-arm64" ]] &&
 	exit 0
 fi
 # keyrings and setups
-if [[ "$DISTRO" == "devuan" || "$DISTRO" == "raspbian" ]]; then
-	${DISTRO}_keyring
-fi
-if [[ "$HOST_MACHINE" == "Ubuntu" ]]; then
-	:;
-else
-	if [[ "$DISTRO" == "ubuntu" ]]; then
-		ubuntu_setup
-	fi
-fi
+if [[ "$DISTRO" =~ ^(devuan|raspbian)$ ]]; then ${DISTRO}_keyring; fi
+if [[ "$HOST_MACHINE" == "Ubuntu" ]]; then :; else if [[ "$DISTRO" == "ubuntu" ]]; then ${DISTRO}_keyring; fi; fi
 # check for qemu
 if [[ `command -v ${STATIC}` ]]; then
 	:;
