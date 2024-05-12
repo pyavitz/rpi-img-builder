@@ -26,6 +26,7 @@ P_VALUE="p2"
 BOARD="bcm2710"
 BOARD_EXT="rpi-3"
 OUTPUT="output/${BOARD}"
+IMG_EXP="${BOARD_EXT}-*.img*"
 
 # cmdline
 CONSOLE="console=serial0,115200 console=tty1"

@@ -62,12 +62,12 @@ case $selection in
 		;;
 	1 )
 		make "all" "board=$1"
-		dialog --prgbox "Results:" "ls ${IMAGE_FIN_NAME}* ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}* $MAKE_OUTPUT/" 30 75
+		dialog --prgbox "Results:" "ls $IMG_EXP ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}* $MAKE_OUTPUT/" 30 75
 		exit 0
 		;;
 	2 )
 		make "kernel" "board=$1"
-		dialog --prgbox "Results:" "ls ${MAKE_OUTPUT}/*.deb" 30 75
+		dialog --prgbox "Results:" "ls $MAKE_OUTPUT/*.deb" 30 75
 		;;
 	3 )
 		make "rootfs" "board=$1"
@@ -75,7 +75,7 @@ case $selection in
 		;;
 	4 )
 		make "image" "board=$1"
-		dialog --prgbox "Results:" "ls ${IMAGE_FIN_NAME}*" 30 75
+		dialog --prgbox "Results:" "ls $IMG_EXP" 30 75
 		;;
 esac
 done
