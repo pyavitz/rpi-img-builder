@@ -2,6 +2,9 @@
 
 custom_txt (){
 cat <<EOF > "custom.txt"
+# Bootstrap: if false use debootstrap
+MMDEBSTRAP="true"
+
 # Image Size: 3584MB 4096MB
 IMGSIZE="4096MB"
 

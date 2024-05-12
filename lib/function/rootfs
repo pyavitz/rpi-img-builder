@@ -81,7 +81,20 @@ run_debootstrap (){
 KEY="/usr/share/keyrings/${DISTRO}-archive-keyring.gpg"
 if [[ "$DISTRO" =~ ^(debian|devuan)$ ]]; then DEBOOTSTRAP_SCRIPT="sid"; debootstrap_script; fi
 if [[ "$DISTRO" == "ubuntu" ]]; then DEBOOTSTRAP_SCRIPT="gutsy"; debootstrap_script; fi
-mkdir -p ${ROOT}/etc/apt
-if [ $VERBOSE -eq 1 ]; then choose_release; else choose_release > /dev/null 2>&1; fi
-mmdebstrap --skip=check/empty --arch=${ARCH_EXT} --keyring=${KEY} ${DISTRO_VERSION} ${ROOT}
+if [[ "$MMDEBSTRAP" == "true" ]]; then
+	mkdir -p ${ROOT}/etc/apt
+	if [ $VERBOSE -eq 1 ]; then choose_release; else choose_release > /dev/null 2>&1; fi
+	mmdebstrap --skip=check/empty --arch=${ARCH_EXT} --keyring=${KEY} ${DISTRO_VERSION} ${ROOT}
+else
+	if [[ "$DISTRO" =~ ^(debian|ubuntu)$ ]]; then
+		debootstrap --arch ${ARCH_EXT} --foreign ${DISTRO_VERSION} ${ROOT}
+		chroot ${ROOT} /debootstrap/debootstrap --second-stage
+	fi
+	if [[ "$DISTRO" =~ ^(devuan|raspbian)$ ]]; then
+		if [[ "$DISTRO" == "devuan" ]]; then SOURCE="http://deb.devuan.org/merged"; fi
+		if [[ "$DISTRO" == "raspbian" ]]; then SOURCE="http://raspbian.raspberrypi.org/raspbian"; fi
+		debootstrap --arch ${ARCH_EXT} --foreign --force-check-gpg --keyring=${KEY} ${DISTRO_VERSION} ${ROOT} ${SOURCE}
+		chroot ${ROOT} /debootstrap/debootstrap --second-stage
+	fi
+fi
 }
