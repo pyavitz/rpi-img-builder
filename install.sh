@@ -61,7 +61,7 @@ else
 fi
 echo ""
 if [[ "$HOST_ARCH" =~ ^(aarch64|x86_64)$ ]]; then
-	if [[ "$HOST_ARCH" == "aarch64" ]]; then CMD="ncompile" else CMD="ccompile"; fi
+	if [[ "$HOST_ARCH" == "aarch64" ]]; then CMD="ncompile"; else CMD="ccompile"; fi
 		echo -e "${TXT}Starting install ...${FIN}"
 		sudo apt update; sudo apt upgrade -y; make ${CMD}
 	fi
