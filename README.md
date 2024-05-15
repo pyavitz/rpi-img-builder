@@ -29,9 +29,8 @@ Raspberry Pi 5				bcm2712 / ARM64
 #### Install dependencies
 
 ```sh
-make ccompile	# Install x86-64 cross dependencies
-make ccompile64	# Install Arm64 cross dependencies
-make ncompile	# Install native dependencies
+make ccompile	# Install x86-64 dependencies
+make ncompile	# Install Aarch64 dependencies
 ```
 
 #### Menu interface

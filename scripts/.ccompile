@@ -2,7 +2,7 @@
 
 source lib/source
 
-bullseye-ccompile(){
+bullseye-ccompile (){
 sudo debconf-apt-progress -- apt install -y \
 	build-essential bison bc git dialog patch kpartx zstd aria2 pv jq mmdebstrap \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync make figlet \
@@ -14,7 +14,7 @@ sudo debconf-apt-progress -- apt install -y \
 	gcc-10-aarch64-linux-gnu mtools gcc-9-plugin-dev gcc-10-plugin-dev ccache
 }
 
-bookworm-ccompile(){
+bookworm-ccompile (){
 sudo debconf-apt-progress -- apt install -y \
 	build-essential bison bc git dialog patch dosfstools zip unzip parted mmdebstrap \
 	debootstrap qemu-user-static rsync kmod cpio flex libssl-dev libncurses5-dev \
@@ -28,7 +28,7 @@ sudo debconf-apt-progress -- apt install -y \
 	python3-pyelftools curl mtools gcc-11-plugin-dev gcc-12-plugin-dev ccache
 }
 
-jammy-ccompile(){
+jammy-ccompile (){
 sudo debconf-apt-progress -- apt install -y \
 	build-essential bison bc git dialog patch fdisk distro-info-data mmdebstrap \
 	dosfstools zip unzip qemu debootstrap qemu-user-static rsync xfsprogs \
@@ -43,7 +43,7 @@ sudo debconf-apt-progress -- apt install -y \
 	gcc-9-plugin-dev gcc-10-plugin-dev gcc-11-plugin-dev gcc-12-plugin-dev ccache
 }
 
-noble-ccompile(){
+noble-ccompile (){
 sudo debconf-apt-progress -- apt install -y \
 	build-essential bison bc git dialog patch fdisk distro-info-data mmdebstrap \
 	dosfstools zip unzip debootstrap qemu-user-static rsync xfsprogs \
@@ -73,7 +73,7 @@ if [[ "$HOST_CODENAME" =~ ^(bullseye|bookworm|jammy|noble)$ ]]; then
 	${HOST_CODENAME}-ccompile
 else
 	echo -e ""
-	echo -e "Something went wrong..?"
+	echo -e "Something went wrong..? Please report."
 	exit 1
 fi
 

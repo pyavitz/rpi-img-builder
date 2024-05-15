@@ -41,7 +41,6 @@ CHECK=./scripts/check
 
 # dependencies
 CCOMPILE=./scripts/.ccompile
-CCOMPILE64=./scripts/.ccompile64
 NCOMPILE=./scripts/.ncompile
 
 # boards
@@ -90,9 +89,8 @@ help:
 	@${HEADER}
 	@echo ""
 	@echo "\e[1;37mCommands:\e[0m"
-	@echo "   make ccompile\t\tInstall x86-64 cross dependencies"
-	@echo "   make ccompile64\t\tInstall Arm64 cross dependencies"
-	@echo "   make ncompile\t\tInstall native dependencies"
+	@echo "   make ccompile\t\tInstall x86-64 dependencies"
+	@echo "   make ncompile\t\tInstall Aarch64 dependencies"
 	@echo "   make config\t\t\tCreate user data file"
 	@echo "   make menu\t\t\tUser menu interface"
 	@echo "   make clean\t\t\tClean up rootfs and image errors"
@@ -114,14 +112,9 @@ ccompile:
 	# X86_64 dependencies:
 	@chmod +x ${CCOMPILE}
 	@${CCOMPILE}
-	
-ccompile64:
-	# Aarch64 dependencies:
-	@chmod +x ${CCOMPILE64}
-	@${CCOMPILE64}
 
 ncompile:
-	# Aarch64 native dependencies:
+	# Aarch64 dependencies:
 	@chmod +x ${NCOMPILE}
 	@${NCOMPILE}
 

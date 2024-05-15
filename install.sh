@@ -27,6 +27,7 @@ if [[ `command -v curl` ]]; then
 else
 	echo ""
 	echo -e "Missing dependency: curl"
+	sudo apt install -y curl
 	exit 1
 fi
 if [[ `command -v make` ]]; then
@@ -34,6 +35,7 @@ if [[ `command -v make` ]]; then
 else
 	echo ""
 	echo -e "Missing dependency: make"
+	sudo apt install -y make
 	exit 1
 fi
 echo -en "${TXT}Checking Internet Connection:${FIN} "
@@ -48,7 +50,7 @@ else
 fi
 echo -en "${TXT}Checking Host Machine:${FIN} "
 sleep .50
-if [[ "$HOST_CODENAME" =~ ^(bookworm|bullseye|jammy|noble)$ ]]; then
+if [[ "$HOST_CODENAME" =~ ^(bullseye|bookworm|jammy|noble)$ ]]; then
 	echo -en "${PNK}[${FIN}${GRN}${HOST_PRETTY}${FIN}${PNK}]${FIN}"
 	echo ""
 else
@@ -59,38 +61,9 @@ else
 fi
 echo ""
 if [[ "$HOST_ARCH" =~ ^(aarch64|x86_64)$ ]]; then
-	if [[ "$HOST_ARCH" == "x86_64" ]]; then
+	if [[ "$HOST_ARCH" == "aarch64" ]]; then CMD="ncompile" else CMD="ccompile"; fi
 		echo -e "${TXT}Starting install ...${FIN}"
-		sudo apt update; sudo apt upgrade -y; make ccompile
-	fi
-	if [[ "$HOST_ARCH" == "aarch64" ]]; then
-		echo -e -n "${TXT}"
-		echo -e "Arm64 detected. Select the dependencies you would like installed."
-		options=("Cross Compile" "Native Compile" "Quit")
-		select opt in "${options[@]}"
-		do
-			case $opt in
-				"Cross Compile")
-				echo ""
-				echo -e "${TXT}Starting install ...${FIN}"
-				sudo apt update; sudo apt upgrade -y; make ccompile64
-				break
-				;;
-				"Native Compile")
-				echo ""
-				echo -e "${TXT}Starting install ...${FIN}"
-				sudo apt update; sudo apt upgrade -y; make ncompile
-				break
-				;;
-				"Quit")
-				break
-				;;
-				*)
-				echo "invalid option $REPLY"
-				;;
-			esac
-		done
-		echo -e -n "${FIN}"
+		sudo apt update; sudo apt upgrade -y; make ${CMD}
 	fi
 else
 	echo -e "ARCH: $HOST_ARCH is not supported by this script."

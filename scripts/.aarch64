@@ -1,0 +1,65 @@
+#!/bin/bash
+
+source lib/source
+
+bullseye-aarch64 (){
+sudo debconf-apt-progress -- apt install -y \
+	build-essential bison bc git dialog patch fdisk jq mtools mmdebstrap \
+	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
+	aria2 pv distro-info-data lsb-release xz-utils curl figlet \
+	e2fsprogs btrfs-progs xfsprogs kpartx make libelf-dev zstd gcc-9 gcc-10 \
+	gcc-9-plugin-dev gcc-10-plugin-dev ccache
+}
+
+bookworm-aarch64 (){
+sudo debconf-apt-progress -- apt install -y \
+	build-essential bison bc git dialog patch fdisk mtools mmdebstrap \
+	dosfstools zip unzip debootstrap qemu-user-static rsync \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
+	aria2 pv distro-info-data lsb-release xz-utils curl jq figlet \
+	e2fsprogs btrfs-progs xfsprogs kpartx make libelf-dev zstd gcc-11 gcc-12 \
+	gcc-11-plugin-dev gcc-12-plugin-dev ccache
+}
+
+jammy-aarch64 (){
+sudo debconf-apt-progress -- apt install -y \
+	build-essential bison bc git dialog patch jq mtools mmdebstrap \
+	dosfstools zip unzip qemu debootstrap qemu-user-static rsync \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
+	aria2 pv distro-info-data lsb-release xz-utils curl figlet \
+	e2fsprogs btrfs-progs kpartx xfsprogs fdisk debian-archive-keyring \
+	debian-keyring make libelf-dev gcc-9 gcc-10 gcc-11 gcc-12 \
+	gcc-9-plugin-dev gcc-10-plugin-dev gcc-11-plugin-dev gcc-12-plugin-dev \
+	ccache
+}
+
+noble-aarch64 (){
+sudo debconf-apt-progress -- apt install -y \
+	build-essential bison bc git dialog patch jq mtools mmdebstrap \
+	dosfstools zip unzip debootstrap qemu-user-static rsync \
+	kmod cpio flex libssl-dev libncurses5-dev parted fakeroot swig \
+	aria2 pv distro-info-data lsb-release xz-utils curl figlet \
+	e2fsprogs btrfs-progs kpartx xfsprogs fdisk debian-archive-keyring \
+	debian-keyring make libelf-dev gcc-9 gcc-10 gcc-11 gcc-12 gcc-13 gcc-14 \
+	gcc-9-plugin-dev gcc-10-plugin-dev gcc-11-plugin-dev gcc-12-plugin-dev \
+	gcc-13-plugin-dev gcc-14-plugin-dev ccache
+}
+
+if [[ "$HOST_ARCH" == "x86_64" ]]; then
+	echo ""
+	echo -e "You are running: $HOST_ARCH"
+	echo -e "Please run: make ccompile"
+	exit 0
+fi
+
+if [[ "$HOST_CODENAME" =~ ^(bullseye|bookworm|jammy|noble)$ ]]; then
+	echo ""
+	${HOST_CODENAME}-aarch64
+else
+	echo -e ""
+	echo -e "Something went wrong..?"
+	exit 0
+fi
+
+exit 0
