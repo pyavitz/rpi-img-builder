@@ -3,22 +3,16 @@ source lib/function/echoes
 source lib/source
 validation
 if [[ -f "board.txt" ]]; then . board.txt; else noboard; fi
+sleep 1
 source userdata.txt
 source lib/function/rootfs
 source lib/function/release
-
-if [[ -f "custom.txt" ]]; then
-	. custom.txt
-else
-	echo "Missing custom.txt file."
-	exit 0
-fi
-
+source custom.txt
 # clean
 if [[ -d "sysroot" ]] || [[ -d "p1" ]] || [[ -d "BOOT" ]] || [[ -f "shrink.img" ]]; then make clean; clear -x; fi
-
 # verbosity
 if [ $VERBOSE -eq 1 ]; then set -eux -o pipefail; else set -eu -o pipefail; fi
+mirrors
 # restrictions
 if [[ "$HOST_ARCH" == "aarch64" ]] && [[ "$DISTRO" == "raspbian" ]]; then
 	echo -e "Aarch64 is currently not supported."
@@ -40,7 +34,7 @@ if [[ "$ROOTFS_ARCH" == "rootfs-armel" || "$ROOTFS_ARCH" == "rootfs-arm64" ]] &&
 	exit 0
 fi
 # keyrings and setups
-if [[ "$DISTRO" =~ ^(devuan|raspbian)$ ]]; then ${DISTRO}_keyring; fi
+if [[ "$DISTRO" =~ ^(devuan||kali|raspbian)$ ]]; then ${DISTRO}_keyring; fi
 if [[ "$HOST_MACHINE" == "Ubuntu" ]]; then :; else if [[ "$DISTRO" == "ubuntu" ]]; then ${DISTRO}_keyring; fi; fi
 # check for qemu
 if [[ `command -v ${STATIC}` ]]; then

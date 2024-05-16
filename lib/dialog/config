@@ -2,7 +2,7 @@
 
 source lib/function/config
 # builder and profile versions
-BUILDER="6.7"
+BUILDER="6.8"
 PROFILE="1.1"
 
 if [[ `command -v dialog` ]]; then :; else sudo apt install dialog; fi
@@ -162,6 +162,14 @@ if [[ -f "kernel.txt" ]]; then
 	if [[ "$KERNEL_PREFERENCES" == "$BUILDER" ]]; then :; else kernel_txt; fi
 else
 	kernel_txt
+fi
+
+# rootfs / image mirrors
+if [[ -f "mirror.txt" ]]; then
+	. mirror.txt
+	if [[ "$MIRROR_LIST" == "$BUILDER" ]]; then :; else mirror_txt; fi
+else
+	mirror_txt
 fi
 
 # clear screen

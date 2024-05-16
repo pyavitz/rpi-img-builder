@@ -44,6 +44,18 @@ EOF
 sed -i 's/[\][n]/\\/g' kernel.txt
 }
 
+mirror_txt (){
+cat <<EOF > "mirror.txt"
+DEBIAN_MIRROR="http://deb.debian.org/debian"
+DEVUAN_MIRROR="http://deb.devuan.org/merged"
+KALI_MIRROR="http://http.kali.org/kali"
+UBUNTU_MIRROR="http://ports.ubuntu.com/ubuntu-ports/"
+
+### DO NOT EDIT BELOW THIS LINE
+MIRROR_LIST="$BUILDER"
+EOF
+}
+
 profile_txt (){
 cat <<EOF > "profile.txt"
 # User data defaults

@@ -1,0 +1,20 @@
+#!/bin/bash
+# Description: Systemd binfmt fixups
+# Destination: /usr/local/sbin/systemd-binfmt-fixups
+
+DISTRO=`cat /etc/os-release | grep -w NAME | sed 's/NAME=//g' | sed 's/"//g' | sed 's/ GNU\/Linux//g'`
+DISTRO_CODENAME=`cat /etc/os-release | grep -w "VERSION_CODENAME" | sed 's/VERSION_CODENAME=//g'`
+KERNEL_RELEASE=`ls /boot/config-* | sed 's/\/boot\/config-//g' | sed -e 's/^\(.\{4\}\).*/\1/' | sed 's/-//g' | sed -r 's/\.$//'`
+
+if [[ "$KERNEL_RELEASE" == "5.10" || "$KERNEL_RELEASE" == "5.15" || "$KERNEL_RELEASE" == "6.1" ]] > /dev/null 2>&1; then
+	# if LTS before 6.6 exit script
+	exit 0
+fi
+
+if [[ "$DISTRO_CODENAME" == "bookworm" ]]; then
+	/usr/sbin/update-binfmts --enable python3.11 > /dev/null 2>&1
+	sleep .75
+	systemctl restart systemd-binfmt.service > /dev/null 2>&1
+fi
+
+exit 0

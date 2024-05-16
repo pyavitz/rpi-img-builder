@@ -38,6 +38,21 @@ else
 fi
 }
 
+kali_keyring (){
+URL="http://http.kali.org/pool/main/k/kali-archive-keyring/"
+FILE="kali-archive-keyring_2024.1_all.deb"
+if [[ `dpkg -l | grep "kali-archive-keyring"` ]]; then
+	if [[ `dpkg -l | grep "kali-archive-keyring" | tr -d -c 0-9` == "20241" ]]; then
+		:;
+	else
+		apt purge -y kali-archive-keyring
+		wget -cq --show-progress ${URL}${FILE}; dpkg -i ${FILE}; rm -f ${FILE}
+	fi
+else
+	wget -cq --show-progress ${URL}${FILE}; dpkg -i ${FILE}; rm -f ${FILE}
+fi
+}
+
 raspbian_keyring (){
 if [[ -f "/usr/share/keyrings/raspbian-archive-keyring.gpg" ]]; then
 	:;
@@ -86,15 +101,7 @@ if [[ "$MMDEBSTRAP" == "true" ]]; then
 	if [ $VERBOSE -eq 1 ]; then choose_release; else choose_release > /dev/null 2>&1; fi
 	mmdebstrap --skip=check/empty --arch=${ARCH_EXT} --keyring=${KEY} ${DISTRO_VERSION} ${ROOT}
 else
-	if [[ "$DISTRO" =~ ^(debian|ubuntu)$ ]]; then
-		debootstrap --arch ${ARCH_EXT} --foreign ${DISTRO_VERSION} ${ROOT}
-		chroot ${ROOT} /debootstrap/debootstrap --second-stage
-	fi
-	if [[ "$DISTRO" =~ ^(devuan|raspbian)$ ]]; then
-		if [[ "$DISTRO" == "devuan" ]]; then SOURCE="http://deb.devuan.org/merged"; fi
-		if [[ "$DISTRO" == "raspbian" ]]; then SOURCE="http://raspbian.raspberrypi.org/raspbian"; fi
-		debootstrap --arch ${ARCH_EXT} --foreign --force-check-gpg --keyring=${KEY} ${DISTRO_VERSION} ${ROOT} ${SOURCE}
-		chroot ${ROOT} /debootstrap/debootstrap --second-stage
-	fi
+	debootstrap --arch ${ARCH_EXT} --foreign --force-check-gpg --keyring=${KEY} ${DISTRO_VERSION} ${ROOT} ${MIRROR}
+	chroot ${ROOT} /debootstrap/debootstrap --second-stage
 fi
 }

@@ -2,15 +2,11 @@
 source lib/function/echoes
 source lib/source
 validation
-if [[ -f "custom.txt" ]]; then
-	. custom.txt
-else
-	echo -e ""
-	echo -e "The custom.txt file is missing? You need to run: make config"
-	echo -e ""
-	read -p "Press enter to continue."
-	exit 0
-fi
+source lib/function/release
+source custom.txt
+source lib/function/staging
+source lib/function/shrink
+sleep 1
 source userdata.txt
 if [[ "$USERNAME" == "root" ]]; then
 	echo -e "The username $USERNAME is not viable, choose another."
@@ -34,10 +30,11 @@ source lib/function/miscellaneous
 # start uscripts
 if [ $USCRIPTS -eq 1 ]; then uscripts_pre-stage1; fi
 if [[ -f "board.txt" ]]; then . board.txt; else noboard; fi
-source lib/function/staging
-source lib/function/release
 # clean
 if [[ -d "sysroot" ]] || [[ -d "p1" ]] || [[ -d "BOOT" ]] || [[ -f "shrink.img" ]]; then make clean; clear -x; fi
+# verbosity
+if [ $VERBOSE -eq 1 ]; then set -eux -o pipefail; else set -eu -o pipefail; fi
+mirrors
 # check output
 if [[ -d "output/${BOARD}" ]] && [[ `ls output/${BOARD}/linux-*.deb` ]]; then
 	:;
@@ -45,8 +42,6 @@ else
 	echo -e "Missing linux deb packages"
 	exit 0
 fi
-# verbose
-if [ $VERBOSE -eq 1 ]; then set -eux -o pipefail; else set -eu -o pipefail; fi
 # check for qemu
 if [[ `command -v ${STATIC}` ]]; then
 	:;
@@ -179,7 +174,7 @@ if [ $RAM -ne 0 ]; then umount "${IMAGE_FOLDER}"; fi
 rmdir "${IMAGE_FOLDER}"
 rmdir p1 p2
 
-if [[ "$SHRINK" == "true" ]]; then . lib/function/shrink; shrink; fi
+if [[ "$SHRINK" == "true" ]]; then shrink; fi
 finish_image
 rm -f {part-uuid.txt,board.txt,kernel.release}
 

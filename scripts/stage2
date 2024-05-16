@@ -55,7 +55,7 @@ echo -n "${TIMEZONE}" > /etc/timezone
 apt upgrade -y
 apt dist-upgrade -y
 apt autoremove -y
-if [[ "$DISTRO" == "ubuntu" ]]; then apt_preferences; echo ""; fi
+if [[ "$DISTRO" =~ ^(kali|ubuntu)$ ]]; then apt_preferences; echo ""; fi
 # network variables
 if [ $NETWORKMANAGER -eq 1 ]; then NETWORKING="network-manager"; else NETWORKING="ifupdown"; fi
 if [[ "$DISTRO" =~ ^(debian|raspbian)$ ]]; then
@@ -64,6 +64,9 @@ fi
 if [[ "$DISTRO" == "devuan" ]]; then
 	apt install -y openssh-client openssh-server --no-install-recommends
 	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} openresolv ${NETWORKING}
+fi
+if [[ "$DISTRO" == "kali" ]]; then
+	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} openssh-client openssh-server dbus-user-session libical3 resolvconf haveged ntpdate ${NETWORKING}
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
 	if [[ "$DISTRO_VERSION" =~ ^(kinetic|lunar|mantic|noble)$ ]]; then RESOLVE="systemd-resolved"; else RESOLVE="openresolv"; fi
@@ -250,6 +253,21 @@ chown root:root /etc/update-motd.d/{00-header,15-brand,20-sysinfo,90-dynamic-mot
 rm -f /etc/motd
 echo "" > /etc/motd
 chown root:root /etc/motd
+
+# kali services
+if [[ "$DISTRO" == "kali" ]]; then 
+	if [ $VERBOSE -eq 1 ]; then kali_services; else kali_services > /dev/null 2>&1; fi
+fi
+
+# debian bookworm fixups
+if [[ "$DISTRO_VERSION" == "bookworm" ]]; then
+	apt install -y binfmt-support
+	mv -f /root/systemd-binfmt-fixups /usr/local/sbin/systemd-binfmt-fixups
+	chmod +x /usr/local/sbin/systemd-binfmt-fixups
+	binfmt_fixups_service > /dev/null 2>&1
+else
+	rm -f /root/systemd-binfmt-fixups
+fi
 
 # rpi firmware
 extra_firmware

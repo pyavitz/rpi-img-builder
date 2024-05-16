@@ -1,46 +1,60 @@
 #!/bin/bash
 
+mirrors (){
+source mirror.txt
+if [[ "$DISTRO" == "debian" ]]; then MIRROR="${DEBIAN_MIRROR}"; else
+if [[ "$DISTRO" == "devuan" ]]; then MIRROR="${DEVUAN_MIRROR}"; else
+if [[ "$DISTRO" == "kali" ]]; then MIRROR="${KALI_MIRROR}"; else
+if [[ "$DISTRO" == "raspbian" ]]; then MIRROR="http://raspbian.raspberrypi.org/raspbian"; else
+if [[ "$DISTRO" == "ubuntu" ]]; then MIRROR="${UBUNTU_MIRROR}"; fi; fi; fi; fi; fi
+}
+
 debian_release (){
-DEB_URL="http://deb.debian.org/debian"
 if [[ "$DISTRO_VERSION" == "bullseye" ]]; then POOL="main contrib non-free"; else POOL="main contrib non-free non-free-firmware"; fi
 if [[ "$DISTRO_VERSION" =~ ^(bullseye|bookworm)$ ]]; then
 	tee ${SOURCES_LIST} <<EOF
-deb ${DEB_URL} ${DISTRO_VERSION} ${POOL}
-deb ${DEB_URL} ${DISTRO_VERSION}-updates ${POOL}
-deb ${DEB_URL} ${DISTRO_VERSION}-proposed-updates ${POOL}
-deb ${DEB_URL}-security ${DISTRO_VERSION}-security ${POOL}
-deb ${DEB_URL} ${DISTRO_VERSION}-backports ${POOL}
+deb ${MIRROR} ${DISTRO_VERSION} ${POOL}
+deb ${MIRROR} ${DISTRO_VERSION}-updates ${POOL}
+deb ${MIRROR} ${DISTRO_VERSION}-proposed-updates ${POOL}
+deb ${MIRROR}-security ${DISTRO_VERSION}-security ${POOL}
+deb ${MIRROR} ${DISTRO_VERSION}-backports ${POOL}
 EOF
 else
 	tee ${SOURCES_LIST} <<EOF
-deb ${DEB_URL} ${DISTRO_VERSION} ${POOL}
+deb ${MIRROR} ${DISTRO_VERSION} ${POOL}
 EOF
 fi
 }
 
 devuan_release (){
-DEB_URL="http://deb.devuan.org/merged"
 if [[ "$DISTRO_VERSION" == "chimaera" ]]; then POOL="main contrib non-free"; else POOL="main contrib non-free non-free-firmware"; fi
 if [[ "$DISTRO_VERSION" =~ ^(chimaera|daedalus)$ ]]; then
 	tee ${SOURCES_LIST} <<EOF
-deb ${DEB_URL} ${DISTRO_VERSION} ${POOL}
-deb ${DEB_URL} ${DISTRO_VERSION}-updates ${POOL}
-deb ${DEB_URL} ${DISTRO_VERSION}-proposed-updates ${POOL}
-deb ${DEB_URL} ${DISTRO_VERSION}-security ${POOL}
-deb ${DEB_URL} ${DISTRO_VERSION}-backports ${POOL}
+deb ${MIRROR} ${DISTRO_VERSION} ${POOL}
+deb ${MIRROR} ${DISTRO_VERSION}-updates ${POOL}
+deb ${MIRROR} ${DISTRO_VERSION}-proposed-updates ${POOL}
+deb ${MIRROR} ${DISTRO_VERSION}-security ${POOL}
+deb ${MIRROR} ${DISTRO_VERSION}-backports ${POOL}
 EOF
 else
 	tee ${SOURCES_LIST} <<EOF
-deb ${DEB_URL} ${DISTRO_VERSION} ${POOL}
+deb ${MIRROR} ${DISTRO_VERSION} ${POOL}
 EOF
 fi
 }
 
+kali_release (){
+# https://www.kali.org/docs/general-use/kali-linux-sources-list-repositories/
+POOL="main contrib non-free non-free-firmware"
+tee ${SOURCES_LIST} <<EOF
+deb ${MIRROR} ${DISTRO_VERSION} ${POOL}
+EOF
+}
+
 raspbian_release (){
-DEB_URL="http://raspbian.raspberrypi.org/raspbian"
 POOL="main contrib non-free"
 tee ${SOURCES_LIST} <<EOF
-deb ${DEB_URL} ${DISTRO_VERSION} ${POOL} rpi
+deb ${MIRROR} ${DISTRO_VERSION} ${POOL} rpi
 
 # optional
 #deb http://archive.raspbian.org/raspbian ${DISTRO_VERSION} ${POOL}
@@ -49,18 +63,17 @@ EOF
 }
 
 ubuntu_release (){
-DEB_URL="http://ports.ubuntu.com/ubuntu-ports/"
 tee ${SOURCES_LIST} <<EOF
-deb ${DEB_URL} ${DISTRO_VERSION} main restricted
-deb ${DEB_URL} ${DISTRO_VERSION}-updates main restricted
-deb ${DEB_URL} ${DISTRO_VERSION} universe
-deb ${DEB_URL} ${DISTRO_VERSION}-updates universe
-deb ${DEB_URL} ${DISTRO_VERSION} multiverse
-deb ${DEB_URL} ${DISTRO_VERSION}-updates multiverse
-deb ${DEB_URL} ${DISTRO_VERSION}-backports main restricted universe multiverse
-deb ${DEB_URL} ${DISTRO_VERSION}-security main restricted
-deb ${DEB_URL} ${DISTRO_VERSION}-security universe
-deb ${DEB_URL} ${DISTRO_VERSION}-security multiverse
+deb ${MIRROR} ${DISTRO_VERSION} main restricted
+deb ${MIRROR} ${DISTRO_VERSION}-updates main restricted
+deb ${MIRROR} ${DISTRO_VERSION} universe
+deb ${MIRROR} ${DISTRO_VERSION}-updates universe
+deb ${MIRROR} ${DISTRO_VERSION} multiverse
+deb ${MIRROR} ${DISTRO_VERSION}-updates multiverse
+deb ${MIRROR} ${DISTRO_VERSION}-backports main restricted universe multiverse
+deb ${MIRROR} ${DISTRO_VERSION}-security main restricted
+deb ${MIRROR} ${DISTRO_VERSION}-security universe
+deb ${MIRROR} ${DISTRO_VERSION}-security multiverse
 
 ## Uncomment the following two lines to add software from Canonical's
 ## 'partner' repository.
@@ -73,10 +86,10 @@ EOF
 
 choose_release (){
 rm -f ${SOURCES_LIST}
-if [[ "$DISTRO" =~ ^(debian|devuan|raspbian|ubuntu)$ ]]; then
+if [[ "$DISTRO" =~ ^(debian|devuan|kali|raspbian|ubuntu)$ ]]; then
 	${DISTRO}_release
 else
 	echo "${CAP_DISTRO} ${CAP_RELEASE} is not supported."
-	exit 1
+	exit 0
 fi
 }

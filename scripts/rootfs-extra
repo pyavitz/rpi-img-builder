@@ -42,12 +42,15 @@ echo -n "${TIMEZONE}" > /etc/timezone
 
 apt upgrade -y
 apt dist-upgrade -y
-if [[ "$DISTRO" == "debian" || "$DISTRO" == "raspbian" ]]; then
+if [[ "$DISTRO" =~ ^(debian|raspbian)$ ]]; then
 	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} resolvconf openssh-client openssh-server
 fi
 if [[ "$DISTRO" == "devuan" ]]; then
 	apt install -y openssh-client openssh-server --no-install-recommends
 	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} openresolv
+fi
+if [[ "$DISTRO" == "kali" ]]; then
+	apt install -y ${PKGS} ${USER_PKGS} dbus-user-session libical3 resolvconf haveged
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
 	if [[ "$DISTRO_VERSION" =~ ^(kinetic|lunar|mantic|noble)$ ]]; then RESOLVE="systemd-resolved"; else RESOLVE="openresolv"; fi
