@@ -118,11 +118,12 @@ whiptail --backtitle "${RELEASE}: System Settings" --title "Menu Config" --menu 
 	"N)" "Networking        Configure network interfaces" \
 	"" "" \
 	"1)" "Security          User security management" \
-	"2)" "Hostname          Change system hostname" \
-	"3)" "Keyboard          Change keyboard layout" \
-	"4)" "Locales           Change language settings" \
-	"5)" "Timezone          Change regional settings" \
-	"6)" "Governor          Dynamic frequency scaling" \
+	"2)" "Hostname          System hostname" \
+	"3)" "Keyboard          Keyboard layout" \
+	"4)" "Locales           Language settings" \
+	"5)" "Timezone          Regional settings" \
+	"6)" "Console           Font and keymap setup" \
+	"7)" "Governor          Dynamic frequency scaling" \
 	"" "" \
 	"K)" "Kernel            Edit the config.txt" \
 	"U)" "Update            Menu interface configuration tool" \
@@ -150,6 +151,10 @@ case $CHOICE in
 		sudo dpkg-reconfigure tzdata
 		;;
 	"6)")
+		sudo dpkg-reconfigure console-setup
+		sudo service console-setup restart
+		;;
+	"7)")
 		governor -m
 		;;
 	"")
