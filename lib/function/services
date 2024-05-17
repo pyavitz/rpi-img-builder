@@ -148,10 +148,10 @@ systemctl enable firstboot
 systemctl enable credentials
 systemctl enable governor
 if [[ "$DISTRO_VERSION" == "bullseye" ]] && [[ "$BOARD" == "bcm2708" ]]; then
-		mkdir -p /etc/systemd/system/haveged.service.d;
-		echo -e '[Service]\nSystemCallFilter=uname' > /etc/systemd/system/haveged.service.d/fix.conf;
-		systemctl daemon-reload; systemctl restart haveged;
-	fi
+	mkdir -p /etc/systemd/system/haveged.service.d
+	echo -e '[Service]\nSystemCallFilter=uname' > /etc/systemd/system/haveged.service.d/fix.conf
+	systemctl daemon-reload
+	systemctl restart haveged
 fi
 if [[ -f "/etc/systemd/system/multi-user.target.wants/ondemand.service" ]]; then systemctl disable ondemand; fi
 if [[ "$DISTRO" == "debian" ]]; then systemctl enable resolvconf; fi
