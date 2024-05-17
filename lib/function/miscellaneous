@@ -9,7 +9,7 @@ else
 	echo -en "${BOARD}"
 	echo -e ": Compile a kernel before building an image."
 	make cleanup
-	exit 0
+	exit 1
 fi
 }
 
@@ -33,15 +33,9 @@ dpkg-buildpackage -us -uc
 cd ~
 dpkg -i raspberrypi-sys-mods*.deb
 rm -fdr raspberrypi-sys-mods*
-if [ -f /etc/apt/sources.list.d/vscode.list ]; then
-	rm -f /etc/apt/sources.list.d/vscode.list
-fi
-if [ -f /etc/apt/trusted.gpg.d/microsoft.gpg ]; then
-	rm -f /etc/apt/trusted.gpg.d/microsoft.gpg
-fi
-if [ -f /etc/apt/preferences.d/3rd_parties.pref ]; then
-	rm -f /etc/apt/preferences.d/3rd_parties.pref
-fi
+rm -f /etc/apt/sources.list.d/vscode.list
+rm -f /etc/apt/trusted.gpg.d/microsoft.gpg
+rm -f /etc/apt/preferences.d/3rd_parties.pref
 }
 
 # rpi-eeprom
@@ -200,9 +194,7 @@ EOF
 uscripts_pre-stage1 (){
 if [[ -f "files/userscripts/uscripts" ]]; then
 	source files/userscripts/uscripts
-	if [[ `type run_function0` ]] &>/dev/null; then
-		run_function0
-	fi
+	if [[ `type run_function0` ]] &>/dev/null; then run_function0; fi
 fi
 }
 
@@ -210,12 +202,8 @@ uscripts_stage1 (){
 if [[ -f "files/userscripts/uscripts" ]]; then
 	mkdir -p p2/root/userscripts
 	cp -fr files/userscripts/* p2/root/userscripts/
-	if [[ -f "p2/root/userscripts/README.md" ]]; then
-		rm -f p2/root/userscripts/README.md
-	fi
-	if [[ `type run_function1` ]] &>/dev/null; then
-		run_function1
-	fi
+	if [[ -f "p2/root/userscripts/README.md" ]]; then rm -f p2/root/userscripts/README.md; fi
+	if [[ `type run_function1` ]] &>/dev/null; then run_function1; fi
 fi
 }
 
@@ -235,9 +223,7 @@ if [[ -e "/root/userscripts" ]]; then rm -fdr /root/userscripts; fi
 uscripts_fin-stage1 (){
 if [[ -f "files/userscripts/uscripts" ]]; then
 	source files/userscripts/uscripts
-	if [[ `type run_function3` ]] &>/dev/null; then
-		run_function3
-	fi
+	if [[ `type run_function3` ]] &>/dev/null; then run_function3; fi
 fi
 }
 
@@ -260,6 +246,9 @@ IMAGE_TIME="$(date +%T | sed 's/://g' | sed 's/..$//')"
 IMAGE_FIN_NAME="${BOARD_EXT}-${DISTRO}-${DISTRO_VERSION}-${INSTALLED_KERNEL}-${ARCH_EXT}-${FSTYPE}-${IMAGE_DATE}-${IMAGE_TIME}.img"
 if [[ -f "${IMAGE_FILE_NAME}" ]]; then
 	mv -f ${IMAGE_FILE_NAME} ${IMAGE_FIN_NAME}
+else
+	echo -e "Build error: ${IMAGE_FILE_NAME}"
+	exit 1
 fi
 if [ $COMPRESS_IMG -eq 1 ]; then
 	if [[ -f "${IMAGE_FIN_NAME}" ]]; then
