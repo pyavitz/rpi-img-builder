@@ -21,7 +21,7 @@ if [[ "$COMPILER_CLANG" == "clang" ]]; then
 	fi
 	if [[ "$ARCH_EXT" == "armel" ]]; then
 		echo -e "The builder does not support using clang to build ${ARCH_EXT}."
-		exit 1
+		COMPILER="gcc"
 	fi
 fi
 if [ $CCACHE -eq 1 ]; then
