@@ -19,10 +19,8 @@ if [[ "$COMPILER_CLANG" == "clang" ]]; then
 		&& [[ `command -v clang-16` ]] && [[ `command -v clang-17` ]] \
 		&& [[ `command -v clang-18` ]]; then :; else apt install -y ${UBU_NOBLE_CLANG_DEPENDS}; fi
 	fi
-	if [[ "$ARCH_EXT" == "armel" ]]; then
-		echo -e "The builder does not support using clang to build ${ARCH_EXT}."
-		COMPILER="gcc"
-	fi
+	# builder doesn't support compiling armel with clang
+	if [[ "$ARCH_EXT" == "armel" ]]; then COMPILER_CLANG="gcc"; COMPILER="gcc"; fi
 fi
 if [ $CCACHE -eq 1 ]; then
 	if [[ `command -v ccache` ]]; then :; else apt install -y ccache; fi
@@ -36,7 +34,7 @@ if [[ "$COMPILER_CLANG" == "clang" ]]; then
 	CLANG="1"
 	CLANG_LLVM=`echo LLVM=${COMPILER} LLVM_IAS=1 | sed 's/clang//g'`
 else
-	CLANG="0"	
+	CLANG="0"
 fi
 # compiler
 if [ $CCACHE -eq 1 ]; then
