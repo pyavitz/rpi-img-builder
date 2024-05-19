@@ -1,21 +1,36 @@
 #!/bin/bash
 # depends: curl
-source lib/function/echoes
 
-echo "Example: 6.1"
+echo "Example: 6.6.y"
 echo
-echo -en "${WHT}Select branch: ${FIN}"
-read branch
+echo -en "BRANCH: "
+read BRANCH
 
-if [[ `wget -S --spider https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
-	curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile | grep -m1 VERSION
-	curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile | grep -m1 PATCHLEVEL
-	curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile | grep -m1 SUBLEVEL
-	curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$branch.y/Makefile | grep -m1 EXTRAVERSION
+if [[ `wget -S --spider https://raw.githubusercontent.com/raspberrypi/linux/rpi-$BRANCH/Makefile 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+	curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$BRANCH/Makefile | grep -m1 "VERSION" | \
+	sed 's/VERSION = //g' > revision.txt
+	curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$BRANCH/Makefile | grep -m1 "PATCHLEVEL" | \
+	sed 's/PATCHLEVEL = /./g' >> revision.txt
+	curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$BRANCH/Makefile | grep -m1 "SUBLEVEL" | \
+	sed 's/SUBLEVEL = /./g' >> revision.txt
+	curl --silent -L https://raw.githubusercontent.com/raspberrypi/linux/rpi-$BRANCH/Makefile | grep -m1 "EXTRAVERSION" | \
+	sed 's/EXTRAVERSION =//g' | sed 's/ //g' >> revision.txt
 else
 	echo ""
-	echo -e "The branch you selected is not available."
+	echo -e "The BRANCH you selected is not available."
+	rm -f revision.txt
 	exit 0
+fi
+
+if [[ -f "revision.txt" ]]; then
+	echo -en "CURRENT: "
+	tr -d '\n' < revision.txt
+	rm -f revision.txt
+	echo -e ""
+else
+	echo -e "Something went wrong?"
+	rm -f revision.txt
+	exit 1
 fi
 
 exit 0
