@@ -6,6 +6,8 @@ echo "Example: 6.6.y"
 echo
 echo -en "BRANCH:  "
 read BRANCH
+ITL="\033[3m"
+FIN="\033[0m"
 GIT_URL="https://github.com/raspberrypi/linux"
 GIT_HASH=`git ls-remote --heads ${GIT_URL}.git | grep -w "refs/heads/rpi-${BRANCH}" | sed -n '1p' | sed "s/refs\/heads\/rpi-${BRANCH}//g" | sed s/'\s'//g`
 if [[ `wget -S --spider https://raw.githubusercontent.com/raspberrypi/linux/rpi-$BRANCH/Makefile 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
@@ -28,10 +30,9 @@ if [[ -f "revision.txt" ]]; then
 	echo -en "CURRENT: "
 	tr -d '\n' < revision.txt
 	rm -f revision.txt
-	echo -e ""
 	if [[ -f ".cache/git_fast.${KERNEL}-${BRANCH}" ]]; then
 		source .cache/git_fast.${KERNEL}-${BRANCH}
-		if [[ "$GIT_COMMIT" == "$GIT_HASH" ]]; then echo -e "COMMIT:  ${GIT_COMMIT} [current]"; else echo -e "COMMIT:  ${GIT_HASH} [new]"; fi
+		if [[ "$GIT_COMMIT" == "$GIT_HASH" ]]; then echo -e ""; else echo -e " ${ITL}NEW!${FIN}"; fi; else echo -e "";
 	fi
 else
 	echo -e "Something went wrong?"
