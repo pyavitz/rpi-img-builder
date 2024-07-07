@@ -51,19 +51,50 @@ echo -en "${FAMILY}: " | sed -e 's/\(.*\)/\U\1/'
 echo -e "${BOARD}" | sed -e 's/\(.*\)/\U\1/'
 echo ""
 echo -e "\e[1;37mWelcome. Create a User Account\e[0m."
-echo ""
-echo -en "Name: "
-read NAME
-echo -en "Username: "
-read USERNAME
+while true; do
+	echo -e ""
+	echo -en "Name: "
+	read NAME1
+	if [[ ! -z "$NAME1" ]]; then
+		NAME=`echo $NAME1 | sed 's/ //g'`
+	else
+		echo -e ""
+		echo -e "Field blank? Try again."
+		continue
+	fi
+	break
+done
+while true; do
+	echo -en "Username: "
+	read USERNAME
+	if [[ ! -z "$USERNAME" ]]; then
+		:;
+	else
+		echo -e ""
+		echo -e "Field blank? Try again."
+		echo -e ""
+		continue
+	fi
+	break
+done
 while true; do
 	echo -en "Password: "
-	read FIRST
+	read -s FIRST
+	if [[ ! -z "$FIRST" ]]; then
+		:;
+	else
+		echo -e ""
+		echo -e "Field blank? Try again."
+		echo -e ""
+		continue
+	fi
+	echo ""
 	echo -en "Password (again): "
-	read SECOND
+	read -s SECOND
+	echo ""
 	if [ "$FIRST" = "$SECOND" ]; then
 		PASSWORD="${FIRST}"
-		echo "";
+		echo ""
 		echo -e "Creating a user account for: \e[1;37m${NAME}\e[0m ..."
 	else
 		echo -e "The passwords don't match. Try again."
