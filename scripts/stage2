@@ -122,8 +122,10 @@ apt -y autoclean
 echo -n "${HOSTNAME}" > /etc/hostname;
 sed -i "1 a 127.0.1.1	${HOSTNAME}" /etc/hosts;
 if [ $USERACCT -eq 0 ]; then
+	# prevent build fail because of white spaces
+	NAME_FIXUP=`echo ${NAME} | sed "s/ //g"`
 	echo "";
-	adduser ${USERNAME} --gecos ${NAME} --disabled-password
+	adduser ${USERNAME} --gecos ${NAME_FIXUP} --disabled-password
 	echo "${USERNAME}:${PASSWORD}" | chpasswd
 	adduser ${USERNAME} sudo
 	adduser ${USERNAME} audio
