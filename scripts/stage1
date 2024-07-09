@@ -16,7 +16,9 @@ if [[ "$USERNAME" == "root" ]]; then
 fi
 # check user data file
 if [ $USERACCT -eq 0 ]; then
-	if [ -z $NAME ] && [ -z $USERNAME ] && [ -z $PASSWORD ]; then
+	# prevent build fail because of white spaces
+	NAME_FIXUP=`echo ${NAME} | sed "s/ //g"`
+	if [ -z $NAME_FIXUP ] && [ -z $USERNAME ] && [ -z $PASSWORD ]; then
 		echo -e ""
 		echo -e "Name, Username and Password fields are empty?"
 		echo -e "Enable the user account service or input your"
