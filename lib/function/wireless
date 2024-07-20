@@ -1,0 +1,34 @@
+#!/bin/bash
+
+driver_download (){
+if [[ -d "${DRIVER}" ]]; then
+	echo -en "${PNK}[${FIN}${YLW}found${FIN}${PNK}]${FIN}"
+	cd ${DRIVER}
+	git config pull.rebase false
+	echo -en " ${PNK}[${FIN}${WHT}pulling${FIN}${PNK}]${FIN}"
+	git pull -q
+	cd ..
+else
+	echo -en "${PNK}[${FIN}${WHT}cloning${FIN}${PNK}]${FIN}"
+	git clone -q ${DRIVER_URL} ${DRIVER}
+fi
+}
+
+# RTW88
+add_rtw88 (){
+rm -fdr drivers/net/wireless/realtek/${DRIVER}
+mkdir -p drivers/net/wireless/realtek/${DRIVER}
+cp -fr ../${DRIVER}/* drivers/net/wireless/realtek/${DRIVER}/
+rm -fdr drivers/net/wireless/realtek/${DRIVER}/{alt_rtl8821ce,README.md}
+}
+
+extra_wireless (){
+if [ $RTW88 -eq 1 ]; then
+	DRIVER_INFO="RTW88"
+	DRIVER="rtw88"
+	DRIVER_URL="https://github.com/lwfinger/${DRIVER}"
+	echo -en "${WHT}${DRIVER_INFO}${FIN} "
+	driver_download
+	echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
+fi
+}

@@ -2,8 +2,8 @@
 
 source lib/function/config
 # builder and profile versions
-BUILDER="6.8"
-PROFILE="1.1"
+BUILDER="6.9"
+PROFILE="1.2"
 
 if [[ `command -v dialog` ]]; then :; else sudo apt install dialog; fi
 ARCH=`uname -m`
@@ -17,7 +17,6 @@ COMPILER="gcc"
 CCACHE="1"
 NETWORKMANAGER="1"
 RTW88="0"
-RTL88XXAU="0"
 USERACCT="0"
 USER_PKGS="htop libsensors-dev rsyslog"
 LOCALE="en_US.UTF-8"
@@ -118,7 +117,6 @@ echo TIMEZONE='"'${TIMEZONE}'"' >> tmp0
 echo NAMESERVER1='"'${NAMESERVER1}'"' >> tmp0
 echo NAMESERVER2='"'${NAMESERVER2}'"' >> tmp0
 echo "RTW88=${RTW88}" >> tmp0
-echo "RTL88XXAU=${RTL88XXAU}" >> tmp0
 echo BUILDER=${BUILDER} >> tmp0
 echo '"' > tmp2
 echo '"' >> tmp2
@@ -146,7 +144,7 @@ sed -i '27i### COMPILER TUNING' userdata.txt
 sed -i '30i### WHOAMI AND HOST' userdata.txt
 sed -i '33i### LOCALES TIMEZONE AND NAMESERVERS' userdata.txt
 sed -i '39i### EXTRA WIRELESS' userdata.txt
-sed -i '42i### DO NOT EDIT BELOW THIS LINE' userdata.txt
+sed -i '41i### DO NOT EDIT BELOW THIS LINE' userdata.txt
 
 # custom dot txt
 if [[ -f "custom.txt" ]]; then
@@ -179,7 +177,7 @@ clear -x
 if [[ -f "userdata.txt" ]]; then
 	sed -i 's/=0/="0"/g' userdata.txt
 	sed -i 's/=1/="1"/g' userdata.txt
-	sed -i '4G;10G;14G;23G;26G;29G;32G;38G;41G' userdata.txt
+	sed -i '4G;10G;14G;23G;26G;29G;32G;38G;40G' userdata.txt
 	echo -e "userdata file created."
 	exit 0
 fi

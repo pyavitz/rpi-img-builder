@@ -11,6 +11,7 @@ source lib/function/rpi-linux
 source lib/function/patching
 source lib/function/defconfig
 source lib/function/compilers
+source lib/function/wireless
 
 # prep
 validation
@@ -23,9 +24,12 @@ linux_compilers
 source_dir
 # download
 download
+extra_wireless
 # setup and firmware
 setup
 firmware
+# extra wireless
+if [[ -v "DRIVER" ]] && [[ ! -z "$DRIVER" ]]; then add_${DRIVER}; fi
 # patching and packaging
 linux_patching
 # defconfig
