@@ -28,8 +28,6 @@ extra_wireless
 # setup and firmware
 setup
 firmware
-# extra wireless
-if [[ -v "DRIVER" ]] && [[ ! -z "$DRIVER" ]]; then add_${DRIVER}; fi
 # patching and packaging
 linux_patching
 # defconfig
