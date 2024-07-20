@@ -2,6 +2,7 @@
 menuconfig RTW88
 	tristate "Realtek 802.11ac wireless chips support"
 	depends on MAC80211
+	default m
 	help
 	  This module adds support for mac80211-based wireless drivers that
 	  enables Realtek IEEE 802.11ac wireless chipsets.
