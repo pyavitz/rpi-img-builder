@@ -141,7 +141,7 @@ chmod +x /etc/rc.local
 
 systemd_services (){
 systemctl enable rc-local
-systemctl enable ifplugd
+#systemctl enable ifplugd
 systemctl enable zramswap
 systemctl enable bluetooth
 systemctl enable firstboot
@@ -154,7 +154,7 @@ if [[ "$DISTRO_VERSION" == "bullseye" ]] && [[ "$BOARD" == "bcm2708" ]]; then
 	systemctl restart haveged
 fi
 if [[ -f "/etc/systemd/system/multi-user.target.wants/ondemand.service" ]]; then systemctl disable ondemand; fi
-if [[ "$DISTRO" == "debian" ]]; then systemctl enable resolvconf; fi
+if [[ "$DISTRO" =~ ^(debian|kali|raspbian)$ ]]; then systemctl enable resolvconf; fi
 #systemctl enable serial-getty@ttyUSB0.service
 }
 
