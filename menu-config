@@ -15,6 +15,13 @@ change_password(){
 while true; do
 	export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray';
 	PASSWD1=$(whiptail --backtitle "${RELEASE}: User Password" --title "User: $USER" --passwordbox "Enter new password" --nocancel 8 78 3>&1 1>&2 2>&3)
+	if [[ ! -z "$PASSWD1" ]]; then
+		:;
+	else
+		export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray'
+		whiptail --backtitle "" --msgbox "    Field is blank? Try again." 0 0
+		continue
+	fi
 	PASSWD2=$(whiptail --backtitle "${RELEASE}: User Password" --title "User: $USER" --passwordbox "Enter new password (again)" --nocancel 8 78 3>&1 1>&2 2>&3)
 	if [ "$PASSWD1" = "$PASSWD2" ]; then
 		PASSWORD="${PASSWD1}"
