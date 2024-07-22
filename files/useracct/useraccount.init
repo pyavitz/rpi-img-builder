@@ -17,12 +17,7 @@
 
 case "$1" in
 	start)
-	if [ "$ENABLE" = "true" || "$ENABLE" = "yes" || "$ENABLE" = "enable" ]; then
-		/usr/local/sbin/useraccount;
-	else
-		sleep 1s; clear -x;
-		exec /sbin/getty -n -l /usr/local/sbin/useraccount -8 38400 tty1;
-	fi
+	/usr/local/sbin/useraccount
 	exit 0
 	;;
 	*)

@@ -1,7 +1,5 @@
-# activate service (recommended)
-ENABLE="false"
+# Input user information
 
-# input user information
 NAME=""
 USERNAME=""
 PASSWORD=""
