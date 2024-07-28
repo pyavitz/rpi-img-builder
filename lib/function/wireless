@@ -21,7 +21,7 @@ fi
 # RTW88
 extra_wireless (){
 if [ $RTW88 -eq 1 ]; then
-	DRIVER_INFO="RTW88"
+	DRIVER_INFO="Realtek WiFi 5"
 	DRIVER="rtw88"
 	DRIVER_URL="https://github.com/lwfinger/${DRIVER}.git"
 	driver_download
