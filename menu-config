@@ -1,7 +1,7 @@
 #!/bin/bash
 # RASPBERRY PI IMAGE BUILDER
 # SYSTEM MENU INTERFACE
-RELEASE=`cat /etc/os-release | grep -w NAME | sed 's/NAME=//g' | sed 's/"//g' | sed 's/ GNU\/Linux//g'`
+DISTRO=`cat /etc/os-release | grep -w NAME | sed 's/NAME=//g' | sed 's/"//g' | sed 's/ GNU\/Linux//g'`
 if [[ -f "/etc/opt/board.txt" ]]; then
 	. /etc/opt/board.txt
 else
@@ -14,7 +14,7 @@ fi
 change_password(){
 while true; do
 	export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray';
-	PASSWD1=$(whiptail --backtitle "${RELEASE}: User Password" --title "User: $USER" --passwordbox "Enter new password" --nocancel 8 78 3>&1 1>&2 2>&3)
+	PASSWD1=$(whiptail --backtitle "${DISTRO}: User Password" --title "User: $USER" --passwordbox "Enter new password" --nocancel 8 78 3>&1 1>&2 2>&3)
 	if [[ ! -z "$PASSWD1" ]]; then
 		:;
 	else
@@ -22,13 +22,13 @@ while true; do
 		whiptail --backtitle "" --msgbox "    Field is blank? Try again." 0 0
 		continue
 	fi
-	PASSWD2=$(whiptail --backtitle "${RELEASE}: User Password" --title "User: $USER" --passwordbox "Enter new password (again)" --nocancel 8 78 3>&1 1>&2 2>&3)
+	PASSWD2=$(whiptail --backtitle "${DISTRO}: User Password" --title "User: $USER" --passwordbox "Enter new password (again)" --nocancel 8 78 3>&1 1>&2 2>&3)
 	if [ "$PASSWD1" = "$PASSWD2" ]; then
 		PASSWORD="${PASSWD1}"
 		export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray'
-		if (whiptail --backtitle "${RELEASE}: User Password: Confirm" --title "Confirm" --yesno "    Set the new password?" 0 0); then
+		if (whiptail --backtitle "${DISTRO}: User Password: Confirm" --title "Confirm" --yesno "    Set the new password?" 0 0); then
 			echo "$PASSWORD" | sed 's/.*/\0\n\0/' | sudo passwd -q $USER 2> /dev/null
-			whiptail --backtitle "${RELEASE}: User Password: Confirmation" --title "Confirmation" --msgbox "    Password changed successfully." 0 0
+			whiptail --backtitle "${DISTRO}: User Password: Confirmation" --title "Confirmation" --msgbox "    Password changed successfully." 0 0
 		else
 			whiptail --title "Cancelled" --msgbox "    Hit enter to return to menu." 0 0
 		fi
@@ -96,7 +96,7 @@ done
 change_hostname(){
 CURRENT=`hostname`
 export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray'
-NEWHOST=$(whiptail --backtitle "${RELEASE}: Hostname" --title "Current: $CURRENT" --inputbox "Enter new hostname" --nocancel 8 78 3>&1 1>&2 2>&3)
+NEWHOST=$(whiptail --backtitle "${DISTRO}: Hostname" --title "Current: $CURRENT" --inputbox "Enter new hostname" --nocancel 8 78 3>&1 1>&2 2>&3)
 HOSTNAME="${NEWHOST}"
 export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray'
 if (whiptail --backtitle "Hostname: Confirm" --title "Confirm" --yesno "    Apply new hostname? ${HOSTNAME}" 0 0); then
@@ -121,7 +121,7 @@ while [ 1 ]
 do
 CHOICE=$(
 export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray'
-whiptail --backtitle "${RELEASE}: System Settings" --title "Menu Config" --menu "" --nocancel 0 25 0 \
+whiptail --backtitle "${DISTRO}: System Settings" --title "Menu Config" --menu "" --nocancel 0 25 0 \
 	"N)" "Networking        Configure network interfaces" \
 	"" "" \
 	"1)" "Security          User security management" \
@@ -159,7 +159,7 @@ case $CHOICE in
 		;;
 	"6)")
 		sudo dpkg-reconfigure console-setup
-		if [[ -f "/etc/init.d/console-setup.sh" ]]; then
+		if [[ "$DISTRO" == "Devuan" ]]; then
 			sudo service console-setup.sh restart
 		else
 			sudo service console-setup restart
