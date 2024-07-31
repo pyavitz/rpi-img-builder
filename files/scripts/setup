@@ -19,7 +19,7 @@ while getopts "rh" OPTION; do
 			echo -e "Running System Setup ..."
 			sleep .75
 			sudo dpkg-reconfigure locales tzdata keyboard-configuration console-setup
-			if [[ -f "/etc/init.d/console-setup.sh" ]]; then
+			if [[ "$DISTRO" == "Devuan" ]]; then
 				sudo service console-setup.sh restart
 			else
 				sudo service console-setup restart
