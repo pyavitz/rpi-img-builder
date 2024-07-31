@@ -159,7 +159,11 @@ case $CHOICE in
 		;;
 	"6)")
 		sudo dpkg-reconfigure console-setup
-		sudo service console-setup restart
+		if [[ -f "/etc/init.d/console-setup.sh" ]]; then
+			sudo service console-setup.sh restart
+		else
+			sudo service console-setup restart
+		fi
 		;;
 	"7)")
 		governor -m
