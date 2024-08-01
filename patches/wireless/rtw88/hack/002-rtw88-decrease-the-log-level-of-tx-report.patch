@@ -1,6 +1,6 @@
-From 0a609e036b7f4a0dfd375dfcce4dffcb5f5a6150 Mon Sep 17 00:00:00 2001
+From 21e65dd7e309a476bcfa65c771ad07f768a03dc1 Mon Sep 17 00:00:00 2001
 From: Patrick Yavitz <pyavitz@xxxxx.com>
-Date: Fri, 21 Jul 2023 17:13:56 -0400
+Date: Thu, 1 Aug 2024 06:04:26 -0400
 Subject: [PATCH] rtw88: decrease the log level of tx report
 
 Reduce 'failed to get tx report from firmware' dmesg spam.
@@ -13,10 +13,10 @@ Signed-off-by: Patrick Yavitz <pyavitz@xxxxx.com>
  1 file changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/net/wireless/realtek/rtw88/tx.c b/drivers/net/wireless/realtek/rtw88/tx.c
-index 2821119dc930..867a1c44dca1 100644
+index 1d8af54a2739..39c0acd786d8 100644
 --- a/drivers/net/wireless/realtek/rtw88/tx.c
 +++ b/drivers/net/wireless/realtek/rtw88/tx.c
-@@ -177,14 +177,16 @@ void rtw_tx_report_purge_timer(struct timer_list *t)
+@@ -205,14 +205,16 @@ void rtw_tx_report_purge_timer(void *cntx)
  	struct rtw_tx_report *tx_report = &rtwdev->tx_report;
  	unsigned long flags;
  

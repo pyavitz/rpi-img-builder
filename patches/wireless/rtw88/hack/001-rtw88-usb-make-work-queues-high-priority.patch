@@ -1,6 +1,6 @@
-From 5f7a80c5a42ec153a560bd33241908c59a1b3ac8 Mon Sep 17 00:00:00 2001
+From 3996a482cf8d679a4d4db89a3665d5980f0bb730 Mon Sep 17 00:00:00 2001
 From: Patrick Yavitz <pyavitz@xxxxx.com>
-Date: Fri, 21 Jul 2023 17:10:21 -0400
+Date: Thu, 1 Aug 2024 06:03:40 -0400
 Subject: [PATCH] rtw88: usb: make work queues high priority
 
 The rtw8822/21cu driver has problems handling high rx or tx rates compared with high
@@ -15,19 +15,19 @@ Signed-off-by: Patrick Yavitz <pyavitz@xxxxx.com>
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/net/wireless/realtek/rtw88/usb.c b/drivers/net/wireless/realtek/rtw88/usb.c
-index 4a57efdba97b..382268706101 100644
+index 3dd1bc53e316..b194ecfef7ca 100644
 --- a/drivers/net/wireless/realtek/rtw88/usb.c
 +++ b/drivers/net/wireless/realtek/rtw88/usb.c
-@@ -723,7 +723,7 @@ static int rtw_usb_init_rx(struct rtw_dev *rtwdev)
+@@ -772,7 +772,7 @@ static int rtw_usb_init_rx(struct rtw_dev *rtwdev)
+ {
  	struct rtw_usb *rtwusb = rtw_get_usb_priv(rtwdev);
- 	int i;
  
 -	rtwusb->rxwq = create_singlethread_workqueue("rtw88_usb: rx wq");
 +	rtwusb->rxwq = alloc_workqueue("rtw88_usb: rx wq", WQ_UNBOUND | WQ_HIGHPRI, 0);
  	if (!rtwusb->rxwq) {
  		rtw_err(rtwdev, "failed to create RX work queue\n");
  		return -ENOMEM;
-@@ -757,7 +757,7 @@ static int rtw_usb_init_tx(struct rtw_dev *rtwdev)
+@@ -812,7 +812,7 @@ static int rtw_usb_init_tx(struct rtw_dev *rtwdev)
  	struct rtw_usb *rtwusb = rtw_get_usb_priv(rtwdev);
  	int i;
  
