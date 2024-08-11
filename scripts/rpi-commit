@@ -52,6 +52,11 @@ extract
 setup
 firmware
 # patching and packaging
+if [[ -f "Makefile" ]]; then
+	VER=`cat Makefile | grep -m1 "VERSION" | sed 's/VERSION = //g'`
+	LVL=`cat Makefile | grep -m1 "PATCHLEVEL" | sed 's/PATCHLEVEL = /./g'`
+	VERSION="${VER}${LVL}.y"
+fi
 linux_patching
 # defconfig
 if [ $CUSTOM_DEFCONFIG -eq 1 ]; then cconfig; else fconfig; fi
