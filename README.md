@@ -142,10 +142,8 @@ COMMIT="9ed4f05ba2e2bcd9065831674e97b2b1283e866d"
 * Review the [Wiki](https://github.com/pyavitz/rpi-img-builder/wiki/Options-&-Scripts)
 * The boot partition is labelled BOOT
 #### BOOT: useraccount.txt
-* Headless: ENABLE="true" and fill in the variables (recommended)
-* Headful: ENABLE="false" and get prompted to create a user account
+* Input your user information
 ```sh
-ENABLE="false"			# Set to true to enable service
 NAME=""				# Your name
 USERNAME=""			# Username
 PASSWORD=""			# Password
