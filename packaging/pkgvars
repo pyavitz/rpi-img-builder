@@ -4,17 +4,16 @@ COMPRESSION="xz"
 PLATFORM="broadcom"
 LINUX_IMAGE="linux-image-${SERIES}"
 LINUX_HEADERS="linux-headers-${SERIES}"
+OVERLAY_PATH="usr/lib/${LINUX_IMAGE}/overlays"
+INSTALL_PATH="boot/${PLATFORM}"
 
 linux_packaging(){
 # install target
 if [[ "$ARCH" == "arm" ]]; then
 	LINUX_PATH="usr/lib/${LINUX_IMAGE}"
-fi
-if [[ "$ARCH" == "arm64" ]]; then
+else
 	LINUX_PATH="usr/lib/${LINUX_IMAGE}/${PLATFORM}"
 fi
-OVERLAY_PATH="usr/lib/${LINUX_IMAGE}/overlays"
-INSTALL_PATH="boot/${PLATFORM}"
 echo "# packaging variables" > "scripts/package/pkgvars"
 echo board_series='"'$SERIES'"' >> "scripts/package/pkgvars"
 echo kernel_img='"'$KERNEL_IMG'"' >> "scripts/package/pkgvars"
