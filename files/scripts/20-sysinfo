@@ -39,12 +39,14 @@ if [[ `ls /sys/class/scsi_device/[0-9]:[0-9]:[0-9]:[0-9]/device/hwmon/hwmon[0-9]
 else
 	SSD="false"
 fi
+
 NETWORK=$(ip -o -4 -br a | grep -v '^lo'| sed 's/^/ /' | sed 's/\/..//' | sed -r '1s/\s+/ /g' | sed -r '2s/\s+/ /g')
-ETH=`echo -e Wired:`
-WLAN=`echo -e Wireless:`
-USB=`echo -e Tether:`
-HA=`echo -e Hassio:`
 DOCKER=`echo -e Docker:`
+ETH=`echo -e Wired:`
+HA=`echo -e Hassio:`
+HCI=$(hcitool dev | sed "s/^[ \t]*//" | sed '1d' | sed 's/[[:blank:]]/ /g')
+USB=`echo -e Tether:`
+WLAN=`echo -e Wireless:`
 
 # functions
 count_high (){
@@ -93,6 +95,7 @@ echo -e "$NETWORK" | sed "s/^[ \t]*//" | \
 	sed "s/wlan0/$WLAN    wlan0/g" | sed "s/wlan1/$WLAN    wlan1/g" | sed "s/wlan2/$WLAN    wlan2/g" | \
 	sed "s/usb0/$USB      usb0/g" | sed "s/usb1/$USB      usb1/g" | \
 	sed "s/hassio/$HA      hassio/g" | sed "s/docker0/$DOCKER      docker0/g"
+if [[ `command -v hcitool` ]] && [[ ! -z "$HCI" ]]; then echo -en "Bluetooth:   "; echo "$HCI"; fi
 echo ""
 echo -e "── \e[1mSYSTEM\e[0m"
 if [[ -f "/sys/devices/system/cpu/present" ]]; then cpu_hwinfo; fi
