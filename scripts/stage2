@@ -70,8 +70,8 @@ if [[ "$DISTRO" == "kali" ]]; then
 	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} ${WIRELESS} openssh-client openssh-server dbus-user-session libical3 resolvconf haveged ntpdate ${NETWORKING}
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
-	if [[ "$DISTRO_VERSION" =~ ^(kinetic|lunar|mantic|noble)$ ]]; then RESOLVE="systemd-resolved"; else RESOLVE="openresolv"; fi
-	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${RESOLVE} ${WIRELESS} openssh-client openssh-server ${NETWORKING}
+	if [[ "$DISTRO_VERSION" =~ ^(focal|jammy)$ ]]; then RESOLV="openresolv"; else RESOLV="systemd-resolved"; fi
+	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${RESOLV} ${WIRELESS} openssh-client openssh-server ${NETWORKING}
 	if [ $NETWORKMANAGER -eq 0 ] && [[ "$DISTRO_VERSION" == "jammy" ]]; then
 		# disable systemd-networkd and mask systemd-networkd-wait-online
 		systemctl disable systemd-networkd

@@ -54,8 +54,8 @@ if [[ "$DISTRO" == "kali" ]]; then
 	apt install -y ${PKGS} ${USER_PKGS} ${WIRELESS} dbus-user-session libical3 resolvconf haveged
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
-	if [[ "$DISTRO_VERSION" =~ ^(kinetic|lunar|mantic|noble)$ ]]; then RESOLVE="systemd-resolved"; else RESOLVE="openresolv"; fi
-	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${RESOLVE} ${WIRELESS} openssh-client openssh-server
+	if [[ "$DISTRO_VERSION" =~ ^(focal|jammy)$ ]]; then RESOLV="openresolv"; else RESOLV="systemd-resolved"; fi
+	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${RESOLV} ${WIRELESS} openssh-client openssh-server
 fi
 apt -y clean
 apt -y autoclean
