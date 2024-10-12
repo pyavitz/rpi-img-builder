@@ -42,19 +42,20 @@ echo -n "${TIMEZONE}" > /etc/timezone
 
 apt upgrade -y
 apt dist-upgrade -y
+if [[ "$DISTRO_VERSION" =~ ^(oracular)$ ]]; then WIRELESS="iw"; else WIRELESS="iw wireless-tools"; fi
 if [[ "$DISTRO" =~ ^(debian|raspbian)$ ]]; then
-	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} resolvconf openssh-client openssh-server
+	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${WIRELESS} resolvconf openssh-client openssh-server
 fi
 if [[ "$DISTRO" == "devuan" ]]; then
 	apt install -y openssh-client openssh-server --no-install-recommends
-	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} openresolv
+	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${WIRELESS} openresolv
 fi
 if [[ "$DISTRO" == "kali" ]]; then
-	apt install -y ${PKGS} ${USER_PKGS} dbus-user-session libical3 resolvconf haveged
+	apt install -y ${PKGS} ${USER_PKGS} ${WIRELESS} dbus-user-session libical3 resolvconf haveged
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
 	if [[ "$DISTRO_VERSION" =~ ^(kinetic|lunar|mantic|noble)$ ]]; then RESOLVE="systemd-resolved"; else RESOLVE="openresolv"; fi
-	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${RESOLVE} openssh-client openssh-server
+	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${RESOLVE} ${WIRELESS} openssh-client openssh-server
 fi
 apt -y clean
 apt -y autoclean
