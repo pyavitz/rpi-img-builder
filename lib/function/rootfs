@@ -85,7 +85,7 @@ fi
 debootstrap_script (){
 DEBOOTSTRAP_DIR="/usr/share/debootstrap/scripts"
 if [[ -f "${DEBOOTSTRAP_DIR}/${DISTRO_VERSION}" ]]; then
-	:;
+	SPOOF_SCRIPT="false"
 else
 	ln -sr ${DEBOOTSTRAP_DIR}/${DEBOOTSTRAP_SCRIPT} ${DEBOOTSTRAP_DIR}/${DISTRO_VERSION}
 	SPOOF_SCRIPT="true"
