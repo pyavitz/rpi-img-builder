@@ -110,6 +110,6 @@ if [ $DEVROOTFS -eq 1 ]; then
 fi
 
 if [[ -d "${ROOT}" ]]; then umount ${ROOT}; sleep .50; rm -fdr ${ROOT}; fi
-if [[ "$HOST_MACHINE" =~ ^(Debian|Ubuntu)$ ]] && [[ "$DISTRO" == "devuan" ]]; then rm -f ${DEBOOTSTRAP_DIR}/{chimaera,daedalus,excalibur}; fi
+if [[ "$SPOOF_SCRIPT" == "true" ]]; then rm -f ${DEBOOTSTRAP_DIR}/${DISTRO_VERSION}; fi
 
 exit 0

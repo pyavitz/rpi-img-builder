@@ -88,6 +88,7 @@ if [[ -f "${DEBOOTSTRAP_DIR}/${DISTRO_VERSION}" ]]; then
 	:;
 else
 	ln -sr ${DEBOOTSTRAP_DIR}/${DEBOOTSTRAP_SCRIPT} ${DEBOOTSTRAP_DIR}/${DISTRO_VERSION}
+	SPOOF_SCRIPT="true"
 	sleep .50
 fi
 }
