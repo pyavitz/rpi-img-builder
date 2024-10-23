@@ -11,7 +11,7 @@ if [[ "$DISTRO" == "ubuntu" ]]; then MIRROR="${UBUNTU_MIRROR}"; fi; fi; fi; fi; 
 
 debian_release (){
 if [[ "$DISTRO_VERSION" == "bullseye" ]]; then POOL="main contrib non-free"; else POOL="main contrib non-free non-free-firmware"; fi
-if [[ "$DISTRO_VERSION" =~ ^(bullseye|bookworm)$ ]]; then
+if [[ "$DISTRO_VERSION" =~ ^(bullseye|bookworm|trixie)$ ]]; then
 	tee ${SOURCES_LIST} <<EOF
 deb ${MIRROR} ${DISTRO_VERSION} ${POOL}
 deb ${MIRROR} ${DISTRO_VERSION}-updates ${POOL}
