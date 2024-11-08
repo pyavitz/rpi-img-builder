@@ -294,6 +294,7 @@ fi
 wireless_regdb
 
 # network Setup
+if [ $VERBOSE -eq 1 ]; then realtek_conf; else realtek_conf > /dev/null 2>&1; fi
 if [ $NETWORKMANAGER -eq 1 ]; then
 	networkmanager-setup > /dev/null 2>&1
 	networkmanager-credentials > /dev/null 2>&1
