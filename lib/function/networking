@@ -64,24 +64,14 @@ realtek_conf (){
 mkdir -p /etc/modprobe.d/
 mkdir -p /usr/lib/NetworkManager/conf.d/
 cat <<EOF > /etc/modprobe.d/realtek-wireless.conf
-options 8723bs rtw_power_mgnt=0 rtw_enusbss=0 rtw_switch_usb_mode=1
-options 8723ds rtw_power_mgnt=0 rtw_enusbss=0 rtw_switch_usb_mode=1
-options 88XXau rtw_power_mgnt=0 rtw_enusbss=0 rtw_switch_usb_mode=1
-options 88x2bu rtw_power_mgnt=0 rtw_enusbss=0 rtw_switch_usb_mode=1
 options 8821cu rtw_led_ctrl=1 rtw_vht_enable=1 rtw_power_mgnt=0 rtw_enusbss=0 rtw_switch_usb_mode=1
-options 88x2cs rtw_power_mgnt=0 rtw_enusbss=0 rtw_switch_usb_mode=1
+options rtw88_usb switch_usb_mode=1
 EOF
 # Take Realtek wifi dongle out of Driver CDROM Mode
-# Realtek Semiconductor Corp. RTL8188GU 802.11n WLAN Adapter
 mkdir -p /etc/udev/rules.d
-mkdir -p /etc/usb_modeswitch.d
-cat <<EOF > /etc/usb_modeswitch.d/usb1.conf
-TargetVendor=0x0bda
-TargetProduct=0x1a2b
-MessageContent="55534243123456780000000000000011062000000000000000000000000000"
-EOF
 cat <<EOF > /etc/udev/rules.d/usb_modeswitch.rules
-ATTR{idVendor}=="0bda", ATTR{idProduct}=="1a2b", RUN+="/usr/sbin/usb_modeswitch -v 0bda -p 1a2b -J"
+# Realtek Semiconductor Corp. RTL8188GU 802.11n WLAN Adapter
+ATTR{idVendor}=="0bda", ATTR{idProduct}=="1a2b", RUN+="/usr/sbin/usb_modeswitch -K -v 0bda -p 1a2b"
 EOF
 }
 
