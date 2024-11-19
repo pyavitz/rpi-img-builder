@@ -42,7 +42,7 @@ echo -n "${TIMEZONE}" > /etc/timezone
 
 apt upgrade -y
 apt dist-upgrade -y
-if [[ "$DISTRO_VERSION" =~ ^(oracular)$ ]]; then WIRELESS="iw"; else WIRELESS="iw wireless-tools"; fi
+if [[ "$DISTRO_VERSION" =~ ^(oracular|plucky)$ ]]; then WIRELESS="iw"; else WIRELESS="iw wireless-tools"; fi
 if [[ "$DISTRO" =~ ^(debian|raspbian)$ ]]; then
 	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${WIRELESS} resolvconf openssh-client openssh-server
 fi
