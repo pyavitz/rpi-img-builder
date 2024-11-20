@@ -2,7 +2,7 @@
 
 source lib/function/config
 # builder and profile versions
-BUILDER="6.9"
+BUILDER="6.10"
 PROFILE="1.2"
 
 if [[ `command -v dialog` ]]; then :; else sudo apt install dialog; fi
