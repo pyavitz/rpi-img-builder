@@ -101,34 +101,17 @@ else
 		cp arch/arm/boot/zImage "$tmpdir/$boot_path/kernel.img"
 		cp arch/arm/boot/zImage "$tmpdir/$boot_path/kernel7.img"
 		cp arch/arm/boot/zImage "$tmpdir/$boot_path/kernel7l.img"
-	fi
-	if [ -f arch/arm64/boot/Image ]; then
+	elif [ -f arch/arm64/boot/Image ]; then
 		mkdir -p "$tmpdir/$boot_path"
 		cp arch/arm64/boot/Image "$tmpdir/boot/Image"
 		cp arch/arm64/boot/Image "$tmpdir/$boot_path/kernel8.img"
 		cp arch/arm64/boot/Image "$tmpdir/$boot_path/kernel_2712.img"
 	fi
-	if [ -f firmware/bootcode.bin ]; then
-		install -m 0644 firmware/bootcode.bin "$tmpdir/$boot_path"
-	fi
-	if [ -f firmware/fixup.dat ]; then
-		install -m 0644 firmware/fixup*.dat "$tmpdir/$boot_path"
-	fi
-	if [ -f firmware/start.elf ]; then
-		install -m 0644 firmware/start*.elf "$tmpdir/$boot_path"
-	fi
-	if [ -f firmware/fixup4.dat ]; then
-		install -m 0644 firmware/fixup4*.dat "$tmpdir/$boot_path"
-	fi
-	if [ -f firmware/start4.elf ]; then
-		install -m 0644 firmware/start4*.elf "$tmpdir/$boot_path"
-	fi
-	if [ -f firmware/LICENCE.broadcom ]; then
-		install -m 0644 firmware/LICENCE.broadcom "$tmpdir/$boot_path"
-	fi
-	if [ -f firmware/COPYING.linux ]; then
-		install -m 0644 firmware/COPYING.linux "$tmpdir/$boot_path"
-	fi
+	install -m 0644 firmware/bootcode.bin "$tmpdir/$boot_path"
+	install -m 0644 firmware/fixup*.dat "$tmpdir/$boot_path"
+	install -m 0644 firmware/start*.elf "$tmpdir/$boot_path"
+	if [ -f firmware/LICENCE.broadcom ]; then install -m 0644 firmware/LICENCE.broadcom "$tmpdir/$boot_path"; fi
+	if [ -f firmware/COPYING.linux ]; then install -m 0644 firmware/COPYING.linux "$tmpdir/$boot_path"; fi
 fi
 cp "$($MAKE -s -f $srctree/Makefile image_name)" "$tmpdir/$installed_image_path"
 
@@ -206,11 +189,9 @@ if [ -d $tmpdir/$linux_path ]; then
 fi
 
 # Install initramfs post-update script
-if [ -f "initrd" ]; then
-	mkdir -p "$tmpdir/etc/initramfs/post-update.d"
-	mv -f "initrd" "$tmpdir/etc/initramfs/post-update.d/99-initrd"
-	chmod 755 "$tmpdir/etc/initramfs/post-update.d/99-initrd"
-fi
+mkdir -p "$tmpdir/etc/initramfs/post-update.d"
+mv -f "initrd" "$tmpdir/etc/initramfs/post-update.d/99-initrd"
+chmod 755 "$tmpdir/etc/initramfs/post-update.d/99-initrd"
 
 # Install the maintainer scripts
 debhookdir=${KDEB_HOOKDIR:-/etc/kernel}
@@ -236,20 +217,15 @@ done
 # clean boot directory
 cat <<EOF > "$tmpdir/DEBIAN/preinst"
 #!/bin/bash
+
 set -e
 
-if [ -f /boot/Image ]; then
-	rm -fr /boot/{Image,vmlinuz-*,System.map-*,config-*,initrd.img*,initrd.gz};
-fi
+if [ -f /boot/Image ]; then rm -fr /boot/{Image,vmlinuz-*,System.map-*,config-*,initrd.img*,initrd.gz}; fi
 if [ -d /$boot_path ]; then
 	rm -fr /$boot_path/{Image,*.img,initrd.gz,initrd.img*,System.map-*,config-*,vmlinuz-*,*.dtb,bootcode.bin,fixup*.dat,start*.elf,LICENCE.broadcom,COPYING.linux};
 fi
-if [ -d /$boot_path/overlays ]; then
-	rm -fdr /$boot_path/overlays;
-fi
-if [ -f /etc/initramfs/post-update.d/99-initrd ]; then
-	rm -f /etc/initramfs/post-update.d/99-initrd
-fi
+if [ -d /$boot_path/overlays ]; then rm -fdr /$boot_path/overlays; fi
+if [ -f /etc/initramfs/post-update.d/99-initrd ]; then rm -f /etc/initramfs/post-update.d/99-initrd; fi
 
 sync
 exit 0
@@ -276,43 +252,36 @@ mkdir -p "$destdir"
 ln -sf "/usr/src/linux-headers-$version" "$kernel_headers_dir/lib/modules/$version/build"
 rm -f "$objtree/debian/hdrsrcfiles" "$objtree/debian/hdrobjfiles"
 
-# Clean and compile headers
-if [ -f headers-byteshift.patch ]; then
-	cp headers-byteshift.patch $destdir/
-	cp $srctree/scripts/module.lds $destdir/
-	mkdir -p $kernel_headers_dir/DEBIAN
-	cat <<EOF > "$kernel_headers_dir/DEBIAN/postinst"
+# kernel headers postinst and preinst script
+cp -f "headers-byteshift.patch" "$destdir/"
+cp -f "$srctree/scripts/module.lds" "$destdir/"
+mkdir -p "$kernel_headers_dir/DEBIAN"
+cat <<EOF > "$kernel_headers_dir/DEBIAN/postinst"
 #!/bin/bash
+
 set -e
 
-clean_headers(){
+clean_headers (){
 find -type f -exec touch {} +
 if grep -w "Linux/arm" ".config"; then
-	echo 'y' | make ARCH=arm M=scripts clean;
+	echo 'y' | make ARCH=arm M=scripts clean
 else
-	echo 'y' | make M=scripts clean;
+	echo 'y' | make M=scripts clean
 fi
-if [ -f headers-byteshift.patch ]; then
-	patch -p1 < headers-byteshift.patch;
-fi
-if [ -f scripts/module.lds ]; then
-	:;
-else
-	install -m 0644 module.lds scripts/;
-fi
+patch -p1 < headers-byteshift.patch
+if [ -f scripts/module.lds ]; then :; else install -m 0644 module.lds scripts/; fi
 rm -f {headers-byteshift.patch,module.lds}
 if grep -w "Linux/arm" ".config"; then
-	echo 'y' | make ARCH=arm -j\$(grep -c 'processor' /proc/cpuinfo) -s scripts;
-	echo 'y' | make ARCH=arm -j\$(grep -c 'processor' /proc/cpuinfo) -s M=scripts/mod/;
+	echo 'y' | make ARCH=arm -j\$(grep -c 'processor' /proc/cpuinfo) -s scripts
+	echo 'y' | make ARCH=arm -j\$(grep -c 'processor' /proc/cpuinfo) -s M=scripts/mod/
 else
-	echo 'y' | make -j\$(grep -c 'processor' /proc/cpuinfo) -s scripts;
-	echo 'y' | make -j\$(grep -c 'processor' /proc/cpuinfo) -s M=scripts/mod/;
+	echo 'y' | make -j\$(grep -c 'processor' /proc/cpuinfo) -s scripts
+	echo 'y' | make -j\$(grep -c 'processor' /proc/cpuinfo) -s M=scripts/mod/
 fi
-if [ -f .config.old ]; then
-	rm -f .config.old;
-fi
+rm -f .config.old
 }
 
+# compile headers
 cd /usr/src/linux-headers-$version
 echo -e "Compiling headers ..."
 clean_headers > /dev/null 2>&1
@@ -320,8 +289,7 @@ clean_headers > /dev/null 2>&1
 sync
 exit 0
 EOF
-	chmod 755 "$kernel_headers_dir/DEBIAN/postinst"
-fi
+chmod 755 "$kernel_headers_dir/DEBIAN/postinst"
 
 # Remove old headers
 mkdir -p $kernel_headers_dir/DEBIAN
@@ -330,6 +298,7 @@ cat <<EOF > "$kernel_headers_dir/DEBIAN/preinst"
 
 set -e
 
+# remove old linux headers
 rm -fdr /usr/src/linux-headers-*
 
 sync
