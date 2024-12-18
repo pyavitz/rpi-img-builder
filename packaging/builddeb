@@ -263,21 +263,12 @@ set -e
 
 clean_headers (){
 find -type f -exec touch {} +
-if grep -w "Linux/arm" ".config"; then
-	echo 'y' | make ARCH=arm M=scripts clean
-else
-	echo 'y' | make M=scripts clean
-fi
+echo 'y' | make ARCH=$karch M=scripts clean
 patch -p1 < headers-byteshift.patch
 if [ -f scripts/module.lds ]; then :; else install -m 0644 module.lds scripts/; fi
 rm -f {headers-byteshift.patch,module.lds}
-if grep -w "Linux/arm" ".config"; then
-	echo 'y' | make ARCH=arm -j\$(grep -c 'processor' /proc/cpuinfo) -s scripts
-	echo 'y' | make ARCH=arm -j\$(grep -c 'processor' /proc/cpuinfo) -s M=scripts/mod/
-else
-	echo 'y' | make -j\$(grep -c 'processor' /proc/cpuinfo) -s scripts
-	echo 'y' | make -j\$(grep -c 'processor' /proc/cpuinfo) -s M=scripts/mod/
-fi
+echo 'y' | make ARCH=$karch -j\$(grep -c 'processor' /proc/cpuinfo) -s scripts
+echo 'y' | make ARCH=$karch -j\$(grep -c 'processor' /proc/cpuinfo) -s M=scripts/mod/
 rm -f .config.old
 }
 

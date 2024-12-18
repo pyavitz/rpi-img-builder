@@ -23,4 +23,5 @@ echo compression='"'$COMPRESSION'"' >> "scripts/package/pkgvars"
 echo linux_path='"'$LINUX_PATH'"' >> "scripts/package/pkgvars"
 echo overlays_path='"'$OVERLAY_PATH'"' >> "scripts/package/pkgvars"
 echo boot_path='"'$INSTALL_PATH'"' >> "scripts/package/pkgvars"
+echo karch='"'$ARCH'"' >> "scripts/package/pkgvars"
 }
