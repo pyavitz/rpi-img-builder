@@ -36,18 +36,16 @@ create_package() {
 	dpkg-deb -Z$compression --build "$pdir" ..
 }
 
+# Builddeb dependencies
 if [ -f "scripts/package/pkgvars" ]; then
 	. scripts/package/pkgvars
-	if [ -f "dtclist.txt" ] && [ -f "initrd" ] && [ -f "headers-byteshift.patch" ]; then
-		:;
-	else
-		echo -e "A builddeb dependency file is missing."
-		exit 0
-	fi
 else
-	echo "Missing: pkgvars"
-	exit 0
+	echo "Missing scripts/package/pkgvars!"
+	exit 1
 fi
+if [ ! -f "dtclist.txt" ]; then echo "Missing dtclist.txt!"; exit 1; fi
+if [ ! -f "initrd" ]; then echo "Missing initrd!"; exit 1; fi
+if [ ! -f "headers-byteshift.patch" ]; then echo "Missing headers-byteshift.patch!"; exit 1; fi
 
 version=$KERNELRELEASE
 tmpdir="$objtree/debian/tmp"
