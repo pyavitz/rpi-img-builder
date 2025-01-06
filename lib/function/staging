@@ -168,6 +168,9 @@ avoid_warnings=1
 [cm4]
 otg_mode=1
 
+[cm5]
+dtoverlay=dwc2,dr_mode=host
+
 [pi4]
 dtoverlay=vc4-kms-v3d,cma-512
 #dtoverlay=vc4-kms-v3d-pi4
