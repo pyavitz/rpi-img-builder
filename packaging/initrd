@@ -1,18 +1,15 @@
 #!/bin/bash
 
-INITRD_BOOT="/boot/initrd.gz"
 INITRD_BRCM="/boot/broadcom/initrd.gz"
 
 if [[ -d "/boot" ]] && [[ `ls  /boot/initrd.img-*` ]] > /dev/null 2>&1; then
-	echo "update-initramfs: Generating ${INITRD_BOOT}"
+	echo "update-initramfs: Generating ${INITRD_BRCM}"
+	mkdir -p /boot/broadcom
 	rm -fr /boot/{initrd.gz,initrd.img-*-bak}
-	cp -f /boot/initrd.img-* ${INITRD_BOOT}
-	if [[ -d "/boot/broadcom" ]]; then
-		rm -fr /boot/broadcom/{initrd.gz,initrd.img-*-bak}
-		cp -f /boot/initrd.img-* ${INITRD_BRCM}
-		rm -fdr /boot/firmware
-		ln -s /boot/broadcom /boot/firmware
-	fi
+	rm -fr /boot/broadcom/initrd.gz
+	cp -f /boot/initrd.img-* ${INITRD_BRCM}
+	rm -f /boot/firmware
+	ln -s /boot/broadcom /boot/firmware
 fi
 
 exit 0
