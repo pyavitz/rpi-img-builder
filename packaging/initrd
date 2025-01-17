@@ -6,7 +6,7 @@ if [[ -d "/boot" ]] && [[ `ls  /boot/initrd.img-*` ]] > /dev/null 2>&1; then
 	echo "update-initramfs: Generating ${INITRD_BRCM}"
 	mkdir -p /boot/broadcom
 	rm -fr /boot/{initrd.gz,initrd.img-*-bak}
-	rm -fr /boot/broadcom/initrd.gz
+	rm -f /boot/broadcom/initrd.gz
 	cp -f /boot/initrd.img-* ${INITRD_BRCM}
 	rm -f /boot/firmware
 	ln -s /boot/broadcom /boot/firmware
