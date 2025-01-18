@@ -14,14 +14,16 @@ if [[ "$ARCH" == "arm" ]]; then
 else
 	LINUX_PATH="usr/lib/${LINUX_IMAGE}/${PLATFORM}"
 fi
-echo "# packaging variables" > "scripts/package/pkgvars"
-echo board_series='"'$SERIES'"' >> "scripts/package/pkgvars"
-echo kernel_img='"'$KERNEL_IMG'"' >> "scripts/package/pkgvars"
-echo linux_name='"'$LINUX_IMAGE'"' >> "scripts/package/pkgvars"
-echo headers_name='"'$LINUX_HEADERS'"' >> "scripts/package/pkgvars"
-echo compression='"'$COMPRESSION'"' >> "scripts/package/pkgvars"
-echo linux_path='"'$LINUX_PATH'"' >> "scripts/package/pkgvars"
-echo overlays_path='"'$OVERLAY_PATH'"' >> "scripts/package/pkgvars"
-echo boot_path='"'$INSTALL_PATH'"' >> "scripts/package/pkgvars"
-echo karch='"'$ARCH'"' >> "scripts/package/pkgvars"
+cat <<EOF > "scripts/package/pkgvars"
+# packaging variables
+board_series="$SERIES"
+kernel_img="$KERNEL_IMG"
+linux_name="$LINUX_IMAGE"
+headers_name="$LINUX_HEADERS"
+compression="$COMPRESSION"
+linux_path="$LINUX_PATH"
+overlays_path="$OVERLAY_PATH"
+boot_path="$INSTALL_PATH"
+karch="$ARCH"
+EOF
 }
