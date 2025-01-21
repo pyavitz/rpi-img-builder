@@ -167,9 +167,16 @@ rm p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
 if [[ -f "kernel.release" ]]; then source kernel.release; fi
 
 # Finish
-if [[ "$FSTYPE" == "ext4" ]]; then e4defrag -c ${P_VALUE}; fi
-if [[ "$FSTYPE" == "btrfs" ]]; then btrfs filesystem defragment -f -r ${P_VALUE} > /dev/null 2>&1; fi
-if [[ "$FSTYPE" == "xfs" ]]; then xfs_fsr ${P_VALUE}; fi
+if [ $VERBOSE -eq 1 ]; then
+	echo ""
+	if [[ "$FSTYPE" == "ext4" ]]; then e4defrag -c ${P_VALUE}; fi
+	if [[ "$FSTYPE" == "btrfs" ]]; then btrfs filesystem defragment -f -r ${P_VALUE}; fi
+	if [[ "$FSTYPE" == "xfs" ]]; then xfs_fsr ${P_VALUE}; fi
+else
+	if [[ "$FSTYPE" == "ext4" ]]; then e4defrag -c ${P_VALUE} > /dev/null 2>&1; fi
+	if [[ "$FSTYPE" == "btrfs" ]]; then btrfs filesystem defragment -f -r ${P_VALUE} > /dev/null 2>&1; fi
+	if [[ "$FSTYPE" == "xfs" ]]; then xfs_fsr ${P_VALUE} > /dev/null 2>&1; fi
+fi
 umount p2
 umount p1
 losetup -d "${IMAGE_LOOP_DEV}"
@@ -178,7 +185,7 @@ if [ $RAM -ne 0 ]; then umount "${IMAGE_FOLDER}"; fi
 rmdir "${IMAGE_FOLDER}"
 rmdir p1 p2
 
-if [[ "$SHRINK" == "true" ]]; then shrink; else echo -en "Shrink ${PNK}[${FIN}${WHT}disabled${FIN}${PNK}]${FIN}"; fi
+if [[ "$SHRINK" == "true" ]]; then shrink; else echo ""; echo -en "Shrink ${PNK}[${FIN}${WHT}disabled${FIN}${PNK}]${FIN}"; fi
 finish_image
 rm -f {part-uuid.txt,board.txt,kernel.release}
 

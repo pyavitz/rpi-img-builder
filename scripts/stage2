@@ -344,7 +344,6 @@ fi
 stage2_kernel # miscellaneous
 
 # brcm modules
-bcm_modules > /dev/null 2>&1
 echo "#bcm2835-v4l2" >> /etc/modules
 echo "#i2c-dev" >> /etc/modules
 echo "snd_bcm2835" >> /etc/modules
@@ -391,9 +390,5 @@ fi
 rm -f /etc/apt/apt.conf.d/71debconf
 rm -fdr /*usr-is-merged*
 if [[ "$DISTRO" == "ubuntu" ]]; then rm -f /etc/resolv.conf; fi
-echo ""
-echo "Finalizing ..."
-echo ""
-sleep .75
-
+sleep .50
 umount /proc /sys

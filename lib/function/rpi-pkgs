@@ -105,9 +105,9 @@ fi
 eeprom_support (){
 ERURL="https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/"
 CHANGELOG="https://raw.githubusercontent.com/raspberrypi/rpi-eeprom/debian/bookworm/debian/changelog"
-echo ""
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-echo "Installing rpi-eeprom_${EEPROM_VERSION} ..."
+echo ""
+echo "Installing rpi-eeprom ..."
 apt install help2man rsync pciutils -y
 mkdir -p ~/eeprom
 mv -f rpi-eeprom-update.patch /root/eeprom/
