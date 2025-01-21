@@ -7,6 +7,7 @@ if [ $VERBOSE -eq 1 ]; then set -x; fi
 if [[ -f "/root/services.txt" ]]; then source /root/services.txt; fi
 source /root/miscellaneous.txt
 source /root/networking.txt
+source /root/rpi-pkgs.txt
 URL="https://raw.githubusercontent.com/pyavitz/scripts/master/"
 
 set -o errexit
@@ -319,25 +320,12 @@ fi
 
 # adding sys-mods
 raspberrypi_sys_mods
-if [[ -f "/etc/sudoers.d/010_pi-nopasswd" ]]; then
-	# security risk
-	rm -f /etc/sudoers.d/010_pi-nopasswd
-fi
+
+# security risk
+rm -f /etc/sudoers.d/010_pi-nopasswd
 
 # pi-bluetooth
-echo ""
-echo "Installing pi-bluetooth ..."
-if [[ "$DISTRO" == "ubuntu" ]]; then
-	git clone https://github.com/pyavitz/pi-bluetooth.git -b ubuntu
-else
-	git clone https://github.com/pyavitz/pi-bluetooth.git
-fi
-cd pi-bluetooth
-chmod +x debian/rules
-dpkg-buildpackage -us -uc
-cd ~
-dpkg -i pi-bluetooth_*.deb
-rm -fdR pi-bluetooth*
+pi_bluetooth
 
 #  userland
 rpi_userland
@@ -357,17 +345,15 @@ stage2_kernel # miscellaneous
 
 # brcm modules
 bcm_modules > /dev/null 2>&1
+echo "#bcm2835-v4l2" >> /etc/modules
+echo "#i2c-dev" >> /etc/modules
 echo "snd_bcm2835" >> /etc/modules
 
 # clean misc files
 rm -f {*.patch,*led*,*eeprom*}
 
 # whiptail color palette
-if [[ "$DISTRO" == "ubuntu" ]]; then
-	mkdir -p /etc/newt
-	palette-dark > /dev/null 2>&1
-	ln -sf /etc/newt/palette.dark  /etc/alternatives/newt-palette
-fi
+if [[ "$DISTRO" == "ubuntu" ]]; then palette_dark; fi
 
 # xorg confs
 if [[ "$BOARD_EXT" =~ ^(rpi-4|rpi-5)$ ]]; then xorg_confs; fi

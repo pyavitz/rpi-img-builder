@@ -29,6 +29,7 @@ if [ $USERACCT -eq 0 ]; then
 	fi
 fi
 source lib/function/miscellaneous
+source lib/function/rpi-pkgs
 # start uscripts
 if [ $USCRIPTS -eq 1 ]; then uscripts_pre-stage1; fi
 if [[ -f "board.txt" ]]; then . board.txt; else noboard; fi
@@ -123,6 +124,7 @@ cp scripts/stage2 p2/root
 cp lib/function/services p2/root/services.txt
 cp lib/function/miscellaneous p2/root/miscellaneous.txt
 cp lib/function/networking p2/root/networking.txt
+cp lib/function/rpi-pkgs p2/root/rpi-pkgs.txt
 cp lib/source p2/root/source.txt
 cp userdata.txt p2/root
 cp board.txt p2/root

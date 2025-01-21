@@ -1,0 +1,160 @@
+#!/bin/bash
+
+# stage 1
+stage1_kernel (){
+if [[ `ls ${OUTPUT}/{linux-image-*.deb,linux-headers-*.deb}` ]] > /dev/null 2>&1; then
+	cp ${OUTPUT}/*.deb p2/root
+else
+	echo ""
+	echo -en "${BOARD}"
+	echo -e ": Compile a kernel before building an image."
+	make cleanup
+	exit 1
+fi
+}
+
+# stage 2
+raspberrypi_sys_mods (){
+echo ""
+echo "Installing raspi-sys-mods ..."
+git clone https://github.com/RPi-Distro/raspberrypi-sys-mods.git
+if [[ "$DISTRO" == "devuan" ]]; then
+	mv -f raspberrypi-sys-mods-control.patch raspberrypi-sys-mods/
+	cd raspberrypi-sys-mods
+	git checkout -q 46ae4208397d662fc4f5d0cc9acc85395f852af1
+	patch -p1 < raspberrypi-sys-mods-control.patch
+	rm -f raspberrypi-sys-mods-control.patch
+else
+	rm -f raspberrypi-sys-mods-control.patch
+	cd raspberrypi-sys-mods
+	git checkout -q 46ae4208397d662fc4f5d0cc9acc85395f852af1
+fi
+dpkg-buildpackage -us -uc
+cd ~
+dpkg -i raspberrypi-sys-mods*.deb
+rm -fdr raspberrypi-sys-mods*
+rm -f /etc/apt/sources.list.d/vscode.list
+rm -f /etc/apt/trusted.gpg.d/microsoft.gpg
+rm -f /etc/apt/preferences.d/3rd_parties.pref
+}
+
+pi_bluetooth (){
+echo ""
+echo "Installing pi-bluetooth ..."
+if [[ "$DISTRO" == "ubuntu" ]]; then
+	git clone --depth=1 https://github.com/pyavitz/pi-bluetooth.git -b ubuntu
+else
+	git clone --depth=1 https://github.com/pyavitz/pi-bluetooth.git
+fi
+cd pi-bluetooth
+chmod +x debian/rules
+dpkg-buildpackage -us -uc
+cd ~
+dpkg -i pi-bluetooth_*.deb
+rm -fdR pi-bluetooth*
+}
+
+# userland
+rpi_userland (){
+echo ""
+echo "Installing userland ..."
+rm -f /etc/profile
+mv -f profile /etc/profile
+mv rpi-vc.conf /etc/ld.so.conf.d/rpi-vc.conf
+chown root:root /etc/profile
+chown root:root /etc/ld.so.conf.d/rpi-vc.conf
+mkdir -p /opt
+git clone --depth=1 https://github.com/raspberrypi/userland.git
+mv -f userland-remove-hi-pi.patch /root/userland/
+cd userland
+patch -p1 < userland-remove-hi-pi.patch
+rm -f userland-remove-hi-pi.patch
+if [[ "$ARCH" == "arm64" ]]; then
+	echo -e "\e[1;37m== ARM64\e[0m"
+	sleep .50
+	./buildme --aarch64
+else
+	echo -e "\e[1;37m== ARM\e[0m"
+	sleep .50
+	./buildme
+fi
+cd ~
+rm -fdr userland
+ldconfig
+}
+
+# rpi-eeprom
+find_eeprom (){
+EEPROM_VERSION=$(curl --silent -L ${CHANGELOG} | awk '{if (NR==1) {print substr($2, 1, length($2)-3)}}' | sed 's/[()]//g')
+if [[ `wget -S --spider ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+	wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
+	wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz
+else
+	EEPROM_VERSION=$(curl --silent -L ${CHANGELOG} | awk '{if (NR==10) {print substr($2, 1, length($2)-3)}}' | sed 's/[()]//g')
+	if [[ `wget -S --spider ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+		wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
+		wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz
+	else
+		EEPROM_VERSION="26.9"
+		wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
+		wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz
+	fi
+fi
+}
+
+eeprom_support (){
+ERURL="https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/"
+CHANGELOG="https://raw.githubusercontent.com/raspberrypi/rpi-eeprom/debian/bookworm/debian/changelog"
+echo ""
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+echo "Installing rpi-eeprom_${EEPROM_VERSION} ..."
+apt install help2man rsync pciutils -y
+mkdir -p ~/eeprom
+mv -f rpi-eeprom-update.patch /root/eeprom/
+mv -f rpi-eeprom-control /root/eeprom/
+cd ~/eeprom
+find_eeprom
+tar xf rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz
+tar xf rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
+rm -f rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
+mkdir -p debian/patches
+mv rpi-eeprom-update.patch debian/patches/rpi-eeprom-update.patch 
+echo rpi-eeprom-update.patch >> debian/patches/series
+rm -f debian/control; mv -f rpi-eeprom-control debian/control
+echo "12" > debian/compat
+mv -f debian rpi-eeprom-${EEPROM_VERSION}/
+cd rpi-eeprom-${EEPROM_VERSION}
+rm -f rpi-eeprom-control.patch
+dpkg-buildpackage -us -nc -uc
+cd ..
+dpkg -i *.deb
+cd ..
+rm -fdr eeprom
+}
+
+# linux kernel
+stage2_kernel (){
+echo ""
+echo "Installing kernel ..."
+apt update
+apt upgrade -y
+apt -y clean
+apt -y autoclean
+sleep 1s
+cd ~
+dpkg -i *.deb
+rm -f *.deb
+sleep .75
+# take note of linux kernel release
+if [ -f /usr/src/linux-headers-*/include/config/kernel.release ]; then
+	KERNEL_RELEASE=`cat /usr/src/linux-headers-*/include/config/kernel.release`
+else
+	KERNEL_RELEASE=`ls /boot/config-* | sed 's/\/boot\/config-//g'`
+fi
+echo -e INSTALLED_KERNEL='"'$KERNEL_RELEASE'"' > /root/kernel.release
+# add fstype to the board.txt and kernel.release file
+echo FSTYPE='"'${FSTYPE}'"' >> /root/kernel.release
+echo "" >> /etc/opt/board.txt
+echo "# filesystem" >> /etc/opt/board.txt
+echo FSTYPE='"'${FSTYPE}'"' >> /etc/opt/board.txt
+}
