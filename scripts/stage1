@@ -176,7 +176,7 @@ if [ $RAM -ne 0 ]; then umount "${IMAGE_FOLDER}"; fi
 rmdir "${IMAGE_FOLDER}"
 rmdir p1 p2
 
-if [[ "$SHRINK" == "true" ]]; then shrink; fi
+if [[ "$SHRINK" == "true" ]]; then shrink; else echo -en "Shrink ${PNK}[${FIN}${WHT}disabled${FIN}${PNK}]${FIN}"; fi
 finish_image
 rm -f {part-uuid.txt,board.txt,kernel.release}
 

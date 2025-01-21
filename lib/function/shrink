@@ -48,7 +48,9 @@ mkdir -p "$IMAGE_FOLDER"
 if [ $RAM -ne 0 ]; then mount -t tmpfs -o size=4G tmpfs $IMAGE_FOLDER; fi
 partition > /dev/null 2>&1; uuid
 echo ""
-echo -en "Shrinking ${PNK}[${FIN}${WHT}${IMGSIZE}${FIN}${PNK}]${FIN}"
+echo -en "Shrink ${PNK}[${FIN}${WHT}enabled${FIN}${PNK}]${FIN}"
+sleep 1
+echo -en " ${PNK}[${FIN}${WHT}${IMGSIZE}${FIN}${PNK}]${FIN}"
 cp -ax BOOT/* p1/
 if [ $VERBOSE -eq 1 ]; then
 	if [[ "$FSTYPE" == "btrfs" ]]; then cp -axv ROOTFS/@/* p2/; else cp -axv ROOTFS/* p2/; fi
@@ -56,7 +58,7 @@ else
 	if [[ "$FSTYPE" == "btrfs" ]]; then cp -ax ROOTFS/@/* p2/; else cp -ax ROOTFS/* p2/; fi
 fi
 sleep .75
-echo -en " ${PNK}[${FIN}${YLW}cleaning${FIN}${PNK}]${FIN}"
+echo -en " ${PNK}[${FIN}${YLW}finishing${FIN}${PNK}]${FIN}"
 umount BOOT; umount ROOTFS
 sleep .75
 rm -fdr BOOT; rm -fdr ROOTFS
