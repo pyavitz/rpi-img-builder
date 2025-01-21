@@ -82,6 +82,7 @@ mkdir -p debian/patches
 mv rpi-eeprom-update.patch debian/patches/rpi-eeprom-update.patch 
 echo rpi-eeprom-update.patch >> debian/patches/series
 rm -f debian/control; mv -f rpi-eeprom-control debian/control
+echo "12" > debian/compat
 mv -f debian rpi-eeprom-${EEPROM_VERSION}/
 cd rpi-eeprom-${EEPROM_VERSION}
 rm -f rpi-eeprom-control.patch
