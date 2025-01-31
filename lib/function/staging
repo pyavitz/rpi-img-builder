@@ -1,13 +1,11 @@
 #!/bin/bash
 
 partition (){
-if [[ "$OFFSET" == "8192" ]]; then IMG_OFFSET="4MiB"; fi
 truncate -s ${IMGSIZE} "${IMAGE_FOLDER}${IMAGE_FILE_NAME}"
 parted --script "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" \
 mklabel msdos \
 mkpart primary fat32 ${IMG_OFFSET} 512MiB \
 mkpart primary ext2 512MiB 100%
-#parted --script "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" set 1 lba off
 parted --script "${IMAGE_FOLDER}${IMAGE_FILE_NAME}" set 1 boot on
 IMAGE_LOOP_DEV="$(losetup --show -P -f ${IMAGE_FOLDER}${IMAGE_FILE_NAME})"
 IMAGE_LOOP_DEV_BOOT="${IMAGE_LOOP_DEV}p1"
@@ -19,9 +17,7 @@ $MAKE_ROOTFS
 mkdir -p p1 p2
 mount "${IMAGE_LOOP_DEV_BOOT}" p1
 mount "${IMAGE_LOOP_DEV_ROOTFS}" p2
-if [[ "$FSTYPE" == "btrfs" ]]; then
-	btrfs subvolume create p2/@
-fi
+if [[ "$FSTYPE" == "btrfs" ]]; then btrfs subvolume create p2/@; fi
 sync
 umount p2
 $MOUNT_ROOTFS

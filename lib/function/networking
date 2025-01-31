@@ -44,7 +44,7 @@ fi
 
 eth_udev-rule(){
 tee /etc/udev/rules.d/80-net-setup-link.rules <<EOF
-# raspberry pi 3b eth interface
+# Raspberry Pi 3b eth interface
 SUBSYSTEM!="net", GOTO="net_setup_link_end"
 
 IMPORT{builtin}="path_id"

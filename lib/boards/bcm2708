@@ -20,7 +20,7 @@ FAMILY_EXT=""
 LINUX_DEFCONFIG="bcmrpi_defconfig"
 
 # partitions
-OFFSET="8192"
+IMG_OFFSET="4MiB"
 P_VALUE="p2"
 
 # output

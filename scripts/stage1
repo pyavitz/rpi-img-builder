@@ -12,7 +12,7 @@ if [[ "$USERNAME" == "root" ]]; then
 	echo -e "The username $USERNAME is not viable, choose another."
 	echo -e ""
 	read -p "Press enter to continue."
-	exit 0
+	exit 1
 fi
 # check user data file
 if [ $USERACCT -eq 0 ]; then
@@ -25,7 +25,7 @@ if [ $USERACCT -eq 0 ]; then
 		echo -e "information into the userdata.txt file."
 		echo -e ""
 		read -p "Press enter to continue."
-		exit 0
+		exit 1
 	fi
 fi
 source lib/function/miscellaneous
@@ -43,7 +43,7 @@ if [[ -d "output/${BOARD}" ]] && [[ `ls output/${BOARD}/linux-*.deb` ]]; then
 	:;
 else
 	echo -e "Missing linux deb packages"
-	exit 0
+	exit 1
 fi
 # check for qemu
 if [[ `command -v ${STATIC}` ]]; then
@@ -76,7 +76,7 @@ else
 	echo -en "${WHT}cmdline.txt${FIN}  "
 	sleep .50
 	echo_fail
-	exit 0
+	exit 1
 fi
 # config dot txt
 config_dot_txt > /dev/null 2>&1
@@ -87,7 +87,7 @@ else
 	echo -en "${WHT}config.txt${FIN}   "
 	sleep .50
 	echo_fail
-	exit 0
+	exit 1
 fi
 if [[ "$ARCH" == "arm" ]]; then sed -i '1d' p1/config.txt; fi
 
@@ -99,7 +99,7 @@ if [[ -f "${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz" ]]; then
 else
 	echo -e "${YLW}Missing rootfs tarball${FIN}!"
 	make cleanup
-	exit 0
+	exit 1
 fi
 echo ""
 
@@ -129,9 +129,7 @@ cp lib/source p2/root/source.txt
 cp userdata.txt p2/root
 cp board.txt p2/root
 cp custom.txt p2/root
-if [[ "$DISTRO" == "devuan" ]]; then
-	cp files/inits/* p2/root
-fi
+if [[ "$DISTRO" == "devuan" ]]; then cp files/inits/* p2/root; fi
 cp files/patches/* p2/root
 cp files/misc/* p2/root
 cp files/scripts/* p2/root
