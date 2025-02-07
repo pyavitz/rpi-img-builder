@@ -57,17 +57,17 @@ VALUES=$(dialog --ok-label "Submit" --no-cancel \
 	"Password:"		3 1	"$PASSWORD"  		3 11 19 0 \
 	"Enable root:"		4 1	"$ROOTPASSWD"  		4 14 3 0 \
 	""			5 1	""	 		5 14 0 0 \
-	"Linux kernel"		6 1	""	 		6 14 0 0 \
-        "Branch:"   		7 1     "$VERSION"        	7 9 8 0 \
-        "Build:"   		8 1     "$BUILD_VERSION"        8 8 5 0 \
-	"Menuconfig:"		9 1	"$MENUCONFIG"  		9 13 3 0 \
-	"Compiler:"		10 1	"$COMPILER"	 	10 11 10 0 \
-	"Ccache:"		11 1	"$CCACHE"	 	11 9 3 0 \
-	""			12 1	""	 		12 14 0 0 \
-	"Distribution"		13 1	""	 		13 14 0 0 \
-	"Distro:"		14 1	"$DISTRO"	  	14 9 21 0 \
-	"Release:"		15 1	"$DISTRO_VERSION"  	15 10 20 0 \
-	"Network Manager:" 	16 1	"$NETWORKMANAGER" 	16 18 3 0 \
+	"Distribution"		6 1	""	 		6 14 0 0 \
+	"Distro:"		7 1	"$DISTRO"	  	7 9 21 0 \
+	"Release:"		8 1	"$DISTRO_VERSION"  	8 10 20 0 \
+	"Network Manager:" 	9 1	"$NETWORKMANAGER" 	9 18 3 0 \
+	""			10 1	""	 		10 14 0 0 \
+	"Linux kernel"		11 1	""	 		11 14 0 0 \
+        "Branch:"   		12 1     "$VERSION"        	12 9 8 0 \
+        "Build:"   		13 1     "$BUILD_VERSION"       13 8 5 0 \
+	"Menuconfig:"		14 1	"$MENUCONFIG"  		14 13 3 0 \
+	"Compiler:"		15 1	"$COMPILER"	 	15 11 10 0 \
+	"Ccache:"		16 1	"$CCACHE"	 	16 9 3 0 \
 	""			17 1	""	 		17 14 0 0 \
 	"Customize"		18 1	""	 		18 14 0 0 \
 	"Defconfig:"		19 1	"$CUSTOM_DEFCONFIG" 	19 12 3 0 \
@@ -89,14 +89,14 @@ echo NAME='"' > tmp0
 echo USERNAME='"' >> tmp0
 echo PASSWORD='"' >> tmp0
 echo ROOTPASSWD= >> tmp0
+echo DISTRO='"' >> tmp0
+echo DISTRO_VERSION='"' >> tmp0
+echo NETWORKMANAGER= >> tmp0
 echo VERSION='"' >> tmp0
 echo BUILD_VERSION='"' >> tmp0
 echo MENUCONFIG= >> tmp0
 echo COMPILER='"' >> tmp0
 echo CCACHE= >> tmp0
-echo DISTRO='"' >> tmp0
-echo DISTRO_VERSION='"' >> tmp0
-echo NETWORKMANAGER= >> tmp0
 echo CUSTOM_DEFCONFIG= >> tmp0
 echo MYCONFIG='"' >> tmp0
 echo VERBOSE= >> tmp0
@@ -136,8 +136,8 @@ paste -d '\0' tmp0 tmp1 tmp2  > userdata.txt
 rm -f tmp0 tmp1 tmp2
 
 # categories
-sed -i '5i### LINUX KERNEL' userdata.txt
-sed -i '11i### DISTRIBUTION' userdata.txt
+sed -i '5i### DISTRIBUTION' userdata.txt
+sed -i '9i### LINUX KERNEL' userdata.txt
 sed -i '15i### CUSTOM' userdata.txt
 sed -i '24i### CUSTOM LINUX KERNEL' userdata.txt
 sed -i '27i### COMPILER TUNING' userdata.txt
@@ -177,7 +177,7 @@ clear -x
 if [[ -f "userdata.txt" ]]; then
 	sed -i 's/=0/="0"/g' userdata.txt
 	sed -i 's/=1/="1"/g' userdata.txt
-	sed -i '4G;10G;14G;23G;26G;29G;32G;38G;40G' userdata.txt
+	sed -i '4G;8G;14G;23G;26G;29G;32G;38G;40G' userdata.txt
 	echo -e "userdata file created."
 	exit 0
 fi
