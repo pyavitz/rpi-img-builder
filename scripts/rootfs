@@ -51,8 +51,8 @@ else
 	apt install -y mmdebstrap
 fi
 
-ROOT="sysroot"
-SOURCES_LIST="${ROOT}/etc/apt/sources.list"
+P_VALUE="sysroot"
+${DISTRO}_sources_list
 RELEASE_TARBALL=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
 if [[ -f "$RELEASE_TARBALL" ]]; then ls -ls $RELEASE_TARBALL; exit 0; fi
 CAP_DISTRO=`echo "${DISTRO}" | sed -e "s/\b\(.\)/\u\1/g"`
@@ -71,35 +71,36 @@ if [ $DEVROOTFS -eq 1 ]; then
 	if [ $RAM -ne 0 ]; then mount -t tmpfs -o size=4G tmpfs $ROOTFS_FOLDER; fi
 	if [ $VERBOSE -eq 1 ]; then sysroot_partition; else sysroot_partition > /dev/null 2>&1; fi
 fi
-mkdir -p ${ROOT}/usr/bin
-cp $(command -v "${STATIC}") ${ROOT}/usr/bin
+mkdir -p ${P_VALUE}/usr/bin
+cp $(command -v "${STATIC}") ${P_VALUE}/usr/bin
 run_debootstrap
 
 # creating developer tarball
 if [ $DEVROOTFS -eq 1 ]; then
 	sysroot_setup
-	mount -o bind /dev ${ROOT}/dev
-	mount -o bind /dev/pts ${ROOT}/dev/pts
-	cp -f lib/source ${ROOT}/root/source.txt
-	cp -f {scripts/rootfs-extra,userdata.txt,board.txt} ${ROOT}/root/
-	chroot ${ROOT} /root/rootfs-extra
-	umount ${ROOT}/dev/pts
-	umount ${ROOT}/dev
-	rm -fr ${ROOT}/root/{rootfs-extra,*.txt}
-	rm -f ${ROOT}/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
-	rm -f ${ROOT}/etc/apt/sources.list
+	mount -o bind /dev ${P_VALUE}/dev
+	mount -o bind /dev/pts ${P_VALUE}/dev/pts
+	cp -f lib/source ${P_VALUE}/root/source.txt
+	cp -f {scripts/rootfs-extra,userdata.txt,board.txt} ${P_VALUE}/root/
+	chroot ${P_VALUE} /root/rootfs-extra
+	umount ${P_VALUE}/dev/pts
+	umount ${P_VALUE}/dev
+	rm -fr ${P_VALUE}/root/{rootfs-extra,*.txt}
+	rm -f ${P_VALUE}/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io
+	rm -f ${P_VALUE}/etc/apt/sources.list
+	rm -f ${SOURCES_LIST}
 fi
 
 # clean up
-rm -f ${ROOT}/usr/bin/${STATIC}
-if [[ -e "${ROOT}/lost+found" ]]; then rm -fdr ${ROOT}/lost+found; fi
-rm -fdr ${ROOT}/var/cache/debconf/*
-rm -fdr ${ROOT}/*usr-is-merged*
+rm -f ${P_VALUE}/usr/bin/${STATIC}
+rm -fdr ${P_VALUE}/lost+found
+rm -fdr ${P_VALUE}/var/cache/debconf/*
+rm -fdr ${P_VALUE}/*usr-is-merged*
 
 # finish
 echo ""
 echo -e "── Archiving ${PNK}[${FIN}${WHT}${RELEASE_TARBALL}${FIN}${PNK}]${FIN}"
-cd ${ROOT}
+cd ${P_VALUE}
 XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - * | (pv -terb > ../$RELEASE_TARBALL)
 cd ..
 if [ $DEVROOTFS -eq 1 ]; then
@@ -109,7 +110,7 @@ if [ $DEVROOTFS -eq 1 ]; then
 	rmdir "${ROOTFS_FOLDER}"
 fi
 
-if [[ -d "${ROOT}" ]]; then umount ${ROOT}; sleep .50; rm -fdr ${ROOT}; fi
+if [[ -d "${P_VALUE}" ]]; then umount ${P_VALUE}; sleep .50; rm -fdr ${P_VALUE}; fi
 if [[ -v "SPOOF_SCRIPT" ]] && [[ "$SPOOF_SCRIPT" == "true" ]]; then rm -f ${DEBOOTSTRAP_DIR}/${DISTRO_VERSION}; fi
 
 exit 0

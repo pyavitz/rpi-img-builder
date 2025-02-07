@@ -9,46 +9,97 @@ if [[ "$DISTRO" == "raspbian" ]]; then MIRROR="http://raspbian.raspberrypi.org/r
 if [[ "$DISTRO" == "ubuntu" ]]; then MIRROR="${UBUNTU_MIRROR}"; fi; fi; fi; fi; fi
 }
 
+# DEBIAN
+debian_sources_list (){
+SOURCES_LIST="${P_VALUE}/etc/apt/sources.list.d/${DISTRO}.sources"
+}
+
 debian_release (){
 if [[ "$DISTRO_VERSION" == "bullseye" ]]; then POOL="main contrib non-free"; else POOL="main contrib non-free non-free-firmware"; fi
-if [[ "$DISTRO_VERSION" =~ ^(bullseye|bookworm|trixie)$ ]]; then
+if [[ "$DISTRO_VERSION" =~ ^(bullseye|bookworm|trixie|testing)$ ]]; then
 	tee ${SOURCES_LIST} <<EOF
-deb ${MIRROR} ${DISTRO_VERSION} ${POOL}
-deb ${MIRROR} ${DISTRO_VERSION}-updates ${POOL}
-deb ${MIRROR} ${DISTRO_VERSION}-proposed-updates ${POOL}
-deb ${MIRROR}-security ${DISTRO_VERSION}-security ${POOL}
-deb ${MIRROR} ${DISTRO_VERSION}-backports ${POOL}
+Types: deb
+URIs: ${MIRROR}
+Suites: ${DISTRO_VERSION} ${DISTRO_VERSION}-updates ${DISTRO_VERSION}-proposed-updates ${DISTRO_VERSION}-backports
+Components: ${POOL}
+Enabled: yes
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+
+Types: deb
+URIs: ${MIRROR}-security
+Suites: ${DISTRO_VERSION}-security
+Components: ${POOL}
+Enabled: yes
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 EOF
 else
 	tee ${SOURCES_LIST} <<EOF
-deb ${MIRROR} ${DISTRO_VERSION} ${POOL}
+Types: deb
+URIs: ${MIRROR}
+Suites: ${DISTRO_VERSION}
+Components: ${POOL}
+Enabled: yes
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
 EOF
 fi
+}
+
+# DEVUAN
+devuan_sources_list (){
+SOURCES_LIST="${P_VALUE}/etc/apt/sources.list.d/${DISTRO}.sources"
 }
 
 devuan_release (){
 if [[ "$DISTRO_VERSION" == "chimaera" ]]; then POOL="main contrib non-free"; else POOL="main contrib non-free non-free-firmware"; fi
 if [[ "$DISTRO_VERSION" =~ ^(chimaera|daedalus)$ ]]; then
 	tee ${SOURCES_LIST} <<EOF
-deb ${MIRROR} ${DISTRO_VERSION} ${POOL}
-deb ${MIRROR} ${DISTRO_VERSION}-updates ${POOL}
-deb ${MIRROR} ${DISTRO_VERSION}-proposed-updates ${POOL}
-deb ${MIRROR} ${DISTRO_VERSION}-security ${POOL}
-deb ${MIRROR} ${DISTRO_VERSION}-backports ${POOL}
+Types: deb
+URIs: ${MIRROR}
+Suites: ${DISTRO_VERSION} ${DISTRO_VERSION}-updates ${DISTRO_VERSION}-proposed-updates ${DISTRO_VERSION}-backports
+Components: ${POOL}
+Enabled: yes
+Signed-By: /usr/share/keyrings/devuan-archive-keyring.gpg
+
+Types: deb
+URIs: ${MIRROR}
+Suites: ${DISTRO_VERSION}-security
+Components: ${POOL}
+Enabled: yes
+Signed-By: /usr/share/keyrings/devuan-archive-keyring.gpg
 EOF
 else
 	tee ${SOURCES_LIST} <<EOF
-deb ${MIRROR} ${DISTRO_VERSION} ${POOL}
+Types: deb
+URIs: ${MIRROR}
+Suites: ${DISTRO_VERSION}
+Components: ${POOL}
+Enabled: yes
+Signed-By: /usr/share/keyrings/devuan-archive-keyring.gpg
 EOF
 fi
+}
+
+# KALI
+kali_sources_list (){
+SOURCES_LIST="${P_VALUE}/etc/apt/sources.list.d/${DISTRO}.sources"
 }
 
 kali_release (){
 # https://www.kali.org/docs/general-use/kali-linux-sources-list-repositories/
 POOL="main contrib non-free non-free-firmware"
 tee ${SOURCES_LIST} <<EOF
-deb ${MIRROR} ${DISTRO_VERSION} ${POOL}
+Types: deb
+URIs: ${MIRROR}
+Suites: ${DISTRO_VERSION}
+Components: ${POOL}
+Enabled: yes
+Signed-By: /usr/share/keyrings/kali-archive-keyring.gpg
 EOF
+}
+
+# RASPBIAN
+raspbian_sources_list (){
+SOURCES_LIST="${P_VALUE}/etc/apt/sources.list"
 }
 
 raspbian_release (){
@@ -62,30 +113,30 @@ deb ${MIRROR} ${DISTRO_VERSION} ${POOL} rpi
 EOF
 }
 
+# UBUNTU
+ubuntu_sources_list (){
+SOURCES_LIST="${P_VALUE}/etc/apt/sources.list.d/${DISTRO}.sources"
+}
+
 ubuntu_release (){
 tee ${SOURCES_LIST} <<EOF
-deb ${MIRROR} ${DISTRO_VERSION} main restricted
-deb ${MIRROR} ${DISTRO_VERSION}-updates main restricted
-deb ${MIRROR} ${DISTRO_VERSION} universe
-deb ${MIRROR} ${DISTRO_VERSION}-updates universe
-deb ${MIRROR} ${DISTRO_VERSION} multiverse
-deb ${MIRROR} ${DISTRO_VERSION}-updates multiverse
-deb ${MIRROR} ${DISTRO_VERSION}-backports main restricted universe multiverse
-deb ${MIRROR} ${DISTRO_VERSION}-security main restricted
-deb ${MIRROR} ${DISTRO_VERSION}-security universe
-deb ${MIRROR} ${DISTRO_VERSION}-security multiverse
+Types: deb
+URIs: ${MIRROR}
+Suites: ${DISTRO_VERSION} ${DISTRO_VERSION}-updates ${DISTRO_VERSION}-backports
+Components: main restricted universe multiverse
+Enabled: yes
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 
-## Uncomment the following two lines to add software from Canonical's
-## 'partner' repository.
-## This software is not part of Ubuntu, but is offered by Canonical and the
-## respective vendors as a service to Ubuntu users.
-# deb http://archive.canonical.com/ubuntu ${DISTRO_VERSION} partner
-# deb-src http://archive.canonical.com/ubuntu ${DISTRO_VERSION} partner
+Types: deb
+URIs: ${MIRROR}
+Suites: ${DISTRO_VERSION}-security
+Components: main restricted universe multiverse
+Enabled: yes
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
 EOF
 }
 
 choose_release (){
-rm -f ${SOURCES_LIST}
 if [[ "$DISTRO" =~ ^(debian|devuan|kali|raspbian|ubuntu)$ ]]; then
 	${DISTRO}_release
 else

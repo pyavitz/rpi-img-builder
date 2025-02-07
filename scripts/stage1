@@ -110,7 +110,7 @@ echo "force-unsafe-io" > "p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
 mkdir -p p2/usr/bin
 cp $(command -v "${STATIC}") p2/usr/bin
 
-if [[ ! -z $P_VALUE ]]; then SOURCES_LIST="${P_VALUE}/etc/apt/sources.list"; fi
+if [[ ! -z $P_VALUE ]]; then ${DISTRO}_sources_list; fi
 if [ $VERBOSE -eq 1 ]; then choose_release; fstab; else choose_release > /dev/null 2>&1; fstab > /dev/null 2>&1; fi
 
 if [ -n "$PROXY" ] ; then
@@ -141,7 +141,7 @@ if [ $USERACCT -eq 1 ]; then
 fi
 if [ $USCRIPTS -eq 1 ]; then uscripts_stage1; fi
 stage1_kernel # miscellaneous
-echo -e "${WHT}Starting chroot${FIN} ..."
+echo -e "${WHT}Running chroot${FIN} ..."
 # Mount and chroot
 mkdir -p p2/boot/broadcom
 mount -o bind p1 p2/boot/broadcom
