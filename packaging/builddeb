@@ -250,7 +250,7 @@ mkdir -p "$destdir"
 ln -sf "/usr/src/linux-headers-$version" "$kernel_headers_dir/lib/modules/$version/build"
 rm -f "$objtree/debian/hdrsrcfiles" "$objtree/debian/hdrobjfiles"
 
-# kernel headers postinst and preinst script
+# kernel headers postinst script
 cp -f "headers-byteshift.patch" "$destdir/"
 cp -f "$srctree/scripts/module.lds" "$destdir/"
 mkdir -p "$kernel_headers_dir/DEBIAN"
@@ -280,7 +280,22 @@ exit 0
 EOF
 chmod 755 "$kernel_headers_dir/DEBIAN/postinst"
 
-# Remove old headers
+# kernel headers postrm script
+mkdir -p $kernel_headers_dir/DEBIAN
+cat <<EOF > "$kernel_headers_dir/DEBIAN/postrm"
+#!/bin/bash
+
+set -e
+
+# remove linux headers
+rm -fdr /usr/src/linux-headers-*
+
+sync
+exit 0
+EOF
+chmod 755 "$kernel_headers_dir/DEBIAN/postrm"
+
+# kernel headers preinst script
 mkdir -p $kernel_headers_dir/DEBIAN
 cat <<EOF > "$kernel_headers_dir/DEBIAN/preinst"
 #!/bin/bash
