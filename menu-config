@@ -175,19 +175,22 @@ case $CHOICE in
 		;;
 	"U)")
 		MENUDIR="/usr/local/bin"
-		if [[ `command -v menu-config-update` ]]; then
-			sudo mv -f ${MENUDIR}/menu-config-update ${MENUDIR}/menu-config-update.orig
-		fi
-		sudo wget -cq https://raw.githubusercontent.com/pyavitz/rpi-img-builder/menuconfig/menu-config-update -P ${MENUDIR}/
-		sleep .50
-		sudo chmod +x $(command -v menu-config-update)
-		if [[ `command -v menu-config-update` ]]; then
-			sudo rm -f ${MENUDIR}/menu-config-update.orig
+		if [[ `curl -I https://github.com 2>&1 | grep 'HTTP/2 200'` ]]; then
+			if [[ `command -v menu-config-update` ]]; then sudo mv -f ${MENUDIR}/menu-config-update ${MENUDIR}/menu-config-update.orig; fi
+			sudo wget -cq https://raw.githubusercontent.com/pyavitz/rpi-img-builder/menuconfig/menu-config-update -P ${MENUDIR}/
+			sleep .50
+			sudo chmod +x $(command -v menu-config-update)
+			if [[ `command -v menu-config-update` ]]; then
+				sudo rm -f ${MENUDIR}/menu-config-update.orig
+			else
+				sudo mv -f ${MENUDIR}/menu-config-update.orig ${MENUDIR}/menu-config-update
+			fi
+			menu-config-update
+			exit 0
 		else
-			sudo mv -f ${MENUDIR}/menu-config-update.orig ${MENUDIR}/menu-config-update
+			echo -e "The script requires an internet connection."
+			read -p "Enter to continue"
 		fi
-		menu-config-update
-		exit 0
 		;;
 	"Q)")
 		echo "Program terminated."

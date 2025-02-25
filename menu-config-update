@@ -18,6 +18,8 @@ if [[ `curl -I https://github.com 2>&1 | grep 'HTTP/2 200'` ]]; then
 	:;
 else
 	echo -e "The script requires an internet connection."
+	read -p "Enter to continue"
+	exit 1
 fi
 
 clear -x
