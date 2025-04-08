@@ -33,7 +33,7 @@ else
 	profile_txt
 fi
 ROOTPASSWD="0"
-VERSION="6.6.y"
+VERSION="6.12.y"
 BUILD_VERSION="1"
 MENUCONFIG="0"
 DISTRO="debian"
