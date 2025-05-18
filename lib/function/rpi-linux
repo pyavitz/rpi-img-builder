@@ -59,14 +59,14 @@ fi
 
 download_options (){
 GIT_HASH=`git ls-remote --heads ${GIT_URL}.git | grep -w "refs/heads/rpi-${VERSION}" | sed -n '1p' | sed "s/refs\/heads\/rpi-${VERSION}//g" | sed s/'\s'//g`
-if [[ -f "../.cache/git_fast.${KERNEL}-${VERSION}" ]] && [[ -d "${KERNEL}-${VERSION}" ]]; then
+if [[ -f "../.cache/git_shallow.${KERNEL}-${VERSION}" ]] && [[ -d "${KERNEL}-${VERSION}" ]]; then
 	:;
 else
-	rm -f ../.cache/git_fast.${KERNEL}-${VERSION}
+	rm -f ../.cache/git_shallow.${KERNEL}-${VERSION}
 	rm -fdr ${KERNEL}-${VERSION}
 fi
-if [[ -f "../.cache/git_fast.${KERNEL}-${VERSION}" ]]; then
-	source ../.cache/git_fast.${KERNEL}-${VERSION}
+if [[ -f "../.cache/git_shallow.${KERNEL}-${VERSION}" ]]; then
+	source ../.cache/git_shallow.${KERNEL}-${VERSION}
 	if [[ "$GIT_FAST" == "true" ]]; then GIT_OPT="--depth 1"; else GIT_OPT=""; fi
 else
 	while :
@@ -79,8 +79,8 @@ else
 	if [ $? -gt 128 ]; then
 		echo -e "Default selected."
 		mkdir -p ../.cache
-		echo 'GIT_FAST="true"' > ../.cache/git_fast.${KERNEL}-${VERSION}
-		echo GIT_COMMIT='"'${GIT_HASH}'"' >> ../.cache/git_fast.${KERNEL}-${VERSION}
+		echo 'GIT_FAST="true"' > ../.cache/git_shallow.${KERNEL}-${VERSION}
+		echo GIT_COMMIT='"'${GIT_HASH}'"' >> ../.cache/git_shallow.${KERNEL}-${VERSION}
 		GIT_OPT="--depth 1"
 		echo -e ""
 		break
@@ -88,15 +88,15 @@ else
 	case $REPLY in
 		[1]*)
 			mkdir -p ../.cache
-			echo 'GIT_FAST="true"' > ../.cache/git_fast.${KERNEL}-${VERSION}
-			echo GIT_COMMIT='"'${GIT_HASH}'"' >> ../.cache/git_fast.${KERNEL}-${VERSION}
+			echo 'GIT_FAST="true"' > ../.cache/git_shallow.${KERNEL}-${VERSION}
+			echo GIT_COMMIT='"'${GIT_HASH}'"' >> ../.cache/git_shallow.${KERNEL}-${VERSION}
 			GIT_OPT="--depth 1"
 			echo -e ""
 			break
 			;;
 		[2]*)
 			mkdir -p ../.cache
-			echo 'GIT_FAST="false"' > ../.cache/git_fast.${KERNEL}-${VERSION}
+			echo 'GIT_FAST="false"' > ../.cache/git_shallow.${KERNEL}-${VERSION}
 			GIT_OPT=""
 			echo -e ""
 			break
@@ -117,7 +117,7 @@ if [[ "$GIT_COMMIT" == "$GIT_HASH" ]]; then
 else
 	echo -en " ${PNK}[${FIN}${WHT}${GIT_HASH}${FIN}${PNK}]${FIN}"
 	echo -en " ${PNK}[${FIN}${WHT}mismatch${FIN}${PNK}]${FIN}"
-	sed -i 's/^GIT_COMMIT=.*/GIT_COMMIT="'"${GIT_HASH}"'"/' ../.cache/git_fast.${KERNEL}-${VERSION}
+	sed -i 's/^GIT_COMMIT=.*/GIT_COMMIT="'"${GIT_HASH}"'"/' ../.cache/git_shallow.${KERNEL}-${VERSION}
 	echo -en " ${PNK}[${FIN}${YLW}purging${FIN}${PNK}]${FIN}"
 	rm -fdr ${KERNEL}-${VERSION} ${KERNEL}-${VERSION}.backup
 	echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
