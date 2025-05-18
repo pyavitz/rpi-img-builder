@@ -2,7 +2,7 @@
 # depends: curl
 
 source lib/source
-echo "Example: 6.6.y"
+echo "Example: 6.12.y"
 echo
 echo -en "BRANCH:  "
 read BRANCH
@@ -30,8 +30,8 @@ if [[ -f "revision.txt" ]]; then
 	echo -en "CURRENT: "
 	tr -d '\n' < revision.txt
 	rm -f revision.txt
-	if [[ -f ".cache/git_fast.${KERNEL}-${BRANCH}" ]]; then
-		source .cache/git_fast.${KERNEL}-${BRANCH}
+	if [[ -f ".cache/git_shallow.${KERNEL}-${BRANCH}" ]]; then
+		source .cache/git_shallow.${KERNEL}-${BRANCH}
 		if [[ "$GIT_COMMIT" == "$GIT_HASH" ]]; then echo -e ""; else echo -e " ${ITL}NEW!${FIN}"; fi; else echo -e "";
 	fi
 else
