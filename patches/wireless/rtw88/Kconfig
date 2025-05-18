@@ -13,6 +13,7 @@ if RTW88
 
 config RTW88_CORE
 	tristate
+	select WANT_DEV_COREDUMP
 
 config RTW88_PCI
 	tristate
@@ -22,17 +23,6 @@ config RTW88_SDIO
 
 config RTW88_USB
 	tristate
-
-config RTW88_88XXA
-	tristate
-
-config RTW88_8821A
-	tristate
-	select RTW88_88XXA
-
-config RTW88_8812A
-	tristate
-	select RTW88_88XXA
 
 config RTW88_8822B
 	tristate
@@ -52,6 +42,20 @@ config RTW88_8723D
 	select RTW88_8723X
 
 config RTW88_8821C
+	tristate
+
+config RTW88_88XXA
+	tristate
+
+config RTW88_8821A
+	tristate
+	select RTW88_88XXA
+
+config RTW88_8812A
+	tristate
+	select RTW88_88XXA
+
+config RTW88_8814A
 	tristate
 
 config RTW88_8822BE
@@ -177,30 +181,6 @@ config RTW88_8723DU
 
 	  802.11n USB wireless network adapter
 
-config RTW88_8812AU
-	tristate "Realtek 8812AU USB wireless network adapter"
-	depends on USB
-	select RTW88_CORE
-	select RTW88_USB
-	select RTW88_8812A
-	default m
-	help
-	  Select this option will enable support for 8812AU chipset
-
-	  802.11ac USB wireless network adapter
-
-config RTW88_8821AU
-	tristate "Realtek 8821AU USB wireless network adapter"
-	depends on USB
-	select RTW88_CORE
-	select RTW88_USB
-	select RTW88_8821A
-	default m
-	help
-	  Select this option will enable support for 8821AU chipset
-
-	  802.11ac USB wireless network adapter
-
 config RTW88_8821CE
 	tristate "Realtek 8821CE PCI wireless network adapter"
 	depends on PCI
@@ -237,6 +217,54 @@ config RTW88_8821CU
 
 	  802.11ac USB wireless network adapter
 
+config RTW88_8821AU
+	tristate "Realtek 8821AU/8811AU USB wireless network adapter"
+	depends on USB
+	select RTW88_CORE
+	select RTW88_USB
+	select RTW88_8821A
+	default m
+	help
+	  Select this option will enable support for 8821AU and 8811AU chipset
+
+	  802.11ac USB wireless network adapter
+
+config RTW88_8812AU
+	tristate "Realtek 8812AU USB wireless network adapter"
+	depends on USB
+	select RTW88_CORE
+	select RTW88_USB
+	select RTW88_8812A
+	default m
+	help
+	  Select this option will enable support for 8812AU chipset
+
+	  802.11ac USB wireless network adapter
+
+config RTW88_8814AE
+	tristate "Realtek 8814AE PCI wireless network adapter"
+	depends on PCI
+	select RTW88_CORE
+	select RTW88_PCI
+	select RTW88_8814A
+	default m
+	help
+	  Select this option will enable support for 8814AE chipset
+
+	  802.11ac PCIe wireless network adapter
+
+config RTW88_8814AU
+	tristate "Realtek 8814AU USB wireless network adapter"
+	depends on USB
+	select RTW88_CORE
+	select RTW88_USB
+	select RTW88_8814A
+	default m
+	help
+	  Select this option will enable support for 8814AU chipset
+
+	  802.11ac USB wireless network adapter
+
 config RTW88_DEBUG
 	bool "Realtek rtw88 debug support"
 	depends on RTW88_CORE
@@ -252,5 +280,10 @@ config RTW88_DEBUGFS
 	  Enable debug support
 
 	  If unsure, say Y to simplify debug problems
+
+config RTW88_LEDS
+	bool
+	depends on LEDS_CLASS=y || LEDS_CLASS=MAC80211
+	default y
 
 endif
