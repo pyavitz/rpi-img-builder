@@ -13,7 +13,6 @@ sed -i 's/export INITRD=$(if_enabled_echo CONFIG_BLK_DEV_INITRD Yes No)/export I
 }
 
 download (){
-echo ""
 if [[ `wget -S --spider ${GIT_URL}/blob/rpi-${VERSION}/Makefile 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
 	download_options
 	if [[ "$GIT_SHALLOW" == "true" ]]; then verify_commit; fi
@@ -37,13 +36,11 @@ if [[ `wget -S --spider ${GIT_URL}/blob/rpi-${VERSION}/Makefile 2>&1 | grep 'HTT
 		sleep .50
 		if [[ -d "${KERNEL}-${VERSION}" ]] && [[ -f "${KERNEL}-${VERSION}/Makefile" ]]; then
 			cd ${KERNEL}-${VERSION}; make clean; cd ..
-			echo ""
 			echo -en "${KERNEL}-${VERSION}"
 			echo -en " ${PNK}[${FIN}${WHT}creating backup${FIN}${PNK}]${FIN}"
 			cp -r ${KERNEL}-${VERSION} ${KERNEL}-${VERSION}.backup
 			echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
 		else
-			echo ""
 			echo -en "${KERNEL}-${VERSION}"
 			echo -en " ${PNK}[${FIN}${WHT}download${FIN}${PNK}]${FIN}"
 			echo -e " ${PNK}[${FIN}${RED}failed${FIN}${PNK}]${FIN}"
@@ -69,47 +66,16 @@ if [[ -f "../.cache/git_shallow.${KERNEL}-${VERSION}" ]]; then
 	source ../.cache/git_shallow.${KERNEL}-${VERSION}
 	if [[ "$GIT_SHALLOW" == "true" ]]; then GIT_OPT="--depth 1"; else GIT_OPT=""; fi
 else
-	while :
-	do
-	echo -e "How would you like to handle downloads?"
-	echo -e " 1) shallow clone (default)"
-	echo -e " 2) full clone"
+	mkdir -p ../.cache
+	echo 'GIT_SHALLOW="true"' > ../.cache/git_shallow.${KERNEL}-${VERSION}
+	echo GIT_COMMIT='"'${GIT_HASH}'"' >> ../.cache/git_shallow.${KERNEL}-${VERSION}
+	GIT_OPT="--depth 1"
 	echo -e ""
-	read -t10 -p "Prompt: "
-	if [ $? -gt 128 ]; then
-		echo -e "Default selected."
-		mkdir -p ../.cache
-		echo 'GIT_SHALLOW="true"' > ../.cache/git_shallow.${KERNEL}-${VERSION}
-		echo GIT_COMMIT='"'${GIT_HASH}'"' >> ../.cache/git_shallow.${KERNEL}-${VERSION}
-		GIT_OPT="--depth 1"
-		echo -e ""
-		break
-	fi
-	case $REPLY in
-		[1]*)
-			mkdir -p ../.cache
-			echo 'GIT_SHALLOW="true"' > ../.cache/git_shallow.${KERNEL}-${VERSION}
-			echo GIT_COMMIT='"'${GIT_HASH}'"' >> ../.cache/git_shallow.${KERNEL}-${VERSION}
-			GIT_OPT="--depth 1"
-			echo -e ""
-			break
-			;;
-		[2]*)
-			mkdir -p ../.cache
-			echo 'GIT_SHALLOW="false"' > ../.cache/git_shallow.${KERNEL}-${VERSION}
-			GIT_OPT=""
-			echo -e ""
-			break
-			;;
-		*)
-			echo -e "Enter 1 or 2"
-			;;
-		esac
-	done
 fi
 }
 
 verify_commit (){
+echo ""
 echo -en "commit"
 if [[ "$GIT_COMMIT" == "$GIT_HASH" ]]; then
 	echo -en " ${PNK}[${FIN}${WHT}${GIT_COMMIT}${FIN}${PNK}]${FIN}"

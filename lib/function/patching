@@ -3,7 +3,6 @@
 # boot firmware
 firmware (){
 FIRMWARE="https://github.com/raspberrypi/firmware.git"
-echo ""
 echo -en "Firmware"
 echo -en " ${PNK}[${FIN}${WHT}downloading${FIN}${PNK}]${FIN}"
 rm -fdr firmware
