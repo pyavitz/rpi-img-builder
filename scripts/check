@@ -39,5 +39,6 @@ else
 	rm -f revision.txt
 	exit 1
 fi
+echo -e "COMMIT:  ${GIT_HASH}"
 
 exit 0
