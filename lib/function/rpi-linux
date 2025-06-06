@@ -1,5 +1,6 @@
 #!/bin/bash
 GIT_URL="https://github.com/raspberrypi/linux"
+ITL="\033[3m"
 
 source_dir (){
 mkdir -p ${SRC}
@@ -72,19 +73,24 @@ else
 	GIT_OPT="--depth 1"
 	echo -e ""
 fi
+GIT_HASH_SHORT=`echo "${GIT_HASH}" | sed 's/^\(.\{7\}\).*/\1/'`
+GIT_COMMIT_SHORT=`echo "${GIT_COMMIT}" | sed 's/^\(.\{7\}\).*/\1/'`
 }
 
 verify_commit (){
 echo ""
-echo -en "commit"
+echo -en "Commit:"
 if [[ "$GIT_COMMIT" == "$GIT_HASH" ]]; then
-	echo -en " ${PNK}[${FIN}${WHT}${GIT_COMMIT}${FIN}${PNK}]${FIN}"
+	echo -en " ${GIT_COMMIT_SHORT}"
+	sleep .50
 	echo -e " ${PNK}[${FIN}${GRN}ok${FIN}${PNK}]${FIN}"
 else
-	echo -en " ${PNK}[${FIN}${WHT}${GIT_HASH}${FIN}${PNK}]${FIN}"
-	echo -en " ${PNK}[${FIN}${WHT}mismatch${FIN}${PNK}]${FIN}"
+	
+	echo -en " ${GIT_HASH_SHORT}"
+	sleep .50
+	echo -e " ${ITL}NEW!${FIN}"
 	sed -i 's/^GIT_COMMIT=.*/GIT_COMMIT="'"${GIT_HASH}"'"/' ../.cache/git_shallow.${KERNEL}-${VERSION}
-	echo -en " ${PNK}[${FIN}${YLW}purging${FIN}${PNK}]${FIN}"
+	echo -en "Removing: ${GIT_COMMIT_SHORT}"
 	rm -fdr ${KERNEL}-${VERSION} ${KERNEL}-${VERSION}.backup
 	echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
 	echo ""
