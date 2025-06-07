@@ -1,9 +1,8 @@
 #!/bin/bash
 
 # firmware
-extra_firmware(){
+firmware(){
 echo ""
-echo "Adding firmware ..."
 mkdir -p /lib/firmware/brcm
 mkdir -p /lib/firmware/updates
 git clone https://github.com/pyavitz/firmware.git /lib/firmware/updates/brcm
@@ -23,14 +22,12 @@ if [[ `wget -S --spider https://kernel.googlesource.com/pub/scm/linux/kernel/git
 fi
 cd ~
 git clone --depth=1 -q -b realtek https://github.com/pyavitz/firmware.git
-rm -f firmware/README.md; cp -fr firmware/* /lib/firmware; rm -fdr firmware
+rm -fdr firmware/{.git,README.md; cp -fr firmware/* /lib/firmware; rm -fdr firmware
 }
 
 # regulatory db
 wireless_regdb(){
-echo ""
-echo "Adding wireless regulatory db ..."
-git clone https://kernel.googlesource.com/pub/scm/linux/kernel/git/sforshee/wireless-regdb
+git clone --depth=1 -q https://kernel.googlesource.com/pub/scm/linux/kernel/git/sforshee/wireless-regdb
 sleep 1s
 cd wireless-regdb
 cp -f regulatory.db /lib/firmware/regulatory.db

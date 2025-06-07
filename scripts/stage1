@@ -141,7 +141,6 @@ if [ $USERACCT -eq 1 ]; then
 fi
 if [ $USCRIPTS -eq 1 ]; then uscripts_stage1; fi
 stage1_kernel # miscellaneous
-echo -e "${WHT}Running chroot${FIN} ..."
 # Mount and chroot
 mkdir -p p2/boot/broadcom
 mount -o bind p1 p2/boot/broadcom

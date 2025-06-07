@@ -16,7 +16,6 @@ fi
 # stage 2
 raspberrypi_sys_mods (){
 echo ""
-echo "Installing raspi-sys-mods ..."
 git clone https://github.com/RPi-Distro/raspberrypi-sys-mods.git
 if [[ "$DISTRO" == "devuan" ]]; then
 	mv -f raspberrypi-sys-mods-control.patch raspberrypi-sys-mods/
@@ -40,7 +39,6 @@ rm -f /etc/apt/preferences.d/3rd_parties.pref
 
 pi_bluetooth (){
 echo ""
-echo "Installing pi-bluetooth ..."
 if [[ "$DISTRO" == "ubuntu" ]]; then
 	git clone --depth=1 https://github.com/pyavitz/pi-bluetooth.git -b ubuntu
 else
@@ -57,7 +55,6 @@ rm -fdR pi-bluetooth*
 # userland
 rpi_userland (){
 echo ""
-echo "Installing userland ..."
 rm -f /etc/profile
 mv -f profile /etc/profile
 mv rpi-vc.conf /etc/ld.so.conf.d/rpi-vc.conf
@@ -107,7 +104,6 @@ ERURL="https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/"
 CHANGELOG="https://raw.githubusercontent.com/raspberrypi/rpi-eeprom/debian/bookworm/debian/changelog"
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 echo ""
-echo "Installing rpi-eeprom ..."
 apt install help2man rsync pciutils -y
 mkdir -p ~/eeprom
 mv -f rpi-eeprom-update.patch /root/eeprom/
@@ -135,7 +131,6 @@ rm -fdr eeprom
 # linux kernel
 stage2_kernel (){
 echo ""
-echo "Installing kernel ..."
 apt update
 apt upgrade -y
 apt -y clean

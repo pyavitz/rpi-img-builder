@@ -172,8 +172,7 @@ fi
 
 # sudoers file
 if [ $USERACCT -eq 0 ]; then
-	echo ""
-	tee /etc/sudoers.d/010_${USERNAME}-nopasswd <<EOF
+	cat <<EOF > "/etc/sudoers.d/010_${USERNAME}-nopasswd"
 ${USERNAME} ALL=(ALL) NOPASSWD: ALL
 EOF
 fi
@@ -199,22 +198,21 @@ fi
 
 # scripts
 echo ""
-echo "Moving scripts ..."
 cd ~
 mkdir -p /usr/local/bin
 mkdir -p /usr/local/sbin
 if [[ "$BOARD_EXT" =~ ^(rpi-2+3|rpi-3|rpi-4|rpi-5)$ ]]; then
-	wget -cq --show-progress ${URL}deb-eeprom
+	wget -cq ${URL}deb-eeprom
 	mv -f deb-eeprom /usr/local/bin/
 fi
 if [ $NETWORKMANAGER -eq 0 ]; then
-	wget -cq --show-progress ${URL}swh
+	wget -cq ${URL}swh
 	sleep .25
 	mv -f swh /usr/local/bin/
 fi
-wget -cq --show-progress ${URL}governor
-wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/rpi-img-builder/menuconfig/menu-config
-wget -cq --show-progress https://raw.githubusercontent.com/pyavitz/rpi-img-builder/menuconfig/menu-config-update
+wget -cq ${URL}governor
+wget -cq https://raw.githubusercontent.com/pyavitz/rpi-img-builder/menuconfig/menu-config
+wget -cq https://raw.githubusercontent.com/pyavitz/rpi-img-builder/menuconfig/menu-config-update
 mv -f {governor,setup,sysinfo,smon,menu-config,menu-config-update,transfer} /usr/local/bin/
 mv -f firstboot.sh /usr/local/sbin/firstboot
 mv -f leds.sh /usr/local/sbin/leds
@@ -273,8 +271,8 @@ else
 	rm -f /root/systemd-binfmt-fixups
 fi
 
-# rpi firmware
-extra_firmware
+# firmware
+firmware
 
 # udev rules
 cd ~
@@ -370,14 +368,9 @@ if [[ -f "/etc/systemd/journald.conf" ]]; then
 fi
 
 # services
-echo ""
-echo "Checking Services ..."
-sleep 1s
 if [[ "$DISTRO" == "devuan" ]]; then
-	echo "== Sysvinit"
 	sysvinit_services > /dev/null 2>&1
 else
-	echo "== Systemd"
 	firstboot_service > /dev/null 2>&1
 	credentials_service > /dev/null 2>&1
 	governor_service > /dev/null 2>&1
