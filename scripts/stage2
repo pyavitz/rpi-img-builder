@@ -197,7 +197,6 @@ if [ $USERACCT -eq 0 ]; then
 fi
 
 # scripts
-echo ""
 cd ~
 mkdir -p /usr/local/bin
 mkdir -p /usr/local/sbin

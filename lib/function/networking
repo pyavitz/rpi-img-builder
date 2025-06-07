@@ -5,7 +5,7 @@ firmware(){
 echo ""
 mkdir -p /lib/firmware/brcm
 mkdir -p /lib/firmware/updates
-git clone https://github.com/pyavitz/firmware.git /lib/firmware/updates/brcm
+git clone --depth=1 https://github.com/pyavitz/firmware.git /lib/firmware/updates/brcm
 mv fw-0a5c_21e8.hcd /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd
 cp /lib/firmware/brcm/BCM20702A0-0a5c-21e8.hcd /lib/firmware/brcm/BCM20702A1-0a5c-21e8.hcd
 chown root:root /lib/firmware/brcm/BCM20702A1-0a5c-21e8.hcd
