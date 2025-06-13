@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # firmware
-firmware(){
+firmware (){
 echo ""
 mkdir -p /lib/firmware/brcm
 mkdir -p /lib/firmware/updates
@@ -22,11 +22,11 @@ if [[ `wget -S --spider https://kernel.googlesource.com/pub/scm/linux/kernel/git
 fi
 cd ~
 git clone --depth=1 -q -b realtek https://github.com/pyavitz/firmware.git
-rm -fdr firmware/{.git,README.md; cp -fr firmware/* /lib/firmware; rm -fdr firmware
+rm -fdr firmware/{.git,README.md}; cp -fr firmware/* /lib/firmware; rm -fdr firmware
 }
 
 # regulatory db
-wireless_regdb(){
+wireless_regdb (){
 git clone --depth=1 -q https://kernel.googlesource.com/pub/scm/linux/kernel/git/sforshee/wireless-regdb
 sleep 1s
 cd wireless-regdb
@@ -39,7 +39,7 @@ if [ $NETWORKMANAGER -eq 1 ]; then
 fi
 }
 
-eth_udev-rule(){
+eth_udev-rule (){
 tee /etc/udev/rules.d/80-net-setup-link.rules <<EOF
 # Raspberry Pi 3b eth interface
 SUBSYSTEM!="net", GOTO="net_setup_link_end"
@@ -72,7 +72,7 @@ ATTR{idVendor}=="0bda", ATTR{idProduct}=="1a2b", RUN+="/usr/sbin/usb_modeswitch 
 EOF
 }
 
-ifupdown-setup(){
+ifupdown-setup (){
 rm -f /etc/network/interfaces
 if [[ "$DISTRO" == "devuan" ]]; then if [[ "$BOARD" =~ ^(bcm2709|bcm2710)$ ]]; then eth_udev-rule; fi; fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
@@ -136,7 +136,7 @@ network={
 EOF
 }
 
-networkmanager-setup(){
+networkmanager-setup (){
 rm -f /etc/network/interfaces
 tee /etc/network/interfaces <<EOF
 source /etc/network/interfaces.d/*
@@ -159,53 +159,57 @@ fi
 if [[ "$DISTRO" == "devuan" ]]; then if [[ "$BOARD" =~ ^(bcm2709|bcm2710)$ ]]; then eth_udev-rule; fi; fi
 }
 
-ifupdown-credentials(){
+ifupdown-credentials (){
 if [[ -f "/root/ifupdown.credentials" ]]; then
 	CURRENT_HOSTNAME=`cat /etc/hostname | sed -n '1p'`
 	mv -f /root/ifupdown.credentials /usr/local/bin/credentials
 	chmod +x /usr/local/bin/credentials
 	chown root:root /usr/local/bin/credentials
 	rm -f /root/networkmanager.credentials
-	echo "# activate service" > /boot/broadcom/credentials.txt
-	echo 'ENABLE="false"' >> /boot/broadcom/credentials.txt
-	echo "" >> /boot/broadcom/credentials.txt
-	echo "# input wifi credentials" >> /boot/broadcom/credentials.txt
-	echo 'SSID=""' >> /boot/broadcom/credentials.txt
-	echo 'PASSKEY=""' >> /boot/broadcom/credentials.txt
-	echo 'COUNTRYCODE=""' >> /boot/broadcom/credentials.txt
-	echo "# set static ip address" >> /boot/broadcom/credentials.txt
-	echo 'MANUAL="false"' >> /boot/broadcom/credentials.txt
-	echo 'IPADDR=""' >> /boot/broadcom/credentials.txt
-	echo 'NETMASK=""' >> /boot/broadcom/credentials.txt
-	echo 'GATEWAY=""' >> /boot/broadcom/credentials.txt
-	echo 'NAMESERVERS=""' >> /boot/broadcom/credentials.txt
-	echo "" >> /boot/broadcom/credentials.txt
-	echo "# change hostname" >> /boot/broadcom/credentials.txt
-	echo HOSTNAME='"'$CURRENT_HOSTNAME'"' >> /boot/broadcom/credentials.txt
+	cat <<EOF > /boot/broadcom/credentials.txt
+# Enable service
+ENABLE="false"
+
+# Input credentials
+SSID=""
+PASSKEY=""
+COUNTRYCODE=""
+# Set static ip address
+MANUAL="false"
+IPADDR=""
+NETMASK=""
+GATEWAY=""
+NAMESERVERS=""
+
+# Change hostname
+HOSTNAME="$CURRENT_HOSTNAME"
+EOF
 fi
 }
 
-networkmanager-credentials(){
+networkmanager-credentials (){
 if [[ -f "/root/networkmanager.credentials" ]]; then
 	CURRENT_HOSTNAME=`cat /etc/hostname | sed -n '1p'`
 	mv -f /root/networkmanager.credentials /usr/local/bin/credentials
 	chmod +x /usr/local/bin/credentials
 	chown root:root /usr/local/bin/credentials
 	rm -f /root/ifupdown.credentials
-	echo "# activate service" > /boot/broadcom/credentials.txt
-	echo 'ENABLE="false"' >> /boot/broadcom/credentials.txt
-	echo "" >> /boot/broadcom/credentials.txt
-	echo "# input wifi credentials" >> /boot/broadcom/credentials.txt
-	echo 'SSID=""' >> /boot/broadcom/credentials.txt
-	echo 'PASSKEY=""' >> /boot/broadcom/credentials.txt
-	echo 'COUNTRYCODE=""' >> /boot/broadcom/credentials.txt
-	echo "# set static ip address" >> /boot/broadcom/credentials.txt
-	echo 'MANUAL="false"' >> /boot/broadcom/credentials.txt
-	echo 'IPADDR=""' >> /boot/broadcom/credentials.txt
-	echo 'GATEWAY=""' >> /boot/broadcom/credentials.txt
-	echo 'DNS=""' >> /boot/broadcom/credentials.txt
-	echo "" >> /boot/broadcom/credentials.txt
-	echo "# change hostname" >> /boot/broadcom/credentials.txt
-	echo HOSTNAME='"'$CURRENT_HOSTNAME'"' >> /boot/broadcom/credentials.txt
+	cat <<EOF > /boot/broadcom/credentials.txt
+# Enable service
+ENABLE="false"
+
+# Input credentials
+SSID=""
+PASSKEY=""
+COUNTRYCODE=""
+# Set static ip address
+MANUAL="false"
+IPADDR=""
+GATEWAY=""
+DNS=""
+
+# Change hostname
+HOSTNAME="$CURRENT_HOSTNAME"
+EOF
 fi
 }

@@ -2,8 +2,7 @@
 
 driver_download (){
 if [[ -d "${DRIVER}" ]]; then
-	echo -en "${WHT}${DRIVER_INFO}${FIN} "
-	echo -en "${PNK}[${FIN}${YLW}found${FIN}${PNK}]${FIN}"
+	echo -en "${WHT}${DRIVER_INFO}${FIN}"
 	cd ${DRIVER}
 	git config pull.rebase false
 	echo -en " ${PNK}[${FIN}${WHT}pulling${FIN}${PNK}]${FIN}"

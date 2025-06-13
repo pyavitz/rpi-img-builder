@@ -19,13 +19,13 @@ if [[ `ls firmware/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,
 	:;
 else
 	echo -en " ${YLW}[${FIN}${RED}failed${FIN}${YLW}]${FIN}"; echo ""
-	exit 0
+	exit 1
 fi
 if [[ `ls firmware/{bootcode.bin,fixup.dat,fixup_cd.dat,fixup_db.dat,fixup_x.dat,start.elf,start_cd.elf,start_db.elf,start_x.elf}` ]] > /dev/null 2>&1; then
 	echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
 else
 	echo -en " ${YLW}[${FIN}${RED}failed${FIN}${YLW}]${FIN}"; echo ""
-	exit 0
+	exit 1
 fi
 }
 
@@ -44,7 +44,7 @@ if [[ -f "${LOG_FILE}" ]]; then
 		grep "FAILED" "${LOG_FILE}" | echo -en " ${PNK}[${FIN}"${RED}fails${FIN} ${WHT}`wc -l`${FIN}"${PNK}]${FIN}"
 		if [ $VERBOSE -eq 1 ]; then
 			echo -en " ${WHT}log: ${PATHTOFILE}${FIN}"
-			exit 0
+			exit 1
 		fi
 	else
 		FAILED="false"
@@ -135,7 +135,7 @@ if [[ -f "../../packaging/dtclist.txt" ]] && [[ -f "../../packaging/initrd" ]] &
 	cp -fr ../../packaging/{dtclist.txt,initrd,headers-byteshift.patch} .
 else
 	echo -e "An essential builddeb file is missing."
-	exit 0
+	exit 1
 fi
 if [[ -v "LINUX_LOGO" ]] && [[ ! -z "$LINUX_LOGO" ]]; then
 	if [[ -f "../../packaging/logo/${LINUX_LOGO}" ]]; then cp -f "../../packaging/logo/${LINUX_LOGO}" "drivers/video/logo/logo_linux_clut224.ppm"; fi
