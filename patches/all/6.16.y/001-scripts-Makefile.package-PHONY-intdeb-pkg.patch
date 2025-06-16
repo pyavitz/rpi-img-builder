@@ -1,0 +1,30 @@
+From 8f1359515e956f9beb30bc5fabc2bdb17e8bf28f Mon Sep 17 00:00:00 2001
+From: Patrick Yavitz <pyavitz@gmail.com>
+Date: Mon, 13 Jan 2025 17:18:44 -0500
+Subject: [PATCH] scripts: Makefile.package: PHONY += intdeb-pkg
+
+This is required by the builders builddeb kernel packaging script.
+
+Signed-off-by: Patrick Yavitz <pyavitz@gmail.com>
+---
+ scripts/Makefile.package | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/scripts/Makefile.package b/scripts/Makefile.package
+index 74bcb9e7f7a4..5aaafd9ab4f5 100644
+--- a/scripts/Makefile.package
++++ b/scripts/Makefile.package
+@@ -132,6 +132,10 @@ deb-pkg srcdeb-pkg bindeb-pkg:
+ 		--no-check-builddeps) \
+ 	$(DPKG_FLAGS))
+ 
++PHONY += intdeb-pkg
++intdeb-pkg:
++	+$(CONFIG_SHELL) $(srctree)/scripts/package/builddeb
++
+ # snap-pkg
+ # ---------------------------------------------------------------------------
+ PHONY += snap-pkg
+-- 
+2.39.5
+
