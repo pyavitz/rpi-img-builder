@@ -101,7 +101,7 @@ fi
 
 eeprom_support (){
 ERURL="https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/"
-CHANGELOG="https://raw.githubusercontent.com/raspberrypi/rpi-eeprom/debian/bookworm/debian/changelog"
+CHANGELOG="https://raw.githubusercontent.com/raspberrypi/rpi-eeprom/pios/bookworm/debian/changelog"
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 echo ""
 apt install help2man rsync pciutils -y
