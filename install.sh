@@ -13,7 +13,16 @@ GIT_BRANCH=`git branch`
 echo ""
 echo -en "${TXT}Raspberry Pi Image Builder:${FIN}"
 echo -e " ${PNK}[${FIN}${GRN}${GIT_BRANCH}${FIN}${PNK}]${FIN}"
-
+echo -en "${TXT}Checking Internet Connection:${FIN} "
+if [[ `curl -I https://github.com 2>&1 | grep 'HTTP/2 200'` ]]; then
+	echo -en "${PNK}[${FIN}${GRN}OK${FIN}${PNK}]${FIN}"
+	echo ""
+else
+	echo -en "${PNK}[${FIN}${RED}failed${FIN}${PNK}]${FIN}"
+	echo ""
+	echo -e "${TXT}Please check your internet connection and try again${FIN}."
+	exit 1
+fi
 if [[ `command -v sudo` ]]; then
 	:;
 else
@@ -36,16 +45,6 @@ else
 	echo ""
 	echo -e "Missing dependency: make"
 	sudo apt install -y make
-	exit 1
-fi
-echo -en "${TXT}Checking Internet Connection:${FIN} "
-if [[ `curl -I https://github.com 2>&1 | grep 'HTTP/2 200'` ]]; then
-	echo -en "${PNK}[${FIN}${GRN}OK${FIN}${PNK}]${FIN}"
-	echo ""
-else
-	echo -en "${PNK}[${FIN}${RED}failed${FIN}${PNK}]${FIN}"
-	echo ""
-	echo -e "${TXT}Please check your internet connection and try again${FIN}."
 	exit 1
 fi
 echo -en "${TXT}Checking Host Machine:${FIN} "
