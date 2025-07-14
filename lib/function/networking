@@ -25,18 +25,21 @@ git clone --depth=1 -q -b realtek https://github.com/pyavitz/firmware.git
 rm -fdr firmware/{.git,README.md}; cp -fr firmware/* /lib/firmware; rm -fdr firmware
 }
 
-# regulatory db
+# Update regulatory db
 wireless_regdb (){
-git clone --depth=1 -q https://kernel.googlesource.com/pub/scm/linux/kernel/git/sforshee/wireless-regdb
-sleep 1s
-cd wireless-regdb
-cp -f regulatory.db /lib/firmware/regulatory.db
-cp -f regulatory.db.p7s /lib/firmware/regulatory.db.p7s
-cd ~
-rm -fdr wireless-regdb
 if [ $NETWORKMANAGER -eq 1 ]; then
 	echo 'KERNEL=="regulatory*", ACTION=="change", SUBSYSTEM=="platform", RUN+="/sbin/crda"' > /etc/udev/rules.d/60-regdb.rules
 fi
+git clone --depth=1 -q https://kernel.googlesource.com/pub/scm/linux/kernel/git/sforshee/wireless-regdb
+sleep .25
+if [[ -f "wireless-regdb/regulatory.db" ]] && [[ -f "wireless-regdb/regulatory.db.p7s" ]]; then
+	mkdir -p /lib/firmware/updates
+	cp -fr wireless-regdb/{regulatory.db,regulatory.db.p7s} /lib/firmware/updates/
+else
+	echo -e ""
+	echo -e "ERR: Missing regulatory db files?"
+fi
+rm -fdr wireless-regdb
 }
 
 eth_udev-rule (){
