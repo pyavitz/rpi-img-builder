@@ -80,8 +80,8 @@ Ccache:			# Compiler cache
 
 Distribution
 Distro:			# Supported: debian, devuan and ubuntu
-Release:		# Debian: bullseye, bookworm, testing, unstable and sid
-			# Devuan: chimaera, daedalus, excalibur, testing, unstable and ceres
+Release:		# Debian: bookworm, testing, unstable and sid
+			# Devuan: daedalus, excalibur, testing, unstable and ceres
 			# https://www.devuan.org/os/announce/excalibur-usrmerge-announce-2024-02-20.html
 			# Ubuntu: focal, jammy and noble
 NetworkManager		# 1 networkmanager | 0 ifupdown

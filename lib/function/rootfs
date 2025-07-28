@@ -25,9 +25,9 @@ if [ $VERBOSE -eq 1 ]; then choose_release; else choose_release > /dev/null 2>&1
 
 devuan_keyring (){
 URL="https://pkgmaster.devuan.org/devuan/pool/main/d/devuan-keyring/"
-FILE="devuan-keyring_2023.10.07_all.deb"
+FILE="devuan-keyring_2025.06.02_all.deb"
 if [[ `dpkg -l | grep "devuan-keyring"` ]]; then
-	if [[ `dpkg -l | grep "devuan-keyring" | tr -d -c 0-9` == "20231007" ]]; then
+	if [[ `dpkg -l | grep "devuan-keyring" | tr -d -c 0-9` == "20250602" ]]; then
 		:;
 	else
 		apt purge -y devuan-keyring
