@@ -14,12 +14,14 @@ mv boot ../firmware
 cd ..
 rm -fdr boot-firmware
 if [[ `ls firmware/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf}` ]] > /dev/null 2>&1; then
-	:;
+	sleep .50
+	echo -en " ${PNK}[${FIN}${WHT}pass${FIN}${PNK}]${FIN}"
 else
 	echo -en " ${YLW}[${FIN}${RED}failed${FIN}${YLW}]${FIN}"; echo ""
 	exit 1
 fi
 if [[ `ls firmware/{bootcode.bin,fixup.dat,fixup_cd.dat,fixup_db.dat,fixup_x.dat,start.elf,start_cd.elf,start_db.elf,start_x.elf}` ]] > /dev/null 2>&1; then
+	sleep .50
 	echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
 else
 	echo -en " ${YLW}[${FIN}${RED}failed${FIN}${YLW}]${FIN}"; echo ""
