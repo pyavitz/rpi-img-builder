@@ -4,7 +4,7 @@
 firmware (){
 FIRMWARE="https://github.com/raspberrypi/firmware.git"
 rm -fdr firmware
-echo -e "Downloading firmware"
+echo -e "Downloading firmware ..."
 git clone -q --depth=1 --filter=blob:none --sparse  ${FIRMWARE} boot-firmware
 cd boot-firmware
 git sparse-checkout add boot &> /dev/null
@@ -14,8 +14,7 @@ mv boot ../firmware
 cd ..
 rm -fdr boot-firmware
 if [[ `ls firmware/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf}` ]] > /dev/null 2>&1; then
-	sleep .50
-	echo -en " ${PNK}[${FIN}${WHT}pass${FIN}${PNK}]${FIN}"
+	:;
 else
 	echo -en " ${YLW}[${FIN}${RED}failed${FIN}${YLW}]${FIN}"; echo ""
 	exit 1
