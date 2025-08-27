@@ -40,9 +40,9 @@ fi
 
 kali_keyring (){
 URL="http://http.kali.org/pool/main/k/kali-archive-keyring/"
-FILE="kali-archive-keyring_2024.1_all.deb"
+FILE="kali-archive-keyring_2025.1_all.deb"
 if [[ `dpkg -l | grep "kali-archive-keyring"` ]]; then
-	if [[ `dpkg -l | grep "kali-archive-keyring" | tr -d -c 0-9` == "20241" ]]; then
+	if [[ `dpkg -l | grep "kali-archive-keyring" | tr -d -c 0-9` == "20251" ]]; then
 		:;
 	else
 		apt purge -y kali-archive-keyring
