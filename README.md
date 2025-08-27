@@ -14,9 +14,8 @@ Raspberry Pi 5				bcm2712 / ARM64
 * [Raspberry Pi Hardware](https://www.raspberrypi.org/documentation/hardware/raspberrypi)
 * [The config dot txt](https://www.raspberrypi.com/documentation/computers/config_txt.html#what-is-config-txt)
 
-### Host dependencies for Debian Bookworm and Ubuntu Jammy Jellyfish / Noble Numbat
-* **Debian Bookworm** (testing)
-* **Ubuntu Jammy Jellyfish** (recommended)
+### Host dependencies for Debian Trixie and Ubuntu Noble Numbat
+* **Debian Trixie** (testing)
 * **Ubuntu Noble Numbat** (recommended)
 
 **Install options:**
@@ -80,7 +79,7 @@ Ccache:			# Compiler cache
 
 Distribution
 Distro:			# Supported: debian, devuan and ubuntu
-Release:		# Debian: bookworm, testing, unstable and sid
+Release:		# Debian: bookworm, trixie, testing, unstable and sid
 			# Devuan: daedalus, excalibur, testing, unstable and ceres
 			# https://www.devuan.org/os/announce/excalibur-usrmerge-announce-2024-02-20.html
 			# Ubuntu: focal, jammy and noble

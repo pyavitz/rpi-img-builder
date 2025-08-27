@@ -212,7 +212,26 @@ Description: Linux kernel debugging symbols for $version
  all the necessary debug symbols for the kernel and its modules.
 EOF
 
-cat <<EOF > debian/rules
+if [ "$host_codename" = "trixie" ] ; then
+	cat <<EOF > debian/rules
+#!$(command -v $MAKE) -f
+
+srctree ?= .
+
+binary-arch:
+	\$(MAKE) KERNELRELEASE=${version} ARCH=${ARCH} \
+	KBUILD_BUILD_VERSION=${revision} -f \$(srctree)/Makefile
+	\$(MAKE) KERNELRELEASE=${version} ARCH=${ARCH} \
+	KBUILD_BUILD_VERSION=${revision} -f \$(srctree)/Makefile intdeb-pkg
+
+clean:
+	rm -rf debian/*tmp debian/files
+	\$(MAKE) clean
+
+binary: binary-arch
+EOF
+else
+	cat <<EOF > debian/rules
 #!$(command -v $MAKE) -f
 
 srctree ?= .
@@ -231,6 +250,7 @@ clean:
 
 binary: binary-arch
 EOF
+fi
 chmod +x debian/rules
 
 exit 0

@@ -25,5 +25,7 @@ linux_path="$LINUX_PATH"
 overlays_path="$OVERLAY_PATH"
 boot_path="$INSTALL_PATH"
 karch="$ARCH"
+# host codename
+host_codename="$HOST_CODENAME"
 EOF
 }

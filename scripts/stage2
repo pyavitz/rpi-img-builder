@@ -270,6 +270,15 @@ else
 	rm -f /root/systemd-binfmt-fixups
 fi
 
+# debian trixie fixups (until proper solution found)
+if [[ "$ARCH" == "arm" && "$DISTRO_VERSION" =~ ^(excalibur|trixie)$ ]]; then
+	mv -f /usr/share/initramfs-tools/hooks/kmod /etc/opt/kmod.orig
+	mv -f /root/kmod /usr/share/initramfs-tools/hooks/
+	chmod +x /usr/share/initramfs-tools/hooks/kmod
+else
+	rm -f /root/kmod
+fi
+
 # firmware
 firmware
 

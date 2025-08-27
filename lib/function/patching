@@ -4,26 +4,30 @@
 firmware (){
 FIRMWARE="https://github.com/raspberrypi/firmware.git"
 rm -fdr firmware
-echo -e "Downloading firmware ..."
 git clone -q --depth=1 --filter=blob:none --sparse  ${FIRMWARE} boot-firmware
 cd boot-firmware
 git sparse-checkout add boot &> /dev/null
-echo -en "Checking firmware"
 rm -fdr boot/{overlays,*.dtb,kernel*}
 mv boot ../firmware
 cd ..
 rm -fdr boot-firmware
-if [[ `ls firmware/{fixup4.dat,fixup4cd.dat,fixup4db.dat,fixup4x.dat,start4.elf,start4cd.elf,start4db.elf,start4x.elf}` ]] > /dev/null 2>&1; then
+RPI_FW=( "firmware/fixup4.dat" "firmware/fixup4cd.dat" "firmware/fixup4db.dat" "firmware/fixup4x.dat" "firmware/start4.elf" \
+	 "firmware/start4cd.elf" "firmware/start4db.elf" "firmware/start4x.elf" "firmware/bootcode.bin" "firmware/fixup.dat" \
+	 "firmware/fixup_cd.dat" "firmware/fixup_db.dat" "firmware/fixup_x.dat" "firmware/start.elf" "firmware/start_cd.elf" \
+	 "firmware/start_db.elf" "firmware/start_x.elf" )
+RPI_FW_CHK="true"
+
+for bins in "${RPI_FW[@]}"; do
+	if [[ ! -f "$bins" ]]; then
+		echo -e "Error: '$bins' missing."
+		RPI_FW_CHK="false"
+		break
+	fi
+done
+if "$RPI_FW_CHK"; then
 	:;
 else
-	echo -en " ${YLW}[${FIN}${RED}failed${FIN}${YLW}]${FIN}"; echo ""
-	exit 1
-fi
-if [[ `ls firmware/{bootcode.bin,fixup.dat,fixup_cd.dat,fixup_db.dat,fixup_x.dat,start.elf,start_cd.elf,start_db.elf,start_x.elf}` ]] > /dev/null 2>&1; then
-	sleep .50
-	echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
-else
-	echo -en " ${YLW}[${FIN}${RED}failed${FIN}${YLW}]${FIN}"; echo ""
+	echo -e "RPI FW Check ${YLW}[${FIN}${RED}failed${FIN}${YLW}]${FIN}"; echo ""
 	exit 1
 fi
 }

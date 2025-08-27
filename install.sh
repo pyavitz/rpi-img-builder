@@ -23,20 +23,20 @@ else
 	echo -e "${TXT}Please check your internet connection and try again${FIN}."
 	exit 1
 fi
-if [[ `command -v sudo` ]]; then
-	:;
-else
-	echo ""
-	echo -e "Missing dependency: sudo"
-	echo -e "https://wiki.debian.org/sudo"
-	exit 1
-fi
 if [[ `command -v curl` ]]; then
 	:;
 else
 	echo ""
 	echo -e "Missing dependency: curl"
 	sudo apt install -y curl
+	exit 1
+fi
+if [[ `command -v sudo` ]]; then
+	:;
+else
+	echo ""
+	echo -e "Missing dependency: sudo"
+	echo -e "https://wiki.debian.org/sudo"
 	exit 1
 fi
 if [[ `command -v make` ]]; then
@@ -49,7 +49,7 @@ else
 fi
 echo -en "${TXT}Checking Host Machine:${FIN} "
 sleep .50
-if [[ "$HOST_CODENAME" =~ ^(bullseye|bookworm|jammy|noble)$ ]]; then
+if [[ "$HOST_CODENAME" =~ ^(bullseye|bookworm|trixie|jammy|noble)$ ]]; then
 	echo -en "${PNK}[${FIN}${GRN}${HOST_PRETTY}${FIN}${PNK}]${FIN}"
 	echo ""
 else

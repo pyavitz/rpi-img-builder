@@ -51,7 +51,7 @@ SOURCES_LIST="${P_VALUE}/etc/apt/sources.list.d/${DISTRO}.sources"
 
 devuan_release (){
 POOL="main contrib non-free non-free-firmware"
-if [[ "$DISTRO_VERSION" =~ ^(daedalus)$ ]]; then
+if [[ "$DISTRO_VERSION" =~ ^(daedalus|excalibur)$ ]]; then
 	tee ${SOURCES_LIST} <<EOF
 Types: deb
 URIs: ${MIRROR}

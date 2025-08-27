@@ -11,6 +11,9 @@ if [[ "$COMPILER_CLANG" == "clang" ]]; then
 		if [[ `command -v clang-14` ]] && [[ `command -v clang-15` ]] \
 		&& [[ `command -v clang-16` ]]; then :; else apt install -y ${DEB_CLANG_DEPENDS}; fi
 	fi
+	if [[ "$HOST_CODENAME" == "trixie" ]]; then
+		if [[ `command -v clang` ]]; then :; else apt install -y clang; fi
+	fi
 	if [[ "$HOST_CODENAME" == "jammy" ]]; then
 		if [[ `command -v clang-14` ]] && [[ `command -v clang-15` ]]; then :; else apt install -y ${UBU_JAMMY_CLANG_DEPENDS}; fi
 	fi

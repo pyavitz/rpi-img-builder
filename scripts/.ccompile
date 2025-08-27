@@ -21,11 +21,23 @@ sudo debconf-apt-progress -- apt install -y \
 	device-tree-compiler libfdt-dev python3-distutils python3-dev swig fakeroot figlet \
 	lzop lz4 aria2 pv crossbuild-essential-arm64 crossbuild-essential-armhf u-boot-tools \
 	distro-info-data lsb-release libelf-dev fdisk kpartx ccache xz-utils gcc-11 gcc-12 \
-	python-is-python3 python-dev-is-python3 zstd gcc-arm-none-eabi gcc-11-arm-linux-gnueabihf \
+	python-is-python3 python-dev-is-python3 zstd gcc-11-arm-linux-gnueabihf \
 	gcc-11-aarch64-linux-gnu gcc-12-aarch64-linux-gnu gcc-12-arm-linux-gnueabihf \
 	colorized-logs gdisk jq wget btrfs-progs xfsprogs gcc-11-arm-linux-gnueabi \
 	gcc-12-arm-linux-gnueabi crossbuild-essential-armel python3-setuptools \
 	python3-pyelftools curl mtools gcc-11-plugin-dev gcc-12-plugin-dev ccache
+}
+
+trixie-ccompile (){
+sudo debconf-apt-progress -- apt install -y \
+	build-essential bison bc git dialog patch dosfstools zip unzip parted \
+	debootstrap qemu-user-static rsync kmod cpio flex libssl-dev libncurses5-dev \
+	device-tree-compiler libfdt-dev python3-dev swig fakeroot mmdebstrap fdisk \
+	lzop lz4 aria2 pv distro-info-data lsb-release libelf-dev kpartx zstd gcc \
+	crossbuild-essential-arm64 crossbuild-essential-armhf crossbuild-essential-armel \
+	gcc-aarch64-linux-gnu gcc-arm-linux-gnueabihf gcc-arm-linux-gnueabi colorized-logs \
+	gdisk jq wget btrfs-progs xfsprogs curl libgnutls28-dev uuu uuid-dev mtools \
+	gcc-14-plugin-dev figlet clang ccache xz-utils
 }
 
 jammy-ccompile (){
@@ -68,7 +80,7 @@ if [[ "$HOST_ARCH" == "aarch64" ]]; then
 	exit 1
 fi
 
-if [[ "$HOST_CODENAME" =~ ^(bullseye|bookworm|jammy|noble)$ ]]; then
+if [[ "$HOST_CODENAME" =~ ^(bullseye|bookworm|trixie|jammy|noble)$ ]]; then
 	echo ""
 	${HOST_CODENAME}-ccompile
 else

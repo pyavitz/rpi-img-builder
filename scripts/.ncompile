@@ -26,6 +26,17 @@ sudo debconf-apt-progress -- apt install -y \
 	ccache
 }
 
+trixie-ncompile (){
+sudo debconf-apt-progress -- apt install -y \
+	build-essential bison bc git dialog patch dosfstools zip unzip parted \
+	debootstrap qemu-user-static rsync kmod cpio flex libssl-dev libncurses5-dev \
+	device-tree-compiler libfdt-dev swig fakeroot mmdebstrap fdisk xz-utils zstd gcc \
+	lzop lz4 aria2 pv distro-info-data lsb-release libelf-dev kpartx clang ccache \
+	crossbuild-essential-armhf crossbuild-essential-armel gcc-arm-linux-gnueabihf \
+	gcc-arm-linux-gnueabi colorized-logs gdisk jq wget btrfs-progs xfsprogs \
+	curl libgnutls28-dev uuu uuid-dev mtools gcc-14-plugin-dev figlet
+}
+
 jammy-ncompile (){
 sudo debconf-apt-progress -- apt install -y \
 	build-essential bison bc git dialog patch dosfstools mtools mmdebstrap \
@@ -63,7 +74,7 @@ if [[ "$HOST_ARCH" == "x86_64" ]]; then
 	exit 0
 fi
 
-if [[ "$HOST_CODENAME" =~ ^(bullseye|bookworm|jammy|noble)$ ]]; then
+if [[ "$HOST_CODENAME" =~ ^(bullseye|bookworm|trixie|jammy|noble)$ ]]; then
 	echo ""
 	${HOST_CODENAME}-ncompile
 else
