@@ -28,23 +28,23 @@ Raspberry Pi 5				bcm2712 / ARM64
 #### Install dependencies
 
 ```sh
-make ccompile	# Install x86-64 dependencies
-make ncompile	# Install Aarch64 dependencies
+make ccompile			# Install x86-64 dependencies
+make ncompile			# Install Aarch64 dependencies
 ```
 
 #### Menu interface
 
 ```sh
-make config     # Create user data file
-make menu       # Open menu interface
-make dialogrc   # Set builder theme (optional)
+make config     		# Create user data file
+make menu       		# Open menu interface
+make dialogrc   		# Set builder theme (optional)
 ```
 
 #### Command list
 
 ```sh
-make list		# List boards
-make all board=xxx	# Kernel > rootfs > image
+make list				# List boards
+make all board=xxx		# Kernel > rootfs > image
 make kernel board=xxx	# Builds linux kernel package
 make commit board=xxx	# Builds linux kernel package
 make rootfs board=xxx	# Create rootfs tarball
@@ -54,47 +54,47 @@ make image board=xxx	# Make bootable image
 #### Miscellaneous
 
 ```sh
-make clean      # Clean up rootfs and image errors
-make purge      # Remove source directory
-make purge-all  # Remove source and output directory
-make commands   # List more commands
-make check      # Shows latest revision of selected branch
+make clean      		# Clean up rootfs and image errors
+make purge      		# Remove source directory
+make purge-all  		# Remove source and output directory
+make commands   		# List more commands
+make check      		# Shows latest revision of selected branch
 ```
 
 #### Config Menu
 * Review the userdata.txt file for further options: locales, timezone, nameserver(s) and extra wireless support
 * 1 active | 0 inactive
 ```sh
-Name:			# Your name
-Username:		# Your username
-Password:		# Your password
-Enable root:		# Set root password to `toor`
+Name:					# Your name
+Username:				# Your username
+Password:				# Your password
+Enable root:			# Set root password to `toor`
 
 Linux kernel
-Branch:			# Supported: 6.1.y and above
-Build:			# Kernel build version number
-Menuconfig:		# Kernel menuconfig
-Compiler:		# GNU Compiler Collection / Clang
-Ccache:			# Compiler cache
+Branch:					# Default: 6.12.y
+Build:					# Kernel build version number
+Menuconfig:				# Kernel menuconfig
+Compiler:				# GNU Compiler Collection / Clang
+Ccache:					# Compiler cache
 
 Distribution
-Distro:			# Supported: debian, devuan and ubuntu
-Release:		# Debian: bookworm, trixie, testing, unstable and sid
-			# Devuan: daedalus, excalibur, testing, unstable and ceres
-			# https://www.devuan.org/os/announce/excalibur-usrmerge-announce-2024-02-20.html
-			# Ubuntu: focal, jammy and noble
-NetworkManager		# 1 networkmanager | 0 ifupdown
+Distro:					# Supported: debian, devuan and ubuntu
+Release:				# Debian: bookworm, trixie, testing, unstable and sid
+						# Devuan: daedalus, excalibur, testing, unstable and ceres
+						# https://www.devuan.org/os/announce/excalibur-usrmerge-announce-2024-02-20.html
+						# Ubuntu: focal, jammy, noble, etc ...
+NetworkManager			# 1 networkmanager | 0 ifupdown
 
 Customize
-Defconfig:		# User defconfig
-Name:			# Name of _defconfig (Must be placed in defconfig dir.)
+Defconfig:				# User defconfig
+Name:					# Name of _defconfig (Must be placed in defconfig dir.)
 
 User options
-Verbosity:		# Verbose
-Devel Rootfs:		# Developer rootfs tarball
-Compress img:		# Auto compress img > img.xz
-User scripts:		# Review the README in the files/userscripts directory
-User service:		# Create user during first boot (bypass the user information above)
+Verbosity:				# Verbose
+Devel Rootfs:			# Developer rootfs tarball
+Compress img:			# Auto compress img > img.xz
+User scripts:			# Review the README in the files/userscripts directory
+User service:			# Create user during first boot (bypass the user information above)
 ```
 
 #### Customize image
@@ -143,9 +143,9 @@ COMMIT="9ed4f05ba2e2bcd9065831674e97b2b1283e866d"
 #### BOOT: useraccount.txt
 * Input your user information
 ```sh
-NAME=""				# Your name
-USERNAME=""			# Username
-PASSWORD=""			# Password
+NAME=""					# Your name
+USERNAME=""				# Username
+PASSWORD=""				# Password
 ```
 
 #### BOOT: credentials.txt
@@ -153,25 +153,25 @@ PASSWORD=""			# Password
 Set to ENABLE="true" and input your wifi information.
 ENABLE="false"			# Enable service
 
-SSID=""				# Service set identifier
-PASSKEY=""			# Wifi password
+SSID=""					# Service set identifier
+PASSKEY=""				# Wifi password
 COUNTRYCODE=""			# Your country code
 
 # set static ip (ifupdown)
 MANUAL="false"			# Set to true to enable a static ip
-IPADDR=""			# Static ip address
-NETMASK=""			# Your Netmask
-GATEWAY=""			# Your Gateway
+IPADDR=""				# Static ip address
+NETMASK=""				# Your Netmask
+GATEWAY=""				# Your Gateway
 NAMESERVERS=""			# Your preferred dns
 
 # set static ip (network-manager)
 MANUAL="false"			# Set to true to enable a static ip
-IPADDR=""			# Static ip address
-GATEWAY=""			# Your Gateway
-DNS=""				# Your preferred dns
+IPADDR=""				# Static ip address
+GATEWAY=""				# Your Gateway
+DNS=""					# Your preferred dns
 
 # change hostname
-HOSTNAME="raspberrypi"		# Hostname
+HOSTNAME="raspberrypi"	# Hostname
 
 For headless use: ssh user@ipaddress
 ```
