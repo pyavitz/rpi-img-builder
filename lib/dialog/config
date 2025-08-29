@@ -2,7 +2,7 @@
 
 source lib/function/config
 # builder and profile versions
-BUILDER="6.10"
+BUILDER="7.0"
 PROFILE="1.2"
 
 if [[ `command -v dialog` ]]; then :; else sudo apt install dialog; fi
@@ -109,8 +109,8 @@ echo 'ENABLE_COMMIT="0"' >> tmp0
 echo 'COMMIT=""' >> tmp0
 echo CORES=\`nproc\` >> tmp0
 echo 'CFLAGS=""' >> tmp0
-echo 'KBUSER="playboy"' >> tmp0
-echo 'KBHOST="penguin"' >> tmp0
+echo 'KBUSER="henery"' >> tmp0
+echo 'KBHOST="hawk"' >> tmp0
 echo LOCALE='"'${LOCALE}'"' >> tmp0
 echo LOCALE_LC_ALL='"'${LOCALE_LC_ALL}'"' >> tmp0
 echo TIMEZONE='"'${TIMEZONE}'"' >> tmp0

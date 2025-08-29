@@ -28,7 +28,7 @@ else
 		fi
 	done
 fi
-if [[ "$BUILDER" == "6.10" ]]; then :; else echo -e "${EXPIRED}"; exit 0; fi
+if [[ "$BUILDER" == "7.0" ]]; then :; else echo -e "${EXPIRED}"; exit 0; fi
 }
 
 # board dot txt
