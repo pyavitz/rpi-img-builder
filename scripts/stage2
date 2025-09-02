@@ -360,6 +360,12 @@ rm -f {*.patch,*led*,*eeprom*}
 # whiptail color palette
 if [[ "$DISTRO" == "ubuntu" ]]; then palette_dark; fi
 
+# Add color to serial console
+if [[ -f "/etc/bash.bashrc" ]]; then
+	echo "export TERM=xterm-256color" >> /etc/bash.bashrc
+	echo 'export PS1="\[\033[1;38;5;196m\]\h\[\033[1;48;5;11;38;5;17m\]\u\[\033[0;32m\]\w\[\033[0m\]: "' >> /etc/bash.bashrc
+fi
+
 # xorg confs
 if [[ "$BOARD_EXT" =~ ^(rpi-4|rpi-5)$ ]]; then xorg_confs; fi
 
