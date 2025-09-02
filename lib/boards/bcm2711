@@ -32,6 +32,9 @@ IMG_EXP="${BOARD_EXT}-*.img*"
 CONSOLE="console=serial0,115200 console=tty1"
 EXTRA="loglevel=5 net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm"
 
+# Serial
+DEVUAN_SERIAL="T0:23:respawn:/sbin/getty -L serial0 115200 vt100"
+
 # packaging
 KERNEL_IMG="kernel8.img"
 SERIES="bcm2711-rpi"

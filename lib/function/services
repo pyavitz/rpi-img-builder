@@ -174,4 +174,7 @@ update-rc.d leds defaults 2
 update-rc.d bthelper defaults 2
 update-rc.d zramswap defaults 2
 update-rc.d credentials defaults 2
+if [[ -f "/etc/inittab" ]] && [[ -v "DEVUAN_SERIAL" ]] && [[ ! -z "$DEVUAN_SERIAL" ]]; then
+	echo "${DEVUAN_SERIAL}" >> /etc/inittab
+fi
 }
