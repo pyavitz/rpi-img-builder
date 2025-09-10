@@ -98,7 +98,7 @@ if [[ -f "${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz" ]]; then
 	echo_bdone
 else
 	echo -e "${YLW}Missing rootfs tarball${FIN}!"
-	make cleanup
+	make clean
 	exit 1
 fi
 echo ""
