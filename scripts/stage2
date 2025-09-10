@@ -68,7 +68,7 @@ if [[ "$DISTRO" == "devuan" ]]; then
 	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} ${WIRELESS} openresolv ${NETWORKING}
 fi
 if [[ "$DISTRO" == "kali" ]]; then
-	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} ${WIRELESS} openssh-client openssh-server dbus-user-session libical3 resolvconf haveged ntpdate ${NETWORKING}
+	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} ${WIRELESS} openssh-client openssh-server dbus-user-session libical3 resolvconf haveged ${NETWORKING}
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
 	if [[ "$DISTRO_VERSION" =~ ^(focal|jammy)$ ]]; then RESOLV="resolvconf"; else RESOLV="systemd-resolved"; fi
