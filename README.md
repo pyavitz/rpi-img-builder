@@ -100,7 +100,10 @@ User service:			# Create user during first boot (bypass the user information abo
 #### Customize image
 * custom.txt
 ```sh
-# Image Size
+# Bootstrap: if false use debootstrap
+MMDEBSTRAP="true"
+
+# Image Size: 3584MB 4096MB
 IMGSIZE="4096MB"
 
 # Root Filesystem Types: ext4 btrfs xfs
