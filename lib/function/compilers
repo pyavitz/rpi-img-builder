@@ -2,26 +2,10 @@
 
 linux_compilers (){
 # install and setup compilers
-DEB_CLANG_DEPENDS="clang clang-14 clang-15 clang-16 lld lld-14 lld-15 lld-16 llvm"
-UBU_JAMMY_CLANG_DEPENDS="clang clang-14 clang-15 lld lld-14 lld-15 llvm"
-UBU_NOBLE_CLANG_DEPENDS="clang clang-14 clang-15 clang-16 clang-17 clang-18 clang-19 lld lld-14 lld-15 lld-16 lld-17 lld-18 lld-19 llvm"
 COMPILER_CLANG=`echo ${COMPILER} | sed 's/[0-9]//g' | sed 's/-//g'`
 if [[ "$COMPILER_CLANG" == "clang" ]]; then
-	if [[ "$HOST_CODENAME" == "bookworm" ]]; then
-		if [[ `command -v clang-14` ]] && [[ `command -v clang-15` ]] \
-		&& [[ `command -v clang-16` ]]; then :; else apt install -y ${DEB_CLANG_DEPENDS}; fi
-	fi
-	if [[ "$HOST_CODENAME" == "trixie" ]]; then
-		if [[ `command -v clang` ]]; then :; else apt install -y clang; fi
-	fi
-	if [[ "$HOST_CODENAME" == "jammy" ]]; then
-		if [[ `command -v clang-14` ]] && [[ `command -v clang-15` ]]; then :; else apt install -y ${UBU_JAMMY_CLANG_DEPENDS}; fi
-	fi
-	if [[ "$HOST_CODENAME" == "noble" ]]; then
-		if [[ `command -v clang-14` ]] && [[ `command -v clang-15` ]] \
-		&& [[ `command -v clang-16` ]] && [[ `command -v clang-17` ]] \
-		&& [[ `command -v clang-18` ]] && [[ `command -v clang-19` ]]; then :; else apt install -y ${UBU_NOBLE_CLANG_DEPENDS}; fi
-	fi
+	# if not the host default the user must install and define the version of choice
+	if [[ `command -v clang` ]]; then :; else apt install -y clang; fi
 	# builder doesn't support compiling armel with clang
 	if [[ "$ARCH_EXT" == "armel" ]]; then COMPILER_CLANG="gcc"; COMPILER="gcc"; fi
 fi

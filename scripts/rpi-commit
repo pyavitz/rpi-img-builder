@@ -4,6 +4,7 @@ source lib/source
 validation
 if [[ -f "board.txt" ]]; then . board.txt; else noboard; fi
 source kernel.txt
+if [[ -v "SPOOF_HOST" && ! -z "$SPOOF_HOST" ]]; then HOST_CODENAME="${SPOOF_HOST}"; fi
 source userdata.txt
 if [ $VERBOSE -eq 1 ]; then set -x; fi
 source packaging/pkgvars
