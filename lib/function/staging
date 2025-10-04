@@ -184,6 +184,11 @@ arm_boost=1
 usb_max_current_enable=1
 disable_fw_kms_setup=1
 
+# pi5 overclock 3000mhz
+#over_voltage_delta=50000
+#arm_freq=3000
+#gpu_freq=1000
+
 # pwm fan
 #dtparam=fan_temp0=50000
 #dtparam=fan_temp0_hyst=2000
