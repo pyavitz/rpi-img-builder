@@ -7,7 +7,7 @@ CKERNEL="linux"
 
 # host machine
 HOST_ARCH=`uname -m`
-HOST_CODENAME=`cat /etc/os-release | grep -w "VERSION_CODENAME" | sed 's/VERSION_CODENAME=//g'`
+HOST_CODENAME=`cat /etc/os-release | grep -w "VERSION_CODENAME" | sed 's/VERSION_CODENAME=//g; s/"//g'`
 HOST_MACHINE=`cat /etc/os-release | grep -w NAME | sed 's/NAME=//g' | sed 's/"//g' | sed 's/ GNU\/Linux//g'`
 HOST_PRETTY=`cat /etc/os-release | grep -w "PRETTY_NAME" | sed 's/PRETTY_NAME=//g' | sed 's/"//g'`
 EXPIRED="The userdata.txt file has expired. Create a new one."
