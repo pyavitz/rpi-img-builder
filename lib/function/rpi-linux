@@ -18,10 +18,9 @@ if [[ `wget -S --spider ${GIT_URL}/blob/rpi-${VERSION}/Makefile 2>&1 | grep 'HTT
 	download_options
 	if [[ "$GIT_SHALLOW" == "true" ]]; then verify_commit; fi
 	if [[ -d "${KERNEL}-${VERSION}" ]] && [[ -d "${KERNEL}-${VERSION}.backup" ]]; then
-		echo -en "${KERNEL}-${VERSION}"
-		echo -en " ${PNK}[${FIN}${YLW}restoring${FIN}${PNK}]${FIN}"
+		echo -en "${KERNEL}-${VERSION}:"
+		echo -en " Restoring"
 		rm -fdr ${KERNEL}-${VERSION}
-		echo -en " ${WHT}...${FIN}"
 		mv -f ${KERNEL}-${VERSION}.backup ${KERNEL}-${VERSION}
 		if [[ "$GIT_SHALLOW" == "false" ]]; then
 			cd ${KERNEL}-${VERSION}; git pull -q; make clean; cd ..
@@ -29,7 +28,7 @@ if [[ `wget -S --spider ${GIT_URL}/blob/rpi-${VERSION}/Makefile 2>&1 | grep 'HTT
 			cd ${KERNEL}-${VERSION}; make clean; cd ..
 		fi
 		cp -r ${KERNEL}-${VERSION} ${KERNEL}-${VERSION}.backup
-		echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
+		echo -e ", done."
 	else
 		echo -e "This may take a while ..."
 		echo ""
@@ -37,14 +36,14 @@ if [[ `wget -S --spider ${GIT_URL}/blob/rpi-${VERSION}/Makefile 2>&1 | grep 'HTT
 		sleep .50
 		if [[ -d "${KERNEL}-${VERSION}" ]] && [[ -f "${KERNEL}-${VERSION}/Makefile" ]]; then
 			cd ${KERNEL}-${VERSION}; make clean; cd ..
-			echo -en "${KERNEL}-${VERSION}"
-			echo -en " ${PNK}[${FIN}${WHT}creating backup${FIN}${PNK}]${FIN}"
+			echo -en "${KERNEL}-${VERSION}:"
+			echo -en " Creating backup"
 			cp -r ${KERNEL}-${VERSION} ${KERNEL}-${VERSION}.backup
-			echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
+			echo -e ", done."
 		else
-			echo -en "${KERNEL}-${VERSION}"
-			echo -en " ${PNK}[${FIN}${WHT}download${FIN}${PNK}]${FIN}"
-			echo -e " ${PNK}[${FIN}${RED}failed${FIN}${PNK}]${FIN}"
+			echo -en "${KERNEL}-${VERSION}:"
+			echo -en " Download"
+			echo -e ", failed."
 			exit 0
 		fi
 	fi
@@ -83,7 +82,7 @@ echo -en "Commit:"
 if [[ "$GIT_COMMIT" == "$GIT_HASH" ]]; then
 	echo -en " ${GIT_COMMIT_SHORT}"
 	sleep .50
-	echo -e " ${PNK}[${FIN}${GRN}ok${FIN}${PNK}]${FIN}"
+	echo -e ", ok."
 else
 	
 	echo -en " ${GIT_HASH_SHORT}"
@@ -92,7 +91,7 @@ else
 	sed -i 's/^GIT_COMMIT=.*/GIT_COMMIT="'"${GIT_HASH}"'"/' ../.cache/git_shallow.${KERNEL}-${VERSION}
 	echo -en "Removing: ${GIT_COMMIT_SHORT}"
 	rm -fdr ${KERNEL}-${VERSION} ${KERNEL}-${VERSION}.backup
-	echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
+	echo -e ", done."
 	echo ""
 fi
 }
