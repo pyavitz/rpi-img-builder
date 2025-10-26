@@ -52,13 +52,10 @@ if [[ -f "${LOG_FILE}" ]]; then
 	else
 		FAILED="false"
 	fi
-	if [[ "$SKIPPING" == "true" ]] && [[ "$FAILED" == "false" ]]; then
-		echo -en " ${PNK}[${FIN}${YLW}done${FIN}${PNK}]${FIN}"
+	if [[ "$SKIPPING" == "true" || "$SKIPPING" == "false" ]] && [[ "$FAILED" == "false" ]]; then
+		echo -en ", done."
 	fi
-	if [[ "$SKIPPING" == "false" ]] && [[ "$FAILED" == "false" ]]; then
-		echo -en " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
-	fi
-	echo -en " ${WHT}log: ${PATHTOFILE}${FIN}"
+	echo -en " log: ${PATHTOFILE}${FIN}"
 	echo -e ""
 fi
 }
@@ -98,7 +95,7 @@ linux_patches (){
 linux_log
 echo "" >> ${LOG_FILE}
 echo "# APPLYING PATCHES" >> ${LOG_FILE}
-echo -en "${WHT}Patches${FIN} ${PNK}[${FIN}${WHT}applying${FIN}${PNK}]${FIN}"
+echo -en "Patches: Applying"
 if [[ -d "../../patches/all/${VERSION}" ]]; then
 	if [[ `ls ../../patches/all/${VERSION}/*.patch` ]] > /dev/null 2>&1; then
 		for i in ../../patches/all/${VERSION}/*.patch; do patch -N -p1 < $i; done >> ${LOG_FILE}
@@ -123,7 +120,7 @@ if [[ `ls ../../patches/userpatches/*.patch` ]] > /dev/null 2>&1; then
 	linux_user_log
 	echo "" >> ${LOG_FILE}
 	echo "# APPLYING USER PATCHES" >> ${LOG_FILE}
-	echo -en "${WHT}User Patches${FIN} ${PNK}[${FIN}${WHT}applying${FIN}${PNK}]${FIN}"
+	echo -en "User Patches: Applying"
 	for i in ../../patches/userpatches/*.patch; do patch -N -p1 < $i; done >> ${LOG_FILE}
 	check_log
 fi

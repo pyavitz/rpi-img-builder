@@ -2,18 +2,18 @@
 
 driver_download (){
 if [[ -d "${DRIVER}" ]]; then
-	echo -en "${WHT}${DRIVER_INFO}${FIN}"
+	echo -en "${DRIVER_INFO}:"
 	cd ${DRIVER}
 	git config pull.rebase false
-	echo -en " ${PNK}[${FIN}${WHT}pulling${FIN}${PNK}]${FIN}"
+	echo -en " Pulling"
 	git pull -q
 	cd ..
-	echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
+	echo -e ", done."
 else
-	echo -en "${WHT}${DRIVER_INFO}${FIN} "
-	echo -en "${PNK}[${FIN}${WHT}cloning${FIN}${PNK}]${FIN}"
+	echo -en "${DRIVER_INFO}:"
+	echo -en " Cloning"
 	git clone -q ${DRIVER_URL} ${DRIVER}
-	echo -e " ${PNK}[${FIN}${GRN}done${FIN}${PNK}]${FIN}"
+	echo -e ", done."
 fi
 }
 
