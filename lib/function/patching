@@ -46,7 +46,7 @@ if [[ -f "${LOG_FILE}" ]]; then
 		FAILED="true"
 		grep "FAILED" "${LOG_FILE}" | echo -en " ${PNK}[${FIN}"${RED}fails${FIN} ${WHT}`wc -l`${FIN}"${PNK}]${FIN}"
 		if [ $VERBOSE -eq 1 ]; then
-			echo -en " ${WHT}log: ${PATHTOFILE}${FIN}"
+			echo -en " ${WHT}log: ${PATHTOFILE}"
 			exit 1
 		fi
 	else
