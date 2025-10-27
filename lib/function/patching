@@ -27,7 +27,7 @@ done
 if "$RPI_FW_CHK"; then
 	:;
 else
-	echo -e "RPI FW Check ${YLW}[${FIN}${RED}failed${FIN}${YLW}]${FIN}"; echo ""
+	echo -e "RPI FW Check, Failed."; echo ""
 	exit 1
 fi
 }
@@ -38,13 +38,13 @@ if [[ -f "${LOG_FILE}" ]]; then
 	PATHTOFILE=`echo ${LOG_FILE} | sed 's/..\/..\///g'`
 	if [[ `grep "Skipping patch" "${LOG_FILE}"` ]]; then
 		SKIPPING="true"
-		grep "Skipping patch" "${LOG_FILE}" | echo -en " ${PNK}[${FIN}"${WHT}skipping${FIN} ${WHT}`wc -l`${FIN}"${PNK}]${FIN}"
+		grep "Skipping patch" "${LOG_FILE}" | echo -en ", Skipping (`wc -l`)"
 	else
 		SKIPPING="false"
 	fi
 	if [[ `grep "FAILED" "${LOG_FILE}"` ]]; then
 		FAILED="true"
-		grep "FAILED" "${LOG_FILE}" | echo -en " ${PNK}[${FIN}"${RED}fails${FIN} ${WHT}`wc -l`${FIN}"${PNK}]${FIN}"
+		grep "FAILED" "${LOG_FILE}" | echo -en ", Failed (`wc -l`)"
 		if [ $VERBOSE -eq 1 ]; then
 			echo -en " ${WHT}log: ${PATHTOFILE}"
 			exit 1
