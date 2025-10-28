@@ -127,24 +127,24 @@ if [ $USERACCT -eq 0 ]; then
 	# prevent build fail because of white spaces
 	NAME_FIXUP=`echo ${NAME} | sed "s/ //g"`
 	echo "";
-	adduser ${USERNAME} --gecos ${NAME_FIXUP} --disabled-password
+	adduser --verbose ${USERNAME} --gecos ${NAME_FIXUP} --disabled-password
 	echo "${USERNAME}:${PASSWORD}" | chpasswd
-	adduser ${USERNAME} sudo
-	adduser ${USERNAME} audio
-	adduser ${USERNAME} dialout
-	adduser ${USERNAME} video
-	adduser ${USERNAME} disk
-	adduser ${USERNAME} plugdev
-	adduser ${USERNAME} netdev
-	adduser ${USERNAME} bluetooth
-	adduser ${USERNAME} input
-	adduser ${USERNAME} render
-	adduser ${USERNAME} tty
-	adduser ${USERNAME} i2c
+	adduser --verbose ${USERNAME} sudo
+	adduser --verbose ${USERNAME} audio
+	adduser --verbose ${USERNAME} dialout
+	adduser --verbose ${USERNAME} video
+	adduser --verbose ${USERNAME} disk
+	adduser --verbose ${USERNAME} plugdev
+	adduser --verbose ${USERNAME} netdev
+	adduser --verbose ${USERNAME} bluetooth
+	adduser --verbose ${USERNAME} input
+	adduser --verbose ${USERNAME} render
+	adduser --verbose ${USERNAME} tty
+	adduser --verbose ${USERNAME} i2c
 	groupadd gpio
 	groupadd spi
-	adduser ${USERNAME} gpio
-	adduser ${USERNAME} spi
+	adduser --verbose ${USERNAME} gpio
+	adduser --verbose ${USERNAME} spi
 fi
 if [ $USERACCT -eq 1 ]; then
 	mkdir -p /boot/broadcom
