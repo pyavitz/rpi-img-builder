@@ -92,7 +92,7 @@ else
 		wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
 		wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz
 	else
-		EEPROM_VERSION="26.9"
+		EEPROM_VERSION="28.6"
 		wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
 		wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz
 	fi
