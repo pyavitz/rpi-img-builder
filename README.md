@@ -15,7 +15,7 @@ Raspberry Pi 5						bcm2712 / ARM64
 * [The config dot txt](https://www.raspberrypi.com/documentation/computers/config_txt.html#what-is-config-txt)
 
 ### Supported Hosts: Debian Trixie and Ubuntu Noble Numbat
-* **Debian Trixie** (testing)
+* **Debian Trixie** (recommended)
 * **Ubuntu Noble Numbat** (recommended)
 
 **Install options:**
