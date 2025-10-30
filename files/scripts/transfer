@@ -134,7 +134,7 @@ $EN "ROOT Partition: "
 read R_FSTYPE
 
 # BOOT PARTITION VARIABLES
-BOOTFS="mkfs.vfat -n"
+BOOTFS="mkfs.fat -F 32 -n"
 BOOTFS_TABLE="/boot/broadcom	vfat	defaults,flush 0 2"
 P_BOOT="p1"
 P_ROOTFS="p2"
