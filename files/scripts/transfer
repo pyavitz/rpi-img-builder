@@ -270,7 +270,7 @@ transfer (){
 cd /
 cp -ax /boot/broadcom/* /mnt/${P_BOOT}/
 #cp -axv . /mnt/${P_ROOTFS}
-tar --exclude='./proc' --exclude='./run' --exclude='./sys' --exclude='./tmp' -C . -cpf - . | tar -C /mnt/${P_ROOTFS} -xf -
+tar --exclude='./mnt' --exclude='./proc' --exclude='./run' --exclude='./sys' --exclude='./tmp' -C . -cpf - . | tar -C /mnt/${P_ROOTFS} -xf -
 mkdir -p /mnt/${P_ROOTFS}/{proc,run,sys,tmp}
 }
 
