@@ -148,31 +148,31 @@ MAKE_BOOTFS="${BOOTFS} ${BOOT_LABEL} ${DEVICE_NODE}${P_BOOT}"
 if [[ "$R_FSTYPE" == "btrfs" || "$R_FSTYPE" == "ext4" || "$R_FSTYPE" == "f2fs" || "$R_FSTYPE" == "xfs" ]]; then
 	if [[ "$R_FSTYPE" == "btrfs" ]]; then
 		MAKE_ROOTFS="mkfs.btrfs -f -L ROOTFS ${DEVICE_NODE}${P_ROOTFS}"
-		MOUNT_ROOTFS="mount -o compress=lzo,noatime,subvol=@ ${DEVICE_NODE}${P_ROOTFS} /mnt/${P_ROOTFS}"
+		MOUNT_ROOTFS="mount -o compress=lzo,noatime,subvol=@ ${DEVICE_NODE}${P_ROOTFS} /transfer/${P_ROOTFS}"
 		ROOTFS_TABLE="btrfs	defaults,compress=lzo,noatime,subvol=@ 0 1"
 		ROOT_FSTYPE="rootfstype=btrfs rootflags=subvol=@"
-		RESIZEFS="btrfs filesystem resize max /mnt/${P_ROOTFS}"
+		RESIZEFS="btrfs filesystem resize max /transfer/${P_ROOTFS}"
 	fi
 	if [[ "$R_FSTYPE" == "ext4" ]]; then
 		MAKE_ROOTFS="mkfs.ext4 -L ROOTFS ${DEVICE_NODE}${P_ROOTFS}"
-		MOUNT_ROOTFS="mount -o defaults,noatime ${DEVICE_NODE}${P_ROOTFS} /mnt/${P_ROOTFS}"
+		MOUNT_ROOTFS="mount -o defaults,noatime ${DEVICE_NODE}${P_ROOTFS} /transfer/${P_ROOTFS}"
 		ROOTFS_TABLE="ext4	defaults,noatime,commit=600,errors=remount-ro 0 1"
 		ROOT_FSTYPE="rootfstype=ext4"
 		RESIZEFS="resize2fs ${DEVICE_NODE}${P_ROOTFS}"
 	fi
 	if [[ "$R_FSTYPE" == "f2fs" ]]; then
 		MAKE_ROOTFS="mkfs.f2fs -f -l ROOTFS ${DEVICE_NODE}${P_ROOTFS}"
-		MOUNT_ROOTFS="mount -o rw,acl,active_logs=6,background_gc=on,user_xattr ${DEVICE_NODE}${P_ROOTFS} /mnt/${P_ROOTFS}"
+		MOUNT_ROOTFS="mount -o rw,acl,active_logs=6,background_gc=on,user_xattr ${DEVICE_NODE}${P_ROOTFS} /transfer/${P_ROOTFS}"
 		ROOTFS_TABLE="f2fs	rw,acl,active_logs=6,background_gc=on,user_xattr 0 0"
 		ROOT_FSTYPE="rootfstype=f2fs"
 		RESIZEFS="resize.f2fs ${DEVICE_NODE}${P_ROOTFS}"
 	fi
 	if [[ "$R_FSTYPE" == "xfs" ]]; then
 		MAKE_ROOTFS="mkfs.xfs -f -L ROOTFS ${DEVICE_NODE}${P_ROOTFS}"
-		MOUNT_ROOTFS="mount -o defaults,noatime ${DEVICE_NODE}${P_ROOTFS} /mnt/${P_ROOTFS}"
+		MOUNT_ROOTFS="mount -o defaults,noatime ${DEVICE_NODE}${P_ROOTFS} /transfer/${P_ROOTFS}"
 		ROOTFS_TABLE="xfs	defaults,noatime 0 1"
 		ROOT_FSTYPE="rootfstype=xfs"
-		RESIZEFS="xfs_growfs -d /mnt/${P_ROOTFS}"
+		RESIZEFS="xfs_growfs -d /transfer/${P_ROOTFS}"
 	fi
 else
 	$EE ""
@@ -223,18 +223,18 @@ parted --script "${DEVICE_NODE}" set 1 boot on
 partprobe "${DEVICE_NODE}"
 sleep 1.25
 if [[ `ls "${DEVICE_NODE}${P_ROOTFS}"` ]]; then
-	mkdir -p /mnt/${P_BOOT}
-	mkdir -p /mnt/${P_ROOTFS}
+	mkdir -p /transfer/${P_BOOT}
+	mkdir -p /transfer/${P_ROOTFS}
 	echo 'y' | $MAKE_BOOTFS
 	echo 'y' | $MAKE_ROOTFS
 	sleep .50
-	mount "${DEVICE_NODE}${P_BOOT}" /mnt/${P_BOOT}
-	mount "${DEVICE_NODE}${P_ROOTFS}" /mnt/${P_ROOTFS}
+	mount "${DEVICE_NODE}${P_BOOT}" /transfer/${P_BOOT}
+	mount "${DEVICE_NODE}${P_ROOTFS}" /transfer/${P_ROOTFS}
 	if [[ "$R_FSTYPE" == "btrfs" ]]; then
-		btrfs subvolume create /mnt/${P_ROOTFS}/@
+		btrfs subvolume create /transfer/${P_ROOTFS}/@
 	fi
 	sync
-	umount /mnt/${P_ROOTFS}
+	umount /transfer/${P_ROOTFS}
 	sleep .50
 	if [[ "$R_FSTYPE" == "f2fs" ]]; then
 		$RESIZEFS
@@ -268,10 +268,10 @@ fi
 # TRANSFER
 transfer (){
 cd /
-cp -ax /boot/broadcom/* /mnt/${P_BOOT}/
-#cp -axv . /mnt/${P_ROOTFS}
-tar --exclude='./mnt' --exclude='./proc' --exclude='./run' --exclude='./sys' --exclude='./tmp' -C . -cpf - . | tar -C /mnt/${P_ROOTFS} -xf -
-mkdir -p /mnt/${P_ROOTFS}/{proc,run,sys,tmp}
+cp -ax /boot/broadcom/* /transfer/${P_BOOT}/
+#cp -axv . /transfer/${P_ROOTFS}
+tar --exclude='./transfer' --exclude='./proc' --exclude='./run' --exclude='./sys' --exclude='./tmp' -C . -cpf - . | tar -C /transfer/${P_ROOTFS} -xf -
+mkdir -p /transfer/${P_ROOTFS}/{proc,run,sys,tmp}
 }
 
 if [[ "$VERBOSITY" = "1" ]]; then
@@ -286,14 +286,14 @@ fi
 finish (){
 $EE
 $EE "cmdline.txt"
-rm -f /mnt/${P_BOOT}/cmdline.txt
-tee /mnt/${P_BOOT}/cmdline.txt <<EOF
+rm -f /transfer/${P_BOOT}/cmdline.txt
+tee /transfer/${P_BOOT}/cmdline.txt <<EOF
 ${CMDLINE}
 EOF
 $EE
 $EE "fstab"
-rm -f /mnt/${P_ROOTFS}/etc/fstab
-tee /mnt/${P_ROOTFS}/etc/fstab <<EOF
+rm -f /transfer/${P_ROOTFS}/etc/fstab
+tee /transfer/${P_ROOTFS}/etc/fstab <<EOF
 UUID=${BOOT_UUID}	${BOOTFS_TABLE}
 UUID=${ROOT_UUID}	/	${ROOTFS_TABLE}
 tmpfs	/tmp		tmpfs	defaults,nosuid 0 0
@@ -310,11 +310,9 @@ if [[ "$VERBOSITY" = "1" ]]; then
 else
 	finish > /dev/null 2>&1
 fi
-rm -fdr /mnt/${P_ROOTFS}/mnt/*
-umount /mnt/${P_BOOT}
-umount /mnt/${P_ROOTFS}
-rm -fdr /mnt/${P_BOOT}
-rm -fdr /mnt/${P_ROOTFS}
+umount /transfer/${P_BOOT}
+umount /transfer/${P_ROOTFS}
+rm -fdr /transfer
 
 $EE ""
 $EE "${BLD}Transfer complete.${FIN}"
