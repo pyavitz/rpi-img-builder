@@ -96,7 +96,7 @@ if [[ `ls /dev/sd*[a-z]` ]] > /dev/null 2>&1 || \
 else
 	$EE ""
 	$EE "There are no available drives to transfer to."
-	exit 0
+	exit 1
 fi
 
 # CHOOSE DRIVE
@@ -111,12 +111,12 @@ if [[ -e "$DEVICE_NODE" ]]; then
 else
 	$EE
 	$EE "${BLD}WARNING:${FIN} The drive you selected is not available or invalid."
-	exit 0
+	exit 1
 fi
 if [[ "$HD_CHK" == "$DEVICE_NODE" || "$NVME_CHK" == "$DEVICE_NODE" || "$MMC_CHK" == "$DEVICE_NODE" ]]; then
 	$EE
 	$EE "${BLD}WARNING:${FIN} The drive you selected is currently in use."
-	exit 0
+	exit 1
 fi
 if [[ "$EMMC" == "$DEVICE_NODE" ]]; then
 	EMMC_TRUE="true"
@@ -129,7 +129,6 @@ B_FSTYPE="vfat"
 $EE ""
 $EE "${BLD}Filesystem Types${FIN}"
 $EE "${ITL}ROOT OPTIONS: ${FIN}btrfs ext4 f2fs xfs"
-$EE ""
 $EN "ROOT Partition: "
 read R_FSTYPE
 
@@ -178,7 +177,7 @@ if [[ "$R_FSTYPE" == "btrfs" || "$R_FSTYPE" == "ext4" || "$R_FSTYPE" == "f2fs" |
 else
 	$EE ""
 	$EE "Filesystem ${R_FSTYPE} is not supported or invalid."
-	exit 0
+	exit 1
 fi
 
 # SUMMARY
@@ -242,7 +241,7 @@ if [[ `ls "${DEVICE_NODE}${P_ROOTFS}"` ]]; then
 		sleep .75
 	fi
 	$MOUNT_ROOTFS
-	if [[ "$R_FSTYPE" == "btrfs" || "$R_FSTYPE" == "ext4" || "$R_FSTYPE" == "xfs"  ]]; then
+	if [[ "$R_FSTYPE" =~ ^(btrfs|ext4|xfs)$ ]]; then
 		bash growpart ${DEVICE_NODE} 2
 		sleep .75
 		$RESIZEFS
@@ -270,7 +269,9 @@ fi
 transfer (){
 cd /
 cp -ax /boot/broadcom/* /mnt/${P_BOOT}/
-cp -axv . /mnt/${P_ROOTFS}
+#cp -axv . /mnt/${P_ROOTFS}
+tar --exclude='./proc' --exclude='./run' --exclude='./sys' --exclude='./tmp' -C . -cpf - . | tar -C /mnt/${P_ROOTFS} -xf -
+mkdir -p /mnt/${P_ROOTFS}/{proc,run,sys,tmp}
 }
 
 if [[ "$VERBOSITY" = "1" ]]; then
