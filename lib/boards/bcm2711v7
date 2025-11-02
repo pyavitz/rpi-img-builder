@@ -31,7 +31,7 @@ IMG_EXP="${BOARD_EXT}-*.img*"
 
 # cmdline
 CONSOLE="console=serial0,115200 console=tty1"
-EXTRA="loglevel=5 net.ifnames=0 firmware_class.path=/lib/firmware/updates/brcm"
+EXTRA="loglevel=5 net.ifnames=0"
 
 # Serial
 DEVUAN_SERIAL="T0:23:respawn:/sbin/getty -L serial0 115200 vt100"
