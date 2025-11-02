@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# MODEL
+# MODEL & DISTRO
 MODEL=$(tr -d '\0' </proc/device-tree/model)
+DISTRO=`cat /etc/os-release | grep -w NAME | sed 's/NAME=//g' | sed 's/"//g' | sed 's/ GNU\/Linux//g'`
 
 # LANGUAGE
 export LC_ALL=$(locale -a|grep -ix 'c.utf-\?8' || echo C)
@@ -146,29 +147,30 @@ MAKE_BOOTFS="${BOOTFS} ${BOOT_LABEL} ${DEVICE_NODE}${P_BOOT}"
 
 # ROOT PARTITION VARIABLES
 if [[ "$R_FSTYPE" == "btrfs" || "$R_FSTYPE" == "ext4" || "$R_FSTYPE" == "f2fs" || "$R_FSTYPE" == "xfs" ]]; then
+	ROOTFS_LABEL=`echo "${DISTRO}" | sed -e 's/.*/\U&/'`
 	if [[ "$R_FSTYPE" == "btrfs" ]]; then
-		MAKE_ROOTFS="mkfs.btrfs -f -L ROOTFS ${DEVICE_NODE}${P_ROOTFS}"
+		MAKE_ROOTFS="mkfs.btrfs -f -L ${ROOTFS_LABEL} ${DEVICE_NODE}${P_ROOTFS}"
 		MOUNT_ROOTFS="mount -o compress=lzo,noatime,subvol=@ ${DEVICE_NODE}${P_ROOTFS} /transfer/${P_ROOTFS}"
 		ROOTFS_TABLE="btrfs	defaults,compress=lzo,noatime,subvol=@ 0 1"
 		ROOT_FSTYPE="rootfstype=btrfs rootflags=subvol=@"
 		RESIZEFS="btrfs filesystem resize max /transfer/${P_ROOTFS}"
 	fi
 	if [[ "$R_FSTYPE" == "ext4" ]]; then
-		MAKE_ROOTFS="mkfs.ext4 -L ROOTFS ${DEVICE_NODE}${P_ROOTFS}"
+		MAKE_ROOTFS="mkfs.ext4 -L ${ROOTFS_LABEL} ${DEVICE_NODE}${P_ROOTFS}"
 		MOUNT_ROOTFS="mount -o defaults,noatime ${DEVICE_NODE}${P_ROOTFS} /transfer/${P_ROOTFS}"
 		ROOTFS_TABLE="ext4	defaults,noatime,commit=600,errors=remount-ro 0 1"
 		ROOT_FSTYPE="rootfstype=ext4"
 		RESIZEFS="resize2fs ${DEVICE_NODE}${P_ROOTFS}"
 	fi
 	if [[ "$R_FSTYPE" == "f2fs" ]]; then
-		MAKE_ROOTFS="mkfs.f2fs -f -l ROOTFS ${DEVICE_NODE}${P_ROOTFS}"
+		MAKE_ROOTFS="mkfs.f2fs -f -l ${ROOTFS_LABEL} ${DEVICE_NODE}${P_ROOTFS}"
 		MOUNT_ROOTFS="mount -o rw,acl,active_logs=6,background_gc=on,user_xattr ${DEVICE_NODE}${P_ROOTFS} /transfer/${P_ROOTFS}"
 		ROOTFS_TABLE="f2fs	rw,acl,active_logs=6,background_gc=on,user_xattr 0 0"
 		ROOT_FSTYPE="rootfstype=f2fs"
 		RESIZEFS="resize.f2fs ${DEVICE_NODE}${P_ROOTFS}"
 	fi
 	if [[ "$R_FSTYPE" == "xfs" ]]; then
-		MAKE_ROOTFS="mkfs.xfs -f -L ROOTFS ${DEVICE_NODE}${P_ROOTFS}"
+		MAKE_ROOTFS="mkfs.xfs -f -L ${ROOTFS_LABEL} ${DEVICE_NODE}${P_ROOTFS}"
 		MOUNT_ROOTFS="mount -o defaults,noatime ${DEVICE_NODE}${P_ROOTFS} /transfer/${P_ROOTFS}"
 		ROOTFS_TABLE="xfs	defaults,noatime 0 1"
 		ROOT_FSTYPE="rootfstype=xfs"

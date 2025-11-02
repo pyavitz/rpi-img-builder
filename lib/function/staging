@@ -26,20 +26,21 @@ $MOUNT_ROOTFS
 filesystem (){
 MAKE_BOOTFS="mkfs.fat -F 32 -n BOOT ${IMAGE_LOOP_DEV_BOOT}"
 BOOT_PATH="/boot/broadcom"
+ROOTFS_LABEL=`echo "${DISTRO}" | sed -e 's/.*/\U&/'`
 if [[ "$FSTYPE" == "ext4" ]]; then
-	MAKE_ROOTFS="mkfs.ext4 -L ROOTFS ${IMAGE_LOOP_DEV_ROOTFS}"
+	MAKE_ROOTFS="mkfs.ext4 -L ${ROOTFS_LABEL} ${IMAGE_LOOP_DEV_ROOTFS}"
 	MOUNT_ROOTFS="mount -o defaults,noatime ${IMAGE_LOOP_DEV_ROOTFS} p2"
 	ROOTFS_TABLE="ext4	defaults,noatime,commit=600,errors=remount-ro 0 1"
 	ROOTFSTYPE="rootfstype=ext4"
 fi
 if [[ "$FSTYPE" == "btrfs" ]]; then
-	MAKE_ROOTFS="mkfs.btrfs -f -L ROOTFS ${IMAGE_LOOP_DEV_ROOTFS}"
+	MAKE_ROOTFS="mkfs.btrfs -f -L ${ROOTFS_LABEL} ${IMAGE_LOOP_DEV_ROOTFS}"
 	MOUNT_ROOTFS="mount -o compress=lzo,noatime,subvol=@ ${IMAGE_LOOP_DEV_ROOTFS} p2"
 	ROOTFS_TABLE="btrfs	defaults,compress=lzo,noatime,subvol=@ 0 1"
 	ROOTFSTYPE="rootfstype=btrfs rootflags=subvol=@"
 fi
 if [[ "$FSTYPE" == "xfs" ]]; then
-	MAKE_ROOTFS="mkfs.xfs -f -L ROOTFS ${IMAGE_LOOP_DEV_ROOTFS}"
+	MAKE_ROOTFS="mkfs.xfs -f -L ${ROOTFS_LABEL} ${IMAGE_LOOP_DEV_ROOTFS}"
 	MOUNT_ROOTFS="mount -o defaults,noatime ${IMAGE_LOOP_DEV_ROOTFS} p2"
 	ROOTFS_TABLE="xfs	defaults,noatime 0 1"
 	ROOTFSTYPE="rootfstype=xfs"
