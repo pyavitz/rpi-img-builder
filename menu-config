@@ -119,23 +119,43 @@ clear -x
 # main menu
 while [ 1 ]
 do
-CHOICE=$(
-export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray'
-whiptail --backtitle "${DISTRO}: System Settings" --title "Menu Config" --menu "" --nocancel 0 25 0 \
-	"N)" "Networking        Configure network interfaces" \
-	"" "" \
-	"1)" "Security          User security management" \
-	"2)" "Hostname          System hostname" \
-	"3)" "Keyboard          Keyboard layout" \
-	"4)" "Locales           Language settings" \
-	"5)" "Timezone          Regional settings" \
-	"6)" "Console           Font and keymap setup" \
-	"7)" "Governor          Dynamic frequency scaling" \
-	"" "" \
-	"K)" "Kernel            Edit the config.txt" \
-	"U)" "Update            Menu interface configuration tool" \
-	"Q)" "Quit .." 3>&2 2>&1 1>&3
-)
+if [[ `command -v nmtui` ]]; then
+	CHOICE=$(
+	export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray'
+	whiptail --backtitle "${DISTRO}: System Settings" --title "Menu Config" --menu "" --nocancel 0 25 0 \
+		"N)" "Networking        Configure network interfaces" \
+		"" "" \
+		"1)" "Security          User security management" \
+		"2)" "Hostname          System hostname" \
+		"3)" "Keyboard          Keyboard layout" \
+		"4)" "Locales           Language settings" \
+		"5)" "Timezone          Regional settings" \
+		"6)" "Console           Font and keymap setup" \
+		"7)" "Governor          Dynamic frequency scaling" \
+		"" "" \
+		"K)" "Kernel            Edit the config.txt" \
+		"U)" "Update            Menu interface configuration tool" \
+		"Q)" "Quit .." 3>&2 2>&1 1>&3
+	)
+else
+	CHOICE=$(
+	export NEWT_COLORS='root=,black roottext=lightgray,black title=black,lightgray'
+	whiptail --backtitle "${DISTRO}: System Settings" --title "Menu Config" --menu "" --nocancel 0 25 0 \
+		"N)" "Networking        Configure wireless interface" \
+		"" "" \
+		"1)" "Security          User security management" \
+		"2)" "Hostname          System hostname" \
+		"3)" "Keyboard          Keyboard layout" \
+		"4)" "Locales           Language settings" \
+		"5)" "Timezone          Regional settings" \
+		"6)" "Console           Font and keymap setup" \
+		"7)" "Governor          Dynamic frequency scaling" \
+		"" "" \
+		"K)" "Kernel            Edit the config.txt" \
+		"U)" "Update            Menu interface configuration tool" \
+		"Q)" "Quit .." 3>&2 2>&1 1>&3
+	)
+fi	
 case $CHOICE in
 	"N)")
 		if [[ `command -v nmtui` ]]; then sudo nmtui; else swh -m; fi
