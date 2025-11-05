@@ -55,7 +55,7 @@ echo -n "${TIMEZONE}" > /etc/timezone
 
 apt upgrade -y
 apt dist-upgrade -y
-if [[ "$DISTRO_VERSION" =~ ^(oracular|plucky)$ ]]; then WIRELESS="iw"; else WIRELESS="iw wireless-tools"; fi
+if [[ "$DISTRO_VERSION" =~ ^(oracular|plucky|questing|resolute)$ ]]; then WIRELESS="iw"; else WIRELESS="iw wireless-tools"; fi
 if [[ "$DISTRO_VERSION" =~ ^(ceres|sid|testing|unstable)$ ]]; then :; else apt autoremove -y; fi
 if [[ "$DISTRO" =~ ^(kali|ubuntu)$ ]]; then apt_preferences; echo ""; fi
 # network variables
