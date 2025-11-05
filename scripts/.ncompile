@@ -26,6 +26,14 @@ sudo debconf-apt-progress -- apt install -y \
 	ccache
 }
 
+daedalus-ncompile (){
+sudo debconf-apt-progress -- apt install -y \
+	aria2 bc bison btrfs-progs build-essential ccache cpio curl dialog \
+	distro-info-data dosfstools e2fsprogs fakeroot fdisk figlet flex \
+	gcc-12 git kmod libncurses5-dev libssl-dev lsb-release make parted \
+	patch pv rsync unzip xfsprogs xz-utils zip zstd
+}
+
 trixie-ncompile (){
 sudo debconf-apt-progress -- apt install -y \
 	build-essential bison bc git dialog patch dosfstools zip unzip parted \
@@ -74,7 +82,7 @@ if [[ "$HOST_ARCH" == "x86_64" ]]; then
 	exit 0
 fi
 
-if [[ "$HOST_CODENAME" =~ ^(bullseye|bookworm|trixie|jammy|noble)$ ]]; then
+if [[ "$HOST_CODENAME" =~ ^(bullseye|bookworm|daedalus|trixie|jammy|noble)$ ]]; then
 	echo ""
 	${HOST_CODENAME}-ncompile
 else
