@@ -26,6 +26,10 @@ sudo debconf-apt-progress -- apt install -y \
 	ccache
 }
 
+daedalus-ncompile (){
+	bookworm-ncompile
+}
+
 trixie-ncompile (){
 sudo debconf-apt-progress -- apt install -y \
 	build-essential bison bc git dialog patch dosfstools zip unzip parted \
@@ -74,7 +78,7 @@ if [[ "$HOST_ARCH" == "x86_64" ]]; then
 	exit 0
 fi
 
-if [[ "$HOST_CODENAME" =~ ^(bullseye|bookworm|trixie|jammy|noble)$ ]]; then
+if [[ "$HOST_CODENAME" =~ ^(bullseye|bookworm|daedalus|trixie|jammy|noble)$ ]]; then
 	echo ""
 	${HOST_CODENAME}-ncompile
 else
