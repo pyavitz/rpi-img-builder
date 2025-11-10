@@ -110,7 +110,7 @@ echo "force-unsafe-io" > "p2/etc/dpkg/dpkg.cfg.d/dpkg-unsafe-io"
 mkdir -p p2/usr/bin
 cp $(command -v "${STATIC}") p2/usr/bin
 
-if [[ ! -z $P_VALUE ]]; then ${DISTRO}_sources_list; fi
+sources_list
 if [ $VERBOSE -eq 1 ]; then choose_release; fstab; else choose_release > /dev/null 2>&1; fstab > /dev/null 2>&1; fi
 
 if [ -n "$PROXY" ] ; then

@@ -1,19 +1,18 @@
 #!/bin/bash
 
-mirrors (){
-source mirror.txt
-if [[ "$DISTRO" == "debian" ]]; then MIRROR="${DEBIAN_MIRROR}"; else
-if [[ "$DISTRO" == "devuan" ]]; then MIRROR="${DEVUAN_MIRROR}"; else
-if [[ "$DISTRO" == "kali" ]]; then MIRROR="${KALI_MIRROR}"; else
-if [[ "$DISTRO" == "raspbian" ]]; then MIRROR="http://raspbian.raspberrypi.org/raspbian"; else
-if [[ "$DISTRO" == "ubuntu" ]]; then MIRROR="${UBUNTU_MIRROR}"; fi; fi; fi; fi; fi
-}
-
-# DEBIAN
-debian_sources_list (){
+sources_list (){
 SOURCES_LIST="${P_VALUE}/etc/apt/sources.list.d/${DISTRO}.sources"
 }
 
+mirrors (){
+source mirror.txt
+if [[ "$DISTRO" == "debian" ]]; then MIRROR="${DEBIAN_MIRROR}"
+elif [[ "$DISTRO" == "devuan" ]]; then MIRROR="${DEVUAN_MIRROR}"
+elif [[ "$DISTRO" == "kali" ]]; then MIRROR="${KALI_MIRROR}"
+elif [[ "$DISTRO" == "ubuntu" ]]; then MIRROR="${UBUNTU_MIRROR}"; fi
+}
+
+# DEBIAN
 debian_release (){
 POOL="main contrib non-free non-free-firmware"
 if [[ "$DISTRO_VERSION" =~ ^(bookworm|trixie|testing)$ ]]; then
@@ -45,10 +44,6 @@ fi
 }
 
 # DEVUAN
-devuan_sources_list (){
-SOURCES_LIST="${P_VALUE}/etc/apt/sources.list.d/${DISTRO}.sources"
-}
-
 devuan_release (){
 POOL="main contrib non-free non-free-firmware"
 if [[ "$DISTRO_VERSION" =~ ^(daedalus|excalibur)$ ]]; then
@@ -80,10 +75,6 @@ fi
 }
 
 # KALI
-kali_sources_list (){
-SOURCES_LIST="${P_VALUE}/etc/apt/sources.list.d/${DISTRO}.sources"
-}
-
 kali_release (){
 # https://www.kali.org/docs/general-use/kali-linux-sources-list-repositories/
 POOL="main contrib non-free non-free-firmware"
@@ -97,27 +88,7 @@ Signed-By: /usr/share/keyrings/kali-archive-keyring.gpg
 EOF
 }
 
-# RASPBIAN
-raspbian_sources_list (){
-SOURCES_LIST="${P_VALUE}/etc/apt/sources.list"
-}
-
-raspbian_release (){
-POOL="main contrib non-free"
-tee ${SOURCES_LIST} <<EOF
-deb ${MIRROR} ${DISTRO_VERSION} ${POOL} rpi
-
-# optional
-#deb http://archive.raspbian.org/raspbian ${DISTRO_VERSION} ${POOL}
-#deb http://mirrordirector.raspbian.org/raspbian ${DISTRO_VERSION} ${POOL}
-EOF
-}
-
 # UBUNTU
-ubuntu_sources_list (){
-SOURCES_LIST="${P_VALUE}/etc/apt/sources.list.d/${DISTRO}.sources"
-}
-
 ubuntu_release (){
 tee ${SOURCES_LIST} <<EOF
 Types: deb
@@ -137,10 +108,10 @@ EOF
 }
 
 choose_release (){
-if [[ "$DISTRO" =~ ^(debian|devuan|kali|raspbian|ubuntu)$ ]]; then
+if [[ "$DISTRO" =~ ^(debian|devuan|kali|ubuntu)$ ]]; then
 	${DISTRO}_release
 else
 	echo "${CAP_DISTRO} ${CAP_RELEASE} is not supported."
-	exit 0
+	exit 1
 fi
 }

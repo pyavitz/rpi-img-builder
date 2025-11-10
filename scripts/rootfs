@@ -52,7 +52,7 @@ else
 fi
 
 P_VALUE="sysroot"
-${DISTRO}_sources_list
+sources_list # apt distro.sources list
 RELEASE_TARBALL=${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz
 if [[ -f "$RELEASE_TARBALL" ]]; then ls -ls $RELEASE_TARBALL; exit 0; fi
 CAP_DISTRO=`echo "${DISTRO}" | sed -e "s/\b\(.\)/\u\1/g"`
