@@ -46,9 +46,7 @@ else
 	exit 1
 fi
 # check for qemu
-if [[ `command -v ${STATIC}` ]]; then
-	:;
-else
+if [[ ! `command -v ${STATIC}` ]]; then
 	echo -e "Missing depends: ${STATIC}"
 	echo -e "Run ./install.sh"
 	exit 1
@@ -57,8 +55,8 @@ fi
 CAP_DISTRO=`echo "${DISTRO}" | sed -e "s/\b\(.\)/\u\1/g"`
 CAP_RELEASE=`echo "${DISTRO_VERSION}" | sed -e "s/\b\(.\)/\u\1/g"`
 echo ""
-echo -e "${WHT}Board${FIN} ${PNK}[${FIN}${GRN}${BOARD}-${BOARD_EXT}${FIN}${PNK}]${FIN}"
-echo -e "${WHT}Distribution${FIN} ${PNK}[${FIN}${GRN}${CAP_DISTRO} ${CAP_RELEASE}${FIN}${PNK}]${FIN}"
+echo -e "Board: ${BOARD}-${BOARD_EXT}"
+echo -e "Distribution: ${CAP_DISTRO} ${CAP_RELEASE}"
 RAM=0
 PROXY=""
 IMAGE_FOLDER="img/"
@@ -70,34 +68,29 @@ if [ $RAM -ne 0 ]; then mount -t tmpfs -o size=4G tmpfs $IMAGE_FOLDER; fi
 if [ $VERBOSE -eq 1 ]; then partition; uuid; else partition > /dev/null 2>&1; uuid > /dev/null 2>&1; fi
 # command line
 cmdline > /dev/null 2>&1
-if [[ -f "p1/cmdline.txt" ]]; then
-	:;
-else
-	echo -en "${WHT}cmdline.txt${FIN}  "
+if [[ ! -f "p1/cmdline.txt" ]]; then
+	echo -en "cmdline.txt"
 	sleep .50
-	echo_fail
+	echo -e ", failed!"
 	exit 1
 fi
 # config dot txt
 config_dot_txt > /dev/null 2>&1
-if [[ -f "p1/config.txt" ]]; then
-	:;
-else
-	echo ""
-	echo -en "${WHT}config.txt${FIN}   "
+if [[ ! -f "p1/config.txt" ]]; then
+	echo -en "config.txt"
 	sleep .50
-	echo_fail
+	echo -e ", failed!"
 	exit 1
 fi
 if [[ "$ARCH" == "arm" ]]; then sed -i '1d' p1/config.txt; fi
 
 # extract rootfs
 if [[ -f "${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz" ]]; then
-	echo -en "${WHT}Extracting rootfs${FIN} "
+	echo -en "Extracting rootfs: ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz"
 	tar -xf ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz -C ${P_VALUE}/
-	echo_bdone
+	echo -e ", done."
 else
-	echo -e "${YLW}Missing rootfs tarball${FIN}!"
+	echo -e "Missing rootfs tarball!"
 	make clean
 	exit 1
 fi
@@ -182,7 +175,7 @@ if [ $RAM -ne 0 ]; then umount "${IMAGE_FOLDER}"; fi
 rmdir "${IMAGE_FOLDER}"
 rmdir p1 p2
 
-if [[ "$SHRINK" == "true" ]]; then shrink; else echo ""; echo -en "Shrink ${PNK}[${FIN}${WHT}disabled${FIN}${PNK}]${FIN}"; fi
+if [[ "$SHRINK" == "true" ]]; then shrink; else echo ""; echo -en "Shrink, disabled."; fi
 finish_image
 rm -f {part-uuid.txt,board.txt,kernel.release}
 

@@ -37,16 +37,12 @@ fi
 if [[ "$DISTRO" =~ ^(devuan||kali|raspbian)$ ]]; then ${DISTRO}_keyring; fi
 if [[ "$HOST_MACHINE" == "Ubuntu" ]]; then :; else if [[ "$DISTRO" == "ubuntu" ]]; then ${DISTRO}_keyring; fi; fi
 # check for qemu
-if [[ `command -v ${STATIC}` ]]; then
-	:;
-else
+if [[ ! `command -v ${STATIC}` ]]; then
 	echo -e "Missing depends: ${STATIC}"
 	echo -e "Run ./install.sh"
 	exit 1
 fi
-if [[ `command -v mmdebstrap` ]]; then
-	:;
-else
+if [[ ! `command -v mmdebstrap` ]]; then
 	echo -e "Missing depends: mmdebstrap"
 	apt install -y mmdebstrap
 fi
@@ -58,9 +54,9 @@ if [[ -f "$RELEASE_TARBALL" ]]; then ls -ls $RELEASE_TARBALL; exit 0; fi
 CAP_DISTRO=`echo "${DISTRO}" | sed -e "s/\b\(.\)/\u\1/g"`
 CAP_RELEASE=`echo "${DISTRO_VERSION}" | sed -e "s/\b\(.\)/\u\1/g"`
 echo -e ""
-echo -e "${WHT}Distribution${FIN} ${PNK}[${FIN}${GRN}${CAP_DISTRO} ${CAP_RELEASE}${FIN}${PNK}]${FIN}"
+echo -e "Distribution: ${CAP_DISTRO} ${CAP_RELEASE}"
 echo -e ""
-echo -e "${WHT}Running bootstrap${FIN} ..."
+echo -e "Running bootstrap ..."
 # start bootstrap
 if [ $DEVROOTFS -eq 1 ]; then
 	RAM=0
@@ -99,7 +95,7 @@ rm -fdr ${P_VALUE}/*usr-is-merged*
 
 # finish
 echo ""
-echo -e "── Archiving ${PNK}[${FIN}${WHT}${RELEASE_TARBALL}${FIN}${PNK}]${FIN}"
+echo -e "Archiving: ${RELEASE_TARBALL}"
 cd ${P_VALUE}
 XZ_DEFAULTS="--threads=${CORES}"; export XZ_DEFAULTS;tar cfJ - * | (pv -terb > ../$RELEASE_TARBALL)
 cd ..
