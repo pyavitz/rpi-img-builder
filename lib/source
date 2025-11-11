@@ -15,20 +15,15 @@ EXPIRED="The userdata.txt file has expired. Create a new one."
 # validate
 validation (){
 BUILDER=`grep "BUILDER=" "userdata.txt" | sed 's/BUILDER=//g'`
-UD="userdata.txt"
-if [ -f "$UD" ]; then
-	:;
-else 
-	echo "";
-	echo "Create a $UD file";
+if [ ! -f "userdata.txt" ]; then
+	echo -e ""
+	echo -e "Create a userdata.txt file"
 	while [ true ]; do
 		read -t 10 -n 1
-		if [ $? = 0 ]; then
-			exit 0;
-		fi
+		if [ $? = 0 ]; then exit 1; fi
 	done
 fi
-if [[ "$BUILDER" == "7.1" ]]; then :; else echo -e "${EXPIRED}"; exit 0; fi
+if [[ ! "$BUILDER" == "7.1" ]]; then echo -e "${EXPIRED}"; exit 1; fi
 }
 
 # board dot txt
@@ -37,7 +32,7 @@ echo -e "board.txt was not found."
 echo -e "Run again with the correct spelling and or command."
 echo -e ""
 read -p "Press enter to continue."
-exit 0
+exit 1
 }
 
 # packages
