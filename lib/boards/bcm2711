@@ -9,7 +9,7 @@ ROOTFS_ARCH="rootfs-${ARCH_EXT}"
 STATIC="qemu-aarch64-static"
 
 # menu
-PRETTY_BOARD="Raspberry Pi ZeroW2/3/4/400/5	BCM2711 / ARM64"
+PRETTY_BOARD="Raspberry Pi ZeroW2/3/4/400/5	BCM2711    ARM64"
 
 # misc
 FAMILY="broadcom"

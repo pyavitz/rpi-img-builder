@@ -193,7 +193,7 @@ all:
 
 list:
 	# Boards
-	@cat lib/boards/* | grep -w "PRETTY_BOARD=" | sed 's/PRETTY_BOARD=//g' | sed 's/"//g' | sed 's/BCM/bcm/g' | sed 's/bcm2711 \/ ARMHF/bcm2711v7 \/ ARMHF/g'
+	@cat lib/boards/* | grep -w "PRETTY_BOARD=" | sed 's/PRETTY_BOARD=//g' | sed 's/"//g' | sed 's/BCM/bcm/g' | sed 's/bcm2711    ARMHF/bcm2711v7  ARMHF/g'
 
 clean:
 	@chmod +x ${CLN}
