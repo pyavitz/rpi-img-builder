@@ -124,7 +124,8 @@ cp board.txt p2/root
 cp custom.txt p2/root
 if [[ "$DISTRO" == "devuan" ]]; then cp files/inits/* p2/root; fi
 cp files/patches/* p2/root
-cp files/misc/* p2/root
+cp -fr files/misc/{10-local-rpi.rules,60-rpi.gpio-common.rules,99-com.rules} p2/root
+if [[ "$DISTRO_VERSION" =~ ^(bookworm|daedalus|jammy|noble)$ ]]; then cp files/misc/userland/* p2/root; fi
 cp files/scripts/* p2/root
 cp files/users/* p2/root
 cp files/firmware/* p2/root

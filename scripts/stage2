@@ -334,7 +334,7 @@ rm -f /etc/sudoers.d/010_pi-nopasswd
 pi_bluetooth
 
 #  userland
-rpi_userland
+if [[ "$DISTRO_VERSION" =~ ^(bookworm|daedalus|jammy|noble)$ ]]; then rpi_userland; fi
 
 # eeprom
 if [[ "$BOARD_EXT" =~ ^(rpi-2+3|rpi-3|rpi-4|rpi-5)$ ]]; then eeprom_support; fi
