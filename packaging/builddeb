@@ -264,12 +264,11 @@ clean_headers (){
 find -type f -exec touch {} +
 echo 'y' | make ARCH=$karch M=scripts clean
 patch -p1 < headers-byteshift.patch
-if [ -f scripts/module.lds ]; then :; else install -m 0644 module.lds scripts/; fi
-rm -f {headers-byteshift.patch,module.lds}
+if [ ! -f scripts/module.lds ]; then install -m 0644 module.lds scripts/; fi
 echo 'y' | make ARCH=$karch -j\$(grep -c 'processor' /proc/cpuinfo) -s scripts
-if [ ! -f scripts/mod/modpost ]; then install -m 0755 modpost scripts/mod/; rm -f modpost; else rm -f modpost; fi
+if [ ! -f scripts/mod/modpost ]; then install -m 0755 modpost scripts/mod/; fi
 echo 'y' | make ARCH=$karch -j\$(grep -c 'processor' /proc/cpuinfo) -s M=scripts/mod/
-rm -f .config.old
+rm -f {.config.old,headers-byteshift.patch,module.lds,modpost}
 }
 
 # compile headers
