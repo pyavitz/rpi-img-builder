@@ -253,6 +253,7 @@ rm -f "$objtree/debian/hdrsrcfiles" "$objtree/debian/hdrobjfiles"
 # kernel headers postinst script
 cp -f "headers-byteshift.patch" "$destdir/"
 cp -f "$srctree/scripts/module.lds" "$destdir/"
+cp -f "$srctree/scripts/mod/modpost" "$destdir/"
 mkdir -p "$kernel_headers_dir/DEBIAN"
 cat <<EOF > "$kernel_headers_dir/DEBIAN/postinst"
 #!/bin/bash
@@ -266,6 +267,7 @@ patch -p1 < headers-byteshift.patch
 if [ -f scripts/module.lds ]; then :; else install -m 0644 module.lds scripts/; fi
 rm -f {headers-byteshift.patch,module.lds}
 echo 'y' | make ARCH=$karch -j\$(grep -c 'processor' /proc/cpuinfo) -s scripts
+if [ ! -f scripts/mod/modpost ]; then install -m 0755 modpost scripts/mod/; rm -f modpost; else rm -f modpost; fi
 echo 'y' | make ARCH=$karch -j\$(grep -c 'processor' /proc/cpuinfo) -s M=scripts/mod/
 rm -f .config.old
 }
