@@ -64,7 +64,7 @@ fi
 
 # finish
 if [[ "$DISTRO" == "Devuan" ]]; then
-	disable_bthelper
+	#disable_bthelper
 	update-rc.d firstboot remove
 	rm -f /etc/init.d/firstboot
 	rm -fdr /var/cache/debconf/*

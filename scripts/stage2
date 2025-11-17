@@ -61,14 +61,14 @@ if [[ "$DISTRO" =~ ^(kali|ubuntu)$ ]]; then apt_preferences; echo ""; fi
 # network variables
 if [ $NETWORKMANAGER -eq 1 ]; then NETWORKING="network-manager"; else NETWORKING="ifupdown"; fi
 if [[ "$DISTRO" =~ ^(debian|raspbian)$ ]]; then
-	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} ${WIRELESS} resolvconf openssh-client openssh-server ${NETWORKING}
+	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${WIRELESS} resolvconf openssh-client openssh-server ${NETWORKING}
 fi
 if [[ "$DISTRO" == "devuan" ]]; then
 	apt install -y openssh-client openssh-server --no-install-recommends
-	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} ${WIRELESS} openresolv ${NETWORKING}
+	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${WIRELESS} openresolv ${NETWORKING}
 fi
 if [[ "$DISTRO" == "kali" ]]; then
-	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${FIRMWARE} ${WIRELESS} openssh-client openssh-server dbus-user-session libical3 resolvconf haveged ${NETWORKING}
+	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${WIRELESS} openssh-client openssh-server dbus-user-session libical3 resolvconf haveged ${NETWORKING}
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
 	if [[ "$DISTRO_VERSION" =~ ^(focal|jammy)$ ]]; then RESOLV="resolvconf"; else RESOLV="systemd-resolved"; fi
@@ -220,7 +220,7 @@ if [[ "$DISTRO" == "devuan" ]]; then
 	mv -f firstboot.init /etc/init.d/firstboot
 	mv -f leds.init /etc/init.d/leds
 	mv -f governor.init /etc/init.d/governor
-	mv -f bthelper.init /etc/init.d/bthelper
+	#mv -f bthelper.init /etc/init.d/bthelper
 	mv -f zramswap.init /etc/init.d/zramswap
 	mv -f credentials.init /etc/init.d/credentials
 fi
@@ -325,13 +325,13 @@ if [[ -f "/etc/default/zramswap" ]]; then
 fi
 
 # adding sys-mods
-raspberrypi_sys_mods
+#raspberrypi_sys_mods
 
 # security risk
 rm -f /etc/sudoers.d/010_pi-nopasswd
 
 # pi-bluetooth
-pi_bluetooth
+#pi_bluetooth
 
 #  userland
 if [[ "$DISTRO_VERSION" =~ ^(bookworm|daedalus|jammy|noble)$ ]]; then rpi_userland; fi
