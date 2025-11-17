@@ -105,7 +105,7 @@ ERURL="https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/"
 CHANGELOG="https://raw.githubusercontent.com/raspberrypi/rpi-eeprom/pios/trixie/debian/changelog"
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 echo ""
-apt install help2man pciutils flashrom -y
+apt install help2man pciutils flashrom python3-pycryptodome -y
 mkdir -p ~/eeprom
 mv -f rpi-eeprom-update.patch /root/eeprom/
 mv -f rpi-eeprom-control /root/eeprom/
