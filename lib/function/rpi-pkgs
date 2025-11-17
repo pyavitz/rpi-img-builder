@@ -85,47 +85,41 @@ ldconfig
 find_eeprom (){
 EEPROM_VERSION=$(curl --silent -L ${CHANGELOG} | awk '{if (NR==1) {print substr($2, 1, length($2)-3)}}' | sed 's/[()]//g')
 if [[ `wget -S --spider ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
-	wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
-	wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz
+	wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}-1_all.deb
+	wget -cq --show-progress ${ERURL}rpi-eeprom-images_${EEPROM_VERSION}-1_all.deb
 else
 	EEPROM_VERSION=$(curl --silent -L ${CHANGELOG} | awk '{if (NR==10) {print substr($2, 1, length($2)-3)}}' | sed 's/[()]//g')
 	if [[ `wget -S --spider ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz 2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
-		wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
-		wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz
+		wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}-1_all.deb
+		wget -cq --show-progress ${ERURL}rpi-eeprom-images_${EEPROM_VERSION}-1_all.deb
 	else
-		EEPROM_VERSION="28.6"
-		wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
-		wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz
+		EEPROM_VERSION="28.8"
+		wget -cq --show-progress ${ERURL}rpi-eeprom_${EEPROM_VERSION}-1_all.deb
+		wget -cq --show-progress ${ERURL}rpi-eeprom-images_${EEPROM_VERSION}-1_all.deb
 	fi
 fi
 }
 
 eeprom_support (){
+echo ""
 ERURL="https://archive.raspberrypi.org/debian/pool/main/r/rpi-eeprom/"
 CHANGELOG="https://raw.githubusercontent.com/raspberrypi/rpi-eeprom/pios/trixie/debian/changelog"
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-echo ""
-apt install help2man pciutils flashrom python3-pycryptodome -y
-mkdir -p ~/eeprom
-mv -f rpi-eeprom-update.patch /root/eeprom/
-mv -f rpi-eeprom-control /root/eeprom/
-cd ~/eeprom
+mkdir -p ~/eeprom; cd ~/eeprom
 find_eeprom
-tar xf rpi-eeprom_${EEPROM_VERSION}.orig.tar.gz
-tar xf rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
-rm -f rpi-eeprom_${EEPROM_VERSION}-1.debian.tar.xz
-mkdir -p debian/patches
-mv rpi-eeprom-update.patch debian/patches/rpi-eeprom-update.patch 
-echo rpi-eeprom-update.patch >> debian/patches/series
-rm -f debian/control; mv -f rpi-eeprom-control debian/control
-echo "12" > debian/compat
-mv -f debian rpi-eeprom-${EEPROM_VERSION}/
-cd rpi-eeprom-${EEPROM_VERSION}
-rm -f rpi-eeprom-control.patch
-dpkg-buildpackage -us -nc -uc
-cd ..
-dpkg -i *.deb
-cd ..
+CTRL=`ar t rpi-eeprom_${EEPROM_VERSION}-1_all.deb | grep "control"`
+if [[ -f "rpi-eeprom_${EEPROM_VERSION}-1_all.deb" ]]; then
+	apt install binutils flashrom pciutils python3 python3-pycryptodome -y
+	ar x rpi-eeprom_${EEPROM_VERSION}-1_all.deb; rm -f {data.tar.xz,debian-binary}
+	mkdir tmp; mv ${CTRL} tmp/; cd tmp
+	tar xf ${CTRL}; rm ${CTRL}
+	sed -i "s/^Depends.*/Depends: python3, binutils, pciutils, python3-pycryptodome/" control
+	tar -cJf ${CTRL} *
+	mv ${CTRL} ../; cd ..
+	ar r rpi-eeprom_${EEPROM_VERSION}-1_all.deb ${CTRL}
+	rm -fdr ${CTRL} tmp
+	dpkg -i rpi-eeprom-images_${EEPROM_VERSION}-1_all.deb rpi-eeprom_${EEPROM_VERSION}-1_all.deb
+	cd ..
+fi
 rm -fdr eeprom
 }
 

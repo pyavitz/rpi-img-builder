@@ -3,7 +3,6 @@
 # firmware
 firmware (){
 echo ""
-echo -e "Installing firmware ..."
 mkdir -p /lib/firmware/brcm
 mkdir -p /lib/firmware/updates
 # firmware-brcm80211_20241210-1+rpt3_all

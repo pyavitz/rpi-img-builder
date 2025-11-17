@@ -56,7 +56,6 @@ CAP_RELEASE=`echo "${DISTRO_VERSION}" | sed -e "s/\b\(.\)/\u\1/g"`
 echo -e ""
 echo -e "Distribution: ${CAP_DISTRO} ${CAP_RELEASE}"
 echo -e ""
-echo -e "Running bootstrap ..."
 # start bootstrap
 if [ $DEVROOTFS -eq 1 ]; then
 	RAM=0

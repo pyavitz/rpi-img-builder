@@ -47,8 +47,7 @@ PKGS="tzdata keyboard-configuration sudo man-db dbus initramfs-tools whiptail \
 	btrfs-progs f2fs-tools xfsprogs dosfstools kpartx sg3-utils"
 
 # sys-mods
-DEVEL="debhelper d-shlibs libncursesw5-dev libssl-dev autopoint autoconf automake pkg-config \
-	bison flex build-essential bc"
+DEVEL="libncursesw5-dev libssl-dev bison flex build-essential bc"
 
 # firmware
 FIRMWARE="firmware-linux-nonfree firmware-linux firmware-misc-nonfree \

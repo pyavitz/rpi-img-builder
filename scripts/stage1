@@ -86,7 +86,7 @@ if [[ "$ARCH" == "arm" ]]; then sed -i '1d' p1/config.txt; fi
 
 # extract rootfs
 if [[ -f "${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz" ]]; then
-	echo -en "Extracting rootfs: ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz"
+	echo -en "Extracting: ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz"
 	tar -xf ${DISTRO}-${DISTRO_VERSION}-${ROOTFS_ARCH}.tar.xz -C ${P_VALUE}/
 	echo -e ", done."
 else
@@ -123,7 +123,7 @@ cp userdata.txt p2/root
 cp board.txt p2/root
 cp custom.txt p2/root
 if [[ "$DISTRO" == "devuan" ]]; then cp files/inits/* p2/root; fi
-cp files/patches/* p2/root
+#cp files/patches/* p2/root
 cp -fr files/misc/{10-local-rpi.rules,60-rpi.gpio-common.rules,99-com.rules} p2/root
 if [[ "$DISTRO_VERSION" =~ ^(bookworm|daedalus|jammy|noble)$ ]]; then cp files/misc/userland/* p2/root; fi
 cp files/scripts/* p2/root
