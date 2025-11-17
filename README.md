@@ -2,11 +2,11 @@
 <summary><h3>Boards</h3></summary>
 
 ```py
-Raspberry Pi Zero/W/1				bcm2708 / ARMEL
-Raspberry Pi ZeroW2/2/3				bcm2709 / ARMHF
-Raspberry Pi ZeroW2/3/4/400/5		bcm2711 / ARM64
-Raspberry Pi 4/400					bcm2711v7 / ARMHF
-Raspberry Pi 5						bcm2712 / ARM64
+Raspberry Pi Zero/W/1				bcm2708    ARMEL
+Raspberry Pi ZeroW2/2/3				bcm2709    ARMHF
+Raspberry Pi ZeroW2/3/4/5			bcm2711    ARM64
+Raspberry Pi 4						bcm2711v7  ARMHF
+Raspberry Pi 5						bcm2712    ARM64
 ```
 </details>
 
