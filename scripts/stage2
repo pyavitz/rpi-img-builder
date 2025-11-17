@@ -61,18 +61,18 @@ if [[ "$DISTRO" =~ ^(kali|ubuntu)$ ]]; then apt_preferences; echo ""; fi
 # network variables
 if [ $NETWORKMANAGER -eq 1 ]; then NETWORKING="network-manager"; else NETWORKING="ifupdown"; fi
 if [[ "$DISTRO" =~ ^(debian|raspbian)$ ]]; then
-	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${WIRELESS} resolvconf openssh-client openssh-server ${NETWORKING}
+	apt install -y ${PKGS} ${USER_PKGS} ${DEVEL} ${WIRELESS} resolvconf openssh-client openssh-server ${NETWORKING}
 fi
 if [[ "$DISTRO" == "devuan" ]]; then
 	apt install -y openssh-client openssh-server --no-install-recommends
-	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${WIRELESS} openresolv ${NETWORKING}
+	apt install -y ${PKGS} ${USER_PKGS} ${DEVEL} ${WIRELESS} openresolv ${NETWORKING}
 fi
 if [[ "$DISTRO" == "kali" ]]; then
-	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${WIRELESS} openssh-client openssh-server dbus-user-session libical3 resolvconf haveged ${NETWORKING}
+	apt install -y ${PKGS} ${USER_PKGS} ${DEVEL} ${WIRELESS} openssh-client openssh-server dbus-user-session libical3 resolvconf haveged ${NETWORKING}
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
 	if [[ "$DISTRO_VERSION" =~ ^(focal|jammy)$ ]]; then RESOLV="resolvconf"; else RESOLV="systemd-resolved"; fi
-	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${RESOLV} ${WIRELESS} openssh-client openssh-server ${NETWORKING}
+	apt install -y ${PKGS} ${USER_PKGS} ${DEVEL} ${RESOLV} ${WIRELESS} openssh-client openssh-server ${NETWORKING}
 	if [ $NETWORKMANAGER -eq 0 ] && [[ "$DISTRO_VERSION" == "jammy" ]]; then
 		# disable systemd-networkd and mask systemd-networkd-wait-online
 		systemctl disable systemd-networkd

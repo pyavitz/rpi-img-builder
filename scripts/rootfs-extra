@@ -44,18 +44,18 @@ apt upgrade -y
 apt dist-upgrade -y
 if [[ "$DISTRO_VERSION" =~ ^(oracular|plucky|questing|resolute)$ ]]; then WIRELESS="iw"; else WIRELESS="iw wireless-tools"; fi
 if [[ "$DISTRO" =~ ^(debian|raspbian)$ ]]; then
-	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${WIRELESS} resolvconf openssh-client openssh-server
+	apt install -y ${PKGS} ${USER_PKGS} ${DEVEL} ${WIRELESS} resolvconf openssh-client openssh-server
 fi
 if [[ "$DISTRO" == "devuan" ]]; then
 	apt install -y openssh-client openssh-server --no-install-recommends
-	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${WIRELESS} openresolv
+	apt install -y ${PKGS} ${USER_PKGS} ${DEVEL} ${WIRELESS} openresolv
 fi
 if [[ "$DISTRO" == "kali" ]]; then
-	apt install -y ${PKGS} ${USER_PKGS} ${WIRELESS} dbus-user-session libical3 resolvconf haveged
+	apt install -y ${PKGS} ${USER_PKGS} ${DEVEL} ${WIRELESS} dbus-user-session libical3 resolvconf haveged
 fi
 if [[ "$DISTRO" == "ubuntu" ]]; then
 	if [[ "$DISTRO_VERSION" =~ ^(focal|jammy)$ ]]; then RESOLV="resolvconf"; else RESOLV="systemd-resolved"; fi
-	apt install -y ${PKGS} ${USER_PKGS} ${SYSMODS} ${RESOLV} ${WIRELESS} openssh-client openssh-server
+	apt install -y ${PKGS} ${USER_PKGS} ${DEVEL} ${RESOLV} ${WIRELESS} openssh-client openssh-server
 fi
 apt -y clean
 apt -y autoclean

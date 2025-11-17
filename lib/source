@@ -37,18 +37,18 @@ exit 1
 
 # packages
 PKGS="tzdata keyboard-configuration sudo man-db dbus initramfs-tools whiptail \
-	fonty-rg patch curl wget apt-transport-https dirmngr cmake rsync \
-	psmisc parted pv zip unzip aria2 libell0 fdisk i2c-tools cpu \
-	haveged git build-essential net-tools wireless-regdb ntpsec mtools \
-	fuse3 wpasupplicant usbutils alsa-utils gettext lsscsi flashrom \
-	bison flex mc nano figlet toilet dialog python3 python3-setuptools \
-	ntfs-3g bc zram-tools libncursesw5-dev libssl-dev autopoint autoconf \
-	automake pkg-config libtool fake-hwclock avahi-utils distro-info-data \
-	lsb-release liblzo2-2 bluetooth bluez bluez-tools gpiod python3-libgpiod \
-	e2fsprogs btrfs-progs f2fs-tools xfsprogs kpartx sg3-utils usb-modeswitch"
+	fonty-rg patch curl wget apt-transport-https dirmngr rsync psmisc \
+	parted pv zip unzip aria2 libell0 fdisk i2c-tools cpu haveged git \
+	net-tools wireless-regdb ntpsec mtools rfkill fuse3 wpasupplicant \
+	usbutils alsa-utils gettext lsscsi mc nano figlet toilet dialog \
+	python3 python3-setuptools usb-modeswitch ntfs-3g zram-tools libtool \
+	fake-hwclock avahi-utils distro-info-data lsb-release liblzo2-2 \
+	bluetooth bluez bluez-tools gpiod python3-libgpiod e2fsprogs \
+	btrfs-progs f2fs-tools xfsprogs dosfstools kpartx sg3-utils"
 
 # sys-mods
-SYSMODS="debhelper d-shlibs rfkill dosfstools psmisc"
+DEVEL="debhelper d-shlibs libncursesw5-dev libssl-dev autopoint autoconf automake pkg-config \
+	bison flex build-essential bc"
 
 # firmware
 FIRMWARE="firmware-linux-nonfree firmware-linux firmware-misc-nonfree \
