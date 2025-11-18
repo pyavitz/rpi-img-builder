@@ -45,7 +45,7 @@ title_color = (BLACK,WHITE,OFF)
 border_color = (WHITE,WHITE,ON)
 
 # Active button color
-button_active_color = (WHITE,RED,ON)
+button_active_color = (WHITE,BLACK,ON)
 
 # Inactive button color
 button_inactive_color = dialog_color
@@ -54,10 +54,10 @@ button_inactive_color = dialog_color
 button_key_active_color = button_active_color
 
 # Inactive button key color
-button_key_inactive_color = (RED,WHITE,OFF)
+button_key_inactive_color = (BLACK,WHITE,OFF)
 
 # Active button label color
-button_label_active_color = (WHITE,RED,ON)
+button_label_active_color = (WHITE,BLACK,ON)
 
 # Inactive button label color
 button_label_inactive_color = (BLACK,WHITE,OFF)
@@ -102,7 +102,7 @@ tag_selected_color = button_label_active_color
 tag_key_color = button_key_inactive_color
 
 # Selected tag key color
-tag_key_selected_color = (WHITE,RED,ON)
+tag_key_selected_color = (WHITE,BLACK,ON)
 
 # Check box color
 check_color = dialog_color
@@ -121,7 +121,7 @@ itemhelp_color = (WHITE,BLACK,OFF)
 
 # Active form text color
 #form_active_text_color = button_active_color
-form_active_text_color = (WHITE,RED,ON)
+form_active_text_color = (WHITE,BLACK,ON)
 
 # Form text color
 form_text_color = (BLACK,WHITE,OFF)
