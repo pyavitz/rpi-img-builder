@@ -9,6 +9,7 @@ mkpart primary ext2 1MiB 100%
 IMAGE_LOOP_DEV="$(losetup --show -P -f ${ROOTFS_FOLDER}${RELEASE_NAME})"
 IMAGE_LOOP_DEV_ROOTFS="${IMAGE_LOOP_DEV}p1"
 partprobe "${IMAGE_LOOP_DEV}"
+sleep 1 # stabilize
 mkfs.ext4 -L ROOTFS "${IMAGE_LOOP_DEV_ROOTFS}"
 mkdir -p ${P_VALUE}
 mount "${IMAGE_LOOP_DEV_ROOTFS}" ${P_VALUE}
