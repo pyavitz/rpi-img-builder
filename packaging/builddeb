@@ -265,13 +265,7 @@ echo 'y' | make ARCH=$karch M=scripts clean
 patch -p1 < headers-byteshift.patch
 if [ ! -f scripts/module.lds ]; then install -m 0644 module.lds scripts/; fi
 echo 'y' | make ARCH=$karch -j\$(grep -c 'processor' /proc/cpuinfo) -s scripts
-if ! grep -q 'subdir-y += mod' scripts/Makefile; then
-	cp scripts/Makefile scripts/Makefile.orig
-	echo 'subdir-y += mod' >> scripts/Makefile
-	echo 'y' | make ARCH=$karch -j\$(grep -c 'processor' /proc/cpuinfo) -s scripts
-	mv scripts/Makefile.orig scripts/Makefile
-fi
-echo 'y' | make ARCH=$karch -j\$(grep -c 'processor' /proc/cpuinfo) -s M=scripts/mod/
+echo 'y' | make ARCH=$karch -j\$(grep -c 'processor' /proc/cpuinfo) -s M=scripts/mod
 rm -f {.config.old,headers-byteshift.patch,module.lds}
 }
 
